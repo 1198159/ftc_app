@@ -11,6 +11,7 @@ public class TeleOpCapBotCompetition extends MasterTeleOpCapBot
         initHardware();
 
         waitForStart();
+
         while(opModeIsActive())
         {
             mecanumDrive();

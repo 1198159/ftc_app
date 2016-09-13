@@ -13,35 +13,27 @@ public class MasterTeleOpCapBot extends Master
     // TODO: Test this and fix if needed
     public void mecanumDrive()
     {
-        // Find angle of left joystick. Used to make the robot drive in that direction. Needs to
-        // have an offset angle added because of how mecanum wheels work. Ask Dryw for more info
-        double joystickAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - (Math.PI / 4);
+        // These make the code below easier to read
+        double x = gamepad1.left_stick_x;
+        double y = gamepad1.left_stick_y;
 
         // Find out how much the joystick has moved from the center
-        double joystickDisplacement = calculateDistance(gamepad1.left_stick_x, gamepad1.left_stick_y);
+        double joystickDisplacement = calculateDistance(x, y);
 
         // Used for turning
         double turningPower = gamepad1.right_stick_x;
 
         // Set power for motors. Ratios are correct, but needs scaling (see below)
-        double powerFL = Math.cos(joystickAngle) + turningPower;
-        double powerFR = Math.sin(joystickAngle) - turningPower;
-        double powerBL = Math.sin(joystickAngle) + turningPower;
-        double powerBR = Math.cos(joystickAngle) - turningPower;
-
-        // In case the joystick is centered, don't let the trig functions don't do anything
-        if(joystickDisplacement == 0)
-        {
-            powerFL = turningPower;
-            powerFR = -turningPower;
-            powerBL = turningPower;
-            powerBR = -turningPower;
-        }
+        double powerFL = y - x + turningPower;
+        double powerFR = y + x - turningPower;
+        double powerBL = y + x + turningPower;
+        double powerBR = y - x - turningPower;
 
         // When going forward, the motor powers are at about 71% when the joystick is all the way
         // at the edge of its range, so this compensates for not being at max power when requested.
         // Also scales motor powers if one goes outside of it's range
-        double scaler = Math.max(powerFL, Math.max(powerFR, Math.max(powerBL, powerBR)));
+        double scaler = Math.max(Math.abs(powerFL), Math.max(Math.abs(powerFR),
+                Math.max(Math.abs(powerBL), Math.abs(powerBR))));
 
         // Scaler equation above doesn't account for times when partial power is requested. This
         // compensates for that, but only when the joystick is not in the center (don't divide by
