@@ -21,18 +21,18 @@ public class MasterTeleOpCapBot extends Master
         double joystickDisplacement = calculateDistance(x, y);
 
         // Used for turning
-        double turningPower = gamepad1.right_stick_x;
+        double turnPower = gamepad1.right_stick_x;
 
         // Set power for motors. Ratios are correct, but needs scaling (see below)
-        double powerFL = y - x + turningPower;
-        double powerFR = y + x - turningPower;
-        double powerBL = y + x + turningPower;
-        double powerBR = y - x - turningPower;
+        double powerFL = y - x + turnPower;
+        double powerFR = y + x - turnPower;
+        double powerBL = y + x + turnPower;
+        double powerBR = y - x - turnPower;
 
         // When going forward, the motor powers are at about 71% when the joystick is all the way
         // at the edge of its range, so this compensates for not being at max power when requested.
         // Also scales motor powers if one goes outside of it's range
-        double scaler = Math.max(Math.abs(powerFL), Math.max(Math.abs(powerFR),
+        double scalar = Math.max(Math.abs(powerFL), Math.max(Math.abs(powerFR),
                 Math.max(Math.abs(powerBL), Math.abs(powerBR))));
 
         // Scaler equation above doesn't account for times when partial power is requested. This
@@ -40,15 +40,15 @@ public class MasterTeleOpCapBot extends Master
         // 0), and within a 1 unit radius of the center. Otherwise it can set the motor powers
         // higher than 1
         if(joystickDisplacement != 0 && joystickDisplacement < 1)
-            scaler /= joystickDisplacement;
+            scalar /= joystickDisplacement;
 
         // Don't divide by 0
-        if(scaler != 0)
+        if(scalar != 0)
         {
-            powerFL /= scaler;
-            powerFR /= scaler;
-            powerBL /= scaler;
-            powerBR /= scaler;
+            powerFL /= scalar;
+            powerFR /= scalar;
+            powerBL /= scalar;
+            powerBR /= scalar;
         }
 
         // Set motor powers
