@@ -10,6 +10,9 @@ public class DriveAssemblyPID extends DriveAssembly {
 
     private PIDFilter velocityFilter;
     private double positions[] = {0.0,0.0};
+    //time before
+    private double lastTime;
+    private double lastInterval;
 
     public DriveAssemblyPID(DcMotor m, Transform2D t, double gear, double p, double i, double d)
     {
@@ -17,14 +20,21 @@ public class DriveAssemblyPID extends DriveAssembly {
         this.position = t;
         this.gearRatio = gear;
         this.velocityFilter = new PIDFilter(p,i,d);
+        //record time in seconds
+        //we are not using millis() due to inconsistencies in short, sub-second intervals
+        lastTime = System.nanoTime()/1000/1000/1000;
     }
 
     //set target speed in rads/sec
     public void update(float targetSpeed){
+        //elapsed time since last loop, in seconds
+        lastInterval = System.nanoTime()/1000/1000/1000 - lastTime;
+        lastTime = System.nanoTime()/1000/1000/1000;
+
         //calculate current speed with encoder
         positions[1] = positions[0];
-        positions[0] = motor.getCurrentPosition()*Math.PI/1024/gearRatio;
-        double vel = positions[0]-positions[1];
+        positions[0] = motor.getCurrentPosition()*Math.PI/encoderTicks/gearRatio;
+        double vel = (positions[0]-positions[1])/lastInterval;
 
         velocityFilter.roll(targetSpeed-vel);
         setPower(velocityFilter.getFilteredValue());

@@ -11,6 +11,7 @@ public class DriveAssembly
     public DcMotor motor;
     public double gearRatio;
     public double power = 0.0;
+    public int encoderTicks = 1024;
     Transform2D position;
 
     //construct empty
@@ -32,7 +33,7 @@ public class DriveAssembly
     //get the output of the motor
     public Vector2D getDrivingVector()
     {
-        return new Vector2D(this.power,position.w, true);
+        return new Vector2D(this.power*Math.cos(position.w),this.power*Math.sin(position.w));
     }
 
     public void setPower(double p)
