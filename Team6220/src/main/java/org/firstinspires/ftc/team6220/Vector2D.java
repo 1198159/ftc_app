@@ -4,6 +4,8 @@ package org.firstinspires.ftc.team6220;
     represents a direction and magnitude in 2D
 */
 
+//TODO move to a higher scope
+//TODO add Vector3D
 public class Vector2D
 {
     public double x;
@@ -23,18 +25,11 @@ public class Vector2D
         this.y = values[1];
     }
 
-    //construct with either an xy pair or magnitude and angle
-    public Vector2D(double a, double b, boolean bIsAngle)
+    //construct with either an xy pair
+    public Vector2D(double x, double y)
     {
-        if(!bIsAngle) {
-            this.x = a;
-            this.y = b;
-        }
-        else
-        {
-            this.x = Math.cos(b)*a;
-            this.y = Math.cos(b)*a;
-        }
+        this.x = x;
+        this.y = y;
     }
 
     //get the length of this vector

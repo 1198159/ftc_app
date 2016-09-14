@@ -4,6 +4,7 @@ package org.firstinspires.ftc.team6220;
     Type for holding position and orientation data for spaces and objects.
 */
 
+//TODO move to a higher scope
 public class Transform2D extends Vector2D
 {
     public double w;

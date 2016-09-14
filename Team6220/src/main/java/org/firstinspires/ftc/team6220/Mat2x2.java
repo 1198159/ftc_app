@@ -5,6 +5,8 @@ package org.firstinspires.ftc.team6220;
     Used to transform 2D vectors
 */
 
+//TODO move to a higher scope
+//TODO add Mat4x4
 public class Mat2x2
 {
     private double[][] values = null;
