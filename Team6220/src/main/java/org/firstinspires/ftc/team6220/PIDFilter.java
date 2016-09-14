@@ -43,9 +43,7 @@ public class PIDFilter implements Filter
         dV = values[0]-values[1];
 
         //introduce new value
-        for (int i=0; i<(values.length-1); i++ ){
-            values[i+1] = values[i];
-        }
+        values[1] = values[0];
         values[0] = newValue;
     }
 

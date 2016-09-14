@@ -32,4 +32,24 @@ public abstract class SequenceUtilities {
         }
         return total / sum(w);
     }
+
+    //shifts an array down one place and puts a new value in the new "empty" slot, at array[0]
+    public static double[] roll(double[] array, double newValue)
+    {
+        for (int i=(array.length-2); i>=0; i-- ){
+            array[i+1] = array[i];
+        }
+        array[0] = newValue;
+        return array;
+    }
+
+    //shifts an array up one place and puts a new value in the new "empty" slot, ar array[n-1]
+    public static double[] rollReversed(double[] array, double newValue)
+    {
+        for (int i=0; i<(array.length-2); i++ ){
+            array[i] = array[i+1];
+        }
+        array[array.length-1] = newValue;
+        return array;
+    }
 }

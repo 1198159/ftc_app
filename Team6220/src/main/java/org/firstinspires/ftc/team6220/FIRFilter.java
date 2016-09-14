@@ -25,10 +25,7 @@ public class FIRFilter implements Filter
     //setup with new value set
     public void roll(double newValue)
     {
-        for (int i=0; i<(values.length-1); i++ ){
-            values[i+1] = values[i];
-        }
-        values[0] = newValue;
+        SequenceUtilities.roll(values,newValue);
     }
 
     public double getFilteredValue()
