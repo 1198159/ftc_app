@@ -7,6 +7,7 @@ package org.firstinspires.ftc.team6220;
 //TODO move to a higher scope
 public class Transform2D extends Vector2D
 {
+    //w represents yaw, the only orientation value in 2D space
     public double w;
 
     //construct from array
@@ -42,7 +43,7 @@ public class Transform2D extends Vector2D
     //get the location of this transform as a vector
     public Vector2D getPositionVector()
     {
-        return new Vector2D(this.x,this.y,false);
+        return new Vector2D(this.x,this.y);
     }
 }
 

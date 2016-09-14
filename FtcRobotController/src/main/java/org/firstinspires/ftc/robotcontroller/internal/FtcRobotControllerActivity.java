@@ -302,6 +302,8 @@ public class FtcRobotControllerActivity extends Activity {
     super.onResume();
     RobotLog.vv(TAG, "onResume()");
     readNetworkType(NETWORK_TYPE_FILENAME);
+
+    //resume tracking when app is restarted
     vuforia.resumeVuforia();
   }
 
@@ -312,6 +314,8 @@ public class FtcRobotControllerActivity extends Activity {
     if (programmingModeController.isActive()) {
       programmingModeController.stopProgrammingMode();
     }
+
+    //pause tracking when app is paused, and has reduced permissions
     vuforia.pauseVuforia();
   }
 

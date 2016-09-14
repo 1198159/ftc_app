@@ -8,6 +8,10 @@ import org.firstinspires.ftc.robotcontroller.internal.VuforiaTracker;
 
 import java.util.HashMap;
 
+/*
+    Test opmode that displays one value from a tracked object from vuforia.
+*/
+
 @TeleOp(name="Vuforia Test", group="Tests")
 public class VuforiaTest extends LinearOpMode
 {
@@ -32,7 +36,7 @@ public class VuforiaTest extends LinearOpMode
             {
                 try
                 {
-                    telemetry.addData("|Lego| rX:", data.get("lego")[0]);
+                    telemetry.addData("|Lego| rX:", data.get("lego")[6]);
                 }
                 catch(Exception e)
                 {

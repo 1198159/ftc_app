@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.team6220;
 
 /*
-    represents a direction and magnitude in 2D
+    Represents a direction and magnitude in 2D.
+    Defines points or directions in 2D.
 */
 
 //TODO move to a higher scope
 //TODO add Vector3D
+//TODO add normalize()
 public class Vector2D
 {
     public double x;
