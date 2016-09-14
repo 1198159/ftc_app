@@ -403,8 +403,8 @@ public class VuforiaTracker implements Vuforia.UpdateCallbackInterface {
      * The data key is the dataset name given in calibration
      * In the array of info the indeces are
      * <ol start="0">
-     *     <li>rotation x(roll)</li>
-     *     <li>rotation y(pitch)</li>
+     *     <li>rotation x(pitch)</li>
+     *     <li>rotation y(roll)</li>
      *     <li>rotation z(yaw)</li>
      *     <li>distance x</li>
      *     <li>distance y</li>
