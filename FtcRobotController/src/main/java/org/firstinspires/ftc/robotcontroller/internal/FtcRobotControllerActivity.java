@@ -87,6 +87,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.wifi.NetworkConnectionFactory;
 import com.qualcomm.robotcore.wifi.NetworkType;
 import com.qualcomm.robotcore.wifi.WifiDirectAssistant;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.internal.AppUtil;
 import org.firstinspires.inspection.RcInspectionActivity;
@@ -133,6 +134,8 @@ public class FtcRobotControllerActivity extends Activity {
 
   protected FtcEventLoop eventLoop;
   protected Queue<UsbDevice> receivedUsbAttachmentNotifications;
+
+  protected static VuforiaTracker vuforia;
 
   protected class RobotRestarter implements Restarter {
 
@@ -243,6 +246,8 @@ public class FtcRobotControllerActivity extends Activity {
     updateUI = createUpdateUI();
     callback = createUICallback(updateUI);
 
+    vuforia = new VuforiaTracker(this);
+
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
     WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -297,6 +302,7 @@ public class FtcRobotControllerActivity extends Activity {
     super.onResume();
     RobotLog.vv(TAG, "onResume()");
     readNetworkType(NETWORK_TYPE_FILENAME);
+    vuforia.resumeVuforia();
   }
 
   @Override
@@ -306,6 +312,7 @@ public class FtcRobotControllerActivity extends Activity {
     if (programmingModeController.isActive()) {
       programmingModeController.stopProgrammingMode();
     }
+    vuforia.pauseVuforia();
   }
 
   @Override
@@ -527,5 +534,10 @@ public class FtcRobotControllerActivity extends Activity {
         }
       });
     }
+  }
+
+  public static VuforiaTracker getVuforia()
+  {
+    return vuforia;
   }
 }
