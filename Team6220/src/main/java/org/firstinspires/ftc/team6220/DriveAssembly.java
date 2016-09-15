@@ -12,28 +12,28 @@ public class DriveAssembly
     public double gearRatio;
     public double power = 0.0;
     public int encoderTicks = 1024;
-    Transform2D position;
+    Mat3x3 transform;
 
     //construct empty
     public DriveAssembly()
     {
         this.motor = null;
-        this.position = new Transform2D(0.0,0.0,0.0);
+        this.transform = new Mat3x3(Vector2D.zeroVector,0.0);
         this.gearRatio = 1.0;
     }
 
     //construct with values
-    public DriveAssembly(DcMotor m, Transform2D t, double gear)
+    public DriveAssembly(DcMotor m, Mat3x3 t, double gear)
     {
         this.motor = m;
-        this.position = t;
+        this.transform = t;
         this.gearRatio = gear;
     }
 
     //get the output of the motor
     public Vector2D getDrivingVector()
     {
-        return new Vector2D(this.power*Math.cos(position.w),this.power*Math.sin(position.w));
+        return (Vector2D) Vector2D.yAxis.matrixMultiplied(transform);
     }
 
     public void setPower(double p)

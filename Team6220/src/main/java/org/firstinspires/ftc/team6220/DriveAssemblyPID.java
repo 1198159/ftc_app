@@ -14,10 +14,10 @@ public class DriveAssemblyPID extends DriveAssembly {
     private double lastTime;
     private double lastInterval;
 
-    public DriveAssemblyPID(DcMotor m, Transform2D t, double gear, double p, double i, double d)
+    public DriveAssemblyPID(DcMotor m, Mat3x3 t, double gear, double p, double i, double d)
     {
         this.motor = m;
-        this.position = t;
+        this.transform = t;
         this.gearRatio = gear;
         this.velocityFilter = new PIDFilter(p,i,d);
         //record time in seconds
