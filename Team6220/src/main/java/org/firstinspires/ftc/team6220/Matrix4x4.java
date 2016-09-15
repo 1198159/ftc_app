@@ -7,7 +7,7 @@ package org.firstinspires.ftc.team6220;
 
 import static java.lang.Math.*;
 
-public class Mat4x4 extends Matrix
+public class Matrix4x4 extends Matrix
 {
     public double[][] values;
 
@@ -22,11 +22,11 @@ public class Mat4x4 extends Matrix
 
 
     //return a matrix from an euler rotation with any order
-    public Mat4x4(RotationOrder order, double first, double second, double third)
+    public Matrix4x4(RotationOrder order, double first, double second, double third)
     {
-        Mat4x4 heading  = new Mat4x4(order.firstRot , first);
-        Mat4x4 altitude = new Mat4x4(order.secondRot, second);
-        Mat4x4 bank     = new Mat4x4(order.thirdRot , third);
+        Matrix4x4 heading  = new Matrix4x4(order.firstRot , first);
+        Matrix4x4 altitude = new Matrix4x4(order.secondRot, second);
+        Matrix4x4 bank     = new Matrix4x4(order.thirdRot , third);
 
         this.values = heading.multiplied(altitude).multiplied(bank).values;
     }
@@ -34,7 +34,7 @@ public class Mat4x4 extends Matrix
     //rotation is about vector v of amount w
     //translation is to vector u
     //rotates, then moves
-    public Mat4x4(Vector3D u, Vector3D v, double w)
+    public Matrix4x4(Vector3D u, Vector3D v, double w)
     {
         double C = cos(w);
         double S = sin(w);
@@ -47,20 +47,20 @@ public class Mat4x4 extends Matrix
     }
     //construct a matrix from a rotation
     //rotation is about vector v of amount w
-    public Mat4x4(Vector3D v, double w)
+    public Matrix4x4(Vector3D v, double w)
     {
-        this.values = new Mat4x4(Vector3D.zeroVector,v,w).values;
+        this.values = new Matrix4x4(Vector3D.zeroVector,v,w).values;
     }
     //construct a matrix from a translation
-    public Mat4x4(Vector3D v)
+    public Matrix4x4(Vector3D v)
     {
-        this.values = new Mat4x4(v,Vector3D.zeroVector,0.0).values;
+        this.values = new Matrix4x4(v,Vector3D.zeroVector,0.0).values;
     }
 
     //multiply this matrix by another, resulting in a combined transformation
-    public Mat4x4 multiplied(Mat4x4 mat)
+    public Matrix4x4 multiplied(Matrix4x4 mat)
     {
-        return (Mat4x4)this.multiplied(mat);
+        return (Matrix4x4)this.multiplied(mat);
     }
 
 }

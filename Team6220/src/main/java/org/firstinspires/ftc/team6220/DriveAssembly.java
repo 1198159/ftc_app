@@ -12,18 +12,18 @@ public class DriveAssembly
     public double gearRatio;
     public double power = 0.0;
     public int encoderTicks = 1024;
-    Mat3x3 transform;
+    Matrix3x3 transform;
 
     //construct empty
     public DriveAssembly()
     {
         this.motor = null;
-        this.transform = new Mat3x3(Vector2D.zeroVector,0.0);
+        this.transform = new Matrix3x3(Vector2D.zeroVector,0.0);
         this.gearRatio = 1.0;
     }
 
     //construct with values
-    public DriveAssembly(DcMotor m, Mat3x3 t, double gear)
+    public DriveAssembly(DcMotor m, Matrix3x3 t, double gear)
     {
         this.motor = m;
         this.transform = t;
