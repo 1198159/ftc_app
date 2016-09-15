@@ -6,76 +6,43 @@ package org.firstinspires.ftc.team6220;
 */
 
 //TODO move to a higher scope
-//TODO add Vector3D
-//TODO add normalize()
-public class Vector2D
+public class Vector2D extends Vector
 {
-    public double x;
-    public double y;
+    //a 2d vector with 3 depth is intentional to maintain compatibility with affine transforms
+    //see: https://en.wikipedia.org/wiki/Transformation_matrix
+    public double[] values = new double[] { 0.0, 0.0, 1.0 };
 
-    //construct empty
-    public Vector2D()
-    {
-        this.x = 0.0;
-        this.y = 0.0;
-    }
+    //unit cardinal vectors
+    public static Vector2D xAxis      = new Vector2D(1.0,0.0);
+    public static Vector2D yAxis      = new Vector2D(0.0,1.0);
+    public static Vector2D zeroVector = new Vector2D(0.0,0.0);
 
-    //construct with an x,y array
-    public Vector2D(double[] values)
-    {
-        this.x = values[0];
-        this.y = values[1];
-    }
 
-    //construct with either an xy pair
+    //construct with an xy pair
     public Vector2D(double x, double y)
     {
-        this.x = x;
-        this.y = y;
+        this.values[0] = x;
+        this.values[1] = y;
     }
 
-    //get the length of this vector
-    public double getMagnitude()
+
+    //return the sum of this vector and an x and y value
+    public Vector2D addedTo(double x, double y)
     {
-        double sum = Math.pow(this.x,2) + Math.pow(this.y,2);
-        return Math.sqrt(sum);
+        Vector2D vectB = new Vector2D(x,y);
+        return (Vector2D)this.addedTo(vectB);
     }
-
-    //get the pointing direction of the vector
-    public double toAngle()
+    //move this vector by x and y
+    public void add(double x, double y)
     {
-        return Math.atan2(y, x);
+        this.values = this.addedTo(x,y).values;
     }
 
-    //move this vector by another vector
-    public void add(Vector2D vector)
+
+    //calculate the heading of this vector
+    public double getAngle()
     {
-        this.add(vector.x,vector.y);
+        return Math.atan2(this.values[1],this.values[0]);
     }
-
-    //move this vector by an x and y value
-    public void add(double u, double v)
-    {
-        this.x += u;
-        this.y += v;
-    }
-
-    //rotate this vector by a matrix
-    public void matrixMultiply(Mat2x2 mat)
-    {
-        double xNew = this.x*mat.get(0,0) + this.y*mat.get(0,1);
-        double yNew = this.x*mat.get(1,0) + this.y*mat.get(1,1);
-        this.x = xNew;
-        this.y = yNew;
-    }
-
-    //move and rotate this vector according to a transform
-    public void transformTo(Transform2D t)
-    {
-        Mat2x2 mat = t.getMatrix();
-        this.matrixMultiply(mat);
-        this.add(t.getPositionVector());
-    }
-
 }
 
