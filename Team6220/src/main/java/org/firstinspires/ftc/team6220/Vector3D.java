@@ -14,11 +14,12 @@ public class Vector3D
     public double z = 0.0;
     public double w = 1.0;
 
+
     //unit cardinal vectors
-    public static Vector3D xAxis      = new Vector3D( 1 , 0 , 0 );
-    public static Vector3D yAxis      = new Vector3D( 0 , 1 , 0 );
-    public static Vector3D zAxis      = new Vector3D( 0 , 0 , 1 );
-    public static Vector3D zeroVector = new Vector3D( 0 , 0 , 0 );
+    public static Vector3D xAxis      = new Vector3D( 1 , 0 , 0 , 0);
+    public static Vector3D yAxis      = new Vector3D( 0 , 1 , 0 , 0);
+    public static Vector3D zAxis      = new Vector3D( 0 , 0 , 1 , 0);
+    public static Vector3D zeroVector = new Vector3D( 0 , 0 , 0 , 0);
 
 
     //construct with an array

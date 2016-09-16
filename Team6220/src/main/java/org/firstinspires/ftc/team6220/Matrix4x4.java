@@ -94,10 +94,9 @@ public class Matrix4x4
     public Matrix4x4 transposed()
     {
         double[][] newValues = Matrix4x4.empty;
-        int size = this.values[0].length;
-        for (int a = 0; a < size;a++)
+        for (int a = 0; a < 4;a++)
         {
-            for (int b = 0; b < size; b++ )
+            for (int b = 0; b < 4; b++ )
             {
                 newValues[a][b] = values[b][a];
             }
@@ -115,13 +114,12 @@ public class Matrix4x4
     public double getDeterminate()
     {
         double det = 0.0;
-        int size = this.values[0].length;
         //iterate through each diagonal
-        for (int a = 0; a < size;a++)
+        for (int a = 0; a < 4;a++)
         {
-            for (int b = 0; b < size; b++ )
+            for (int b = 0; b < 4; b++ )
             {
-                det += this.values[(a+b)%size][b];
+                det += this.values[(a+b)%4][b];
             }
         }
         return det;
@@ -133,10 +131,9 @@ public class Matrix4x4
     {
         double invDet = 1/this.getDeterminate();
         Matrix4x4 t = this.transposed();
-        int size = this.values[0].length;
-        for (int a = 0; a < size;a++)
+        for (int a = 0; a < 4;a++)
         {
-            for (int b = 0; b < size; b++ )
+            for (int b = 0; b < 4; b++ )
             {
                 t.values[a][b] *= invDet;
             }
