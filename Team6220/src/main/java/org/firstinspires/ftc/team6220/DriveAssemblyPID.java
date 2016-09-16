@@ -14,7 +14,7 @@ public class DriveAssemblyPID extends DriveAssembly {
     private double lastTime;
     private double lastInterval;
 
-    public DriveAssemblyPID(DcMotor m, Matrix3x3 t, double gear, double p, double i, double d)
+    public DriveAssemblyPID(DcMotor m, Transform2D t, double gear, double p, double i, double d)
     {
         this.motor = m;
         this.transform = t;

@@ -52,4 +52,5 @@ public abstract class SequenceUtilities {
         array[array.length-1] = newValue;
         return array;
     }
+
 }
