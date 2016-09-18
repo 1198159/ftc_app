@@ -11,8 +11,7 @@ public class DriveAssemblyPID extends DriveAssembly {
     private PIDFilter velocityFilter;
     private double positions[] = {0.0,0.0};
     //time before
-    private double lastTime;
-    private double lastInterval;
+    private double lastTime = 0.0;
 
     public DriveAssemblyPID(DcMotor m, Transform2D t, double gear, double p, double i, double d)
     {
@@ -28,7 +27,7 @@ public class DriveAssemblyPID extends DriveAssembly {
     //set target speed in rads/sec
     public void update(float targetSpeed){
         //elapsed time since last loop, in seconds
-        lastInterval = System.nanoTime()/1000/1000/1000 - lastTime;
+        double lastInterval = System.nanoTime()/1000/1000/1000 - lastTime;
         lastTime = System.nanoTime()/1000/1000/1000;
 
         //calculate current speed with encoder

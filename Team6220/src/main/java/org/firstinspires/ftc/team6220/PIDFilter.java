@@ -6,6 +6,7 @@ package org.firstinspires.ftc.team6220;
     Generally used to produce efficient, non-oscillating motion in a one dimensional system.
 
     INPUTS:
+      -(once) PID coefficients (tuning values)
       -Difference between the target value and current value. (e.g a target angle vs encoder position)
 
     OUTPUTS:
