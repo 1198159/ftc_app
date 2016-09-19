@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.*;
 
 public class DriveAssembly
 {
-    private DcMotor motor;
+    public DcMotor motor;
     public double gearRatio;
     public int encoderTicks = 1024;
     public Transform2D transform;
