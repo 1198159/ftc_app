@@ -13,6 +13,7 @@ public class DriveAssembly
 {
     public DcMotor motor;
     public double gearRatio;
+    public double wheelRadius;
     public int encoderTicks = 1024;
     public Transform2D transform;
 
@@ -22,12 +23,14 @@ public class DriveAssembly
         this.motor = null;
         this.transform = new Transform2D(0.0,0.0,0.0);
         this.gearRatio = 1.0;
+        this.wheelRadius = 1.0;
     }
 
     //construct with values
-    public DriveAssembly(DcMotor m, Transform2D t, double gear)
+    public DriveAssembly(DcMotor m, Transform2D t, double gear, double radius)
     {
         this.motor = m;
+        this.wheelRadius = radius;
         this.transform = t;
         this.gearRatio = gear;
     }
