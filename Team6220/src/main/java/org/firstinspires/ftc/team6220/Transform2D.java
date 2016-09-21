@@ -14,7 +14,7 @@ public class Transform2D
     //in degrees
     public double rot;
 
-    //construct a transform with a xy position and a rotation
+    //construct a location with a xy position and a rotation
     public Transform2D(double x, double y, double r)
     {
         this.x = x;
