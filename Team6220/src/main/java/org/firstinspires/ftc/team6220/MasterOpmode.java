@@ -38,8 +38,9 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies[BACK_LEFT]  .motor = hardwareMap.dcMotor.get("motorBackRight");
         driveAssemblies[BACK_RIGHT] .motor = hardwareMap.dcMotor.get("motorBackLeft");
 
+        //TODO initialize at opmode level
         //                     drive assemblies,                  x , y,  w  ,               p  , i , d  ,      mode
         drive = new DriveSystem(driveAssemblies, new Transform2D(0.0,0.0,0.0), new PIDFilter(1.0,0.0,0.0), PIDEnforcementMode.NONE);
-        
+
     }
 }
