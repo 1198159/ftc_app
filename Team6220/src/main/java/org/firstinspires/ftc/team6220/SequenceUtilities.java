@@ -17,18 +17,18 @@ public abstract class SequenceUtilities {
     }
 
     //return the mean values of a list
-    public static double average(double[] list)
+    public static double average(double[] array)
     {
-        double total = sum(list);
-        return total / list.length;
+        double total = sum(array);
+        return total / array.length;
     }
 
     //return a weighted average of a list, with weights assigned per value by a seconds array of the same size
-    public static double weightedAverage(double[] list, double[] w)
+    public static double weightedAverage(double[] array, double[] w)
     {
         double total = 0;
-        for (int i=0; i<list.length; i++ ){
-            total += list[i]*w[i];
+        for (int i=0; i<array.length; i++ ){
+            total += array[i]*w[i];
         }
         return total / sum(w);
     }
@@ -51,6 +51,32 @@ public abstract class SequenceUtilities {
         }
         array[array.length-1] = newValue;
         return array;
+    }
+
+    //get the largest value
+    //NOTE: negative values are considered smaller than any positive values
+    public static double getLargestValue(double[] array)
+    {
+        int size = array.length;
+        double largest = array[0];
+        for(int i = 0; i < size - 1; i++ )
+        {
+            largest = Math.max(array[i],array[i+1]);
+        }
+        return largest;
+
+    }
+
+    //get the largest magnitude
+    public static double getLargestMagnitude(double[] array)
+    {
+        int size = array.length;
+        double largest = array[0];
+        for(int i = 0; i < size - 1; i++ )
+        {
+            largest = Math.max(Math.abs(array[i]), Math.abs(array[i + 1]));
+        }
+        return Math.abs(largest);
     }
 
 }

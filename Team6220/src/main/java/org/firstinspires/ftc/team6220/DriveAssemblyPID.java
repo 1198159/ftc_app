@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
     Controls a drive assembly with PID controlled speed instead of power.
 */
 
+//TODO make use of PID Enforcement modes and remove DriveAssembly PID
 public class DriveAssemblyPID extends DriveAssembly {
 
     private PIDFilter velocityFilter;
@@ -16,7 +17,7 @@ public class DriveAssemblyPID extends DriveAssembly {
     public DriveAssemblyPID(DcMotor m, Transform2D t, double gear, double p, double i, double d)
     {
         this.motor = m;
-        this.transform = t;
+        this.location = t;
         this.gearRatio = gear;
         this.velocityFilter = new PIDFilter(p,i,d);
         //record time in seconds
