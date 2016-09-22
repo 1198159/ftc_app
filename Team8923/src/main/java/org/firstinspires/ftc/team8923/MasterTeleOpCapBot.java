@@ -8,10 +8,10 @@ import org.firstinspires.ftc.robotcore.internal.opengl.models.Geometry;
 /**
  * This class contains all objects and methods that should be accessible by all TeleOpModes for the CapBot
  */
-public class MasterTeleOpCapBot extends Master
+abstract class MasterTeleOpCapBot extends Master
 {
     // TODO: Test this and fix if needed
-    public void mecanumDrive()
+    void mecanumDrive()
     {
         // These make the code below easier to read
         double x = gamepad1.left_stick_x;
