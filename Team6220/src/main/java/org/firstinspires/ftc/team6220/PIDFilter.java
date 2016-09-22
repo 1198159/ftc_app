@@ -13,6 +13,7 @@ package org.firstinspires.ftc.team6220;
       -First derivative control. (e.g. a motor power)
 */
 
+//TODO decide if this should handle the PID enforcement mode
 public class PIDFilter implements Filter
 {
 
