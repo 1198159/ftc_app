@@ -38,7 +38,7 @@ public class Transform2D
         //combined as rotate, then move
         return rotation.multiplied(position);
     }
-    //return a xy plane matrix that is the inverse of this transformation
+    //return an xy plane matrix that is the inverse of this transformation
     public OpenGLMatrix getInverseMatrix()
     {
         return this.getMatrix().inverted();
