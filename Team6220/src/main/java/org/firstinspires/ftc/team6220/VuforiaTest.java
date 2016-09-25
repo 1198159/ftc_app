@@ -37,7 +37,6 @@ public class VuforiaTest extends LinearOpMode
             //index data by tracked object
             HashMap<String, double[]> data = Tracker.getVuforiaData();
 
-            //
             if(data.containsKey("lego"))
             {
                 try
@@ -49,7 +48,7 @@ public class VuforiaTest extends LinearOpMode
                     float pY = (float)data.get("lego")[4];
                     float pZ = (float)data.get("lego")[5];
                     VectorF camRelTargetPos = new VectorF(pX,pY,pZ);
-                    OpenGLMatrix cameraToTarget = OpenGLMatrix.rotation(AxesReference.EXTRINSIC, AxesOrder.XYZ,AngleUnit.RADIANS,rX,rY,rZ);
+                    OpenGLMatrix cameraToTarget = OpenGLMatrix.rotation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS, rX, rY, rZ);
                     telemetry.addData("Pitch:", Math.toDegrees(rX));
                     telemetry.addData("Yaw:", Math.toDegrees(rY));
                     telemetry.addData("Dist:", camRelTargetPos.length());
