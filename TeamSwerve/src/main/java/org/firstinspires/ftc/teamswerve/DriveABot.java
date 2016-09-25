@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
  * This can be a good reference for drive controls.
  */
 @TeleOp(name="Drive-A-Bot", group = "Swerve")
-@Disabled
+// @Disabled
 public class DriveABot extends LinearOpMode
 {
     DcMotor motorLeft = null;
@@ -76,8 +76,34 @@ public class DriveABot extends LinearOpMode
      */
     public void tankDrive()
     {
-        motorLeft.setPower(gamepad1.left_stick_y);
-        motorRight.setPower(gamepad1.right_stick_y);
+        double leftPower;
+        double rightPower;
+        double jx;
+        double jy;
+        jx = gamepad1.left_stick_y;
+        jy = gamepad1.right_stick_y;
+
+        if (jx > 0)
+        {
+            leftPower = -Math.pow(jx, 2);
+        }
+        else
+        {
+            leftPower = Math.pow(jx, 2);
+        }
+
+        if (jy > 0)
+        {
+            rightPower = -Math.pow(jy, 2);
+        }
+        else
+        {
+            rightPower = Math.pow(jy, 2);
+        }
+
+
+        motorLeft.setPower(leftPower);
+        motorRight.setPower(rightPower);
     }
 
     /*
