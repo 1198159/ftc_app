@@ -95,7 +95,7 @@ public class VuforiaTestRun2 extends LinearOpMode
         }
         // We've lost track of the targets
         telemetry.addData("Tracking", "lost");
-        //return latestLocation;
+        return lastKnownLocation;
     }
 
     public void setupVuforia()
