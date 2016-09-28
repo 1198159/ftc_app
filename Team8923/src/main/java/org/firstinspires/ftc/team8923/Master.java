@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 abstract class Master extends LinearOpMode
 {
     // Declares all hardware on robot
-    DcMotor motorFL = null;
-    DcMotor motorFR = null;
-    DcMotor motorBL = null;
-    DcMotor motorBR = null;
+    private DcMotor motorFL = null;
+    private DcMotor motorFR = null;
+    private DcMotor motorBL = null;
+    private DcMotor motorBR = null;
 
     // Initialize hardware on robot
     void initHardware()
@@ -24,6 +24,17 @@ abstract class Master extends LinearOpMode
 
         motorFR.setDirection(DcMotor.Direction.REVERSE);
         motorBR.setDirection(DcMotor.Direction.REVERSE);
+
+        // TODO: Find out actual value for these
+        //motorFL.setMaxSpeed(168000);
+        //motorFR.setMaxSpeed(168000);
+        //motorBL.setMaxSpeed(168000);
+        //motorBR.setMaxSpeed(168000);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     // Sends information to Driver Station screen for drivers to see
