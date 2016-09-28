@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.team8923;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 /*
  * This class contains code for running the CapBot during Autonomous. It's been designed so the
  * drivers can pick the objectives for it to complete.
  */
-public class AutonomousCapBotCompetition extends MasterTeleOpCapBot
+@Autonomous(name = "First Auto", group = "Autonomous")
+public class AutonomousCompetition extends MasterAutonomous
 {
     @Override
     public void runOpMode() throws InterruptedException
