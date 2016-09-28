@@ -27,31 +27,31 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 public class VuforiaTest extends LinearOpMode
 {
     // Vuforia variables
-    VuforiaLocalizer vuforiaLocalizer;
-    VuforiaTrackables visionTargets;
-    VuforiaTrackable[] targets = new VuforiaTrackable[4];
-    VuforiaTrackableDefaultListener[] listeners = new VuforiaTrackableDefaultListener[4];
+    private VuforiaLocalizer vuforiaLocalizer;
+    private VuforiaTrackables visionTargets;
+    private VuforiaTrackable[] targets = new VuforiaTrackable[4];
+    private VuforiaTrackableDefaultListener[] listeners = new VuforiaTrackableDefaultListener[4];
 
-    OpenGLMatrix lastKnownLocation;
-    OpenGLMatrix phoneLocation;
+    private OpenGLMatrix lastKnownLocation;
+    private OpenGLMatrix phoneLocation;
 
     // Constants for later reference
-    public static final String PICTURE_ASSET = "FTC_2016-17";
-    public static final String VUFORIA_KEY = "ARnvYoH/////AAAAGQS+OAV8SElJhcYQ4Ud8LkNvhk/zpT8UiiVlkQOGgruNCfQryIqNOyyl6iYhvsCCVYMqHZPJJgORL7ZL3+Hl1VE/CJZiBI357gU4uSmFahasqA9UV/HVmd0Mze0j5cEaVgJ7w3dRhz4Lvdk7qcVwGQTMpAVFKdlpt0657wA0C2vFWzJgZZv3vk7Ouw6bfSltX1/Wgf15jcCcBPRLQs/KkIngbvc+rtBxtD5f4REyb9FuqtN00MoHKL8RIpFQagX/b39JbN8oFLDjUiC5smxchqIHYMIvt7JAQH0TT+fizeIYMnZk3/t8SfNg/gt1lJACY514k9TpM4UwfBvVZcfDVdXj1wKUsPWw8ndUQ6l5PtSq";
+    private static final String PICTURE_ASSET = "FTC_2016-17";
+    private static final String VUFORIA_KEY = "ARnvYoH/////AAAAGQS+OAV8SElJhcYQ4Ud8LkNvhk/zpT8UiiVlkQOGgruNCfQryIqNOyyl6iYhvsCCVYMqHZPJJgORL7ZL3+Hl1VE/CJZiBI357gU4uSmFahasqA9UV/HVmd0Mze0j5cEaVgJ7w3dRhz4Lvdk7qcVwGQTMpAVFKdlpt0657wA0C2vFWzJgZZv3vk7Ouw6bfSltX1/Wgf15jcCcBPRLQs/KkIngbvc+rtBxtD5f4REyb9FuqtN00MoHKL8RIpFQagX/b39JbN8oFLDjUiC5smxchqIHYMIvt7JAQH0TT+fizeIYMnZk3/t8SfNg/gt1lJACY514k9TpM4UwfBvVZcfDVdXj1wKUsPWw8ndUQ6l5PtSq";
 
-    public static final int WHEELS = 0;
-    public static final int TOOLS = 1;
-    public static final int LEGOS = 2;
-    public static final int GEARS = 3;
+    private static final int WHEELS = 0;
+    private static final int TOOLS = 1;
+    private static final int LEGOS = 2;
+    private static final int GEARS = 3;
 
-    public static final int RED_LEFT = 0;
-    public static final int RED_RIGHT = 1;
-    public static final int BLUE_LEFT = 2;
-    public static final int BLUE_RIGHT = 3;
+    private static final int RED_LEFT = 0;
+    private static final int RED_RIGHT = 1;
+    private static final int BLUE_LEFT = 2;
+    private static final int BLUE_RIGHT = 3;
 
-    public static final float MM_PER_INCH = 25.4f;
-    public static final float MM_BOT_SIZE = 18 * MM_PER_INCH;
-    public static final float MM_FIELD_SIZE = 12 * 12 * MM_PER_INCH;
+    private static final float MM_PER_INCH = 25.4f;
+    private static final float MM_BOT_SIZE = 18 * MM_PER_INCH;
+    private static final float MM_FIELD_SIZE = 12 * 12 * MM_PER_INCH;
 
     @Override public void runOpMode() throws InterruptedException
     {
@@ -77,7 +77,7 @@ public class VuforiaTest extends LinearOpMode
         }
     }
 
-    public OpenGLMatrix getLatestLocation()
+    private OpenGLMatrix getLatestLocation()
     {
         // Checks each target to see if we can find our location. If none are visible, then it returns null
         for(int i = 0; i < targets.length; i++)
@@ -95,10 +95,10 @@ public class VuforiaTest extends LinearOpMode
         }
         // We've lost track of the targets
         telemetry.addData("Tracking", "lost");
-        return null;
+        return lastKnownLocation;
     }
 
-    public void setupVuforia()
+    private void setupVuforia()
     {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
@@ -140,7 +140,7 @@ public class VuforiaTest extends LinearOpMode
 
     // Creates a matrix for defining locations of things. Coordinates are given by x, y, and z, and
     // rotations about axes are given by u, v, and w. Default rotation order is XYZ.
-    public OpenGLMatrix setMatrixLocation(float x, float y, float z, float u, float v, float w)
+    private OpenGLMatrix setMatrixLocation(float x, float y, float z, float u, float v, float w)
     {
         return OpenGLMatrix.translation(x, y, z)
                 .multiplied(Orientation.getRotationMatrix(
@@ -148,7 +148,7 @@ public class VuforiaTest extends LinearOpMode
     }
 
     // Formats location to something readable
-    String format(OpenGLMatrix transformationMatrix)
+    private String format(OpenGLMatrix transformationMatrix)
     {
         return transformationMatrix.formatAsTransform();
     }
