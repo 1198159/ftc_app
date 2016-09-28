@@ -52,7 +52,8 @@ public class VuforiaTestRun2 extends LinearOpMode
     public static final float MM_BOT_SIZE = 18 * MM_PER_INCH;
     public static final float MM_FIELD_SIZE = 12 * 12 * MM_PER_INCH;
 
-    @Override public void runOpMode() throws InterruptedException
+    @Override
+    public void runOpMode() throws InterruptedException
     {
         setupVuforia();
 
@@ -91,7 +92,6 @@ public class VuforiaTestRun2 extends LinearOpMode
                 telemetry.addData("Tracking", targets[i].getName());
                 return latestLocation;
             }
-
         }
         // We've lost track of the targets
         telemetry.addData("Tracking", "lost");
