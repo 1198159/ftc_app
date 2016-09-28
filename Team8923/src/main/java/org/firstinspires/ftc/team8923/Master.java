@@ -89,6 +89,14 @@ abstract class Master extends LinearOpMode
         motorBR.setPower(powerBR);
     }
 
+    void stopDriving()
+    {
+        motorFL.setPower(0.0);
+        motorFR.setPower(0.0);
+        motorBL.setPower(0.0);
+        motorBR.setPower(0.0);
+    }
+
     // Truncates numbers to fit displays better. Not recommended for numbers that span many
     // magnitudes. Also consider the decimal point character.
     private String truncateNumber(double number, int length)
