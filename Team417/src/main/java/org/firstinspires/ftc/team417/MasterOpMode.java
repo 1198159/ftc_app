@@ -15,6 +15,6 @@ abstract public class MasterOpMode extends LinearOpMode
 
     public void initializeHardware()
     {
-        motorFrontLeft = hardwareMap.dcMotor.get
+        //motorFrontLeft = hardwareMap.dcMotor.get
     }
 }

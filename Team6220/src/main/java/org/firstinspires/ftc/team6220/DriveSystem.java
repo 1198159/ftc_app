@@ -49,7 +49,7 @@ public class DriveSystem
                     + assemblies[corner].location.x * y
                     ;
         }
-        //scales values such that they will remain in proportion, even if they would otherwise "overflow", e.g. [0.4,0.6,1.0,2.0] becomes [0.2,0.3,0.5,1.0]
+        //scales values such that they will remain in proportion in the case that they would "overflow", e.g. [0.4,0.6,1.0,2.0] becomes [0.2,0.3,0.5,1.0]
         double scalingFactor = 1.0;
         double largest = SequenceUtilities.getLargestMagnitude(rawPowers);
         if (largest > 1.0)

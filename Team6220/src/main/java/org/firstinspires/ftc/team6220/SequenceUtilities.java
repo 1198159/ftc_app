@@ -76,7 +76,7 @@ public abstract class SequenceUtilities {
         {
             largest = Math.max(Math.abs(largest), Math.abs(array[i + 1]));
         }
-        return Math.abs(largest);
+        return largest;
     }
 
 }
