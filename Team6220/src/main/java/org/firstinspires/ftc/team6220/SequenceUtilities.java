@@ -59,9 +59,9 @@ public abstract class SequenceUtilities {
     {
         int size = array.length;
         double largest = array[0];
-        for(int i = 0; i < size - 1; i++ )
+        for(int i = 0; i < size-1; i++ )
         {
-            largest = Math.max(array[i],array[i+1]);
+            largest = Math.max(largest,array[i+1]);
         }
         return largest;
 
@@ -72,9 +72,9 @@ public abstract class SequenceUtilities {
     {
         int size = array.length;
         double largest = array[0];
-        for(int i = 0; i < size - 1; i++ )
+        for(int i = 0; i < size-1; i++ )
         {
-            largest = Math.max(Math.abs(array[i]), Math.abs(array[i + 1]));
+            largest = Math.max(Math.abs(largest), Math.abs(array[i + 1]));
         }
         return Math.abs(largest);
     }
