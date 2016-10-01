@@ -7,8 +7,9 @@ abstract class MasterTeleOp extends Master
 {
     void driveMecanumTeleOp()
     {
+        // Y axis is negative when up
+        double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x;
-        double y = gamepad1.left_stick_y;
 
         double angle = Math.atan2(y, x);
         double power = calculateDistance(x, y);
