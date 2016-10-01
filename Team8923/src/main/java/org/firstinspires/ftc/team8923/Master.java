@@ -42,10 +42,10 @@ abstract class Master extends LinearOpMode
     {
         //TODO: Probably won't need this after testing. It takes up a lot of room, so remove if no longer needed.
         // Drive motor info
-        telemetry.addData("FL", truncateNumber(motorFL.getPower(), 4));
-        telemetry.addData("FR", truncateNumber(motorFR.getPower(), 4));
-        telemetry.addData("BL", truncateNumber(motorBL.getPower(), 4));
-        telemetry.addData("BR", truncateNumber(motorBR.getPower(), 4));
+        telemetry.addData("FL", formatNumber(motorFL.getPower()));
+        telemetry.addData("FR", formatNumber(motorFR.getPower()));
+        telemetry.addData("BL", formatNumber(motorBL.getPower()));
+        telemetry.addData("BR", formatNumber(motorBR.getPower()));
 
         telemetry.update();
     }
@@ -99,9 +99,9 @@ abstract class Master extends LinearOpMode
 
     // Truncates numbers to fit displays better. Not recommended for numbers that span many
     // magnitudes. Also consider the decimal point character.
-    private String truncateNumber(double number, int length)
+    private String formatNumber(double number)
     {
-        return Double.toString(number).substring(0,length);
+        return String.format("%.2f", number);
     }
 
     // Used for calculating distances between 2 points
