@@ -3,7 +3,7 @@ package org.firstinspires.ftc.team8923;
 /**
  * This class contains all objects and methods that should be accessible by all TeleOpModes for the CapBot
  */
-abstract class MasterTeleOpCapBot extends Master
+abstract class MasterTeleOp extends Master
 {
     void driveMecanumTeleOp()
     {

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * This class contains code for running the CapBot with all driver controls
  */
 @TeleOp(name = "TeleOp Competition")
-public class TeleOpCapBotCompetition extends MasterTeleOpCapBot
+public class TeleOpCompetition extends MasterTeleOp
 {
     @Override
     public void runOpMode() throws InterruptedException
