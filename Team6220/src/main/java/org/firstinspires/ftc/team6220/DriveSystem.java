@@ -60,7 +60,7 @@ public class DriveSystem
         //write motor powers
         for (int corner = 0; corner < 4; corner++)
         {
-            assemblies[corner].setPower(rawPowers[corner]*scalingFactor);
+            assemblies[corner].setPower(rawPowers[corner]/scalingFactor);
         }
 
     }
