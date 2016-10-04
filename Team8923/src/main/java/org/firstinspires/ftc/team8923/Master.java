@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team8923;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * This class contains all objects and methods that should be accessible by all OpModes
@@ -9,10 +10,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 abstract class Master extends LinearOpMode
 {
     // Declares all hardware on robot
-    private DcMotor motorFL = null;
-    private DcMotor motorFR = null;
-    private DcMotor motorBL = null;
-    private DcMotor motorBR = null;
+    DcMotor motorFL = null;
+    DcMotor motorFR = null;
+    DcMotor motorBL = null;
+    DcMotor motorBR = null;
 
     // Initialize hardware on robot
     void initHardware()
@@ -22,14 +23,14 @@ abstract class Master extends LinearOpMode
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
 
-        motorFR.setDirection(DcMotor.Direction.REVERSE);
-        motorBR.setDirection(DcMotor.Direction.REVERSE);
+        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorBL.setDirection(DcMotor.Direction.REVERSE);
 
-        // TODO: Find out actual value for these
-        //motorFL.setMaxSpeed(168000);
-        //motorFR.setMaxSpeed(168000);
-        //motorBL.setMaxSpeed(168000);
-        //motorBR.setMaxSpeed(168000);
+        // Our drive motors seem to run at this speed
+        motorFL.setMaxSpeed(2700);
+        motorFR.setMaxSpeed(2700);
+        motorBL.setMaxSpeed(2700);
+        motorBR.setMaxSpeed(2700);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -42,10 +43,10 @@ abstract class Master extends LinearOpMode
     {
         //TODO: Probably won't need this after testing. It takes up a lot of room, so remove if no longer needed.
         // Drive motor info
-        telemetry.addData("FL", truncateNumber(motorFL.getPower(), 4));
-        telemetry.addData("FR", truncateNumber(motorFR.getPower(), 4));
-        telemetry.addData("BL", truncateNumber(motorBL.getPower(), 4));
-        telemetry.addData("BR", truncateNumber(motorBR.getPower(), 4));
+        telemetry.addData("FL", formatNumber(motorFL.getPower()));
+        telemetry.addData("FR", formatNumber(motorFR.getPower()));
+        telemetry.addData("BL", formatNumber(motorBL.getPower()));
+        telemetry.addData("BR", formatNumber(motorBR.getPower()));
 
         telemetry.update();
     }
@@ -54,24 +55,25 @@ abstract class Master extends LinearOpMode
     // this method, and may need to use some math
     void driveMecanum(double driveAngle, double drivePower, double turnPower)
     {
+        drivePower = Range.clip(drivePower, -1, 1);
+
         double x = drivePower * Math.cos(driveAngle);
         double y = drivePower * Math.sin(driveAngle);
 
         // Set power for motors. Ratios are correct, but needs scaling (see below)
-        double powerFL = y - x + turnPower;
-        double powerFR = y + x - turnPower;
-        double powerBL = y + x + turnPower;
-        double powerBR = y - x - turnPower;
+        double powerFL = y + x + turnPower;
+        double powerFR = y - x - turnPower;
+        double powerBL = y - x + turnPower;
+        double powerBR = y + x - turnPower;
 
         // Motor powers might be set above 1, so this scales all of the motor powers to stay
         // proportional and within power range
         double scalar = Math.max(Math.abs(powerFL), Math.max(Math.abs(powerFR),
                 Math.max(Math.abs(powerBL), Math.abs(powerBR))));
 
-        // Scalar equation above doesn't account for times when partial power is requested. This
-        // compensates for that. And don't divide by 0
-        if(drivePower != 0)
-           scalar /= drivePower;
+        // Only apply scalar if greater than 1
+        if(scalar < 1)
+            scalar = 1;
 
         // Don't divide by 0
         if(scalar != 0)
@@ -99,9 +101,9 @@ abstract class Master extends LinearOpMode
 
     // Truncates numbers to fit displays better. Not recommended for numbers that span many
     // magnitudes. Also consider the decimal point character.
-    private String truncateNumber(double number, int length)
+    private String formatNumber(double number)
     {
-        return Double.toString(number).substring(0,length);
+        return String.format("%.2f", number);
     }
 
     // Used for calculating distances between 2 points
