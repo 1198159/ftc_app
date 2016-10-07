@@ -13,6 +13,8 @@ public class TestCapBallGrabber extends LinearOpMode
 
     private static final double DELTA_POSITION = 0.05;
 
+    private boolean wasPressed = false;
+
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -22,10 +24,18 @@ public class TestCapBallGrabber extends LinearOpMode
 
         while(opModeIsActive())
         {
-            if(gamepad1.dpad_up)
+            if(gamepad1.dpad_up && !wasPressed)
+            {
                 servoPosition += DELTA_POSITION;
-            if(gamepad1.dpad_down)
+                wasPressed = true;
+            }
+            else if(gamepad1.dpad_down && !wasPressed)
+            {
                 servoPosition -= DELTA_POSITION;
+                wasPressed = true;
+            }
+            else if(!gamepad1.dpad_down && !gamepad1.dpad_up)
+                wasPressed = false;
 
             servo.setPosition(servoPosition);
 
