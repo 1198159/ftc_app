@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 /*
  * This class is used for determining the robot location on the field by using Vuforia
  */
-abstract class VuforiaLocator extends LinearOpMode
+class VuforiaLocator
 {
     // Vuforia variables
     private VuforiaLocalizer vuforiaLocalizer;
@@ -52,7 +52,7 @@ abstract class VuforiaLocator extends LinearOpMode
     {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         parameters.useExtendedTracking = false;
         vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
 
@@ -101,11 +101,18 @@ abstract class VuforiaLocator extends LinearOpMode
         visionTargets.activate();
     }
 
-    double getRobotAngle()
+    float[] getRobotAngle()
     {
         updateLocation();
         // TODO: Figure out how to get information about robot orientation
-        return 0;
+        return new float[3];
+    }
+
+    // Returns an array where index 1 is for x, 2 for y, and 3 for z.
+    float[] getRobotLocation()
+    {
+        updateLocation();
+        return lastKnownLocation.getTranslation().getData();
     }
 
     private void updateLocation()
