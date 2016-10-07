@@ -33,10 +33,10 @@ abstract public class MasterOpMode extends LinearOpMode
 
     public void initializeHardware()
     {
+        driveAssemblies[BACK_LEFT].motor = hardwareMap.dcMotor.get("motorBackLeft");
+        driveAssemblies[BACK_RIGHT].motor = hardwareMap.dcMotor.get("motorBackRight");
         driveAssemblies[FRONT_RIGHT].motor = hardwareMap.dcMotor.get("motorFrontRight");
-        driveAssemblies[FRONT_LEFT] .motor = hardwareMap.dcMotor.get("motorFrontLeft");
-        driveAssemblies[BACK_RIGHT] .motor = hardwareMap.dcMotor.get("motorBackRight");
-        driveAssemblies[BACK_LEFT]  .motor = hardwareMap.dcMotor.get("motorBackLeft");
+        driveAssemblies[FRONT_LEFT].motor = hardwareMap.dcMotor.get("motorFrontLeft");
 
         //TODO initialize at opmode level
         //                     drive assemblies,                  x , y,  w  ,               p  , i , d  ,      mode

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
     Test op mode that drives the robot with motor powers.
 */
 @TeleOp(name="Test Drive", group="Tests")
-public class DriveTest extends MasterOpMode
+public class DriveTest extends MasterTeleOp
 {
 
     @Override
@@ -18,9 +18,9 @@ public class DriveTest extends MasterOpMode
 
         while (opModeIsActive())
         {
-            drive.moveRobot(gamepad1.right_stick_x,   //local x motion power
-                            gamepad1.right_stick_y,   //local y motion power
-                            gamepad1.left_stick_x ); //rotation power
+            drive.moveRobot(powerRightStickX,   //local x motion power
+                            powerRightStickY,   //local y motion power
+                            -1.0 * powerLeftStickX); //rotation power; Rotation is reversed
 
             idle();
         }
