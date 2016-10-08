@@ -18,6 +18,8 @@ public class AutonomousCompetition extends MasterAutonomous
 
         waitForStart();
 
+        vuforiaLocator.startTracking();
+
         // TODO: Add code to go to objectives
     }
 }

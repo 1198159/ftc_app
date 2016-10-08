@@ -12,7 +12,7 @@ abstract class MasterAutonomous extends Master
     // Information on robot's location. Units are millimeters and degrees
     private double robotX = 0.0, robotY = 0.0, robotAngle = 0.0;
 
-    // TODO: Make an object for Vuforia
+    VuforiaLocator vuforiaLocator = new VuforiaLocator();
 
     void goToLocation(double targetX, double targetY, double targetAngle)
     {
@@ -57,16 +57,33 @@ abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
+    // TODO: These update methods should probably be run from a separate thread
     private void updateRobotLocation()
     {
-        // TODO: Should try Vuforia first, then other sensors
-        robotX = 0.0;
-        robotY = 0.0;
+        if(vuforiaLocator.isTracking())
+        {
+            float[] location = vuforiaLocator.getRobotLocation();
+            robotX = location[0];
+            robotY = location[1];
+        }
+        else
+        {
+            // TODO: Use other sensors, like encoders
+            robotX = robotX;
+            robotY = robotY;
+        }
     }
 
     private void updateRobotAngle()
     {
-        // TODO: Should try Vuforia first, then other sensors
-        robotAngle = 0.0;
+        if(vuforiaLocator.isTracking())
+        {
+            robotAngle = vuforiaLocator.getRobotAngle();
+        }
+        else
+        {
+            // TODO: Use other sensors, like an IMU
+            robotAngle = robotAngle;
+        }
     }
 }

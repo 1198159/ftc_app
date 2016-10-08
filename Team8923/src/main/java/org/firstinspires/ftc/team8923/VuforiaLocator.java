@@ -96,23 +96,32 @@ class VuforiaLocator
         lastKnownLocation = createMatrix(0, 0, 0, 0, 0, 0);
     }
 
-    void startVuforia()
+    void startTracking()
     {
         visionTargets.activate();
     }
 
-    float[] getRobotAngle()
+    float getRobotAngle()
     {
         updateLocation();
-        // TODO: Figure out how to get information about robot orientation
-        return new float[3];
+        return Orientation.getOrientation(lastKnownLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
     }
 
-    // Returns an array where index 1 is for x, 2 for y, and 3 for z.
+    // Returns an array where index 0 is for x, 1 for y, and 2 for z.
     float[] getRobotLocation()
     {
         updateLocation();
         return lastKnownLocation.getTranslation().getData();
+    }
+
+    boolean isTracking()
+    {
+        for(int i = 0; i < targets.length; i++)
+        {
+            if(listeners[i].isVisible())
+                return true;
+        }
+        return false;
     }
 
     private void updateLocation()
@@ -143,7 +152,7 @@ class VuforiaLocator
     }
 
     // Formats matrix to something readable
-    String format(OpenGLMatrix transformationMatrix)
+    private String format(OpenGLMatrix transformationMatrix)
     {
         return transformationMatrix.formatAsTransform();
     }
