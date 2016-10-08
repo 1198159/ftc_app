@@ -10,7 +10,7 @@ abstract class MasterAutonomous extends Master
     private static final double DRIVE_POWER = 0.8;
 
     // Information on robot's location. Units are millimeters and degrees
-    private double robotX = 0.0, robotY = 0.0, robotAngle = 0.0;
+    double robotX = 0.0, robotY = 0.0, robotAngle = 0.0;
 
     VuforiaLocator vuforiaLocator = new VuforiaLocator();
 
@@ -58,7 +58,7 @@ abstract class MasterAutonomous extends Master
     }
 
     // TODO: These update methods should probably be run from a separate thread
-    private void updateRobotLocation()
+    void updateRobotLocation()
     {
         if(vuforiaLocator.isTracking())
         {
@@ -74,7 +74,7 @@ abstract class MasterAutonomous extends Master
         }
     }
 
-    private void updateRobotAngle()
+    void updateRobotAngle()
     {
         if(vuforiaLocator.isTracking())
         {

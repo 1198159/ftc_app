@@ -20,6 +20,18 @@ public class AutonomousCompetition extends MasterAutonomous
 
         vuforiaLocator.startTracking();
 
+        while(opModeIsActive())
+        {
+            updateRobotAngle();
+            updateRobotLocation();
+
+            telemetry.addData("X", robotX);
+            telemetry.addData("Y", robotY);
+            telemetry.addData("Angle", robotAngle);
+            telemetry.update();
+            idle();
+        }
+
         // TODO: Add code to go to objectives
     }
 }
