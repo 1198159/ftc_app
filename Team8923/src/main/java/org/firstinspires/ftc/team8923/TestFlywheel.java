@@ -17,6 +17,8 @@ public class TestFlywheel extends LinearOpMode
 
     private boolean isRunning = false;
     private boolean isUsingEncoders = false;
+    private boolean leftWasPressed = false;
+    private boolean rightWasPressed = false;
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -34,15 +36,32 @@ public class TestFlywheel extends LinearOpMode
             if(gamepad1.back)
                 isUsingEncoders = !isUsingEncoders;
 
-            // Adjust motor powers. Dpad up and down for left motor, and a and b buttons for right
-            if(gamepad1.dpad_up)
+            // Adjust motor powers. Dpad up and down for left motor, and a and y buttons for right
+            if(gamepad1.dpad_up && !leftWasPressed)
+            {
                 powerLeft += DELTA_POWER;
-            if(gamepad1.dpad_down)
+                leftWasPressed = true;
+            }
+            else if(gamepad1.dpad_down && !leftWasPressed)
+            {
                 powerLeft -= DELTA_POWER;
-            if(gamepad1.y)
+                leftWasPressed = true;
+            }
+            else if(!gamepad1.dpad_down && !gamepad1.dpad_up)
+                leftWasPressed = false;
+
+            if(gamepad1.y && !leftWasPressed)
+            {
                 powerRight += DELTA_POWER;
-            if(gamepad1.a)
+                rightWasPressed= true;
+            }
+            else if(gamepad1.a && !leftWasPressed)
+            {
                 powerRight -= DELTA_POWER;
+                rightWasPressed = true;
+            }
+            else if(!gamepad1.y && !gamepad1.a)
+                rightWasPressed = false;
 
             // Toggle encoders if necessary
             if(isUsingEncoders && motorLeft.getMode() != DcMotor.RunMode.RUN_USING_ENCODER)
