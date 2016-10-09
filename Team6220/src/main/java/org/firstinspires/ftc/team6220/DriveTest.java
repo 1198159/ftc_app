@@ -18,9 +18,15 @@ public class DriveTest extends MasterTeleOp
 
         while (opModeIsActive())
         {
-            drive.moveRobot(powerRightStickX,   //local x motion power
-                            powerRightStickY,   //local y motion power
-                            -1.0 * powerLeftStickX); //rotation power; Rotation is reversed
+
+            /*;
+            ;
+            ;*/
+
+            //@TODO:  encapsulate stick curve in MasterTeleOp
+            drive.moveRobot(-1.0 * (0.5 * Math.pow(gamepad1.right_stick_x , 3) + 0.5 * gamepad1.right_stick_x),   //local x motion power
+                            -1.0 * (0.5 * Math.pow(gamepad1.right_stick_y , 3) + 0.5 * gamepad1.right_stick_y),   //local y motion power
+                            -1.0 * (0.5 * Math.pow(gamepad1.left_stick_x , 3) + 0.5 * gamepad1.left_stick_x)); //rotation power; Rotation is reversed
 
             idle();
         }
