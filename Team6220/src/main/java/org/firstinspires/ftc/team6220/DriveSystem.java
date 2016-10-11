@@ -15,16 +15,14 @@ public class DriveSystem
 {
     private DriveAssembly[] assemblies;
     private PIDFilter PIDControlFilter;
-    public PIDEnforcementMode enforcementMode;
     public Transform2D robotLocation;
     //TODO add Kalman filter for position estimation
 
-    public DriveSystem(DriveAssembly[] driveAssemblyArray, Transform2D initialLocation, PIDFilter filter, PIDEnforcementMode mode)
+    public DriveSystem(DriveAssembly[] driveAssemblyArray, Transform2D initialLocation, PIDFilter filter)
     {
         this.assemblies = driveAssemblyArray;
         this.robotLocation = initialLocation;
         this.PIDControlFilter = filter;
-        this.enforcementMode = mode;
     }
 
     //TODO add updateRobotLocation() and getRobotLocation()
