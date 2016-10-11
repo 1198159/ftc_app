@@ -6,6 +6,11 @@ package org.firstinspires.ftc.team8923;
  */
 abstract class MasterAutonomous extends Master
 {
+    // Starting locations for robot. Measurements are in millimeters and degrees
+    static final double RED_2_START_X = 200.0;
+    static final double RED_2_START_Y = 1880.0;
+    static final double RED_2_START_ANGLE = 0.0;
+
     // Drive power is less than 1 to allow encoder PID loop to function
     private static final double DRIVE_POWER = 0.8;
 
@@ -51,7 +56,7 @@ abstract class MasterAutonomous extends Master
         while(calculateDistance(targetX - robotX, targetY - robotY) > 10.0)
         {
             updateRobotLocation();
-            angleToTarget = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX));
+            angleToTarget = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
             driveMecanum(angleToTarget, DRIVE_POWER, 0.0);
         }
         stopDriving();
