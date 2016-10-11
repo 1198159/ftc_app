@@ -29,10 +29,6 @@ public class DriveSystem
 
 
     //TODO make this more configurable
-    //moves the robot according to the PIDEnforcement mode with three inputs
-    //  NONE            -  Uses motor powers and no pid control
-    //  DERIVATIVE      -  Tries to keep the robot at the input velocities
-    //  HIGHEST_ORDER   -  Tries to move the robot in a straight line to the location from its current location (REQUIRES THAT ROBOT LOCATION)
     public void moveRobot(double x, double y, double w)
     {
         double[] rawPowers = new double[]{0.0,0.0,0.0,0.0};
@@ -61,6 +57,26 @@ public class DriveSystem
             assemblies[corner].setPower(rawPowers[corner]/scalingFactor);
         }
 
+    }
+
+    //estimate the robot's last motion using encoders
+    //returns an average, so more frequent calls will be noisier but will miss some events
+    //note that this is a rate of change in deg/s and m/s, not a position and orientation difference
+    public Transform2D getRobotMotionFromEncoders()
+    {
+        Transform2D diff = new Transform2D(0,0,0);
+        double[] motion = new double[]{0,0};
+        for (int corner = 0; corner < 4; corner++)
+        {
+            diff.rot += assemblies[corner].getRotationEncoderDifferential();
+        }
+        for(int corner = 0; corner < 4; corner++)
+        {
+            motion = SequenceUtilities.vectorAdd(motion,assemblies[corner].getVectorEncoderDifferential());
+        }
+        diff.x = motion[0];
+        diff.y = motion[1];
+        return diff;
     }
 
 }

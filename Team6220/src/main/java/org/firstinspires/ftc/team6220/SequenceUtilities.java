@@ -79,4 +79,16 @@ public abstract class SequenceUtilities {
         return largest;
     }
 
+    //return the sum of two tuples as vectors
+    public static double[] vectorAdd(double[] a, double[] b)
+    {
+        int size = a.length;
+        double[] c = new double[size];
+        for(int i = 0; i < size; i++ )
+        {
+            c[i] = a[i] + b[i];
+        }
+        return c;
+    }
+
 }
