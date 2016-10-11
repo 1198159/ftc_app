@@ -135,7 +135,6 @@ public class FtcRobotControllerActivity extends Activity {
   protected FtcEventLoop eventLoop;
   protected Queue<UsbDevice> receivedUsbAttachmentNotifications;
 
-  protected static VuforiaTracker vuforia;
 
   protected class RobotRestarter implements Restarter {
 
@@ -246,7 +245,6 @@ public class FtcRobotControllerActivity extends Activity {
     updateUI = createUpdateUI();
     callback = createUICallback(updateUI);
 
-    vuforia = new VuforiaTracker(this);
 
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -303,8 +301,6 @@ public class FtcRobotControllerActivity extends Activity {
     RobotLog.vv(TAG, "onResume()");
     readNetworkType(NETWORK_TYPE_FILENAME);
 
-    //resume tracking when app is restarted
-    vuforia.resumeVuforia();
   }
 
   @Override
@@ -315,8 +311,6 @@ public class FtcRobotControllerActivity extends Activity {
       programmingModeController.stopProgrammingMode();
     }
 
-    //pause tracking when app is paused, and has reduced permissions
-    vuforia.pauseVuforia();
   }
 
   @Override
@@ -538,10 +532,5 @@ public class FtcRobotControllerActivity extends Activity {
         }
       });
     }
-  }
-
-  public static VuforiaTracker getVuforia()
-  {
-    return vuforia;
   }
 }
