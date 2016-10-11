@@ -73,10 +73,10 @@ abstract class Master extends LinearOpMode
         double y = drivePower * Math.sin(driveAngle);
 
         // Set power for motors. Ratios are correct, but needs scaling (see below)
-        double powerFL = y + x + turnPower;
-        double powerFR = y - x - turnPower;
-        double powerBL = y - x + turnPower;
-        double powerBR = y + x - turnPower;
+        double powerFL = y + x - turnPower;
+        double powerFR = y - x + turnPower;
+        double powerBL = y - x - turnPower;
+        double powerBR = y + x + turnPower;
 
         // Motor powers might be set above 1, so this scales all of the motor powers to stay
         // proportional and within power range
