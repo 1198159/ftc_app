@@ -19,6 +19,12 @@ abstract class Master extends LinearOpMode
     // TODO: This just returns 256 for everything, and is likely caused by the wrong sensor type. Fix me
     ColorSensor colorSensor;
 
+    // Constants to be used in code. Measurements in millimeters
+    static final double TICKS_PER_REVOLUTION = 1120.0; // TODO: Confirm this number
+    static final double WHEEL_DIAMETER = 101.6;
+    static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
+    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_REVOLUTION;
+
     // Initialize hardware on robot
     void initHardware()
     {

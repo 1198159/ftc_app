@@ -6,6 +6,8 @@ package org.firstinspires.ftc.team8923;
  */
 abstract class MasterAutonomous extends Master
 {
+    // TODO: Might want to change naming style
+    // TODO: Add locations of other starting spots
     // Starting locations for robot. Measurements are in millimeters and degrees
     static final double RED_2_START_X = 200.0;
     static final double RED_2_START_Y = 1880.0;
@@ -17,9 +19,16 @@ abstract class MasterAutonomous extends Master
     // Information on robot's location. Units are millimeters and degrees
     double robotX = 0.0, robotY = 0.0, robotAngle = 0.0;
 
+    // TODO: Do these need to be set at the beginning?
+    // Used to calculate distance traveled
+    private int lastEncoderFL = 0;
+    private int lastEncoderFR = 0;
+    private int lastEncoderBL = 0;
+    private int lastEncoderBR = 0;
+
     VuforiaLocator vuforiaLocator = new VuforiaLocator();
 
-    void goToLocation(double targetX, double targetY, double targetAngle)
+    void goToLocation(double targetX, double targetY, double targetAngle) throws InterruptedException
     {
         // TODO: Test me
         double angleToTarget = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX));
@@ -34,7 +43,7 @@ abstract class MasterAutonomous extends Master
         turnToAngle(targetAngle);
     }
 
-    private void turnToAngle(double targetAngle)
+    private void turnToAngle(double targetAngle) throws InterruptedException
     {
         double deltaAngle = targetAngle - robotAngle;
 
@@ -44,11 +53,14 @@ abstract class MasterAutonomous extends Master
             updateRobotAngle();
             deltaAngle = targetAngle - robotAngle;
             driveMecanum(0.0, 0.0, DRIVE_POWER * Math.signum(deltaAngle));
+
+            sendTelemetry();
+            idle();
         }
         stopDriving();
     }
 
-    private void driveToPoint(double targetX, double targetY)
+    private void driveToPoint(double targetX, double targetY) throws InterruptedException
     {
         double angleToTarget;
 
@@ -58,24 +70,51 @@ abstract class MasterAutonomous extends Master
             updateRobotLocation();
             angleToTarget = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
             driveMecanum(angleToTarget, DRIVE_POWER, 0.0);
+
+            sendTelemetry();
+            idle();
         }
         stopDriving();
     }
 
-    // TODO: These update methods should probably be run from a separate thread
     void updateRobotLocation()
     {
+        // Use Vuforia if a it's tracking something
         if(vuforiaLocator.isTracking())
         {
             float[] location = vuforiaLocator.getRobotLocation();
             robotX = location[0];
             robotY = location[1];
         }
+        // Otherwise, use encoders to estimate location from distance travelled
         else
         {
-            // TODO: Use other sensors, like encoders
-            robotX = robotX;
-            robotY = robotY;
+            // TODO: Test me
+
+            int deltaFL = motorFL.getCurrentPosition() - lastEncoderFL;
+            int deltaFR = motorFR.getCurrentPosition() - lastEncoderFR;
+            int deltaBL = motorBL.getCurrentPosition() - lastEncoderBL;
+            int deltaBR = motorBR.getCurrentPosition() - lastEncoderBR;
+
+            lastEncoderFL = motorFL.getCurrentPosition();
+            lastEncoderFR = motorFR.getCurrentPosition();
+            lastEncoderBL = motorBL.getCurrentPosition();
+            lastEncoderBR = motorBR.getCurrentPosition();
+
+            // Take average of encoders. Some are negative because of 45 degree roller angle
+            double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4;
+            double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4;
+
+            // Change ticks to mm, and compensate for 45 degree mounting angle of rollers with sqrt(2)
+            deltaX *= MM_PER_REVOLUTION / Math.sqrt(2);
+            deltaY *= MM_PER_REVOLUTION / Math.sqrt(2);
+
+            // Delta x and y are intrinsic to robot, so make extrinsic
+            deltaX = deltaX * Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
+            deltaY = deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
+
+            robotX += deltaX;
+            robotY += deltaY;
         }
     }
 
