@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.team6220;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /*
     Test op mode that drives the robot with motor powers.
 */
 @TeleOp(name="Test Drive", group="Tests")
+@Disabled
 public class DriveTest extends MasterTeleOp
 {
 
