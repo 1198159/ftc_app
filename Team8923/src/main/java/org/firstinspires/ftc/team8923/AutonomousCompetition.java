@@ -22,7 +22,6 @@ public class AutonomousCompetition extends MasterAutonomous
 
         while(opModeIsActive())
         {
-            updateRobotAngle();
             updateRobotLocation();
 
             telemetry.addData("X", robotX);

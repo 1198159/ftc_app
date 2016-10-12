@@ -50,7 +50,7 @@ abstract class MasterAutonomous extends Master
         // TODO: Test and fix magic number (5 is an angle tolerance)
         while(Math.abs(deltaAngle) > 5.0)
         {
-            updateRobotAngle();
+            updateRobotLocation();
             deltaAngle = targetAngle - robotAngle;
             driveMecanum(0.0, 0.0, DRIVE_POWER * Math.signum(deltaAngle));
 
@@ -77,6 +77,7 @@ abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
+    // Updates robot's coordinates and angle
     void updateRobotLocation()
     {
         // Use Vuforia if a it's tracking something
@@ -85,11 +86,13 @@ abstract class MasterAutonomous extends Master
             float[] location = vuforiaLocator.getRobotLocation();
             robotX = location[0];
             robotY = location[1];
+
+            robotAngle = vuforiaLocator.getRobotAngle();
         }
-        // Otherwise, use encoders to estimate location from distance travelled
+        // Otherwise, use other sensors to determine distance travelled and angle
         else
         {
-            // TODO: Test me
+            // TODO: Test coordinate code
 
             int deltaFL = motorFL.getCurrentPosition() - lastEncoderFL;
             int deltaFR = motorFR.getCurrentPosition() - lastEncoderFR;
@@ -115,17 +118,7 @@ abstract class MasterAutonomous extends Master
 
             robotX += deltaX;
             robotY += deltaY;
-        }
-    }
 
-    void updateRobotAngle()
-    {
-        if(vuforiaLocator.isTracking())
-        {
-            robotAngle = vuforiaLocator.getRobotAngle();
-        }
-        else
-        {
             // TODO: Use other sensors, like an IMU
             robotAngle = robotAngle;
         }
