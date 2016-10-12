@@ -109,8 +109,8 @@ abstract class MasterAutonomous extends Master
             double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4;
 
             // Change ticks to mm, and compensate for 45 degree mounting angle of rollers with sqrt(2)
-            deltaX *= MM_PER_REVOLUTION / Math.sqrt(2);
-            deltaY *= MM_PER_REVOLUTION / Math.sqrt(2);
+            deltaX *= MM_PER_TICK / Math.sqrt(2);
+            deltaY *= MM_PER_TICK / Math.sqrt(2);
 
             // Delta x and y are intrinsic to robot, so make extrinsic
             deltaX = deltaX * Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
