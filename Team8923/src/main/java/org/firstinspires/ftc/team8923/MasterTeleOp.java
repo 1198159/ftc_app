@@ -10,7 +10,7 @@ abstract class MasterTeleOp extends Master
         double y = -gamepad1.left_stick_y; // Y axis is negative when up
         double x = gamepad1.left_stick_x;
 
-        double angle = Math.atan2(y, x);
+        double angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
         double power = calculateDistance(x, y);
         double turnPower = -gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
 

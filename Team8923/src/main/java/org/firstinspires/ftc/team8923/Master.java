@@ -19,11 +19,14 @@ abstract class Master extends LinearOpMode
     // TODO: This just returns 256 for everything, and is likely caused by the wrong sensor type. Fix me
     ColorSensor colorSensor;
 
+    // TODO: Confirm these numbers
     // Constants to be used in code. Measurements in millimeters
-    static final double TICKS_PER_REVOLUTION = 1120.0; // TODO: Confirm this number
-    static final double WHEEL_DIAMETER = 101.6;
+    static final double GEAR_RATIO = 1.0; // Ratio of driven gear to driving gear
+    static final double TICKS_PER_MOTOR_REVOLUTION = 1120.0;
+    static final double TICKS_PER_WHEEL_REVOLUTION = TICKS_PER_MOTOR_REVOLUTION / GEAR_RATIO;
+    static final double WHEEL_DIAMETER = 4 * 25.4; // 4 inch diameter
     static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
-    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_REVOLUTION;
+    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION;
 
     // Initialize hardware on robot
     void initHardware()
@@ -55,6 +58,11 @@ abstract class Master extends LinearOpMode
     {
         //TODO: Probably won't need this after testing. It takes up a lot of room, so remove if no longer needed.
         // Drive motor info
+        telemetry.addData("FL Enc", formatNumber(motorFL.getCurrentPosition()));
+        telemetry.addData("FR Enc", formatNumber(motorFR.getCurrentPosition()));
+        telemetry.addData("BL Enc", formatNumber(motorBL.getCurrentPosition()));
+        telemetry.addData("BR Enc", formatNumber(motorBR.getCurrentPosition()));
+
         telemetry.addData("FL", formatNumber(motorFL.getPower()));
         telemetry.addData("FR", formatNumber(motorFR.getPower()));
         telemetry.addData("BL", formatNumber(motorBL.getPower()));
@@ -64,13 +72,13 @@ abstract class Master extends LinearOpMode
     }
 
     // This allows the robot to drive in any direction and/or turn. Both autonomous and TeleOp use
-    // this method, and may need to use some math
+    // this method, and may need to use some math. 0 degress represents forward
     void driveMecanum(double driveAngle, double drivePower, double turnPower)
     {
         drivePower = Range.clip(drivePower, -1, 1);
 
-        double x = drivePower * Math.cos(driveAngle);
-        double y = drivePower * Math.sin(driveAngle);
+        double x = drivePower * -Math.sin(Math.toRadians(driveAngle));
+        double y = drivePower * Math.cos(Math.toRadians(driveAngle));
 
         // Set power for motors. Ratios are correct, but needs scaling (see below)
         double powerFL = y + x - turnPower;

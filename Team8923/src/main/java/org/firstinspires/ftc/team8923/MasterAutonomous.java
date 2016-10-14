@@ -2,7 +2,8 @@ package org.firstinspires.ftc.team8923;
 
 /*
  * This class contains all objects and methods that should be accessible by all Autonomous OpModes
- * for the CapBot
+ * The axes of the field are defined where the origin is the corner between the driver stations,
+ * poitive x is along the blue wall, positive y is the red wall, and 0 degrees is positive x
  */
 abstract class MasterAutonomous extends Master
 {
@@ -31,16 +32,17 @@ abstract class MasterAutonomous extends Master
     void goToLocation(double targetX, double targetY, double targetAngle) throws InterruptedException
     {
         // TODO: Test me
+        // TODO: Use turn method when it works
         double angleToTarget = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX));
 
         // Point at target location
-        turnToAngle(angleToTarget);
+        //turnToAngle(angleToTarget);
 
         // Drive to target location
         driveToPoint(targetX, targetY);
 
         // Set robot angle to desired angle
-        turnToAngle(targetAngle);
+        //turnToAngle(targetAngle);
     }
 
     private void turnToAngle(double targetAngle) throws InterruptedException
@@ -92,7 +94,7 @@ abstract class MasterAutonomous extends Master
         // Otherwise, use other sensors to determine distance travelled and angle
         else
         {
-            // TODO: Test coordinate code
+            // TODO: Make sure this works
 
             int deltaFL = motorFL.getCurrentPosition() - lastEncoderFL;
             int deltaFR = motorFR.getCurrentPosition() - lastEncoderFR;
@@ -113,8 +115,8 @@ abstract class MasterAutonomous extends Master
             deltaY *= MM_PER_TICK / Math.sqrt(2);
 
             // Delta x and y are intrinsic to robot, so make extrinsic
-            deltaX = deltaX * Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
-            deltaY = deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
+            deltaX = deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
+            deltaY = deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
 
             robotX += deltaX;
             robotY += deltaY;
