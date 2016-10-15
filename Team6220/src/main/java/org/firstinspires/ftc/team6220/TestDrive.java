@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 */
 @TeleOp(name="Test Drive, Local", group="Tests")
 @Disabled
-public class DriveTest extends MasterTeleOp
+public class TestDrive extends MasterTeleOp
 {
 
     @Override
