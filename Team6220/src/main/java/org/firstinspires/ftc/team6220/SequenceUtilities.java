@@ -91,4 +91,19 @@ public abstract class SequenceUtilities {
         return c;
     }
 
+    //return an array with the output of a polynomial at integer inputs corresponding to array index
+    public static double[] arrayFromPolynomial(int start, int end, Polynomial func)
+    {
+        //delcare array to hold return value
+        double[] array = new double[end-start];
+
+        for(int i = start; i<end; i++)
+        {
+            array[i] = func.getOuput(i);
+        }
+
+        return array;
+
+    }
+
 }

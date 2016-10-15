@@ -8,7 +8,7 @@ public class Polynomial
 {
     //array of coefficients, ordered by increasing power.
     //e.g.  c[0] + c[1]x + c[2]x^2 +...
-    double[] coefficients;
+    private double[] coefficients;
 
     public Polynomial(double[] c)
     {
