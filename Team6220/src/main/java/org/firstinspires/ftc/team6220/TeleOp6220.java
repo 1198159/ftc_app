@@ -16,7 +16,9 @@ public class TeleOp6220 extends MasterTeleOp
 
         while (opModeIsActive())
         {
-            driveRobotWithJoysticks();
+            driveRobotWithJoysticks(gamepad1.right_stick_x,
+                                    gamepad1.right_stick_y,
+                                    gamepad1.left_stick_x  );
 
             idle();
         }
