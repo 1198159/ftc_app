@@ -22,21 +22,23 @@ public class DriveAssembly
     //construct empty
     public DriveAssembly()
     {
-        this.motor = null;
-        this.location = new Transform2D(0.0,0.0,0.0);
-        this.gearRatio = 1.0;
-        this.wheelRadius = 1.0;
-        this.lastReadTime = System.nanoTime()/1000/1000/1000;
+        this.initialize(null, new Transform2D(0.0,0.0,0.0), 1.0, 1.0);
     }
 
     //construct with values
     public DriveAssembly(DcMotor m, Transform2D t, double gear, double radius)
+    {
+        this.initialize(m, t, gear, radius);
+    }
+
+    public void initialize(DcMotor m, Transform2D t, double gear, double radius)
     {
         this.motor = m;
         this.wheelRadius = radius;
         this.gearRatio = gear;
         this.location = t;
         this.lastReadTime = System.nanoTime()/1000/1000/1000;
+        zeroEncoder();
     }
 
     public void zeroEncoder()

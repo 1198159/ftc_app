@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name="Competition", group="6220")
 public class TeleOpCompetition extends MasterTeleOp
 {
+    @Override
     public void runOpMode() throws InterruptedException
     {
         initializeHardware();
@@ -23,9 +24,9 @@ public class TeleOpCompetition extends MasterTeleOp
 
         while (opModeIsActive())
         {
-            driveRobotWithJoysticks(gamepad1.right_stick_x,
-                                    gamepad1.right_stick_y,
-                                    gamepad1.left_stick_x  );
+            driveRobotWithJoysticks(-gamepad1.right_stick_x,    //local x motion power; reversed
+                                    gamepad1.right_stick_y,     //local y motion power
+                                    -gamepad1.left_stick_x);    //rotation power; reversed
 
             idle();
         }

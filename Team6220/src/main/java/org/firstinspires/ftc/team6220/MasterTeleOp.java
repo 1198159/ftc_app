@@ -11,13 +11,13 @@ abstract public class MasterTeleOp extends MasterOpMode
     //                                                         between 100 and 0.
     FIRFilter pilotInputFilter = new FIRFilter(new Polynomial(new double[]{100,-1,0.0025}),200);
 
-    //                                                   y = -1/8x^3 + 0x^2 + 1/2x + 0
-    Polynomial pilotInputCurve = new Polynomial(new double[]{ 0.0, 0.5, 0.0, -0.125 });
+    //                                                   y = 1/2x^3 + 0x^2 + 1/2x + 0
+    Polynomial pilotInputCurve = new Polynomial(new double[]{ 0.0, 0.5, 0.0, 0.5 });
 
     void driveRobotWithJoysticks(double xMotionAxis, double yMotionAxis, double rotationAxis)
     {
         drive.moveRobot(pilotInputCurve.getOuput(xMotionAxis),
                         pilotInputCurve.getOuput(yMotionAxis),
-                        pilotInputCurve.getOuput(rotationAxis) );
+                        pilotInputCurve.getOuput(rotationAxis));
     }
 }

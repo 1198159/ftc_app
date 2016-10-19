@@ -23,26 +23,23 @@ abstract public class MasterOpMode extends LinearOpMode
 
     //our robot uses an omni drive, so our motors are positioned at 45 degree angles to normal positions.
     //TODO update drive assembly positions
-    //                                               mtr,                       x,   y,   rot,  gear, radius
-    DriveAssembly[] driveAssemblies = { new DriveAssembly(null,new Transform2D( 1.0, 1.0, 135), 1.0, 0.1016),
-                                        new DriveAssembly(null,new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016),
-                                        new DriveAssembly(null,new Transform2D(-1.0,-1.0, 315), 1.0, 0.1016),
-                                        new DriveAssembly(null,new Transform2D( 1.0,-1.0,  45), 1.0, 0.1016) };
+    //
+    DriveAssembly[] driveAssemblies;
 
     DriveSystem drive;
 
     public void initializeHardware()
     {
-        driveAssemblies[FRONT_RIGHT].motor = hardwareMap.dcMotor.get("motorFrontRight");
-        driveAssemblies[FRONT_LEFT].motor  = hardwareMap.dcMotor.get("motorFrontLeft");
-        driveAssemblies[BACK_RIGHT].motor  = hardwareMap.dcMotor.get("motorBackRight");
-        driveAssemblies[BACK_LEFT].motor   = hardwareMap.dcMotor.get("motorBackLeft");
-
+        driveAssemblies = new DriveAssembly[4];
+                                                                        //mtr,                                       x,   y,   rot,  gear, radius
+        driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"),new Transform2D( 1.0, 1.0, 135), 1.0, 0.1016);
+        driveAssemblies[FRONT_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"),new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016);
+        driveAssemblies[BACK_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"),new Transform2D(-1.0,-1.0, 315), 1.0, 0.1016);
+        driveAssemblies[BACK_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"),new Transform2D( 1.0,-1.0,  45), 1.0, 0.1016);
 
         //TODO decide if we should initialize at opmode level
         //                      drive assemblies,                  x , y,  w  ,               p  , i , d
         drive = new DriveSystem( driveAssemblies, new Transform2D(0.0,0.0,0.0), new PIDFilter(1.0,0.0,0.0) );
-
     }
 
     //wait a number of milliseconds
