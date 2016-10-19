@@ -39,12 +39,12 @@ public class DriveAssembly
         this.lastReadTime = System.nanoTime()/1000/1000/1000;
     }
 
-    public void ZeroEncoder()
+    public void zeroEncoder()
     {
         //reset encoder to zero and set mode
         //since we have our own PID loop for controlling motor speed, we'll disable the built-in pid
-        m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
 
