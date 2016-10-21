@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Created by Colew on 10/18/2016.
  */
 
-@Autonomous(name = "Competition", group = "Autonomous")
+@Autonomous(name = "AutoCompetition", group = "Autonomous")
 public class AutonomousCompetition extends MasterAutonomous
 {
     @Override
@@ -19,7 +19,8 @@ public class AutonomousCompetition extends MasterAutonomous
 
         while (opModeIsActive())
         {
-            
+
+
 
             idle();
         }

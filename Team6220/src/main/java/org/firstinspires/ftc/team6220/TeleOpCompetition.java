@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
 */
-@TeleOp(name="Competition", group="6220")
+@TeleOp(name="TeleOpCompetition", group="6220")
 public class TeleOpCompetition extends MasterTeleOp
 {
     @Override
