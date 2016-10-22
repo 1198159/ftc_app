@@ -16,8 +16,11 @@ public class TestLocation extends MasterAutonomous
         robotX = 0;
         robotY = 0;
         robotAngle = 0;
+        resetHeadingOffset();
 
         waitForStart();
+
+        vuforiaLocator.startTracking();
 
         while(opModeIsActive())
         {

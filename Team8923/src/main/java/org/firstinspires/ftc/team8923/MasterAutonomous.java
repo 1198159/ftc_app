@@ -90,6 +90,7 @@ abstract class MasterAutonomous extends Master
             robotY = location[1];
 
             robotAngle = vuforiaLocator.getRobotAngle();
+            resetHeadingOffset();
         }
         // Otherwise, use other sensors to determine distance travelled and angle
         else
@@ -118,8 +119,12 @@ abstract class MasterAutonomous extends Master
             robotX += deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
             robotY += deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
 
-            // TODO: Use other sensors, like an IMU
-            robotAngle = robotAngle;
+            robotAngle = imu.getAngularOrientation().firstAngle - headingOffset;
         }
+    }
+
+    void resetHeadingOffset()
+    {
+        headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
     }
 }
