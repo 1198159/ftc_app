@@ -39,7 +39,7 @@ abstract class MasterAutonomous extends Master
         //turnToAngle(angleToTarget);
 
         // Drive to target location
-        driveToPoint(targetX, targetY);
+        driveToPoint(targetX, targetY, targetAngle);
 
         // Set robot angle to desired angle
         //turnToAngle(targetAngle);
@@ -62,17 +62,25 @@ abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
-    private void driveToPoint(double targetX, double targetY) throws InterruptedException
+    private void driveToPoint(double targetX, double targetY, double targetAngle) throws InterruptedException
     {
-        double angleToTarget;
+        double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
+        double DISTANCE_TOLERANCE = 20; // In mm TODO: Is 20 a good value?
 
-        // TODO: Test and fix magic number (10 is a distance tolerance)
-        while(calculateDistance(targetX - robotX, targetY - robotY) > 10.0)
+        while(distanceToTarget > DISTANCE_TOLERANCE)
         {
             updateRobotLocation();
-            angleToTarget = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
-            driveMecanum(angleToTarget, DRIVE_POWER, 0.0);
+            double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
+            driveMecanum(driveAngle, DRIVE_POWER / 4, (targetAngle - robotAngle) / 100); // TODO: Make power slow down as it approaches target
 
+            // TODO: Remove this when testing is done
+            telemetry.addData("X", robotX);
+            telemetry.addData("Y", robotY);
+            telemetry.addData("RobotAngle", robotAngle);
+            telemetry.addData("TargetDistance", distanceToTarget);
+            telemetry.addData("DriveAngle", driveAngle);
+
+            distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
             sendTelemetry();
             idle();
         }
