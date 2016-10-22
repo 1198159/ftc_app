@@ -115,11 +115,8 @@ abstract class MasterAutonomous extends Master
             deltaY *= MM_PER_TICK / Math.sqrt(2);
 
             // Delta x and y are intrinsic to robot, so make extrinsic
-            deltaX = deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
-            deltaY = deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
-
-            robotX += deltaX;
-            robotY += deltaY;
+            robotX += deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
+            robotY += deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
 
             // TODO: Use other sensors, like an IMU
             robotAngle = robotAngle;
