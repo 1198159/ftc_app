@@ -83,7 +83,7 @@ class VuforiaLocator
 
         // Set phone location on robot. Center of robot is the origin
         // TODO: Update once we know where the phone will be
-        phoneLocation = createMatrix(0, MM_BOT_SIZE / 2, 0, 90, 0, -90);
+        phoneLocation = createMatrix(0, 0, 0, 90, 0, -90);
 
         // Setup listeners
         for(int i = 0; i < targets.length; i++)
