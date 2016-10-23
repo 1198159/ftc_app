@@ -16,11 +16,20 @@ public class TestLocation extends MasterAutonomous
         robotX = 0;
         robotY = 0;
         robotAngle = 0;
-        resetHeadingOffset();
+        headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
 
         waitForStart();
 
         vuforiaLocator.startTracking();
+
+//        goToLocation(0, -609, -90);
+//        sleep(2000);
+//        goToLocation(0, 0, -90);
+//        sleep(2000);
+//        goToLocation(609, 0, -90);
+//        sleep(2000);
+//        goToLocation(0, 0, -90);
+//        sleep(2000);
 
         while(opModeIsActive())
         {
