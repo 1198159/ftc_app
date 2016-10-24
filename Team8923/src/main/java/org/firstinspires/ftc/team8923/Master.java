@@ -23,7 +23,6 @@ abstract class Master extends LinearOpMode
 
     double headingOffset = 0.0;
 
-    // TODO: Confirm these numbers
     // Constants to be used in code. Measurements in millimeters
     static final double GEAR_RATIO = 1.0; // Ratio of driven gear to driving gear
     static final double TICKS_PER_MOTOR_REVOLUTION = 1120.0;

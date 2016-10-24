@@ -23,6 +23,7 @@ public class AutonomousRed2 extends MasterAutonomous
 
         vuforiaLocator.startTracking();
 
+        goToLocation(1700, 3200, 90.0);
         // Go to left side of beacon
         goToLocation(1385, 3550, 90.0);
         sleep(500);

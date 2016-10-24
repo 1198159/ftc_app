@@ -22,13 +22,20 @@ public class TestLocation extends MasterAutonomous
 
         vuforiaLocator.startTracking();
 
-//        goToLocation(0, -609, -90);
+        // Used to test accuracy of translations
+//        translateToPoint(609, 0, 0);
 //        sleep(2000);
-//        goToLocation(0, 0, -90);
+//        translateToPoint(0, 0, 0);
 //        sleep(2000);
-//        goToLocation(609, 0, -90);
+//        translateToPoint(0, -609, 0);
 //        sleep(2000);
-//        goToLocation(0, 0, -90);
+//        translateToPoint(0, 0, 0);
+//        sleep(2000);
+
+        // Used to test accuracy of turns
+//        turnToAngle(90);
+//        sleep(2000);
+//        turnToAngle(0);
 //        sleep(2000);
 
         while(opModeIsActive())
