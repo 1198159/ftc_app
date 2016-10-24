@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team8923;
 
+import com.qualcomm.robotcore.util.Range;
+
 /*
  * This class contains all objects and methods that should be accessible by all Autonomous OpModes
  * The axes of the field are defined where the origin is the corner between the driver stations,
@@ -71,7 +73,8 @@ abstract class MasterAutonomous extends Master
         {
             updateRobotLocation();
             double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
-            driveMecanum(driveAngle, DRIVE_POWER / 4, (targetAngle - robotAngle) / 100); // TODO: Make power slow down as it approaches target
+            double turnPower = subtractAngles(targetAngle, robotAngle) / 100;
+            driveMecanum(driveAngle, Range.clip(distanceToTarget / 350, -DRIVE_POWER, DRIVE_POWER), turnPower); // TODO: Make power slow down as it approaches target
 
             // TODO: Remove this when testing is done
             telemetry.addData("X", robotX);
@@ -98,7 +101,6 @@ abstract class MasterAutonomous extends Master
             robotY = location[1];
 
             robotAngle = vuforiaLocator.getRobotAngle();
-            resetHeadingOffset();
         }
         // Otherwise, use other sensors to determine distance travelled and angle
         else
@@ -120,8 +122,8 @@ abstract class MasterAutonomous extends Master
             double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4;
 
             // Change ticks to mm, and compensate for 45 degree mounting angle of rollers with sqrt(2)
-            deltaX *= MM_PER_TICK / Math.sqrt(2);
-            deltaY *= MM_PER_TICK / Math.sqrt(2);
+            deltaX *= MM_PER_TICK;
+            deltaY *= MM_PER_TICK;
 
             // Delta x and y are intrinsic to robot, so make extrinsic
             robotX += deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
@@ -131,8 +133,13 @@ abstract class MasterAutonomous extends Master
         }
     }
 
-    void resetHeadingOffset()
+    private double subtractAngles(double first, double second)
     {
-        headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
+        double delta = first - second;
+        while(delta > 180)
+            delta -= 360;
+        while(delta < -180)
+            delta += 360;
+        return delta;
     }
 }

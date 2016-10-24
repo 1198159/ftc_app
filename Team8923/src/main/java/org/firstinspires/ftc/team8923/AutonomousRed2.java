@@ -17,7 +17,7 @@ public class AutonomousRed2 extends MasterAutonomous
         robotX = RED_2_START_X;
         robotY = RED_2_START_Y;
         robotAngle = RED_2_START_ANGLE;
-        resetHeadingOffset();
+        headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
 
         waitForStart();
 
