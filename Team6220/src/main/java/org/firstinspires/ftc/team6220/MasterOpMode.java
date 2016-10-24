@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team6220;
 
+import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
@@ -40,6 +41,13 @@ abstract public class MasterOpMode extends LinearOpMode
         //TODO decide if we should initialize at opmode level
         //                      drive assemblies,                  x , y,  w  ,               p  , i , d
         drive = new DriveSystem( driveAssemblies, new Transform2D(0.0,0.0,0.0), new PIDFilter(1.0,0.0,0.0) );
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
     }
 
     //wait a number of milliseconds
