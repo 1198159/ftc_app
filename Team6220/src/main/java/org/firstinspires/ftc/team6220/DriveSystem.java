@@ -56,7 +56,6 @@ public class DriveSystem
         {
             assemblies[corner].setPower(rawPowers[corner]/scalingFactor);
         }
-
     }
 
     //estimate the robot's last motion using encoders

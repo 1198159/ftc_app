@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 /*
  * This class is used for determining the robot location on the field by using Vuforia
  */
-class VuforiaLocator
+public class VuforiaLocator
 {
     // Vuforia variables
     private VuforiaLocalizer vuforiaLocalizer;

@@ -29,8 +29,11 @@ abstract public class MasterOpMode extends LinearOpMode
 
     DriveSystem drive;
 
+    VuforiaHelper vuforiaHelper;
+
     public void initializeHardware()
     {
+
         driveAssemblies = new DriveAssembly[4];
                                                                         //mtr,                                       x,   y,   rot,  gear, radius
         driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"),new Transform2D( 1.0, 1.0, 135), 1.0, 0.1016);
@@ -48,6 +51,28 @@ abstract public class MasterOpMode extends LinearOpMode
         parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
+
+        vuforiaHelper = new VuforiaHelper();
+
+        vuforiaHelper.setupVuforia();
+    }
+
+    public void navigateRed1()
+    {
+        // Start tracking targets
+        vuforiaHelper.visionTargets.activate();
+
+        vuforiaHelper.lastKnownLocation = vuforiaHelper.getLatestLocation();
+
+        // Inform drivers of robot location. Location is null if we lose track of targets
+        if(vuforiaHelper.lastKnownLocation != null)
+            telemetry.addData("Pos", vuforiaHelper.format(vuforiaHelper.lastKnownLocation));
+        else
+            telemetry.addData("Pos", "Unknown");
+
+        telemetry.update();
+
+
     }
 
     //wait a number of milliseconds
