@@ -42,6 +42,18 @@ public class TestLocation extends MasterAutonomous
         {
             driveMecanumTeleOp();
 
+            if(gamepad1.a)
+            {
+                translateToPoint(609, 0, 0);
+                sleep(2000);
+                translateToPoint(0, 0, 0);
+                sleep(2000);
+                translateToPoint(0, -609, 0);
+                sleep(2000);
+                translateToPoint(0, 0, 0);
+                sleep(2000);
+            }
+
             updateRobotLocation();
 
             telemetry.addData("X", robotX);

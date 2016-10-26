@@ -24,10 +24,10 @@ abstract class MasterAutonomous extends Master
 
     // TODO: Do these need to be set at the beginning?
     // Used to calculate distance traveled
-    private int lastEncoderFL = 0;
-    private int lastEncoderFR = 0;
-    private int lastEncoderBL = 0;
-    private int lastEncoderBR = 0;
+    int lastEncoderFL = 0;
+    int lastEncoderFR = 0;
+    int lastEncoderBL = 0;
+    int lastEncoderBR = 0;
 
     VuforiaLocator vuforiaLocator = new VuforiaLocator();
 
@@ -115,11 +115,6 @@ abstract class MasterAutonomous extends Master
             int deltaBL = motorBL.getCurrentPosition() - lastEncoderBL;
             int deltaBR = motorBR.getCurrentPosition() - lastEncoderBR;
 
-            lastEncoderFL = motorFL.getCurrentPosition();
-            lastEncoderFR = motorFR.getCurrentPosition();
-            lastEncoderBL = motorBL.getCurrentPosition();
-            lastEncoderBR = motorBR.getCurrentPosition();
-
             // Take average of encoders ticks, and convert to mm. Some are negative because of 45 degree roller angle
             double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4 * MM_PER_TICK;
             double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4 * MM_PER_TICK;
@@ -130,6 +125,11 @@ abstract class MasterAutonomous extends Master
 
             robotAngle = imu.getAngularOrientation().firstAngle - headingOffset;
         }
+
+        lastEncoderFL = motorFL.getCurrentPosition();
+        lastEncoderFR = motorFR.getCurrentPosition();
+        lastEncoderBL = motorBL.getCurrentPosition();
+        lastEncoderBR = motorBR.getCurrentPosition();
     }
 
     // If you subtract 359 degrees from 0, you would get -359 instead of 1. This method handles
