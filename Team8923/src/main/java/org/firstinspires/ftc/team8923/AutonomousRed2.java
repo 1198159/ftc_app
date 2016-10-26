@@ -28,10 +28,11 @@ public class AutonomousRed2 extends MasterAutonomous
 
         vuforiaLocator.startTracking();
 
-        // Go in front of beacon and wait for Vuforia
+        // Go in front of left beacon and give Vuforia a chance to start tracking the target
         goToLocation(1700, 3200, 90.0);
         sleep(1000);
-        // Go to left side of beacon
+        // TODO: Should the code below go into it's won method for pressing the beacon?
+        // Go in front of left side of beacon
         goToLocation(1385, 3550, 90.0);
         sleep(500);
         // Check color of left side

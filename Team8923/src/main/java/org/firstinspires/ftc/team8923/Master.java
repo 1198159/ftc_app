@@ -84,15 +84,27 @@ abstract class Master extends LinearOpMode
     }
 
     // This allows the robot to drive in any direction and/or turn. Both autonomous and TeleOp use
-    // this method, and may need to use some math. 0 degress represents forward
+    // this method, and may need to use some math. 0 degrees represents forward
     void driveMecanum(double driveAngle, double drivePower, double turnPower)
     {
+        // A drive power over 1 doesn't make sense
         drivePower = Range.clip(drivePower, -1, 1);
 
+        // Calculate x and y components of drive power, where y is forward (0 degrees) and x is right (-90 degrees)
         double x = drivePower * -Math.sin(Math.toRadians(driveAngle));
         double y = drivePower * Math.cos(Math.toRadians(driveAngle));
 
-        // Set power for motors. Ratios are correct, but needs scaling (see below)
+        /*
+         * Below is an explanation of how the mecanum wheels are driven
+         *
+         * Each wheel has a roller on the bottom mounted at 45 degrees. Because of this, each wheel
+         * can only exert a force diagonally in one dimension. Using the front left wheel as an
+         * example, when it is given a positive power, it exerts a force forward and right, which
+         * means positive y and x. When the front right wheel is given a positive power, it exerts
+         * a force forward and left, which means positive y and negative x. This is reflected in
+         * how the motor powers are set. Turning is like standard tank drive.
+         */
+        // Set motor powers
         double powerFL = y + x - turnPower;
         double powerFR = y - x + turnPower;
         double powerBL = y - x - turnPower;
@@ -103,18 +115,16 @@ abstract class Master extends LinearOpMode
         double scalar = Math.max(Math.abs(powerFL), Math.max(Math.abs(powerFR),
                 Math.max(Math.abs(powerBL), Math.abs(powerBR))));
 
-        // Only apply scalar if greater than 1
+        // Only apply scalar if greater than 1. Otherwise we could unintentionally increase power
+        // This also prevents dividing by 0
         if(scalar < 1)
             scalar = 1;
 
-        // Don't divide by 0
-        if(scalar != 0)
-        {
-            powerFL /= scalar;
-            powerFR /= scalar;
-            powerBL /= scalar;
-            powerBR /= scalar;
-        }
+        // Apply scalar
+        powerFL /= scalar;
+        powerFR /= scalar;
+        powerBL /= scalar;
+        powerBR /= scalar;
 
         // Set motor powers
         motorFL.setPower(powerFL);

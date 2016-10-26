@@ -22,26 +22,12 @@ public class TestLocation extends MasterAutonomous
 
         vuforiaLocator.startTracking();
 
-        // Used to test accuracy of translations
-//        translateToPoint(609, 0, 0);
-//        sleep(2000);
-//        translateToPoint(0, 0, 0);
-//        sleep(2000);
-//        translateToPoint(0, -609, 0);
-//        sleep(2000);
-//        translateToPoint(0, 0, 0);
-//        sleep(2000);
-
-        // Used to test accuracy of turns
-//        turnToAngle(90);
-//        sleep(2000);
-//        turnToAngle(0);
-//        sleep(2000);
-
         while(opModeIsActive())
         {
             driveMecanumTeleOp();
 
+            // Translate forward, backward, right, then left one tile to check accuracy. Should
+            // only be used before driving because of absolute location
             if(gamepad1.a)
             {
                 translateToPoint(609, 0, 0);
@@ -51,6 +37,14 @@ public class TestLocation extends MasterAutonomous
                 translateToPoint(0, -609, 0);
                 sleep(2000);
                 translateToPoint(0, 0, 0);
+                sleep(2000);
+            }
+            // Turn left then right 90 degrees to check accuracy.
+            else if(gamepad1.b)
+            {
+                turnToAngle(90);
+                sleep(2000);
+                turnToAngle(0);
                 sleep(2000);
             }
 
@@ -65,7 +59,8 @@ public class TestLocation extends MasterAutonomous
         }
     }
 
-    void driveMecanumTeleOp()
+    // This is copied from MasterTeleOp, because we don't have access to it
+    private void driveMecanumTeleOp()
     {
         double y = -gamepad1.left_stick_y; // Y axis is negative when up
         double x = gamepad1.left_stick_x;

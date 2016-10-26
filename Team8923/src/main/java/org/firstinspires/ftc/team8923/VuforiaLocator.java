@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 /*
  * This class is used for determining the robot location on the field by using Vuforia
  */
-public class VuforiaLocator
+class VuforiaLocator
 {
     // Vuforia variables
     private VuforiaLocalizer vuforiaLocalizer;
@@ -74,15 +74,14 @@ public class VuforiaLocator
 
         // Set vision target locations on field. Origin is at corner of field between driver
         // stations, with the positive x-axis extending to the blue side, and positive y-axis
-        // extending to the red side
-        // TODO: Double check these values
+        // extending to the red side. Units in mm and degrees
+        // TODO: Should we use constants for these?
         targets[RED_LEFT].setLocation(createMatrix(1524, MM_FIELD_SIZE, 0, 90, 0, 0));
         targets[RED_RIGHT].setLocation(createMatrix(2743.2f, MM_FIELD_SIZE, 0, 90, 0, 0));
         targets[BLUE_LEFT].setLocation(createMatrix(MM_FIELD_SIZE, 2743.2f, 0, 90, 0, -90));
         targets[BLUE_RIGHT].setLocation(createMatrix(MM_FIELD_SIZE, 1524, 0, 90, 0, -90));
 
-        // Set phone location on robot. Center of robot is the origin
-        // TODO: Update once we know where the phone will be
+        // Set phone location on robot. Center of the camera is the origin
         phoneLocation = createMatrix(0, 0, 0, 90, 0, -90);
 
         // Setup listeners
@@ -139,7 +138,7 @@ public class VuforiaLocator
                 return;
             }
         }
-        // Location is unknown
+        // Location is unknown, so don't change anything
     }
 
     // Creates a matrix for defining locations of things. Coordinates are given by x, y, and z, and
@@ -149,11 +148,5 @@ public class VuforiaLocator
         return OpenGLMatrix.translation(x, y, z)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
-    }
-
-    // Formats matrix to something readable
-    private String format(OpenGLMatrix transformationMatrix)
-    {
-        return transformationMatrix.formatAsTransform();
     }
 }
