@@ -53,14 +53,19 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies[BACK_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"),new Transform2D(-1.0,-1.0, 315), 1.0, 0.1016);
         driveAssemblies[BACK_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"),new Transform2D( 1.0,-1.0,  45), 1.0, 0.1016);
 
+        //TODO tune our own drive PID loop using DriveAssemblyPID instead of build-in P/step filter
         driveAssemblies[FRONT_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[FRONT_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[BACK_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[BACK_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //TODO decide if we should initialize at opmode level
-        //                      drive assemblies,                  x , y,  w  ,               p  , i , d
-        drive = new DriveSystem( driveAssemblies, new Transform2D(0.0,0.0,0.0), new PIDFilter(1.0,0.0,0.0) );
+        //                      drive assemblies,  initial loc     x , y,  w  ,
+        drive = new DriveSystem( driveAssemblies,  new Transform2D(0.0, 0.0, 0.0),
+                new PIDFilter[]{
+                        new PIDFilter(1.0,0.0,0.0),    //x location control
+                        new PIDFilter(1.0,0.0,0.0),    //y location control
+                        new PIDFilter(1.0,0.0,0.0)} ); //rotation control
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -112,6 +117,8 @@ abstract public class MasterOpMode extends LinearOpMode
         telemetry.addData("X:", robotXPos);
         telemetry.addData("Y:", robotYPos);
     }
+
+
 
     //wait a number of milliseconds
     public void pause(int t) throws InterruptedException

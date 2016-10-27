@@ -14,19 +14,29 @@ package org.firstinspires.ftc.team6220;
 public class DriveSystem
 {
     private DriveAssembly[] assemblies;
-    private PIDFilter PIDControlFilter;
+    private PIDFilter[] PIDLocationControlFilter = new PIDFilter[2];
+    private PIDFilter PIDRotationControlFilter;
     public Transform2D robotLocation;
     //TODO add Kalman filter for position estimation
 
-    public DriveSystem(DriveAssembly[] driveAssemblyArray, Transform2D initialLocation, PIDFilter filter)
+    public DriveSystem(DriveAssembly[] driveAssemblyArray, Transform2D initialLocation, PIDFilter[] filter)
     {
         this.assemblies = driveAssemblyArray;
         this.robotLocation = initialLocation;
-        this.PIDControlFilter = filter;
+        this.PIDLocationControlFilter[0] = filter[0];
+        this.PIDLocationControlFilter[1] = filter[1];
+        this.PIDRotationControlFilter = filter[3];
     }
 
     //TODO add updateRobotLocation() and getRobotLocation()
 
+    //PID-driven navigation to a point
+    //TODO add ability to use non "zig-zag" pathing
+    //call once per loop
+    public void navigate(Transform2D target, double distanceResolutionThreshold, double angleResolutionThreshold)
+    {
+        
+    }
 
     //TODO make this more configurable
     //TODO make assemblies.location represent their actual values
