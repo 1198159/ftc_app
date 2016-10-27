@@ -14,8 +14,8 @@ package org.firstinspires.ftc.team6220;
 public class DriveSystem
 {
     private DriveAssembly[] assemblies;
-    private PIDFilter[] PIDLocationControlFilter = new PIDFilter[2];
-    private PIDFilter PIDRotationControlFilter;
+    private PIDFilter[] LocationControlFilter = new PIDFilter[2];
+    private PIDFilter RotationControlFilter;
     public Transform2D robotLocation;
     //TODO add Kalman filter for position estimation
 
@@ -23,9 +23,9 @@ public class DriveSystem
     {
         this.assemblies = driveAssemblyArray;
         this.robotLocation = initialLocation;
-        this.PIDLocationControlFilter[0] = filter[0];
-        this.PIDLocationControlFilter[1] = filter[1];
-        this.PIDRotationControlFilter = filter[3];
+        this.LocationControlFilter[0] = filter[0];
+        this.LocationControlFilter[1] = filter[1];
+        this.RotationControlFilter = filter[3];
     }
 
     //TODO add updateRobotLocation() and getRobotLocation()
@@ -33,9 +33,18 @@ public class DriveSystem
     //PID-driven navigation to a point
     //TODO add ability to use non "zig-zag" pathing
     //call once per loop
-    public void navigate(Transform2D target, double distanceResolutionThreshold, double angleResolutionThreshold)
+    //assumes robot position had already been updated
+    public void navigateTo(Transform2D target)
     {
-        
+        //update error terms
+        LocationControlFilter[0].roll(target.x-robotLocation.x);
+        LocationControlFilter[1].roll(target.y-robotLocation.y);
+        RotationControlFilter.roll(optimizeRotationTarget(target.rot-robotLocation.rot));
+        double xRate = LocationControlFilter[0].getFilteredValue();
+        double yRate = LocationControlFilter[1].getFilteredValue();
+        double wRate = RotationControlFilter.getFilteredValue();
+        moveRobot(xRate,yRate,wRate);
+        getRobotMotionFromEncoders();
     }
 
     //TODO make this more configurable
@@ -89,6 +98,15 @@ public class DriveSystem
         diff.x = motion[0];
         diff.y = motion[1];
         return diff;
+    }
+
+    //prevent an unlimited rotary system from rotating further than it needs
+    double optimizeRotationTarget(double angle)
+    {
+        double q = Math.floor(angle/180);
+        angle -= q*180;
+
+        return angle;
     }
 
 }
