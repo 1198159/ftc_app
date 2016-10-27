@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team6220;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 
 
@@ -21,10 +22,19 @@ abstract public class MasterOpMode extends LinearOpMode
     public final int BACK_LEFT   = 2;
     public final int BACK_RIGHT  = 3;
 
+    private int EncoderFR = 0;
+    private int EncoderFL = 0;
+    private int EncoderBL = 0;
+    private int EncoderBR = 0;
 
-    //our robot uses an omni drive, so our motors are positioned at 45 degree angles to normal positions.
-    //TODO update drive assembly positions
-    //
+    double robotXPos = 0;
+    double robotYPos = 0;
+
+    //TODO deal with angles at all starting positions
+    double currentAngle = 0;
+
+    BNO055IMU imu;
+
     DriveAssembly[] driveAssemblies;
 
     DriveSystem drive;
@@ -33,13 +43,20 @@ abstract public class MasterOpMode extends LinearOpMode
 
     public void initializeHardware()
     {
-
+        //create a driveAssembly array to allow for easy access to motors
         driveAssemblies = new DriveAssembly[4];
+
+        //our robot uses an omni drive, so our motors are positioned at 45 degree angles to motor positions on a normal drive.
                                                                         //mtr,                                       x,   y,   rot,  gear, radius
         driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"),new Transform2D( 1.0, 1.0, 135), 1.0, 0.1016);
         driveAssemblies[FRONT_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"),new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016);
         driveAssemblies[BACK_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"),new Transform2D(-1.0,-1.0, 315), 1.0, 0.1016);
         driveAssemblies[BACK_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"),new Transform2D( 1.0,-1.0,  45), 1.0, 0.1016);
+
+        driveAssemblies[FRONT_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveAssemblies[FRONT_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveAssemblies[BACK_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        driveAssemblies[BACK_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //TODO decide if we should initialize at opmode level
         //                      drive assemblies,                  x , y,  w  ,               p  , i , d
@@ -63,6 +80,7 @@ abstract public class MasterOpMode extends LinearOpMode
         vuforiaHelper.visionTargets.activate();
 
         vuforiaHelper.lastKnownLocation = vuforiaHelper.getLatestLocation();
+        //updateLocation()
 
         // Inform drivers of robot location. Location is null if we lose track of targets
         if(vuforiaHelper.lastKnownLocation != null)
@@ -73,6 +91,26 @@ abstract public class MasterOpMode extends LinearOpMode
         telemetry.update();
 
 
+    }
+
+    //TODO check encoder and imu loocation function
+    //keeps track of the robot's location in the arena based on Encoders and IMU
+    public void updateLocation()
+    {
+        currentAngle = imu.getAngularOrientation().firstAngle;
+
+        //find encoder values for motors
+        EncoderFR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
+        EncoderFL = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
+        EncoderBL = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
+        EncoderBR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
+
+        //math to calculate x and y positions based on encoder ticks and robot angle
+        robotXPos = Math.cos(currentAngle) * (EncoderFR + EncoderFL) / Math.pow(2, 0.5);
+        robotYPos = Math.sin(currentAngle) * (EncoderFR + EncoderFL) / Math.pow(2, 0.5);
+
+        telemetry.addData("X:", robotXPos);
+        telemetry.addData("Y:", robotYPos);
     }
 
     //wait a number of milliseconds

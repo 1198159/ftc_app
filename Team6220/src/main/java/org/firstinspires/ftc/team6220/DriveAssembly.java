@@ -19,13 +19,13 @@ public class DriveAssembly
     private double lastReadTime = 0;
     public Transform2D location;
 
-    //construct empty
+    //construct an empty DriveAssembly
     public DriveAssembly()
     {
         this.initialize(null, new Transform2D(0.0,0.0,0.0), 1.0, 1.0);
     }
 
-    //construct with values
+    //construct a DriveAssembly with values added
     public DriveAssembly(DcMotor m, Transform2D t, double gear, double radius)
     {
         this.initialize(m, t, gear, radius);

@@ -29,6 +29,9 @@ public class DriveSystem
 
 
     //TODO make this more configurable
+    //TODO make assemblies.location represent their actual values
+
+    //                   horizontal vertical  rotation
     public void moveRobot(double x, double y, double w)
     {
         double[] rawPowers = new double[]{0.0,0.0,0.0,0.0};
@@ -39,8 +42,8 @@ public class DriveSystem
         {
             rawPowers[corner] =
                     w
-                    + assemblies[corner].location.y * x
-                    + assemblies[corner].location.x * y
+                    + assemblies[corner].location.y * x         //assemblies[corner].location.y works as sine of the angle of each motor
+                    + assemblies[corner].location.x * y         //assemblies[corner].location.x works as cosine of the angle of each motor
                     ;
         }
         //scales values such that they will remain in proportion in the case that they would "overflow", e.g. [0.4,0.6,1.0,2.0] becomes [0.2,0.3,0.5,1.0]
