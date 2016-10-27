@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.util.Range;
 /*
  * This class contains all objects and methods that should be accessible by all Autonomous OpModes
  * The axes of the field are defined where the origin is the corner between the driver stations,
- * poitive x is along the blue wall, positive y is the red wall, and 0 degrees is positive x
+ * positive x is along the blue wall, positive y is the red wall, and 0 degrees is positive x
  */
 abstract class MasterAutonomous extends Master
 {
@@ -22,12 +22,12 @@ abstract class MasterAutonomous extends Master
     // Information on robot's location. Units are millimeters and degrees
     double robotX = 0.0, robotY = 0.0, robotAngle = 0.0;
 
-    // TODO: Do these need to be set at the beginning?
-    // Used to calculate distance traveled
-    private int lastEncoderFL = 0;
-    private int lastEncoderFR = 0;
-    private int lastEncoderBL = 0;
-    private int lastEncoderBR = 0;
+    // TODO: Should location code go into Master? We may use it for TeleOp, and it would be more convenient to set these in hardware init
+    // Used to calculate distance traveled between loops
+    int lastEncoderFL = 0;
+    int lastEncoderFR = 0;
+    int lastEncoderBL = 0;
+    int lastEncoderBR = 0;
 
     VuforiaLocator vuforiaLocator = new VuforiaLocator();
 
@@ -41,6 +41,7 @@ abstract class MasterAutonomous extends Master
         turnToAngle(finalAngle);
     }
 
+    // Turns to the specified angle
     void turnToAngle(double targetAngle) throws InterruptedException
     {
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
@@ -50,8 +51,12 @@ abstract class MasterAutonomous extends Master
         {
             updateRobotLocation();
 
+            // Recalculate how far away we are
             deltaAngle = subtractAngles(targetAngle, robotAngle);
+            // Slow down as we approach target
             double turnPower = Range.clip(deltaAngle / 50, -DRIVE_POWER, DRIVE_POWER);
+
+            // Set drive motor power
             driveMecanum(0.0, 0.0, turnPower);
 
             telemetry.addData("RobotAngle", robotAngle);
@@ -76,6 +81,7 @@ abstract class MasterAutonomous extends Master
             double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
             // In case the robot turns while driving
             double turnPower = subtractAngles(targetAngle, robotAngle) / 50;
+            // TODO: The robot seems to overshoot sometimes. Should we change the curve of this?
             // Decrease power as robot approaches target
             double drivePower = Range.clip(distanceToTarget / 350, -DRIVE_POWER, DRIVE_POWER);
 
@@ -115,11 +121,6 @@ abstract class MasterAutonomous extends Master
             int deltaBL = motorBL.getCurrentPosition() - lastEncoderBL;
             int deltaBR = motorBR.getCurrentPosition() - lastEncoderBR;
 
-            lastEncoderFL = motorFL.getCurrentPosition();
-            lastEncoderFR = motorFR.getCurrentPosition();
-            lastEncoderBL = motorBL.getCurrentPosition();
-            lastEncoderBR = motorBR.getCurrentPosition();
-
             // Take average of encoders ticks, and convert to mm. Some are negative because of 45 degree roller angle
             double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4 * MM_PER_TICK;
             double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4 * MM_PER_TICK;
@@ -130,6 +131,11 @@ abstract class MasterAutonomous extends Master
 
             robotAngle = imu.getAngularOrientation().firstAngle - headingOffset;
         }
+
+        lastEncoderFL = motorFL.getCurrentPosition();
+        lastEncoderFR = motorFR.getCurrentPosition();
+        lastEncoderBL = motorBL.getCurrentPosition();
+        lastEncoderBR = motorBR.getCurrentPosition();
     }
 
     // If you subtract 359 degrees from 0, you would get -359 instead of 1. This method handles

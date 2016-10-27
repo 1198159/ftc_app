@@ -16,4 +16,6 @@ abstract class MasterTeleOp extends Master
 
         driveMecanum(angle, power, turnPower);
     }
+
+    // TODO: Add functionality of other mechanisms when complete
 }

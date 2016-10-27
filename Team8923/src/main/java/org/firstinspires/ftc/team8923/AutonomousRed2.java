@@ -19,12 +19,20 @@ public class AutonomousRed2 extends MasterAutonomous
         robotAngle = RED_2_START_ANGLE;
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
 
+        lastEncoderFL = motorFL.getCurrentPosition();
+        lastEncoderFR = motorFR.getCurrentPosition();
+        lastEncoderBL = motorBL.getCurrentPosition();
+        lastEncoderBR = motorBR.getCurrentPosition();
+
         waitForStart();
 
         vuforiaLocator.startTracking();
 
+        // Go in front of left beacon and give Vuforia a chance to start tracking the target
         goToLocation(1700, 3200, 90.0);
-        // Go to left side of beacon
+        sleep(1000);
+        // TODO: Should the code below go into it's won method for pressing the beacon?
+        // Go in front of left side of beacon
         goToLocation(1385, 3550, 90.0);
         sleep(500);
         // Check color of left side
@@ -43,11 +51,13 @@ public class AutonomousRed2 extends MasterAutonomous
             telemetry.log().add("Left is blue");
             goToLocation(1515, 3550, 90.0);
             sleep(500);
-            goToLocation(1515, 3630, 90.0);
+            goToLocation(1515, 3625, 90.0);
             sleep(500);
             goToLocation(1515, 3550, 90.0);
             sleep(500);
         }
+
+        goToLocation(RED_2_START_X, RED_2_START_Y, RED_2_START_ANGLE);
 
         // TODO: Press other beacon button
 
