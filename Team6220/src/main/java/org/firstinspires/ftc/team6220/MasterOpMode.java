@@ -106,8 +106,9 @@ abstract public class MasterOpMode extends LinearOpMode
         EncoderBR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
 
         //math to calculate x and y positions based on encoder ticks and robot angle
-        robotXPos = Math.cos(currentAngle) * (EncoderFR + EncoderFL) / Math.pow(2, 0.5);
-        robotYPos = Math.sin(currentAngle) * (EncoderFR + EncoderFL) / Math.pow(2, 0.5);
+        //factors after EncoderFL are equivalent to circumference / encoder ticks per rotation
+        robotXPos = Math.cos(currentAngle) * (EncoderFR + EncoderFL) * 2 * Math.PI * 0.1016 / 1120 / Math.pow(2, 0.5);
+        robotYPos = Math.sin(currentAngle) * (EncoderFR + EncoderFL) * 2 * Math.PI * 0.1016 / 1120 / Math.pow(2, 0.5);
 
         telemetry.addData("X:", robotXPos);
         telemetry.addData("Y:", robotYPos);

@@ -5,14 +5,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.matrices.*;
 
 /*
-    Controls a drive assembly with PID controlled speed instead of power.
+    Controls a drive assembly with PID-controlled speed instead of power.
 */
 
 //TODO make use of PID Enforcement modes and remove DriveAssembly PID
 public class DriveAssembly
 {
     public DcMotor motor;
-    public double gearRatio;//between motor and  wheel, not gearbox
+    public double gearRatio;   //between motor and  wheel, not gearbox
     public double wheelRadius;
     public int encoderTicks = 1120;
     private int lastEncoderValue = 0;
