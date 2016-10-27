@@ -63,9 +63,9 @@ abstract public class MasterOpMode extends LinearOpMode
         //                      drive assemblies,  initial loc     x , y,  w  ,
         drive = new DriveSystem( driveAssemblies,  new Transform2D(0.0, 0.0, 0.0),
                 new PIDFilter[]{
-                        new PIDFilter(1.0,0.0,0.0),    //x location control
-                        new PIDFilter(1.0,0.0,0.0),    //y location control
-                        new PIDFilter(1.0,0.0,0.0)} ); //rotation control
+                        new PIDFilter(2.0,0.0,0.0),    //x location control
+                        new PIDFilter(2.0,0.0,0.0),    //y location control
+                        new PIDFilter(0.017,0.0,0.0)} ); //rotation control
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
