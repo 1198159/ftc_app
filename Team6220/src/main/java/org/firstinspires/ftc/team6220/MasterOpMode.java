@@ -74,6 +74,12 @@ abstract public class MasterOpMode extends LinearOpMode
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
 
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
         vuforiaHelper = new VuforiaHelper();
 
         vuforiaHelper.setupVuforia();
@@ -104,7 +110,6 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         currentAngle = imu.getAngularOrientation().firstAngle;
 
-        //find encoder values for motors
         EncoderFR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
         EncoderFL = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
         EncoderBL = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
@@ -117,6 +122,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         telemetry.addData("X:", robotXPos);
         telemetry.addData("Y:", robotYPos);
+        telemetry.update();
     }
 
 

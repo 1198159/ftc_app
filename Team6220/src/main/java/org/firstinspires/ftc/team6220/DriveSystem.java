@@ -25,7 +25,7 @@ public class DriveSystem
         this.robotLocation = initialLocation;
         this.LocationControlFilter[0] = filter[0];
         this.LocationControlFilter[1] = filter[1];
-        this.RotationControlFilter = filter[3];
+        this.RotationControlFilter = filter[2];
     }
 
     //TODO add updateRobotLocation() and getRobotLocation()
