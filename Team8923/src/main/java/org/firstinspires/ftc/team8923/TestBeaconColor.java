@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team8923;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /*
@@ -17,8 +19,17 @@ public class TestBeaconColor extends MasterAutonomous
 
         while(opModeIsActive())
         {
-            // Get color from just above image target
-            telemetry.addData("Color", vuforiaLocator.getPixelColor(0, 100, 0));
+            // Get color values of both sides of beacon
+            int colorLeft = vuforiaLocator.getPixelColor(-60, 230, 30);
+            int colorRight = vuforiaLocator.getPixelColor(60, 230, 30);
+
+            telemetry.addData("LeftRed", Color.red(colorLeft));
+            telemetry.addData("LeftGreen", Color.green(colorLeft));
+            telemetry.addData("LeftBlue", Color.blue(colorLeft));
+            telemetry.addData("", "");
+            telemetry.addData("RightRed", Color.red(colorRight));
+            telemetry.addData("RightGreen", Color.green(colorRight));
+            telemetry.addData("RightBlue", Color.blue(colorRight));
 
             telemetry.update();
             idle();

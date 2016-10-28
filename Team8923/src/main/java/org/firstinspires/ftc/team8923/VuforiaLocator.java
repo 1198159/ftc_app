@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team8923;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import com.qualcomm.ftcrobotcontroller.R;
 import com.vuforia.HINT;
@@ -108,14 +109,16 @@ class VuforiaLocator
         lastKnownLocation = createMatrix(0, 0, 0, 0, 0, 0);
     }
 
-    // TODO: Test me
-    // Used to find the color of a pixel from the camera. Parameters are relative to vision target origin
+    // Used to find the color of a pixel from the camera. Parameters are actually a coordinate
+    // relative to vision target origin. Will need to use Colors class to extract RGB values
     int getPixelColor(int x, int y, int z) throws InterruptedException
     {
+        // Get the latest frame object from Vuforia
         VuforiaLocalizer.CloseableFrame frame = vuforiaLocalizer.getFrameQueue().take();
         Bitmap bm = null;
 
-        // Get the image from the frame object
+        // The frame object contains multiple images in different formats. We want to store the
+        // RGB565 image in our bitmap object. Not sure what the other formats do
         for(int i = 0; i < frame.getNumImages(); i++)
         {
             // We only want the rgb image
@@ -148,7 +151,15 @@ class VuforiaLocator
                 Vec2F point = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), matrixPose, new Vec3F(x, y, z));
 
                 // Return the color of that pixel
-                return bm.getPixel((int) point.getData()[0], (int) point.getData()[1]);
+                try
+                {
+                    return bm.getPixel((int) point.getData()[0], (int) point.getData()[1]);
+                }
+                catch(IllegalArgumentException e)
+                {
+                    // Pixel location was outside of camera field of view
+                    return 0;
+                }
             }
         }
         // None of the vision targets are being tracked
