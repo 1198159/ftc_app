@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team8923;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /*
@@ -31,35 +33,66 @@ public class AutonomousRed2 extends MasterAutonomous
         // Go in front of left beacon and give Vuforia a chance to start tracking the target
         goToLocation(1700, 3200, 90.0);
         sleep(1000);
-        // TODO: Should the code below go into it's won method for pressing the beacon?
-        // Go in front of left side of beacon
-        goToLocation(1385, 3550, 90.0);
-        sleep(500);
-        // Check color of left side
-        if(colorSensor.red() >= colorSensor.blue())
+
+        // Get colors of both sides of beacon
+        int colorLeft = vuforiaLocator.getPixelColor(-60, 230, 30);
+        int colorRight = vuforiaLocator.getPixelColor(60, 230, 30);
+
+        // TODO: Should the code below go into it's own method for pressing the beacon?
+        // Check which side is more blue to determine which side is which color. The red value
+        // doesn't change as much as blue for some reason, so we compare the blue values
+        if(Color.blue(colorRight) > Color.blue(colorLeft))
         {
             // Press left side if it's red
             telemetry.log().add("Left is red");
+            // Go in front of left button
+            goToLocation(1385, 3550, 90.0);
+            // Move forward to press button
             goToLocation(1385, 3630, 90.0);
             sleep(500);
-            goToLocation(1385, 3550, 90.0);
-            sleep(500);
+            // Back away from beacon
+            goToLocation(1450, 3200, 90.0);
         }
         else
         {
-            // Press right side if it's blue
-            telemetry.log().add("Left is blue");
+            // Press right side if it's red
+            telemetry.log().add("Right is red");
+            // Go in front of right button
             goToLocation(1515, 3550, 90.0);
-            sleep(500);
+            // Move forward to press button
             goToLocation(1515, 3625, 90.0);
             sleep(500);
-            goToLocation(1515, 3550, 90.0);
-            sleep(500);
+            // Back away from beacon
+            goToLocation(1450, 3200, 90.0);
         }
 
-        goToLocation(RED_2_START_X, RED_2_START_Y, RED_2_START_ANGLE);
-
         // TODO: Press other beacon button
+
+        // TODO: Remove if no longer used. Only here in case we need it
+//        // Go in front of left side of beacon
+//        goToLocation(1385, 3550, 90.0);
+//        sleep(500);
+//        // Check color of left side
+//        if(colorSensor.red() >= colorSensor.blue())
+//        {
+//            // Press left side if it's red
+//            telemetry.log().add("Left is red");
+//            goToLocation(1385, 3630, 90.0);
+//            sleep(500);
+//            goToLocation(1385, 3550, 90.0);
+//            sleep(500);
+//        }
+//        else
+//        {
+//            // Press right side if it's blue
+//            telemetry.log().add("Left is blue");
+//            goToLocation(1515, 3550, 90.0);
+//            sleep(500);
+//            goToLocation(1515, 3625, 90.0);
+//            sleep(500);
+//            goToLocation(1515, 3550, 90.0);
+//            sleep(500);
+//        }
 
         // TODO: Remove when testing is done. This is just so we can read the results
         sleep(5000);
