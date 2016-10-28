@@ -1,8 +1,15 @@
 package org.firstinspires.ftc.team8923;
 
+import android.graphics.Bitmap;
+
 import com.qualcomm.ftcrobotcontroller.R;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.vuforia.HINT;
+import com.vuforia.Image;
+import com.vuforia.Matrix34F;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Tool;
+import com.vuforia.Vec2F;
+import com.vuforia.Vec3F;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -15,6 +22,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
+import java.util.Arrays;
 
 /*
  * This class is used for determining the robot location on the field by using Vuforia
@@ -56,6 +65,10 @@ class VuforiaLocator
         parameters.useExtendedTracking = false;
         vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
 
+        // Stuff for getting pixel information
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+        vuforiaLocalizer.setFrameQueueCapacity(1);
+
         // Initialize vision targets
         visionTargets = vuforiaLocalizer.loadTrackablesFromAsset(PICTURE_ASSET);
         Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 4);
@@ -93,6 +106,53 @@ class VuforiaLocator
 
         // Make not null to avoid errors
         lastKnownLocation = createMatrix(0, 0, 0, 0, 0, 0);
+    }
+
+    // TODO: Test me
+    // Used to find the color of a pixel from the camera. Parameters are relative to vision target origin
+    int getPixelColor(int x, int y, int z) throws InterruptedException
+    {
+        VuforiaLocalizer.CloseableFrame frame = vuforiaLocalizer.getFrameQueue().take();
+        Bitmap bm = null;
+
+        // Get the image from the frame object
+        for(int i = 0; i < frame.getNumImages(); i++)
+        {
+            // We only want the rgb image
+            if(frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565)
+            {
+                // Store image in the bitmap
+                Image image = frame.getImage(i);
+                bm = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.RGB_565);
+                bm.copyPixelsFromBuffer(image.getPixels());
+                break;
+            }
+        }
+
+        // Make sure we actually have something
+        if(bm == null)
+            return 0;
+
+        // Check to see if any of the vision targets are being tracked
+        for(int i = 0; i < targets.length; i++)
+        {
+            OpenGLMatrix targetPose = listeners[i].getRawPose();
+
+            // If the vision target isn't being tracked, it will be null. If it's not null, we're tracking it
+            if(targetPose != null)
+            {
+                Matrix34F matrixPose = new Matrix34F();
+                matrixPose.setData(Arrays.copyOfRange(targetPose.transposed().getData(), 0, 12));
+
+                // Get the pixel that represents the specified point
+                Vec2F point = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), matrixPose, new Vec3F(x, y, z));
+
+                // Return the color of that pixel
+                return bm.getPixel((int) point.getData()[0], (int) point.getData()[1]);
+            }
+        }
+        // None of the vision targets are being tracked
+        return 0;
     }
 
     void startTracking()
