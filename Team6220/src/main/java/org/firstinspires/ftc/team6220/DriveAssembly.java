@@ -15,6 +15,7 @@ public class DriveAssembly
     public double gearRatio;   //between motor and  wheel, not gearbox
     public double wheelRadius;
     public int encoderTicks = 1120;
+    public double encoderCorrectionFactor = 1.0;//correct for mismatch or reversed gearboxes
     private int lastEncoderValue = 0;
     private double lastReadTime = 0;
     public Transform2D location;
@@ -22,22 +23,23 @@ public class DriveAssembly
     //construct an empty DriveAssembly
     public DriveAssembly()
     {
-        this.initialize(null, new Transform2D(0.0,0.0,0.0), 1.0, 1.0);
+        this.initialize(null, new Transform2D(0.0,0.0,0.0), 1.0, 1.0, 1.0);
     }
 
     //construct a DriveAssembly with values added
-    public DriveAssembly(DcMotor m, Transform2D t, double gear, double radius)
+    public DriveAssembly(DcMotor m, Transform2D t, double gear, double radius,double cFactor)
     {
-        this.initialize(m, t, gear, radius);
+        this.initialize(m, t, gear, radius,cFactor);
     }
 
-    public void initialize(DcMotor m, Transform2D t, double gear, double radius)
+    public void initialize(DcMotor m, Transform2D t, double gear, double radius,double cFactor)
     {
         this.motor = m;
         this.wheelRadius = radius;
         this.gearRatio = gear;
         this.location = t;
         this.lastReadTime = System.nanoTime()/1000/1000/1000;
+        this.encoderCorrectionFactor = cFactor;
         zeroEncoder();
     }
 
@@ -55,7 +57,7 @@ public class DriveAssembly
     {
         double currentTime = System.nanoTime()/1000/1000/1000;
         double timeDiff = currentTime - lastReadTime;
-        int pos  = motor.getCurrentPosition();
+        int pos  = (int)(motor.getCurrentPosition()*encoderCorrectionFactor);
         int diff = pos - lastEncoderValue;
         lastEncoderValue = pos;
         lastReadTime = currentTime;

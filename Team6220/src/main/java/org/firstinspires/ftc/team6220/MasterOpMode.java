@@ -46,14 +46,16 @@ abstract public class MasterOpMode extends LinearOpMode
         //create a driveAssembly array to allow for easy access to motors
         driveAssemblies = new DriveAssembly[4];
 
+        //TODO adjust correction factor if necessary
         //our robot uses an omni drive, so our motors are positioned at 45 degree angles to motor positions on a normal drive.
-                                                                        //mtr,                                       x,   y,   rot,  gear, radius
-        driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"),new Transform2D( 1.0, 1.0, 135), 1.0, 0.1016);
-        driveAssemblies[FRONT_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"),new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016);
-        driveAssemblies[BACK_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"),new Transform2D(-1.0,-1.0, 315), 1.0, 0.1016);
-        driveAssemblies[BACK_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"),new Transform2D( 1.0,-1.0,  45), 1.0, 0.1016);
+                                                                        //mtr,                                       x,   y,   rot,  gear, radius, correction factor
+        driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"),new Transform2D( 1.0, 1.0, 135), 1.0, 0.1016, 1.0);
+        driveAssemblies[FRONT_LEFT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft") ,new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016, 1.0);
+        driveAssemblies[BACK_LEFT]   = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft")  ,new Transform2D(-1.0,-1.0, 315), 1.0, 0.1016, 1.0);
+        driveAssemblies[BACK_RIGHT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight") ,new Transform2D( 1.0,-1.0,  45), 1.0, 0.1016, 1.0);
 
         //TODO tune our own drive PID loop using DriveAssemblyPID instead of build-in P/step filter
+        //TODO Must be disabled if motor encoders are not correctly reporting
         driveAssemblies[FRONT_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[FRONT_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[BACK_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
