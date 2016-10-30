@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * drivers can pick the objectives for it to complete.
  */
 @Autonomous(name = "First Auto", group = "Autonomous")
-public class AutonomousCompetition extends MasterAutonomous
+public class AutonomousBlue extends MasterAutonomous
 {
     @Override
     public void runOpMode() throws InterruptedException

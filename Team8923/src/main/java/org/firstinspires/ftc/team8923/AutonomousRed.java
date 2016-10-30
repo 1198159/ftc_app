@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  *  red alliance drivers are stationed at.
  */
 @Autonomous(name = "Auto Red 2", group = "Autonomous")
-public class AutonomousRed2 extends MasterAutonomous
+public class AutonomousRed extends MasterAutonomous
 {
     @Override
     public void runOpMode() throws InterruptedException
