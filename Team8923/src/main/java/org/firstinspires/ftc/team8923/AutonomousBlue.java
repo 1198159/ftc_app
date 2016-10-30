@@ -1,36 +1,92 @@
 package org.firstinspires.ftc.team8923;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /*
- * This class contains code for running the CapBot during Autonomous. It's been designed so the
- * drivers can pick the objectives for it to complete.
+ * Autonomous OpMode for red alliance. The OpMode is setup with a gamepad during initialization,
+ *  so robot can start at one of two locations, and can complete any objective in any order
  */
-@Autonomous(name = "First Auto", group = "Autonomous")
+@Autonomous(name = "Auto Blue", group = "Autonomous")
 public class AutonomousBlue extends MasterAutonomous
 {
     @Override
     public void runOpMode() throws InterruptedException
     {
-        // TODO: Add code to pick objectives
+        // TODO: Add code to use gamepad to setup autonomous routine
 
         initHardware();
+
+        robotX = BLUE_LEFT_START_X;
+        robotY = BLUE_LEFT_START_Y;
+        robotAngle = BLUE_LEFT_START_ANGLE;
+        headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
+
+        lastEncoderFL = motorFL.getCurrentPosition();
+        lastEncoderFR = motorFR.getCurrentPosition();
+        lastEncoderBL = motorBL.getCurrentPosition();
+        lastEncoderBR = motorBR.getCurrentPosition();
 
         waitForStart();
 
         vuforiaLocator.startTracking();
 
-        while(opModeIsActive())
-        {
-            updateRobotLocation();
+        pressRightBeacon();
+        pressLeftBeacon();
 
-            telemetry.addData("X", robotX);
-            telemetry.addData("Y", robotY);
-            telemetry.addData("Angle", robotAngle);
-            telemetry.update();
-            idle();
+        // TODO: Remove when testing is done. This is just so we can read the results
+        sleep(5000);
+    }
+
+    private void pressLeftBeacon() throws InterruptedException
+    {
+        pressBeacon(3657.6, 2743.2);
+    }
+
+    private void pressRightBeacon() throws InterruptedException
+    {
+        pressBeacon(3657.6, 1524);
+    }
+
+    private void pressBeacon(double beaconX, double beaconY) throws InterruptedException
+    {
+        double angleToEndOfTape = Math.atan2(beaconX - robotX - 450, beaconY - robotY);
+
+        // Go to the end of the tape in front of the beacon
+        driveToPoint(beaconX - 450, beaconY, angleToEndOfTape);
+        turnToAngle(0);
+        // Give Vuforia a chance to start tracking the target
+        sleep(1000);
+
+        // Get colors of both sides of beacon. Parameters are in mm from center of vision target
+        int colorLeft = vuforiaLocator.getPixelColor(-60, 230, 30);
+        int colorRight = vuforiaLocator.getPixelColor(60, 230, 30);
+
+        // Check which side is more blue to determine which side is which color. The red value
+        // doesn't change as much as blue for some reason, so we compare the blue values
+        if(Color.blue(colorRight) > Color.blue(colorLeft))
+        {
+            // Press right side if it's blue
+            telemetry.log().add("Right is blue");
+            // Go in front of right button
+            driveToPoint(beaconX - 100, beaconY + 10, 0.0);
+            // Move forward to press button
+            driveToPoint(beaconX - 25, beaconY + 10, 0.0);
+            sleep(500);
+        }
+        else
+        {
+            // Press left side if it's blue
+            telemetry.log().add("Left is blue");
+            // Go in front of left button
+            driveToPoint(beaconX - 100, beaconY + 140, 0);
+            // Move forward to press button
+            driveToPoint(beaconX - 25, beaconY + 140, 0);
+            sleep(500);
         }
 
-        // TODO: Add code to go to objectives
+        // Back away from beacon
+        driveToPoint(beaconX - 450, beaconY, 0);
     }
 }

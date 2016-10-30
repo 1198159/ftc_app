@@ -12,9 +12,13 @@ abstract class MasterAutonomous extends Master
     // TODO: Might want to change naming style
     // TODO: Add locations of other starting spots
     // Starting locations for robot. Measurements are in millimeters and degrees
-    static final double RED_2_START_X = 17 * 25.4;
-    static final double RED_2_START_Y = 100 * 25.4;
-    static final double RED_2_START_ANGLE = 45.0;
+    static final double RED_LEFT_START_X = 17 * 25.4;
+    static final double RED_LEFT_START_Y = 100 * 25.4;
+    static final double RED_LEFT_START_ANGLE = 45.0;
+
+    static final double BLUE_LEFT_START_X = 100 * 25.4;
+    static final double BLUE_LEFT_START_Y = 17 * 25.4;
+    static final double BLUE_LEFT_START_ANGLE = 45.0;
 
     // Drive power is less than 1 to allow encoder PID loop to function
     private static final double DRIVE_POWER = 0.8;
