@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
  * Program used to control Drive-A-Bots.
  * This can be a good reference for drive controls.
  */
-@Autonomous(name="DriveStraight", group = "Swerve")
+@Autonomous(name="Master Autonomous", group = "Swerve")
 // @Disabled
 
 public class MasterAutonomous extends LinearOpMode

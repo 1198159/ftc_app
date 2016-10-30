@@ -43,8 +43,8 @@ public class MecanumDrive extends LinearOpMode {
 
     /*
      * Controls the robot with two joysticks
-     * Left joystick controls left side
-     * Right joystick controls right side
+     * Left joystick controls the turn / pivot
+     * Right joystick controls the forwards, backwards, left and right
      */
 
     public void mecanumDrive() {
@@ -68,10 +68,10 @@ public class MecanumDrive extends LinearOpMode {
         jy2 = modJoyStickInput(ry);
         turn = modJoyStickInput(lx);
 
-        motorFrontLeft.setPower(jx2 + jy2 + turn);
-        motorFrontRight.setPower(-jx2 + jy2 - turn);
-        motorBackLeft.setPower(-jx2 + jy2 + turn);
-        motorBackRight.setPower(jx2 + jy2 - turn);
+        motorFrontLeft.setPower(jx2 + jy2 + turn/2);
+        motorFrontRight.setPower(-jx2 + jy2 - turn/2);
+        motorBackLeft.setPower(-jx2 + jy2 + turn/2);
+        motorBackRight.setPower(jx2 + jy2 - turn/2);
         // lx is defined as game pad input, then turn gets value from function "modJoyStickInput"
         // turn used in final equation for each motor
     }
@@ -107,10 +107,10 @@ public class MecanumDrive extends LinearOpMode {
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
 
         // We're not using encoders, so tell the motor controller
-        motorFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
         motorBackLeft.setDirection(DcMotor.Direction.REVERSE);

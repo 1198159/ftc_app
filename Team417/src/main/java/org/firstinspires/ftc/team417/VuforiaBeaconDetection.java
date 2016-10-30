@@ -39,6 +39,13 @@ import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
+import com.vuforia.Image;
+import com.vuforia.Matrix34F;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Tool;
+import com.vuforia.Vec2F;
+import com.vuforia.Vec3F;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -57,13 +64,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.vuforia.Image;
-import com.vuforia.Matrix34F;
-import com.vuforia.PIXEL_FORMAT;
-import com.vuforia.Tool;
-import com.vuforia.Vec2F;
-import com.vuforia.Vec3F;
-import com.vuforia.Vuforia;
+// only wheels and tools are used
 
 /**
  * This OpMode illustrates the basics of using the Vuforia localizer to determine
@@ -96,7 +97,7 @@ import com.vuforia.Vuforia;
  * is explained below.
  */
 
-@Autonomous(name="Vuforia Test", group ="Concept")
+@Autonomous(name="Vuforia Beacon Detection", group ="Concept")
 //@Disabled
 public class VuforiaBeaconDetection extends LinearOpMode {
 
@@ -271,6 +272,28 @@ public class VuforiaBeaconDetection extends LinearOpMode {
         Tools.setLocation(toolsTargetLocationOnField);
         RobotLog.ii(TAG, "Tools Target=%s", format(toolsTargetLocationOnField));
 
+        OpenGLMatrix gearsTargetLocationOnField = OpenGLMatrix
+                /* Then we translate the target off to the Blue Audience wall.
+                Our translation here is a positive translation in Y.*/
+                .translation(0, mmFTCFieldWidth / 2, 0)
+                .multiplied(Orientation.getRotationMatrix(
+                        /* First, in the fixed (field) coordinate system, we rotate 90deg in X */
+                        AxesReference.EXTRINSIC, AxesOrder.XZX,
+                        AngleUnit.DEGREES, 90, 0, 0));
+        Gears.setLocation(gearsTargetLocationOnField);
+        RobotLog.ii(TAG, "Gears Target=%s", format(toolsTargetLocationOnField));
+
+        OpenGLMatrix legosTargetLocationOnField = OpenGLMatrix
+                /* Then we translate the target off to the Blue Audience wall.
+                Our translation here is a positive translation in Y.*/
+                .translation(0, mmFTCFieldWidth / 2, 0)
+                .multiplied(Orientation.getRotationMatrix(
+                        /* First, in the fixed (field) coordinate system, we rotate 90deg in X */
+                        AxesReference.EXTRINSIC, AxesOrder.XZX,
+                        AngleUnit.DEGREES, 90, 0, 0));
+        Legos.setLocation(legosTargetLocationOnField);
+        RobotLog.ii(TAG, "Legos Target=%s", format(toolsTargetLocationOnField));
+
         /**
          * Create a transformation matrix describing where the phone is on the robot. Here, we
          * put the phone on the right hand side of the robot with the screen facing in (see our
@@ -298,6 +321,8 @@ public class VuforiaBeaconDetection extends LinearOpMode {
          */
         ((VuforiaTrackableDefaultListener) Wheels.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         ((VuforiaTrackableDefaultListener) Tools.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener) Gears.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener) Legos.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
 
         /**
          * A brief tutorial: here's how all the math is going to work:
@@ -346,10 +371,8 @@ public class VuforiaBeaconDetection extends LinearOpMode {
 
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
 
-                if (robotLocationTransform != null && (gamepad1.a || gamepad1.b))
-//                if (gamepad1.a)
+                if (robotLocationTransform != null && (gamepad1.a))
                 {
-                    gamePadButtonA = gamepad1.a;    // used later to determine which beacon half to sample
                     lastLocation = robotLocationTransform;
                     GetImage(trackable);
                 }
@@ -407,21 +430,21 @@ public class VuforiaBeaconDetection extends LinearOpMode {
             // point to upper left
             Vec2F upperLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(-127, 92, 0));
             Vec2F upperRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(127, 92, 0));
-            Vec2F beaconLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(-127 + 50, 92 + 60, 0));
-//            Vec2F beaconLeft = new Vec2F(640, 360);
+            Vec2F beaconLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(-127 + 85, 92 + 90, 0));
 
-            Vec2F beaconRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(127 - 50, 92 + 60, 0));
+            Vec2F beaconRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(127 - 85, 92 + 90, 0));
             telemetry.log().add(String.format("UpperLeft X: %f, Y: %f", upperLeft.getData()[0], upperLeft.getData()[1]));
             telemetry.log().add(String.format("UpperRight X: %f, Y: %f", upperRight.getData()[0], upperRight.getData()[1]));
             telemetry.log().add(String.format("BeaconLeft X: %f, Y: %f", beaconLeft.getData()[0], beaconLeft.getData()[1]));
             telemetry.log().add(String.format("BeaconRight X: %f, Y: %f", beaconRight.getData()[0], beaconRight.getData()[1]));
 
 
-            float colorHSV[] = {0f, 0f, 0f};
-            if (gamePadButtonA)
-                GetImageColor(image, beaconLeft, colorHSV);
-            else
-                GetImageColor(image, beaconRight, colorHSV);
+            float leftColorHSV[] = {0f, 0f, 0f};
+            float rightColorHSV[] = {0f, 0f, 0f};
+
+                GetImageColor(image, beaconLeft, leftColorHSV);
+                GetImageColor(image, beaconRight, rightColorHSV);
+            telemetry.log().add(String.format("LeftSideHue: %f RightSideHue: %f", leftColorHSV[0], rightColorHSV[0]));
 
         }
 
@@ -436,11 +459,6 @@ public class VuforiaBeaconDetection extends LinearOpMode {
             int imageHeight = image.getHeight();
             int stride = image.getStride();
             int color = 0;
-            int colorRed = 0;
-            int colorGreen = 0;
-            int colorBlue = 0;
-            byte pixel0;
-            byte pixel1;
             float[] colorHsvSum = {0,0,0};
             float[] colorHSV = {0,0,0};
             // coordinates in image
