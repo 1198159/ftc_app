@@ -31,7 +31,8 @@ public class AutonomousRed2 extends MasterAutonomous
         vuforiaLocator.startTracking();
 
         // Go in front of left beacon and give Vuforia a chance to start tracking the target
-        goToLocation(1700, 3200, 90.0);
+        driveToPoint(1700, 3200, robotAngle);
+        turnToAngle(90.0);
         sleep(1000);
 
         // Get colors of both sides of beacon
@@ -46,24 +47,24 @@ public class AutonomousRed2 extends MasterAutonomous
             // Press left side if it's red
             telemetry.log().add("Left is red");
             // Go in front of left button
-            goToLocation(1385, 3550, 90.0);
+            driveToPoint(1385, 3550, 90.0);
             // Move forward to press button
-            goToLocation(1385, 3630, 90.0);
+            driveToPoint(1385, 3630, 90.0);
             sleep(500);
             // Back away from beacon
-            goToLocation(1450, 3200, 90.0);
+            driveToPoint(1450, 3200, 90.0);
         }
         else
         {
             // Press right side if it's red
             telemetry.log().add("Right is red");
             // Go in front of right button
-            goToLocation(1515, 3550, 90.0);
+            driveToPoint(1515, 3550, 90.0);
             // Move forward to press button
-            goToLocation(1515, 3625, 90.0);
+            driveToPoint(1515, 3625, 90.0);
             sleep(500);
             // Back away from beacon
-            goToLocation(1450, 3200, 90.0);
+            driveToPoint(1450, 3200, 90.0);
         }
 
         // TODO: Press other beacon button

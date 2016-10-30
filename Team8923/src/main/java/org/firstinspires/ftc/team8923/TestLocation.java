@@ -30,13 +30,13 @@ public class TestLocation extends MasterAutonomous
             // only be used before driving because of absolute location
             if(gamepad1.a)
             {
-                translateToPoint(609, 0, 0);
+                driveToPoint(609, 0, 0);
                 sleep(2000);
-                translateToPoint(0, 0, 0);
+                driveToPoint(0, 0, 0);
                 sleep(2000);
-                translateToPoint(0, -609, 0);
+                driveToPoint(0, -609, 0);
                 sleep(2000);
-                translateToPoint(0, 0, 0);
+                driveToPoint(0, 0, 0);
                 sleep(2000);
             }
             // Turn left then right 90 degrees to check accuracy.

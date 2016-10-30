@@ -31,16 +31,6 @@ abstract class MasterAutonomous extends Master
 
     VuforiaLocator vuforiaLocator = new VuforiaLocator();
 
-    // TODO: Should we still use this, or just use the two method calls individually?
-    void goToLocation(double targetX, double targetY, double finalAngle) throws InterruptedException
-    {
-        // Drive to target location
-        translateToPoint(targetX, targetY, robotAngle);
-
-        // Set robot angle to desired angle
-        turnToAngle(finalAngle);
-    }
-
     // Turns to the specified angle
     void turnToAngle(double targetAngle) throws InterruptedException
     {
@@ -67,7 +57,7 @@ abstract class MasterAutonomous extends Master
     }
 
     // Makes robot drive to a point on the field
-    void translateToPoint(double targetX, double targetY, double targetAngle) throws InterruptedException
+    void driveToPoint(double targetX, double targetY, double targetAngle) throws InterruptedException
     {
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
