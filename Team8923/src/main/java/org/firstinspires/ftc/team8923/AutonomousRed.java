@@ -14,13 +14,37 @@ public class AutonomousRed extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
+        telemetry.log().add("Starting Position: Press x for left, b for right");
+        telemetry.update();
+
+        while(true)
+        {
+            if(gamepad1.x)
+            {
+                // Robot will start on left
+                robotX = RED_LEFT_START_X;
+                robotY = RED_LEFT_START_Y;
+                robotAngle = RED_LEFT_START_ANGLE;
+                break;
+            }
+            else if(gamepad1.b)
+            {
+                // Robot will start on right
+                robotX = RED_RIGHT_START_X;
+                robotY = RED_RIGHT_START_Y;
+                robotAngle = RED_RIGHT_START_ANGLE;
+                break;
+            }
+            idle();
+        }
+
+        // Give time for button release
+        sleep(500);
+
         // TODO: Add code to use gamepad to setup autonomous routine
 
         initHardware();
 
-        robotX = RED_LEFT_START_X;
-        robotY = RED_LEFT_START_Y;
-        robotAngle = RED_LEFT_START_ANGLE;
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
 
         lastEncoderFL = motorFL.getCurrentPosition();

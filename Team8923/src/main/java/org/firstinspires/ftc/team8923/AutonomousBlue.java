@@ -5,7 +5,7 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /*
- * Autonomous OpMode for red alliance. The OpMode is setup with a gamepad during initialization,
+ *  Autonomous OpMode for blue alliance. The OpMode is setup with a gamepad during initialization,
  *  so robot can start at one of two locations, and can complete any objective in any order
  */
 @Autonomous(name = "Auto Blue", group = "Autonomous")
@@ -14,13 +14,37 @@ public class AutonomousBlue extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        // TODO: Add code to use gamepad to setup autonomous routine
+        telemetry.log().add("Starting Position: Press x for left, b for right");
+        telemetry.update();
 
+        while(true)
+        {
+            if(gamepad1.x)
+            {
+                // Robot will start on left
+                robotX = BLUE_LEFT_START_X;
+                robotY = BLUE_LEFT_START_Y;
+                robotAngle = BLUE_LEFT_START_ANGLE;
+                break;
+            }
+            else if(gamepad1.b)
+            {
+                // Robot will start on right
+                robotX = BLUE_RIGHT_START_X;
+                robotY = BLUE_RIGHT_START_Y;
+                robotAngle = BLUE_RIGHT_START_ANGLE;
+                break;
+            }
+            idle();
+        }
+
+        // Give time for button release
+        sleep(500);
+
+        // TODO: Add code to use gamepad to setup autonomous routine
+        
         initHardware();
 
-        robotX = BLUE_LEFT_START_X;
-        robotY = BLUE_LEFT_START_Y;
-        robotAngle = BLUE_LEFT_START_ANGLE;
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
 
         lastEncoderFL = motorFL.getCurrentPosition();
