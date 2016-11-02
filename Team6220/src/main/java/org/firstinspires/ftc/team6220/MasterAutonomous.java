@@ -14,33 +14,4 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         return Distance;
     }
-
-    //we use this in autonomous to drive to a specific point
-    public void DriveTo(double x, double y)
-    {
-        //the starting position of the robot on the field (units in meters)
-        double robotXPos = 0.2;
-        double robotYPos = 2.4;
-
-        while (FindDistance(robotXPos, robotYPos, x, y) != 0)
-        {
-            double xDiff = x - robotXPos;
-            double yDiff = y - robotYPos;
-
-            if (xDiff > 1)
-            {
-                xDiff = 1;
-            }
-
-            if (yDiff > 1)
-            {
-                yDiff = 1;
-            }
-            //y direction is reversed
-            drive.moveRobot(xDiff/3, -yDiff, 0);
-
-        }
-    }
-
-
 }
