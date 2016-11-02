@@ -55,7 +55,7 @@ abstract class MasterAutonomous extends Master
             // Recalculate how far away we are
             deltaAngle = subtractAngles(targetAngle, robotAngle);
             // Slow down as we approach target
-            double turnPower = Range.clip(deltaAngle / 50, -DRIVE_POWER, DRIVE_POWER);
+            double turnPower = Range.clip(deltaAngle / 150, -DRIVE_POWER, DRIVE_POWER);
 
             // Set drive motor power
             driveMecanum(0.0, 0.0, turnPower);
@@ -81,10 +81,10 @@ abstract class MasterAutonomous extends Master
             // In case robot drifts to the side
             double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
             // In case the robot turns while driving
-            double turnPower = subtractAngles(targetAngle, robotAngle) / 50;
-            // TODO: The robot seems to overshoot sometimes. Should we change the curve of this?
+            double turnPower = subtractAngles(targetAngle, robotAngle) / 100;
+            // TODO: The curve below doesn't seem to be very effective. Should we change it?
             // Decrease power as robot approaches target
-            double drivePower = Range.clip(distanceToTarget / 350, -DRIVE_POWER, DRIVE_POWER);
+            double drivePower = Range.clip(Math.cbrt(distanceToTarget / 5000), -DRIVE_POWER, DRIVE_POWER);
 
             // Set drive motor powers
             driveMecanum(driveAngle, drivePower, turnPower);
