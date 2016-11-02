@@ -25,6 +25,7 @@ public class AutonomousBlue extends MasterAutonomous
                 robotX = BLUE_LEFT_START_X;
                 robotY = BLUE_LEFT_START_Y;
                 robotAngle = BLUE_LEFT_START_ANGLE;
+                telemetry.log().add("Left Selected");
                 break;
             }
             else if(gamepad1.b)
@@ -33,6 +34,7 @@ public class AutonomousBlue extends MasterAutonomous
                 robotX = BLUE_RIGHT_START_X;
                 robotY = BLUE_RIGHT_START_Y;
                 robotAngle = BLUE_RIGHT_START_ANGLE;
+                telemetry.log().add("Right Selected");
                 break;
             }
             idle();
@@ -75,6 +77,7 @@ public class AutonomousBlue extends MasterAutonomous
 
     private void pressBeacon(double beaconX, double beaconY) throws InterruptedException
     {
+        // TODO: Do we need sleep commands in here?
         double angleToEndOfTape = Math.atan2(beaconX - robotX - 450, beaconY - robotY);
 
         // Go to the end of the tape in front of the beacon

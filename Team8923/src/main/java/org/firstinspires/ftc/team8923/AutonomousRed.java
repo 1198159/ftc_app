@@ -25,6 +25,7 @@ public class AutonomousRed extends MasterAutonomous
                 robotX = RED_LEFT_START_X;
                 robotY = RED_LEFT_START_Y;
                 robotAngle = RED_LEFT_START_ANGLE;
+                telemetry.log().add("Left Selected");
                 break;
             }
             else if(gamepad1.b)
@@ -33,6 +34,7 @@ public class AutonomousRed extends MasterAutonomous
                 robotX = RED_RIGHT_START_X;
                 robotY = RED_RIGHT_START_Y;
                 robotAngle = RED_RIGHT_START_ANGLE;
+                telemetry.log().add("Right Selected");
                 break;
             }
             idle();
@@ -86,7 +88,7 @@ public class AutonomousRed extends MasterAutonomous
 //        }
 
         // TODO: Remove when testing is done. This is just so we can read the results
-        sleep(5000);
+        sleep(10000);
     }
 
     private void pressLeftBeacon() throws InterruptedException
@@ -101,10 +103,14 @@ public class AutonomousRed extends MasterAutonomous
 
     private void pressBeacon(double beaconX, double beaconY) throws InterruptedException
     {
+        // TODO: Do we need sleep commands in here?
         double angleToEndOfTape = Math.atan2(beaconX - robotX, beaconY - robotY - 450);
 
         // Go to the end of the tape in front of the beacon
+        turnToAngle(angleToEndOfTape);
+        sleep(500);
         driveToPoint(beaconX, beaconY - 450, angleToEndOfTape);
+        sleep(500);
         turnToAngle(90);
         // Give Vuforia a chance to start tracking the target
         sleep(1000);
