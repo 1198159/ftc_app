@@ -27,8 +27,12 @@ abstract class MasterAutonomous extends Master
     static final double BLUE_RIGHT_START_Y = 17 * 25.4;
     static final double BLUE_RIGHT_START_ANGLE = 45.0;
 
-    // Drive power is less than 1 to allow encoder PID loop to function
-    private static final double DRIVE_POWER = 0.8;
+    // Constants for robot in autonomous
+    // Max drive power is less than 1 to ensure speed controller works
+    private static final double MAX_DRIVE_POWER = 0.6;
+    private static final double MIN_DRIVE_POWER = 0.1;
+    private static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
+    private static final double DRIVE_POWER_CONSTANT = 1.0 / 1000.0;
 
     // Information on robot's location. Units are millimeters and degrees
     double robotX = 0.0, robotY = 0.0, robotAngle = 0.0;
@@ -46,7 +50,7 @@ abstract class MasterAutonomous extends Master
     void turnToAngle(double targetAngle) throws InterruptedException
     {
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
-        double ANGLE_TOLERANCE = 2.0;
+        double ANGLE_TOLERANCE = 2.0; // In degrees
 
         while(Math.abs(deltaAngle) > ANGLE_TOLERANCE)
         {
@@ -54,8 +58,15 @@ abstract class MasterAutonomous extends Master
 
             // Recalculate how far away we are
             deltaAngle = subtractAngles(targetAngle, robotAngle);
+
             // Slow down as we approach target
-            double turnPower = Range.clip(deltaAngle / 150, -DRIVE_POWER, DRIVE_POWER);
+            double turnPower = Range.clip(deltaAngle * TURN_POWER_CONSTANT, -MAX_DRIVE_POWER, MAX_DRIVE_POWER);
+
+            // Make sure turn power doesn't go below minimum power
+            if(turnPower > 0 && turnPower < MIN_DRIVE_POWER)
+                turnPower = MIN_DRIVE_POWER;
+            else if(turnPower < 0 && turnPower > -MIN_DRIVE_POWER)
+                turnPower = -MIN_DRIVE_POWER;
 
             // Set drive motor power
             driveMecanum(0.0, 0.0, turnPower);
@@ -72,7 +83,7 @@ abstract class MasterAutonomous extends Master
     {
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
-        double DISTANCE_TOLERANCE = 10; // In mm TODO: Is 20 a good value?
+        double DISTANCE_TOLERANCE = 10; // In mm
 
         while(distanceToTarget > DISTANCE_TOLERANCE)
         {
@@ -80,11 +91,12 @@ abstract class MasterAutonomous extends Master
 
             // In case robot drifts to the side
             double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
+
+            // Decrease power as robot approaches target. Ensure it doesn't exceed power limits
+            double drivePower = Range.clip(distanceToTarget * DRIVE_POWER_CONSTANT, MIN_DRIVE_POWER, MAX_DRIVE_POWER);
+
             // In case the robot turns while driving
-            double turnPower = subtractAngles(targetAngle, robotAngle) / 100;
-            // TODO: The curve below doesn't seem to be very effective. Should we change it?
-            // Decrease power as robot approaches target
-            double drivePower = Range.clip(Math.cbrt(distanceToTarget / 5000), -DRIVE_POWER, DRIVE_POWER);
+            double turnPower = subtractAngles(targetAngle, robotAngle) * TURN_POWER_CONSTANT;
 
             // Set drive motor powers
             driveMecanum(driveAngle, drivePower, turnPower);
