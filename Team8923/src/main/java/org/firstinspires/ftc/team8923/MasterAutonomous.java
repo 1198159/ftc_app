@@ -71,6 +71,8 @@ abstract class MasterAutonomous extends Master
             // Set drive motor power
             driveMecanum(0.0, 0.0, turnPower);
 
+            telemetry.addData("X", robotX);
+            telemetry.addData("Y", robotY);
             telemetry.addData("RobotAngle", robotAngle);
             sendTelemetry();
             idle();
@@ -112,6 +114,16 @@ abstract class MasterAutonomous extends Master
             idle();
         }
         stopDriving();
+    }
+
+    // Robot sometimes won't see the vision targets when it should. This is to be used in places
+    // where we need to be sure that we're tracking the target
+    public void lookForVisionTarget()
+    {
+        //TODO: This won't always find the target, so make better
+        // Turn until target is found
+        while(!vuforiaLocator.isTracking())
+            driveMecanum(0, 0, -MIN_DRIVE_POWER);
     }
 
     // Updates robot's coordinates and angle

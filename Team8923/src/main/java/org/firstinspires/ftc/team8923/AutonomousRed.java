@@ -104,22 +104,27 @@ public class AutonomousRed extends MasterAutonomous
     private void pressBeacon(double beaconX, double beaconY) throws InterruptedException
     {
         // TODO: Do we need sleep commands in here?
-        double angleToEndOfTape = Math.atan2(beaconX - robotX, beaconY - robotY - 450);
+        double angleToEndOfTape = Math.atan2(beaconY - robotY - 450, beaconX - robotX);
 
         // Go to the end of the tape in front of the beacon
         turnToAngle(angleToEndOfTape);
-        sleep(500);
         driveToPoint(beaconX, beaconY - 450, angleToEndOfTape);
-        sleep(500);
         turnToAngle(90);
+
         // Give Vuforia a chance to start tracking the target
         sleep(1000);
+
+        // Only actually looks if vision target isn't visible
+        lookForVisionTarget();
+
+        // Reposition after tracking target
+        driveToPoint(beaconX, beaconY - 450, 90);
 
         // Get colors of both sides of beacon. Parameters are in mm from center of vision target
         int colorLeft = vuforiaLocator.getPixelColor(-60, 230, 30);
         int colorRight = vuforiaLocator.getPixelColor(60, 230, 30);
 
-        // Check which side is more blue to determine which side is which color. The red value
+        // Check which side is more blue to determine the color of each side. The red value
         // doesn't change as much as blue for some reason, so we compare the blue values
         if(Color.blue(colorRight) > Color.blue(colorLeft))
         {
@@ -128,7 +133,7 @@ public class AutonomousRed extends MasterAutonomous
             // Go in front of left button
             driveToPoint(beaconX - 140, beaconY - 100, 90);
             // Move forward to press button
-            driveToPoint(beaconX - 140, beaconY - 25, 90);
+            driveToPoint(beaconX - 140, beaconY - 35, 90);
             sleep(500);
         }
         else
@@ -138,7 +143,7 @@ public class AutonomousRed extends MasterAutonomous
             // Go in front of right button
             driveToPoint(beaconX - 10, beaconY - 100, 90.0);
             // Move forward to press button
-            driveToPoint(beaconX - 10, beaconY - 25, 90.0);
+            driveToPoint(beaconX - 10, beaconY - 35, 90.0);
             sleep(500);
         }
 
