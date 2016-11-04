@@ -151,6 +151,8 @@ abstract class MasterAutonomous extends Master
         // Otherwise, use other sensors to determine distance travelled and angle
         else
         {
+            robotAngle = imu.getAngularOrientation().firstAngle - headingOffset;
+
             int deltaFL = motorFL.getCurrentPosition() - lastEncoderFL;
             int deltaFR = motorFR.getCurrentPosition() - lastEncoderFR;
             int deltaBL = motorBL.getCurrentPosition() - lastEncoderBL;
@@ -163,8 +165,6 @@ abstract class MasterAutonomous extends Master
             // Delta x and y are intrinsic to robot, so make extrinsic and update robot location
             robotX += deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
             robotY += deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
-
-            robotAngle = imu.getAngularOrientation().firstAngle - headingOffset;
         }
 
         lastEncoderFL = motorFL.getCurrentPosition();
