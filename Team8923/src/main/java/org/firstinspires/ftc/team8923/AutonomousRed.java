@@ -15,9 +15,12 @@ public class AutonomousRed extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         telemetry.log().add("Starting Position: Press x for left, b for right");
+        telemetry.log().add("Press start button when robot is on field");
         telemetry.update();
 
-        while(true)
+        // TODO: Add code to use gamepad to setup autonomous routine
+        // Used to setup autonomous routine
+        while(opModeIsActive())
         {
             if(gamepad1.x)
             {
@@ -26,7 +29,6 @@ public class AutonomousRed extends MasterAutonomous
                 robotY = RED_LEFT_START_Y;
                 robotAngle = RED_LEFT_START_ANGLE;
                 telemetry.log().add("Left Selected");
-                break;
             }
             else if(gamepad1.b)
             {
@@ -35,18 +37,22 @@ public class AutonomousRed extends MasterAutonomous
                 robotY = RED_RIGHT_START_Y;
                 robotAngle = RED_RIGHT_START_ANGLE;
                 telemetry.log().add("Right Selected");
+            }
+            // Start button should only be pressed after robot is placed in starting position. Init
+            // auto assumes the robot is in it's starting position
+            else if(gamepad1.start)
+            {
+                telemetry.log().add("Setup complete. Initializing...");
                 break;
             }
+            telemetry.update();
             idle();
         }
 
-        // Give time for button release
-        sleep(500);
-
-        // TODO: Add code to use gamepad to setup autonomous routine
-
         initHardware();
         initAuto();
+
+        telemetry.log().add("Initialized. Ready to start!");
 
         waitForStart();
 
