@@ -62,7 +62,7 @@ abstract class MasterAutonomous extends Master
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
         double ANGLE_TOLERANCE = 2.0; // In degrees
 
-        while(Math.abs(deltaAngle) > ANGLE_TOLERANCE)
+        while(Math.abs(deltaAngle) > ANGLE_TOLERANCE && opModeIsActive())
         {
             updateRobotLocation();
 
@@ -97,7 +97,7 @@ abstract class MasterAutonomous extends Master
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
         double DISTANCE_TOLERANCE = 10; // In mm
 
-        while(distanceToTarget > DISTANCE_TOLERANCE)
+        while(distanceToTarget > DISTANCE_TOLERANCE && opModeIsActive())
         {
             updateRobotLocation();
 
@@ -132,7 +132,7 @@ abstract class MasterAutonomous extends Master
     {
         //TODO: This won't always find the target, so make better
         // Turn until target is found
-        while(!vuforiaLocator.isTracking())
+        while(!vuforiaLocator.isTracking() && opModeIsActive())
             driveMecanum(0, 0, -MIN_DRIVE_POWER);
     }
 
