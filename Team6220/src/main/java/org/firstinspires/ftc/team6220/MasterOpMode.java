@@ -87,28 +87,6 @@ abstract public class MasterOpMode extends LinearOpMode
         vuforiaHelper.setupVuforia();
     }
 
-    public void navigateRed1()
-    {
-        //Start tracking targets
-        vuforiaHelper.visionTargets.activate();
-
-        vuforiaHelper.lastKnownLocation = vuforiaHelper.getLatestLocation();
-        //updateLocation()
-
-        //Inform drivers of robot location. Location is null if we lose track of targets
-        if(vuforiaHelper.lastKnownLocation != null)
-        {
-            telemetry.addData("Pos", vuforiaHelper.format(vuforiaHelper.lastKnownLocation));
-        }
-        else
-        {
-            telemetry.addData("Pos", "Unknown");
-
-            telemetry.update();
-        }
-
-    }
-
     //TODO check encoder and imu location function
     //keeps track of the robot's location on the field based on Encoders and IMU
     public void updateLocation()

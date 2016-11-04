@@ -1,9 +1,19 @@
 package org.firstinspires.ftc.team6220;
 
+import android.graphics.Bitmap;
+
 import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.HINT;
+import com.vuforia.Image;
+import com.vuforia.Matrix34F;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Tool;
+import com.vuforia.Vec2F;
+import com.vuforia.Vec3F;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -15,6 +25,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
+import java.util.Arrays;
 
 
 /**
@@ -73,13 +85,19 @@ public class VuforiaHelper
 
     public void setupVuforia()
     {
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId);
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        parameters.useExtendedTracking = false;
         vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
+
+        // Stuff for getting pixel information
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+        vuforiaLocalizer.setFrameQueueCapacity(1);
 
         // Initialize vision targets
         visionTargets = vuforiaLocalizer.loadTrackablesFromAsset(PICTURE_ASSET);
+        Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 4);
 
         targets[RED_LEFT] = visionTargets.get(GEARS);
         targets[RED_LEFT].setName("Target Red Left");
@@ -95,15 +113,17 @@ public class VuforiaHelper
 
         // Set vision target locations on field. Origin is at corner of field between driver
         // stations, with the positive x-axis extending to the blue side, and positive y-axis
-        // extending to the red side
-        targets[RED_LEFT].setLocation(setMatrixLocation(1524, MM_FIELD_SIZE, 0, 90, 0, 0));
-        targets[RED_RIGHT].setLocation(setMatrixLocation(2743.2f, MM_FIELD_SIZE, 0, 90, 0, 0));
-        targets[BLUE_LEFT].setLocation(setMatrixLocation(MM_FIELD_SIZE, 2743.2f, 0, 90, 0, -90));
-        targets[BLUE_RIGHT].setLocation(setMatrixLocation(MM_FIELD_SIZE, 1524, 0, 90, 0, -90));
+        // extending to the red side. Units in mm and degrees
+        // TODO: Should we use constants for these?
+        targets[RED_LEFT].setLocation(createMatrix(1524, MM_FIELD_SIZE, 0, 90, 0, 0));
+        targets[RED_RIGHT].setLocation(createMatrix(2743.2f, MM_FIELD_SIZE, 0, 90, 0, 0));
+        targets[BLUE_LEFT].setLocation(createMatrix(MM_FIELD_SIZE, 2743.2f, 0, 90, 0, -90));
+        targets[BLUE_RIGHT].setLocation(createMatrix(MM_FIELD_SIZE, 1524, 0, 90, 0, -90));
 
-        // Set phone location on robot, and inform listeners
-        phoneLocation = setMatrixLocation(0, MM_BOT_SIZE / 2, 0, 90, 0, 0);
+        // Set phone location on robot. Center of the camera is the origin
+        phoneLocation = createMatrix(0, 0, 0, 90, 0, -90);
 
+        // Setup listeners
         for(int i = 0; i < targets.length; i++)
         {
             listeners[i] = (VuforiaTrackableDefaultListener) targets[i].getListener();
@@ -111,18 +131,119 @@ public class VuforiaHelper
         }
     }
 
-    // Creates a matrix for defining locations of things. Coordinates are given by x, y, and z, and
-    // rotations about axes are given by u, v, and w. Default rotation order is XYZ.
-    public OpenGLMatrix setMatrixLocation(float x, float y, float z, float u, float v, float w)
+    // Used to find pixel color from the camera. Parameters are actually a coordinate
+    // relative to vision target origin. Will need to use Colors class to extract RGB values
+    int getPixelColor(int x, int y, int z) throws InterruptedException
     {
-        return OpenGLMatrix.translation(x, y, z)
-                .multiplied(Orientation.getRotationMatrix(
-                        AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
+        // Get the latest frame object from Vuforia
+        VuforiaLocalizer.CloseableFrame frame = vuforiaLocalizer.getFrameQueue().take();
+        Bitmap bm = null;
+
+        // The frame object contains multiple images in different formats. We want to store the
+        // RGB565 image in our bitmap object. Not sure what the other formats do
+        for(int i = 0; i < frame.getNumImages(); i++)
+        {
+            // We only want the rgb image
+            if(frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565)
+            {
+                // Store image in the bitmap
+                Image image = frame.getImage(i);
+                bm = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.RGB_565);
+                bm.copyPixelsFromBuffer(image.getPixels());
+                break;
+            }
+        }
+
+        // Make sure we actually have something
+        if(bm == null)
+        {
+            return 0;
+        }
+        // Check to see if any of the vision targets are being tracked
+        for(int i = 0; i < targets.length; i++)
+        {
+            OpenGLMatrix targetPose = listeners[i].getRawPose();
+
+            // If the vision target isn't being tracked, it will be null. If it's not null, we're tracking it
+            if(targetPose != null)
+            {
+                Matrix34F matrixPose = new Matrix34F();
+                matrixPose.setData(Arrays.copyOfRange(targetPose.transposed().getData(), 0, 12));
+
+                // Get the pixel that represents the specified point
+                Vec2F point = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), matrixPose, new Vec3F(x, y, z));
+
+                // Return the color of that pixel
+                try
+                {
+                    return bm.getPixel((int) point.getData()[0], (int) point.getData()[1]);
+                }
+                catch(IllegalArgumentException e)
+                {
+                    // Pixel location was outside of camera field of view
+                    return 0;
+                }
+            }
+        }
+        // None of the vision targets are being tracked
+        return 0;
+    }
+
+    private void updateLocation()
+    {
+        // Checks each target to see if we can find our location. If none are visible, then it returns null
+        for(int i = 0; i < targets.length; i++)
+        {
+            // Try to find location from this target
+            OpenGLMatrix latestLocation = listeners[i].getUpdatedRobotLocation();
+
+            // We've found a target to track
+            if(latestLocation != null)
+            {
+                lastKnownLocation = latestLocation;
+                return;
+            }
+        }
+        // Location is unknown, so don't change anything
+    }
+
+    void startTracking()
+    {
+        visionTargets.activate();
+    }
+
+    float getRobotAngle()
+    {
+        updateLocation();
+        return Orientation.getOrientation(lastKnownLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
+    }
+
+    boolean isTracking()
+    {
+        for(int i = 0; i < targets.length; i++)
+        {
+            if(listeners[i].isVisible())
+                return true;
+        }
+        return false;
+    }
+
+    float[] getRobotLocation()
+    {
+        updateLocation();
+        return lastKnownLocation.getTranslation().getData();
     }
 
     // Formats location to something readable
     String format(OpenGLMatrix transformationMatrix)
     {
         return transformationMatrix.formatAsTransform();
+    }
+
+    private OpenGLMatrix createMatrix(float x, float y, float z, float u, float v, float w)
+    {
+        return OpenGLMatrix.translation(x, y, z)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
     }
 }
