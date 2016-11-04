@@ -29,10 +29,10 @@ abstract class MasterAutonomous extends Master
 
     // Constants for robot in autonomous
     // Max drive power is less than 1 to ensure speed controller works
-    private static final double MAX_DRIVE_POWER = 0.6;
-    private static final double MIN_DRIVE_POWER = 0.1;
-    private static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
-    private static final double DRIVE_POWER_CONSTANT = 1.0 / 1000.0;
+    static final double MAX_DRIVE_POWER = 0.6;
+    static final double MIN_DRIVE_POWER = 0.1;
+    static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
+    static final double DRIVE_POWER_CONSTANT = 1.0 / 1000.0;
 
     // Information on robot's location. Units are millimeters and degrees
     double robotX = 0.0, robotY = 0.0, robotAngle = 0.0;
@@ -175,7 +175,7 @@ abstract class MasterAutonomous extends Master
 
     // If you subtract 359 degrees from 0, you would get -359 instead of 1. This method handles
     // cases when one angle is multiple rotations away from the other
-    private double subtractAngles(double first, double second)
+    double subtractAngles(double first, double second)
     {
         double delta = first - second;
         while(delta > 180)

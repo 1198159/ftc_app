@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team8923;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.Range;
 
 /*
  *  Autonomous OpMode for red alliance. The OpMode is setup with a gamepad during initialization,
@@ -149,5 +150,117 @@ public class AutonomousRed extends MasterAutonomous
 
         // Back away from beacon
         driveToPoint(beaconX, beaconY - 450, 90);
+    }
+
+    // TODO: The methods below should only be temporary until we find a better solution to other alliance's targets giving bogus numbers
+    // Updates robot's coordinates and angle. Only to be used when on red alliance. The blue
+    // alliance's vision targets have been giving us some not so useful numbers, so we make sure to
+    // only use the red targets
+    void updateRobotLocationRed()
+    {
+        // Use Vuforia if a it's tracking something, and ensure it's not a blue target
+        if(vuforiaLocator.isTracking()
+                && !vuforiaLocator.getTargetName().equals("Target Blue Left")
+                && !vuforiaLocator.getTargetName().equals("Target Blue Right"))
+        {
+            float[] location = vuforiaLocator.getRobotLocation();
+            robotX = location[0];
+            robotY = location[1];
+
+            robotAngle = vuforiaLocator.getRobotAngle();
+        }
+        // Otherwise, use other sensors to determine distance travelled and angle
+        else
+        {
+            robotAngle = imu.getAngularOrientation().firstAngle - headingOffset;
+
+            int deltaFL = motorFL.getCurrentPosition() - lastEncoderFL;
+            int deltaFR = motorFR.getCurrentPosition() - lastEncoderFR;
+            int deltaBL = motorBL.getCurrentPosition() - lastEncoderBL;
+            int deltaBR = motorBR.getCurrentPosition() - lastEncoderBR;
+
+            // Take average of encoders ticks, and convert to mm. Some are negative because of 45 degree roller angle
+            double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4 * MM_PER_TICK;
+            double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4 * MM_PER_TICK;
+
+            // Delta x and y are intrinsic to robot, so make extrinsic and update robot location
+            robotX += deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
+            robotY += deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
+        }
+
+        lastEncoderFL = motorFL.getCurrentPosition();
+        lastEncoderFR = motorFR.getCurrentPosition();
+        lastEncoderBL = motorBL.getCurrentPosition();
+        lastEncoderBR = motorBR.getCurrentPosition();
+    }
+
+    // Turns to the specified angle
+    void turnToAngle(double targetAngle) throws InterruptedException
+    {
+        double deltaAngle = subtractAngles(targetAngle, robotAngle);
+        double ANGLE_TOLERANCE = 2.0; // In degrees
+
+        while(Math.abs(deltaAngle) > ANGLE_TOLERANCE && opModeIsActive())
+        {
+            updateRobotLocationRed();
+
+            // Recalculate how far away we are
+            deltaAngle = subtractAngles(targetAngle, robotAngle);
+
+            // Slow down as we approach target
+            double turnPower = Range.clip(deltaAngle * TURN_POWER_CONSTANT, -MAX_DRIVE_POWER, MAX_DRIVE_POWER);
+
+            // Make sure turn power doesn't go below minimum power
+            if(turnPower > 0 && turnPower < MIN_DRIVE_POWER)
+                turnPower = MIN_DRIVE_POWER;
+            else if(turnPower < 0 && turnPower > -MIN_DRIVE_POWER)
+                turnPower = -MIN_DRIVE_POWER;
+
+            // Set drive motor power
+            driveMecanum(0.0, 0.0, turnPower);
+
+            telemetry.addData("X", robotX);
+            telemetry.addData("Y", robotY);
+            telemetry.addData("RobotAngle", robotAngle);
+            sendTelemetry();
+            idle();
+        }
+        stopDriving();
+    }
+
+    // Makes robot drive to a point on the field
+    void driveToPoint(double targetX, double targetY, double targetAngle) throws InterruptedException
+    {
+        // Calculate how far we are from target point
+        double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
+        double DISTANCE_TOLERANCE = 10; // In mm
+
+        while(distanceToTarget > DISTANCE_TOLERANCE && opModeIsActive())
+        {
+            updateRobotLocationRed();
+
+            // In case robot drifts to the side
+            double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
+
+            // Decrease power as robot approaches target. Ensure it doesn't exceed power limits
+            double drivePower = Range.clip(distanceToTarget * DRIVE_POWER_CONSTANT, MIN_DRIVE_POWER, MAX_DRIVE_POWER);
+
+            // In case the robot turns while driving
+            double turnPower = subtractAngles(targetAngle, robotAngle) * TURN_POWER_CONSTANT;
+
+            // Set drive motor powers
+            driveMecanum(driveAngle, drivePower, turnPower);
+
+            // Recalculate distance for next check
+            distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
+
+            // Inform drivers of robot location
+            telemetry.addData("X", robotX);
+            telemetry.addData("Y", robotY);
+            telemetry.addData("RobotAngle", robotAngle);
+            sendTelemetry();
+            idle();
+        }
+        stopDriving();
     }
 }
