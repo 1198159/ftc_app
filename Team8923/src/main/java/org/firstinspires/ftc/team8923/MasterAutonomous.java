@@ -37,7 +37,6 @@ abstract class MasterAutonomous extends Master
     // Information on robot's location. Units are millimeters and degrees
     double robotX = 0.0, robotY = 0.0, robotAngle = 0.0;
 
-    // TODO: Should location code go into Master? We may use it for TeleOp, and it would be more convenient to set these in hardware init
     // Used to calculate distance traveled between loops
     int lastEncoderFL = 0;
     int lastEncoderFR = 0;
@@ -45,6 +44,17 @@ abstract class MasterAutonomous extends Master
     int lastEncoderBR = 0;
 
     VuforiaLocator vuforiaLocator = new VuforiaLocator();
+
+    public void initAuto()
+    {
+        // Used to calculate distance traveled between loops
+        lastEncoderFL = motorFL.getCurrentPosition();
+        lastEncoderFR = motorFR.getCurrentPosition();
+        lastEncoderBL = motorBL.getCurrentPosition();
+        lastEncoderBR = motorBR.getCurrentPosition();
+
+        headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
+    }
 
     // Turns to the specified angle
     void turnToAngle(double targetAngle) throws InterruptedException

@@ -12,11 +12,11 @@ public class TestLocation extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         initHardware();
+        initAuto();
 
         robotX = 0;
         robotY = 0;
         robotAngle = 0;
-        headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
 
         waitForStart();
 

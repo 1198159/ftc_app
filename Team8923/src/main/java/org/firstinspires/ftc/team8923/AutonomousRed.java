@@ -46,13 +46,7 @@ public class AutonomousRed extends MasterAutonomous
         // TODO: Add code to use gamepad to setup autonomous routine
 
         initHardware();
-
-        headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
-
-        lastEncoderFL = motorFL.getCurrentPosition();
-        lastEncoderFR = motorFR.getCurrentPosition();
-        lastEncoderBL = motorBL.getCurrentPosition();
-        lastEncoderBR = motorBR.getCurrentPosition();
+        initAuto();
 
         waitForStart();
 
@@ -115,7 +109,7 @@ public class AutonomousRed extends MasterAutonomous
         sleep(1000);
 
         // Only actually looks if vision target isn't visible
-        lookForVisionTarget();
+        //lookForVisionTarget();
 
         // Reposition after tracking target
         driveToPoint(beaconX, beaconY - 450, 90);

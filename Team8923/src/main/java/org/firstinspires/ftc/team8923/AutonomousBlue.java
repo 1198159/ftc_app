@@ -44,15 +44,9 @@ public class AutonomousBlue extends MasterAutonomous
         sleep(500);
 
         // TODO: Add code to use gamepad to setup autonomous routine
-        
+
         initHardware();
-
-        headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
-
-        lastEncoderFL = motorFL.getCurrentPosition();
-        lastEncoderFR = motorFR.getCurrentPosition();
-        lastEncoderBL = motorBL.getCurrentPosition();
-        lastEncoderBR = motorBR.getCurrentPosition();
+        initAuto();
 
         waitForStart();
 
