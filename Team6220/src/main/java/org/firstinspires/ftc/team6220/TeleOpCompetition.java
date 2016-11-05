@@ -24,19 +24,12 @@ public class TeleOpCompetition extends MasterTeleOp
 
         waitForStart();
 
-        timer.reset();
-
         while (opModeIsActive())
         {
             driveRobotWithJoysticks(-gamepad1.right_stick_x,    //local x motion power; reversed
                                     gamepad1.right_stick_y,     //local y motion power
                                     -gamepad1.left_stick_x);    //rotation power; reversed
             updateLocation();
-
-            telemetry.addData("Time: ", timer.milliseconds());
-            timer.reset();
-            telemetry.update();
-            idle();
         }
     }
 }

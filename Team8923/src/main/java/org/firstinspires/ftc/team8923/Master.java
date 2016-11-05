@@ -25,7 +25,7 @@ abstract class Master extends LinearOpMode
 
     // Constants to be used in code. Measurements in millimeters
     static final double GEAR_RATIO = 1.0; // Ratio of driven gear to driving gear
-    static final double TICKS_PER_MOTOR_REVOLUTION = 1120.0;
+    static final double TICKS_PER_MOTOR_REVOLUTION = 560.0;
     static final double TICKS_PER_WHEEL_REVOLUTION = TICKS_PER_MOTOR_REVOLUTION / GEAR_RATIO;
     static final double WHEEL_DIAMETER = 4 * 25.4; // 4 inch diameter
     static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
@@ -39,8 +39,8 @@ abstract class Master extends LinearOpMode
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
 
-        motorFL.setDirection(DcMotor.Direction.REVERSE);
-        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        motorFR.setDirection(DcMotor.Direction.REVERSE);
+        motorBR.setDirection(DcMotor.Direction.REVERSE);
 
         // Our drive motors seem to run at this speed
         motorFL.setMaxSpeed(2700);

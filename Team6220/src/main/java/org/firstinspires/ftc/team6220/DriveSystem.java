@@ -29,9 +29,8 @@ public class DriveSystem
     }
 
     //TODO add updateRobotLocation() and getRobotLocation()
-
     //PID-driven navigation to a point
-    //TODO add ability to use non "zig-zag" pathing
+    //TODO add ability to use non "zig-zag" paths
     //call once per loop
     //assumes robot position had already been updated
     public void navigateTo(Transform2D target)
@@ -64,7 +63,7 @@ public class DriveSystem
                     + assemblies[corner].location.x * y         //assemblies[corner].location.x works as cosine of the angle of each motor
                     ;
         }
-        //scales values such that they will remain in proportion in the case that they would "overflow", e.g. [0.4,0.6,1.0,2.0] becomes [0.2,0.3,0.5,1.0]
+        //scales values so that they will remain in proportion in the case that they would "overflow"; e.g. [0.4,0.6,1.0,2.0] becomes [0.2,0.3,0.5,1.0]
         double scalingFactor = 1.0;
         double largest = SequenceUtilities.getLargestMagnitude(rawPowers);
         if (largest > 1.0)

@@ -15,32 +15,61 @@ abstract public class MasterAutonomous extends MasterOpMode
         return Distance;
     }
 
-    //we use this in autonomous to drive to a specific point
-    public void DriveTo(double x, double y)
+    public void VuforiaDriveToPosition(double TargetX, double TargetY, double TargetAngle )
     {
-        //the starting position of the robot on the field (units in meters)
-        double robotXPos = 0.2;
-        double robotYPos = 2.4;
+        //Start tracking targets
+        vuforiaHelper.visionTargets.activate();
 
-        while (FindDistance(robotXPos, robotYPos, x, y) != 0)
+        vuforiaHelper.lastKnownLocation = vuforiaHelper.getLatestLocation();
+        //updateLocation()
+
+        //Inform drivers of robot location. Location is null if we lose track of targets
+        if(vuforiaHelper.lastKnownLocation != null)
         {
-            double xDiff = x - robotXPos;
-            double yDiff = y - robotYPos;
-
-            if (xDiff > 1)
-            {
-                xDiff = 1;
-            }
-
-            if (yDiff > 1)
-            {
-                yDiff = 1;
-            }
-            //y direction is reversed
-            drive.moveRobot(xDiff/3, -yDiff, 0);
-
+            telemetry.addData("Pos", vuforiaHelper.format(vuforiaHelper.lastKnownLocation));
         }
+        else
+        {
+            telemetry.addData("Pos", "Unknown");
+
+            telemetry.update();
+        }
+
     }
 
+    //makes our robot turn to a specified angle
+    public void TurnTo(double TargetAngle)
+    {
+        double currentAngle = imu.getAngularOrientation().firstAngle;
+        double angleDiff = TargetAngle - currentAngle;
+        double signedAddend;
 
+        //the addend's sign depends on the sign of the angle difference.  If the angle difference is sufficiently small, we want
+        //to remove the addend to stop the robot.
+        if (angleDiff > 1.0)
+        {
+            signedAddend = 0.3;
+        }
+        else if (angleDiff < -1.0)
+        {
+            signedAddend = -0.3;
+        }
+        else
+        {
+            signedAddend = 0.0;
+        }
+
+        if (angleDiff > 0.7)
+        {
+            angleDiff = 0.7;
+        }
+
+        //sets the power of the motors to turn.  Since the turning direction of the robot is reversed from the motors,
+        //negative signs are necessary.  The extra added number is to make sure the robot does not slow down too
+        //drastically when nearing its target angle.
+        driveAssemblies[FRONT_RIGHT].setPower(-angleDiff - signedAddend);
+        driveAssemblies[FRONT_LEFT].setPower(-angleDiff - signedAddend);
+        driveAssemblies[BACK_LEFT].setPower(-angleDiff - signedAddend);
+        driveAssemblies[BACK_RIGHT].setPower(-angleDiff - signedAddend);
+    }
 }

@@ -212,6 +212,24 @@ class VuforiaLocator
         // Location is unknown, so don't change anything
     }
 
+    String getTargetName()
+    {
+        // Checks each target to see if we can find our location. If none are visible, then it returns null
+        for(int i = 0; i < targets.length; i++)
+        {
+            // Try to find location from this target
+            OpenGLMatrix latestLocation = listeners[i].getUpdatedRobotLocation();
+
+            // We've found a target to track
+            if(latestLocation != null)
+            {
+                return targets[i].getName();
+            }
+        }
+        // Not tracking anything
+        return "";
+    }
+
     // Creates a matrix for defining locations of things. Coordinates are given by x, y, and z, and
     // rotations about axes are given by u, v, and w. Default rotation order is XYZ.
     private OpenGLMatrix createMatrix(float x, float y, float z, float u, float v, float w)

@@ -62,7 +62,7 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies[BACK_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //TODO decide if we should initialize at opmode level
-        //                      drive assemblies,  initial loc     x , y,  w  ,
+        //                      drive assemblies   initial loc:     x    y    w
         drive = new DriveSystem( driveAssemblies,  new Transform2D(0.0, 0.0, 0.0),
                 new PIDFilter[]{
                         new PIDFilter(2.0,0.0,0.0),    //x location control
@@ -87,27 +87,8 @@ abstract public class MasterOpMode extends LinearOpMode
         vuforiaHelper.setupVuforia();
     }
 
-    public void navigateRed1()
-    {
-        // Start tracking targets
-        vuforiaHelper.visionTargets.activate();
-
-        vuforiaHelper.lastKnownLocation = vuforiaHelper.getLatestLocation();
-        //updateLocation()
-
-        // Inform drivers of robot location. Location is null if we lose track of targets
-        if(vuforiaHelper.lastKnownLocation != null)
-            telemetry.addData("Pos", vuforiaHelper.format(vuforiaHelper.lastKnownLocation));
-        else
-            telemetry.addData("Pos", "Unknown");
-
-        telemetry.update();
-
-
-    }
-
-    //TODO check encoder and imu loocation function
-    //keeps track of the robot's location in the arena based on Encoders and IMU
+    //TODO check encoder and imu location function
+    //keeps track of the robot's location on the field based on Encoders and IMU
     public void updateLocation()
     {
         currentAngle = imu.getAngularOrientation().firstAngle;

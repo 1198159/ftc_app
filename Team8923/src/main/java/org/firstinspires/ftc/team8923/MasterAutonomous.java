@@ -27,13 +27,16 @@ abstract class MasterAutonomous extends Master
     static final double BLUE_RIGHT_START_Y = 17 * 25.4;
     static final double BLUE_RIGHT_START_ANGLE = 45.0;
 
-    // Drive power is less than 1 to allow encoder PID loop to function
-    private static final double DRIVE_POWER = 0.8;
+    // Constants for robot in autonomous
+    // Max drive power is less than 1 to ensure speed controller works
+    static final double MAX_DRIVE_POWER = 0.6;
+    static final double MIN_DRIVE_POWER = 0.1;
+    static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
+    static final double DRIVE_POWER_CONSTANT = 1.0 / 1000.0;
 
     // Information on robot's location. Units are millimeters and degrees
     double robotX = 0.0, robotY = 0.0, robotAngle = 0.0;
 
-    // TODO: Should location code go into Master? We may use it for TeleOp, and it would be more convenient to set these in hardware init
     // Used to calculate distance traveled between loops
     int lastEncoderFL = 0;
     int lastEncoderFR = 0;
@@ -42,24 +45,44 @@ abstract class MasterAutonomous extends Master
 
     VuforiaLocator vuforiaLocator = new VuforiaLocator();
 
+    public void initAuto()
+    {
+        // Used to calculate distance traveled between loops
+        lastEncoderFL = motorFL.getCurrentPosition();
+        lastEncoderFR = motorFR.getCurrentPosition();
+        lastEncoderBL = motorBL.getCurrentPosition();
+        lastEncoderBR = motorBR.getCurrentPosition();
+
+        headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
+    }
+
     // Turns to the specified angle
     void turnToAngle(double targetAngle) throws InterruptedException
     {
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
-        double ANGLE_TOLERANCE = 2.0;
+        double ANGLE_TOLERANCE = 2.0; // In degrees
 
-        while(Math.abs(deltaAngle) > ANGLE_TOLERANCE)
+        while(Math.abs(deltaAngle) > ANGLE_TOLERANCE && opModeIsActive())
         {
             updateRobotLocation();
 
             // Recalculate how far away we are
             deltaAngle = subtractAngles(targetAngle, robotAngle);
+
             // Slow down as we approach target
-            double turnPower = Range.clip(deltaAngle / 50, -DRIVE_POWER, DRIVE_POWER);
+            double turnPower = Range.clip(deltaAngle * TURN_POWER_CONSTANT, -MAX_DRIVE_POWER, MAX_DRIVE_POWER);
+
+            // Make sure turn power doesn't go below minimum power
+            if(turnPower > 0 && turnPower < MIN_DRIVE_POWER)
+                turnPower = MIN_DRIVE_POWER;
+            else if(turnPower < 0 && turnPower > -MIN_DRIVE_POWER)
+                turnPower = -MIN_DRIVE_POWER;
 
             // Set drive motor power
             driveMecanum(0.0, 0.0, turnPower);
 
+            telemetry.addData("X", robotX);
+            telemetry.addData("Y", robotY);
             telemetry.addData("RobotAngle", robotAngle);
             sendTelemetry();
             idle();
@@ -72,19 +95,20 @@ abstract class MasterAutonomous extends Master
     {
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
-        double DISTANCE_TOLERANCE = 10; // In mm TODO: Is 20 a good value?
+        double DISTANCE_TOLERANCE = 10; // In mm
 
-        while(distanceToTarget > DISTANCE_TOLERANCE)
+        while(distanceToTarget > DISTANCE_TOLERANCE && opModeIsActive())
         {
             updateRobotLocation();
 
             // In case robot drifts to the side
             double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
+
+            // Decrease power as robot approaches target. Ensure it doesn't exceed power limits
+            double drivePower = Range.clip(distanceToTarget * DRIVE_POWER_CONSTANT, MIN_DRIVE_POWER, MAX_DRIVE_POWER);
+
             // In case the robot turns while driving
-            double turnPower = subtractAngles(targetAngle, robotAngle) / 50;
-            // TODO: The robot seems to overshoot sometimes. Should we change the curve of this?
-            // Decrease power as robot approaches target
-            double drivePower = Range.clip(distanceToTarget / 350, -DRIVE_POWER, DRIVE_POWER);
+            double turnPower = subtractAngles(targetAngle, robotAngle) * TURN_POWER_CONSTANT;
 
             // Set drive motor powers
             driveMecanum(driveAngle, drivePower, turnPower);
@@ -102,6 +126,16 @@ abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
+    // Robot sometimes won't see the vision targets when it should. This is to be used in places
+    // where we need to be sure that we're tracking the target
+    public void lookForVisionTarget()
+    {
+        //TODO: This won't always find the target, so make better
+        // Turn until target is found
+        while(!vuforiaLocator.isTracking() && opModeIsActive())
+            driveMecanum(0, 0, -MIN_DRIVE_POWER);
+    }
+
     // Updates robot's coordinates and angle
     void updateRobotLocation()
     {
@@ -117,6 +151,8 @@ abstract class MasterAutonomous extends Master
         // Otherwise, use other sensors to determine distance travelled and angle
         else
         {
+            robotAngle = imu.getAngularOrientation().firstAngle - headingOffset;
+
             int deltaFL = motorFL.getCurrentPosition() - lastEncoderFL;
             int deltaFR = motorFR.getCurrentPosition() - lastEncoderFR;
             int deltaBL = motorBL.getCurrentPosition() - lastEncoderBL;
@@ -129,8 +165,6 @@ abstract class MasterAutonomous extends Master
             // Delta x and y are intrinsic to robot, so make extrinsic and update robot location
             robotX += deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
             robotY += deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
-
-            robotAngle = imu.getAngularOrientation().firstAngle - headingOffset;
         }
 
         lastEncoderFL = motorFL.getCurrentPosition();
@@ -141,7 +175,7 @@ abstract class MasterAutonomous extends Master
 
     // If you subtract 359 degrees from 0, you would get -359 instead of 1. This method handles
     // cases when one angle is multiple rotations away from the other
-    private double subtractAngles(double first, double second)
+    double subtractAngles(double first, double second)
     {
         double delta = first - second;
         while(delta > 180)

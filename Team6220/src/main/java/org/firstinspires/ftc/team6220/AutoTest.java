@@ -3,7 +3,7 @@ package org.firstinspires.ftc.team6220;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
- * Created by Colew on 10/23/2016.
+ * This opmode is used to experiment with autonomous ideas before implementing them in our competition code.
  */
 
 @Autonomous(name = "AutoTest", group = "Autonomous")
@@ -18,7 +18,7 @@ public class AutoTest extends MasterAutonomous
         while (opModeIsActive())
         {
             //drives to a location (units in meters)
-            DriveTo(1.0, 3.0);
+            drive.navigateTo(new Transform2D(1.0,1.0,0));
 
             idle();
         }
