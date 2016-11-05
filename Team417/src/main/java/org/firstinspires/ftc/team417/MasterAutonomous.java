@@ -1,11 +1,17 @@
 package org.firstinspires.ftc.team417;
 
+import com.qualcomm.hardware.adafruit.BNO055IMU;
+import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
 /**
@@ -22,12 +28,15 @@ public class MasterAutonomous extends LinearOpMode
     DcMotor motorBackLeft = null;
     DcMotor motorBackRight = null;
 
+    BNO055IMU imu;
+    Orientation angles;
 
     // HardwarePushbot robot = new HardwarePushbot();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
 
     static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
+    //static final double DRIVE_GEAR_REDUCTION = 0.25;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 6.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
@@ -49,13 +58,15 @@ public class MasterAutonomous extends LinearOpMode
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        forwards(6, 3, 0.2);
-        sleep(500);
-        forwards(-6, 3, 0.2);
-        sleep(500);
-        forwards(-6, 3, 0.2);
-        sleep(500);
-        forwards(6, 3, 0.2);
+     //   forwards(6, 3, 0.2);
+     //   sleep(500);
+       // forwards(-6, 3, 0.2);
+       // sleep(500);
+       // forwards(-6, 3, 0.2);
+       // sleep(500);
+       // forwards(6, 3, 0.2);
+       // sleep(500);
+        pivot(90, 0.3);
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
@@ -69,20 +80,42 @@ public class MasterAutonomous extends LinearOpMode
 
     public void initializeRobot()
     {
+        // Set up the parameters with which we will use our IMU. Note that integration
+        // algorithm here just reports accelerations to the logcat log; it doesn't actually
+        // provide positional information.
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+        float angle;
+        for (int i = 0; i < 3; i++) {
+            sleep(300);
+            angle = imu.getAngularOrientation().firstAngle;
+        }
+        sleep(300); // give it enough time before you press run
         // Initialize motors to be the hardware motors
         motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
         motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
 
-        // We're not using encoders, so tell the motor controller
+        // run to position mode
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-       motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
-       motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
+       motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
+       motorBackRight.setDirection(DcMotor.Direction.REVERSE);
 
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
@@ -95,7 +128,7 @@ public class MasterAutonomous extends LinearOpMode
 
     // drive forwards/backwards function
 
-    public void forwards(double forwardInches, double timeout, double speed)
+    public void forwards(double forwardInches, double timeout, double speed) throws InterruptedException
 
     {
         int newTargetFL;
@@ -126,6 +159,63 @@ public class MasterAutonomous extends LinearOpMode
                 (motorFrontLeft.isBusy() && motorFrontRight.isBusy() && motorBackLeft.isBusy() && motorBackRight.isBusy()));
 
         // stop the motors
+        motorFrontLeft.setPower(0);
+        motorFrontRight.setPower(0);
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+    }
+
+    public void pivot(double turnAngle, double speed) // should add timeout later
+    {
+        double pivotSpeed;
+        double startAngle;
+        double curTurnAngle;
+
+        // run to position mode
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        startAngle = adjustAngles(angles.firstAngle);
+//        telemetry.log().add(String.format("StartAngle: %f", startAngle));
+//        curTurnAngle = adjustAngles(imu.getAngularOrientation().firstAngle) - startAngle;
+//        telemetry.log().add(String.format("CurAngle: %f", curTurnAngle));
+
+        // read angle, record in starting angle variable
+        // run motor
+        // loop, current angle - start angle = error
+        // if error is close to 0, then stop motors
+
+
+        double error;
+
+        do
+        {
+            angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+            curTurnAngle = adjustAngles(angles.firstAngle) - startAngle;
+            error =  turnAngle - curTurnAngle;
+            pivotSpeed = - speed * Math.signum(error);
+
+            motorFrontLeft.setPower(pivotSpeed);
+            motorFrontRight.setPower(-pivotSpeed);
+            motorBackLeft.setPower(pivotSpeed);
+            motorBackRight.setPower(-pivotSpeed);
+            /*
+            sleep(100);
+            motorFrontLeft.setPower(0);
+            motorFrontRight.setPower(0);
+            motorBackLeft.setPower(0);
+            motorBackRight.setPower(0);
+            sleep(5000);
+            */
+
+            telemetry.log().add(String.format("StartAngle: %f, CurAngle: %f, error: %f", startAngle, curTurnAngle, error));
+
+        } while (Math.abs(error) > 0.5 && opModeIsActive());
+
+        // stop motors
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
@@ -166,66 +256,15 @@ public class MasterAutonomous extends LinearOpMode
         return String.format("%.2f", d);
     }
 
-    public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) throws InterruptedException {
-        int newLeftTarget;
-        int newRightTarget;
 
-        if (opModeIsActive()) {
 
-            // Determine new target position, and pass to motor controller
-            newLeftTarget = motorFrontLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newRightTarget = motorFrontRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            motorFrontLeft.setTargetPosition(newLeftTarget);
-            motorFrontRight.setTargetPosition(newRightTarget);
-
-            // Turn On RUN_TO_POSITION
-            motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            motorFrontLeft.setPower(Math.abs(speed));
-            motorFrontRight.setPower(Math.abs(speed));
-            motorBackLeft.setPower(Math.abs(speed));
-            motorBackRight.setPower(Math.abs(speed));
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (motorFrontLeft.isBusy() && motorFrontRight.isBusy())) {
-
-                // Display it for the driver.
-                telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
-                telemetry.addData("Path2", "Running at %7d :%7d",
-                        motorFrontLeft.getCurrentPosition(),
-                        motorFrontRight.getCurrentPosition());
-                telemetry.update();
-
-                // Allow time for other processes to run.
-                idle();
-            }
-
-            // Stop all motion;
-            motorFrontLeft.setPower(0);
-            motorFrontRight.setPower(0);
-            motorBackLeft.setPower(0);
-            motorBackRight.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    /*
-     * Controls the robot with two joysticks
-     * Left joystick controls left side
-     * Right joystick controls right side
-     */
-            // Set up telemetry data
-        }
+    public double adjustAngles(double angle)
+    {
+        while(angle > 180)
+            angle -= 360;
+        while(angle < -180)
+            angle += 360;
+        return angle;
     }
+
 }

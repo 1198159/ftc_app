@@ -83,8 +83,8 @@ public class DriveStraight extends LinearOpMode
         motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-       motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
-       motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
+       motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
+       motorBackRight.setDirection(DcMotor.Direction.REVERSE);
 
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
