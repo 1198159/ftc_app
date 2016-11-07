@@ -81,16 +81,14 @@ abstract public class MasterOpMode extends LinearOpMode
         // and named "imu".
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
-
-        vuforiaHelper = new VuforiaHelper();
-
-        vuforiaHelper.setupVuforia();
     }
 
     //TODO check encoder and imu location function
     //keeps track of the robot's location on the field based on Encoders and IMU
-    public void updateLocation()
+    public Transform2D updateLocationUsingEncoders()
     {
+        Transform2D location;
+
         currentAngle = imu.getAngularOrientation().firstAngle;
 
         EncoderFR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
@@ -103,12 +101,20 @@ abstract public class MasterOpMode extends LinearOpMode
         robotXPos = Math.cos(currentAngle) * (EncoderFR + EncoderFL) * 2 * Math.PI * 0.1016 / 1120 / Math.pow(2, 0.5);
         robotYPos = Math.sin(currentAngle) * (EncoderFR + EncoderFL) * 2 * Math.PI * 0.1016 / 1120 / Math.pow(2, 0.5);
 
+        location = new Transform2D(robotXPos, robotYPos, currentAngle);
+
         telemetry.addData("X:", robotXPos);
         telemetry.addData("Y:", robotYPos);
         telemetry.update();
+
+        return location;
     }
 
-
+    public void navigateUsingEncoders(Transform2D target)
+    {
+        updateLocationUsingEncoders();
+        drive.navigateTo(target);
+    }
 
     //wait a number of milliseconds
     public void pause(int t) throws InterruptedException

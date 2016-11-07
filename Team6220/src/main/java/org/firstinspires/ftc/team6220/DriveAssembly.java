@@ -32,7 +32,7 @@ public class DriveAssembly
         this.initialize(m, t, gear, radius,cFactor);
     }
 
-    public void initialize(DcMotor m, Transform2D t, double gear, double radius,double cFactor)
+    public void initialize(DcMotor m, Transform2D t, double gear, double radius, double cFactor)
     {
         this.motor = m;
         this.wheelRadius = radius;
