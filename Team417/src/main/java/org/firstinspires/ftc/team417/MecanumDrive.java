@@ -13,7 +13,8 @@ import org.firstinspires.ftc.robotcore.external.Func;
  */
 @TeleOp(name="Mecanum Drive", group = "Swerve")
 // @Disabled
-public class MecanumDrive extends LinearOpMode {
+public class MecanumDrive extends LinearOpMode
+{
     DcMotor motorFrontLeft = null;
     DcMotor motorFrontRight = null;
     DcMotor motorBackLeft = null;
@@ -21,7 +22,8 @@ public class MecanumDrive extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException
+    {
         // Initialize hardware and other important things
         initializeRobot();
 
@@ -29,7 +31,8 @@ public class MecanumDrive extends LinearOpMode {
         waitForStart();
 
         // Main loop
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             // Gamepads have a new state, so update things that need updating
             //if(updateGamepads())
             {
@@ -47,7 +50,8 @@ public class MecanumDrive extends LinearOpMode {
      * Right joystick controls the forwards, backwards, left and right
      */
 
-    public void mecanumDrive() {
+    public void mecanumDrive()
+    {
         double frontLeftPower;
         double frontRightPower;
         double backLeftPower;

@@ -62,7 +62,9 @@ public class MasterAutonomous extends LinearOpMode
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        forwards(6, 3, 0.2);
+        forwards(-39, 3, 0.3);
+        sleep(1000);
+        pivot(60, 0.3);
         sleep(500);
        // forwards(-6, 3, 0.2);
        // sleep(500);
@@ -70,11 +72,11 @@ public class MasterAutonomous extends LinearOpMode
        // sleep(500);
        // forwards(6, 3, 0.2);
        // sleep(500);
-//        pivotDst(90, 0.6);
-//        sleep(1000);
-//        pivotDst(-90, 0.6);
-        moveAngle(6, 45, .8, 3);
-        sleep(5000);
+       // pivotDst(90, 0.6);
+       // sleep(1000);
+       // pivotDst(-90, 0.6);
+        // moveAngle(6, 45, .8, 3);
+        // sleep(5000);
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)

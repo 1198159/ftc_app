@@ -99,7 +99,8 @@ import java.util.List;
 
 @Autonomous(name="Vuforia Beacon Detection", group ="Concept")
 //@Disabled
-public class VuforiaBeaconDetection extends LinearOpMode {
+public class VuforiaBeaconDetection extends LinearOpMode
+{
 
     public static final String TAG = "Vuforia Sample";
 
@@ -395,7 +396,9 @@ public class VuforiaBeaconDetection extends LinearOpMode {
     }
 
     // get image from Vuforia, project beacon point onto image
-    public void GetImage(VuforiaTrackable trackable) throws InterruptedException {
+    public void GetImage(VuforiaTrackable trackable) throws InterruptedException
+
+    {
         frame = vuforia.getFrameQueue().take(); //takes the frame at the head of the queue
 
         image = null;
@@ -417,12 +420,12 @@ public class VuforiaBeaconDetection extends LinearOpMode {
                 imageRGB565 = image;
                 telemetry.log().add("got image565");
                 break;
-            }//if
-        }//for
+            } // if
+        } // for
 
         OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) trackable.getListener()).getRawPose();
-        if (pose != null) {
-
+        if (pose != null)
+        {
             Matrix34F rawPose = new Matrix34F();
             float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
             rawPose.setData(poseData);
@@ -431,6 +434,10 @@ public class VuforiaBeaconDetection extends LinearOpMode {
             Vec2F upperLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(-127, 92, 0));
             Vec2F upperRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(127, 92, 0));
             Vec2F beaconLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(-127 + 85, 92 + 90, 0));
+
+
+
+
 
             Vec2F beaconRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(127 - 85, 92 + 90, 0));
             telemetry.log().add(String.format("UpperLeft X: %f, Y: %f", upperLeft.getData()[0], upperLeft.getData()[1]));
@@ -445,16 +452,17 @@ public class VuforiaBeaconDetection extends LinearOpMode {
                 GetImageColor(image, beaconLeft, leftColorHSV);
                 GetImageColor(image, beaconRight, rightColorHSV);
             telemetry.log().add(String.format("LeftSideHue: %f RightSideHue: %f", leftColorHSV[0], rightColorHSV[0]));
-
         }
 
     }
 
     // sample area in image to determine color hue for beacon - detect red or blue
-    public void GetImageColor(Image image, Vec2F beaconPoint, float[] colorHsvOut) throws InterruptedException {
+    public void GetImageColor(Image image, Vec2F beaconPoint, float[] colorHsvOut) throws InterruptedException
 
-        if (image != null) {
+    {
 
+        if (image != null)
+        {
             int imageWidth = image.getWidth();
             int imageHeight = image.getHeight();
             int stride = image.getStride();
@@ -513,43 +521,3 @@ public class VuforiaBeaconDetection extends LinearOpMode {
         return transformationMatrix.formatAsTransform();
     }
 }
-
-/* obsolete code that was used in previous versions
-            ByteBuffer pixels = image.getPixels();
-            byte[] pixelArray = new byte[pixels.remaining()];
-            pixels.get(pixelArray, 0, pixelArray.length);
-
-                    pixel0 = pixelArray[j * stride + i * 2];
-                    pixel1 = pixelArray[j * stride + i * 2 + 1];
-
-                    // extract color from RGB565 format pixel
-                    // RGB565 format: R-5, G-6, B-5
-                    // pixel1 7:3 Red[4:0]
-                    // Pixel1 2:0 Green[5:3]
-                    // Pixel0 7:5 Green[2:0]
-                    // Pixel0 4:0 Blue[4:0]
-
-                    colorRed = (byte) ((pixel1 & 0xF8) >> 3);
-                    colorGreen = (byte) (((pixel1 & 0x07) << 3) | ((pixel0 & 0xE0) >> 5));
-                    colorBlue = (byte) (pixel0 & 0x1F);
-                    // integrate individual colors
-                    //colorRed += (pixel1 & 0xF8);
-                    //colorGreen += (((pixel1 & 0x07) << 3) | ((pixel0 & 0xE0) >> 5));
-                    //colorBlue += (pixel0 & 0x1F);
-
-                    colorRed <<= 3;
-                    colorGreen <<= 2;
-                    colorBlue <<= 3;
-
-                    // convert RGB to hue, sat, val
-                    // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
-                    //Color.RGBToHSV(colorRed, colorGreen, colorBlue, colorHSV);
-//            colorRed >>= 3;  // adjust for bit position 7:3 above
-//            telemetry.log().add(String.format("Red: %d, Green: %d, Blue: %d", colorRed, colorGreen, colorBlue));
-//            colorRed >>= 8;  // adjust for 256 sum
-//            colorGreen >>= 8;
-//            colorBlue >>= 8;
-
-//            Color.RGBToHSV(colorRed, colorGreen, colorBlue, colorHSV);
-
-*/
