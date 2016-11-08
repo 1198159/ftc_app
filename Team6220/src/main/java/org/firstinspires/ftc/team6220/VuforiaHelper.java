@@ -62,6 +62,7 @@ public class VuforiaHelper
     public static final float MM_BOT_SIZE = 18 * MM_PER_INCH;
     public static final float MM_FIELD_SIZE = 12 * 12 * MM_PER_INCH;
 
+    //function for finding the location of robot
     public OpenGLMatrix getLatestLocation()
     {
         // Checks each target to see if we can find our location. If none are visible, then it returns null
@@ -114,14 +115,15 @@ public class VuforiaHelper
         // Set vision target locations on field. Origin is at corner of field between driver
         // stations, with the positive x-axis extending to the blue side, and positive y-axis
         // extending to the red side. Units in mm and degrees
-        // TODO: Should we use constants for these?
+        // TODO: use constants
         targets[RED_LEFT].setLocation(createMatrix(1524, MM_FIELD_SIZE, 0, 90, 0, 0));
         targets[RED_RIGHT].setLocation(createMatrix(2743.2f, MM_FIELD_SIZE, 0, 90, 0, 0));
         targets[BLUE_LEFT].setLocation(createMatrix(MM_FIELD_SIZE, 2743.2f, 0, 90, 0, -90));
         targets[BLUE_RIGHT].setLocation(createMatrix(MM_FIELD_SIZE, 1524, 0, 90, 0, -90));
 
         // Set phone location on robot. Center of the camera is the origin
-        phoneLocation = createMatrix(0, 0, 0, 90, 0, -90);
+        //TODO: check phone location with design team
+        phoneLocation = createMatrix(-164, 44, 0, 90, 0, -90);
 
         // Setup listeners
         for(int i = 0; i < targets.length; i++)

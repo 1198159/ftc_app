@@ -7,38 +7,53 @@ import com.qualcomm.hardware.adafruit.BNO055IMU;
  */
 abstract public class MasterAutonomous extends MasterOpMode
 {
+    //used to initialize vuforia only in autonomous
+    public void initializeVuforia()
+    {
+        vuforiaHelper = new VuforiaHelper();
+
+        vuforiaHelper.setupVuforia();
+    }
+
     //a function for finding the distance between two points
-    public double FindDistance(double x1,double y1, double x2, double y2)
+    public double findDistance(double x1,double y1, double x2, double y2)
     {
         double Distance = Math.pow(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2), 0.5);
 
         return Distance;
     }
 
-    public void VuforiaDriveToPosition(double TargetX, double TargetY, double TargetAngle )
+    public void vuforiaDriveToPosition(double TargetX, double TargetY, double TargetAngle )
     {
         //Start tracking targets
         vuforiaHelper.visionTargets.activate();
 
-        vuforiaHelper.lastKnownLocation = vuforiaHelper.getLatestLocation();
-        //updateLocation()
+        Transform2D TargetLocation = new Transform2D(TargetX, TargetY, TargetAngle);
 
-        //Inform drivers of robot location. Location is null if we lose track of targets
-        if(vuforiaHelper.lastKnownLocation != null)
+        while(drive.robotLocation != TargetLocation)
         {
-            telemetry.addData("Pos", vuforiaHelper.format(vuforiaHelper.lastKnownLocation));
-        }
-        else
-        {
-            telemetry.addData("Pos", "Unknown");
+            //updateLocation()
+            vuforiaHelper.lastKnownLocation = vuforiaHelper.getLatestLocation();
 
-            telemetry.update();
-        }
+            //Inform drivers of robot location. Location is null if we lose track of targets
+            if(vuforiaHelper.lastKnownLocation != null)
+            {
+                telemetry.addData("Pos:", vuforiaHelper.format(vuforiaHelper.lastKnownLocation));
+            }
+            else
+            {
+                telemetry.addData("Pos:", "Unknown");
 
+                telemetry.update();
+            }
+
+            //move to the desired location
+            drive.navigateTo(TargetLocation);
+        }
     }
 
     //makes our robot turn to a specified angle
-    public void TurnTo(double TargetAngle)
+    public void turnTo(double TargetAngle)
     {
         double currentAngle = imu.getAngularOrientation().firstAngle;
         double angleDiff = TargetAngle - currentAngle;

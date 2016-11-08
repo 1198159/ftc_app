@@ -92,8 +92,8 @@ abstract class MasterAutonomous extends Master
 
     // Makes robot drive to a point on the field
     void driveToPoint(double targetX, double targetY, double targetAngle) throws InterruptedException
-    {
-        // Calculate how far we are from target point
+        {
+            // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
         double DISTANCE_TOLERANCE = 10; // In mm
 

@@ -36,9 +36,9 @@ public class DriveSystem
     public void navigateTo(Transform2D target)
     {
         //update error terms
-        LocationControlFilter[0].roll(target.x-robotLocation.x);
-        LocationControlFilter[1].roll(target.y-robotLocation.y);
-        RotationControlFilter.roll(optimizeRotationTarget(target.rot-robotLocation.rot));
+        LocationControlFilter[0].roll(target.x - robotLocation.x);
+        LocationControlFilter[1].roll(target.y - robotLocation.y);
+        RotationControlFilter.roll(optimizeRotationTarget(target.rot - robotLocation.rot));
         double xRate = LocationControlFilter[0].getFilteredValue();
         double yRate = LocationControlFilter[1].getFilteredValue();
         double wRate = RotationControlFilter.getFilteredValue();

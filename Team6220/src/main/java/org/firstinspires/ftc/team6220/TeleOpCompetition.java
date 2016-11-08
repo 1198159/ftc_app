@@ -29,7 +29,7 @@ public class TeleOpCompetition extends MasterTeleOp
             driveRobotWithJoysticks(-gamepad1.right_stick_x,    //local x motion power; reversed
                                     gamepad1.right_stick_y,     //local y motion power
                                     -gamepad1.left_stick_x);    //rotation power; reversed
-            updateLocation();
+            updateLocationUsingEncoders();
         }
     }
 }
