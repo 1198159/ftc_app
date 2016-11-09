@@ -22,6 +22,8 @@ abstract public class MasterOpMode extends LinearOpMode
     public final int BACK_LEFT   = 2;
     public final int BACK_RIGHT  = 3;
 
+    DcMotor CollectorMotor;
+
     private int EncoderFR = 0;
     private int EncoderFL = 0;
     private int EncoderBL = 0;
@@ -41,10 +43,13 @@ abstract public class MasterOpMode extends LinearOpMode
 
     VuforiaHelper vuforiaHelper;
 
+    MotorToggler motorToggler;
+    MotorToggler motorTogglerReverse;
+
     public void initializeHardware()
     {
         //create a driveAssembly array to allow for easy access to motors
-        driveAssemblies = new DriveAssembly[4];
+        driveAssemblies = new DriveAssembly[5];
 
         //TODO adjust correction factor if necessary
         //our robot uses an omni drive, so our motors are positioned at 45 degree angles to motor positions on a normal drive.
@@ -54,12 +59,16 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies[BACK_LEFT]   = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft")  ,new Transform2D(-1.0,-1.0, 315), 1.0, 0.1016, 1.0);
         driveAssemblies[BACK_RIGHT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight") ,new Transform2D( 1.0,-1.0,  45), 1.0, 0.1016, 1.0);
 
+        CollectorMotor = hardwareMap.dcMotor.get("motorCollector");
+
         //TODO tune our own drive PID loop using DriveAssemblyPID instead of build-in P/step filter
         //TODO Must be disabled if motor encoders are not correctly reporting
         driveAssemblies[FRONT_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[FRONT_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[BACK_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[BACK_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        CollectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //TODO decide if we should initialize at opmode level
         //                      drive assemblies   initial loc:     x    y    w
@@ -68,6 +77,9 @@ abstract public class MasterOpMode extends LinearOpMode
                         new PIDFilter(2.0,0.0,0.0),    //x location control
                         new PIDFilter(2.0,0.0,0.0),    //y location control
                         new PIDFilter(0.017,0.0,0.0)} ); //rotation control
+
+        motorToggler = new MotorToggler(CollectorMotor, 1.0);
+        motorTogglerReverse = new MotorToggler(CollectorMotor, -1.0);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
