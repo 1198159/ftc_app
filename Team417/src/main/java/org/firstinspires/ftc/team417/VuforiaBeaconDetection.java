@@ -368,7 +368,7 @@ public class VuforiaBeaconDetection extends LinearOpMode
                  * the last time that call was made, or if the trackable is not currently visible.
                  * getRobotLocation() will return null if the trackable is not currently visible.
                  */
-                telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible() ? "Visible" : "Not Visible");    //
+                telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible() ? "Visible" : "Not Visible");
 
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
 
@@ -434,11 +434,6 @@ public class VuforiaBeaconDetection extends LinearOpMode
             Vec2F upperLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(-127, 92, 0));
             Vec2F upperRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(127, 92, 0));
             Vec2F beaconLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(-127 + 85, 92 + 90, 0));
-
-
-
-
-
             Vec2F beaconRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(127 - 85, 92 + 90, 0));
             telemetry.log().add(String.format("UpperLeft X: %f, Y: %f", upperLeft.getData()[0], upperLeft.getData()[1]));
             telemetry.log().add(String.format("UpperRight X: %f, Y: %f", upperRight.getData()[0], upperRight.getData()[1]));
