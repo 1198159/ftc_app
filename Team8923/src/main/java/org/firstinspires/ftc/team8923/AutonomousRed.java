@@ -121,7 +121,7 @@ public class AutonomousRed extends MasterAutonomous
         sleep(1000);
 
         // Only actually looks if vision target isn't visible
-        //lookForVisionTarget();
+        lookForVisionTarget();
 
         // Reposition after tracking target
         driveToPoint(beaconX, beaconY - 450, 90);

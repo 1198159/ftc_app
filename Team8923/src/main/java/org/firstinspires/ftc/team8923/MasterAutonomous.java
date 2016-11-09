@@ -128,12 +128,15 @@ abstract class MasterAutonomous extends Master
 
     // Robot sometimes won't see the vision targets when it should. This is to be used in places
     // where we need to be sure that we're tracking the target
-    public void lookForVisionTarget()
+    public void lookForVisionTarget() throws InterruptedException
     {
         //TODO: This won't always find the target, so make better
         // Turn until target is found
         while(!vuforiaLocator.isTracking() && opModeIsActive())
-            driveMecanum(0, 0, -MIN_DRIVE_POWER);
+        {
+            turnToAngle(robotAngle - 10);
+            sleep(500);
+        }
     }
 
     // Updates robot's coordinates and angle
