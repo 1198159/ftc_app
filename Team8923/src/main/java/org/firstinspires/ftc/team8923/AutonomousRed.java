@@ -67,32 +67,6 @@ public class AutonomousRed extends MasterAutonomous
         pressLeftBeacon();
         pressRightBeacon();
 
-        // TODO: Remove if no longer used. Only here in case we need it
-//        // Go in front of left side of beacon
-//        goToLocation(1385, 3550, 90.0);
-//        sleep(500);
-//        // Check color of left side
-//        if(colorSensor.red() >= colorSensor.blue())
-//        {
-//            // Press left side if it's red
-//            telemetry.log().add("Left is red");
-//            goToLocation(1385, 3630, 90.0);
-//            sleep(500);
-//            goToLocation(1385, 3550, 90.0);
-//            sleep(500);
-//        }
-//        else
-//        {
-//            // Press right side if it's blue
-//            telemetry.log().add("Left is blue");
-//            goToLocation(1515, 3550, 90.0);
-//            sleep(500);
-//            goToLocation(1515, 3625, 90.0);
-//            sleep(500);
-//            goToLocation(1515, 3550, 90.0);
-//            sleep(500);
-//        }
-
         // TODO: Remove when testing is done. This is just so we can read the results
         sleep(10000);
     }
