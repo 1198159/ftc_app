@@ -212,19 +212,13 @@ class VuforiaLocator
         // Location is unknown, so don't change anything
     }
 
+    // Get the name of the vision target currently being tracked
     String getTargetName()
     {
-        // Checks each target to see if we can find our location. If none are visible, then it returns null
         for(int i = 0; i < targets.length; i++)
         {
-            // Try to find location from this target
-            OpenGLMatrix latestLocation = listeners[i].getUpdatedRobotLocation();
-
-            // We've found a target to track
-            if(latestLocation != null)
-            {
+            if(listeners[i].isVisible())
                 return targets[i].getName();
-            }
         }
         // Not tracking anything
         return "";
