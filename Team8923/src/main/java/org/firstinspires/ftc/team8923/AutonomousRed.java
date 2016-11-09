@@ -19,9 +19,14 @@ public class AutonomousRed extends MasterAutonomous
         telemetry.log().add("Press start button when robot is on field");
         telemetry.update();
 
+        // Set defaults in case they're not set below
+        robotX = RED_LEFT_START_X;
+        robotY = RED_LEFT_START_Y;
+        robotAngle = RED_LEFT_START_ANGLE;
+
         // TODO: Add code to use gamepad to setup autonomous routine
         // Used to setup autonomous routine
-        while(opModeIsActive())
+        while(true)
         {
             if(gamepad1.x)
             {
