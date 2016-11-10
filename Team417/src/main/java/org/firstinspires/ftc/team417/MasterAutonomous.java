@@ -11,9 +11,12 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 
 
 /**
@@ -51,21 +54,42 @@ public class MasterAutonomous extends LinearOpMode
     {
         // Initialize hardware and other important things
         initializeRobot();
-        telemetry.addData("Path", "InitDone");
-        telemetry.update();
 
+
+        VuforiaNavigation VuforiaNav = new VuforiaNavigation();
+        VuforiaNav.initVuforia();
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
 
+        telemetry.addData("Path", "InitDone");
+        telemetry.update();
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        VuforiaNav.startTracking();
+
+        while (opModeIsActive()) {
+
+            VuforiaNav.getLocation();
+            telemetry.addData("tracking ", VuforiaNav.isVisible() ? "Visible" : "Not Visible");
+            if (VuforiaNav.lastLocation != null)
+            {
+                telemetry.addData("location ", format(VuforiaNav.lastLocation));
+            }
+
+            telemetry.update();
+            //sleep(500);
+        }
+
+/*
         forwards(-39, 3, 0.3);
         sleep(1000);
         pivot(60, 0.3);
         sleep(500);
+ */
        // forwards(-6, 3, 0.2);
        // sleep(500);
        // forwards(-6, 3, 0.2);
@@ -91,6 +115,7 @@ public class MasterAutonomous extends LinearOpMode
 
     public void initializeRobot()
     {
+        /*
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
         // provide positional information.
@@ -112,6 +137,7 @@ public class MasterAutonomous extends LinearOpMode
             sleep(100);
             angle = imu.getAngularOrientation().firstAngle;
         }
+
         sleep(200); // give it enough time before you press run
         // Initialize motors to be the hardware motors
         motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
@@ -132,6 +158,7 @@ public class MasterAutonomous extends LinearOpMode
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
+*/
 
         //Set up telemetry data
         // We show the log in oldest-to-newest order, as that's better for poetry
@@ -448,6 +475,11 @@ public class MasterAutonomous extends LinearOpMode
         while(angle < -180)
             angle += 360;
         return angle;
+    }
+
+    String format(OpenGLMatrix transformationMatrix) {
+        return transformationMatrix.formatAsTransform();
+
     }
 }
 
