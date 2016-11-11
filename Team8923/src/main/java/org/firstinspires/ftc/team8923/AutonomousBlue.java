@@ -19,6 +19,11 @@ public class AutonomousBlue extends MasterAutonomous
         telemetry.log().add("Press start button when robot is on field");
         telemetry.update();
 
+        // Set defaults in case they're not set below
+        robotX = BLUE_LEFT_START_X;
+        robotY = BLUE_LEFT_START_Y;
+        robotAngle = BLUE_LEFT_START_ANGLE;
+
         // TODO: Add code to use gamepad to setup autonomous routine
         // Used to setup autonomous routine
         while(opModeIsActive())
@@ -62,8 +67,12 @@ public class AutonomousBlue extends MasterAutonomous
         pressRightBeacon();
         pressLeftBeacon();
 
+        // Park on ramp
+        turnToAngleBlue(-90);
+        driveToPointBlue(3300, 600, -90);
+
         // TODO: Remove when testing is done. This is just so we can read the results
-        sleep(5000);
+        sleep(10000);
     }
 
     private void pressLeftBeacon() throws InterruptedException
@@ -79,13 +88,21 @@ public class AutonomousBlue extends MasterAutonomous
     private void pressBeacon(double beaconX, double beaconY) throws InterruptedException
     {
         // TODO: Do we need sleep commands in here?
-        double angleToEndOfTape = Math.atan2(beaconX - robotX - 450, beaconY - robotY);
+        double angleToEndOfTape = Math.atan2(beaconY - robotY, beaconX - robotX - 450);
 
         // Go to the end of the tape in front of the beacon
-        driveToPoint(beaconX - 450, beaconY, angleToEndOfTape);
-        turnToAngle(0);
+        turnToAngleBlue(angleToEndOfTape);
+        driveToPointBlue(beaconX - 450, beaconY, angleToEndOfTape);
+        turnToAngleBlue(0);
+
         // Give Vuforia a chance to start tracking the target
         sleep(1000);
+
+        // Only actually looks if vision target isn't visible
+        lookForVisionTargetBlue();
+
+        // Reposition after tracking target
+        driveToPointBlue(beaconX - 450, beaconY, 0);
 
         // Get colors of both sides of beacon. Parameters are in mm from center of vision target
         int colorLeft = vuforiaLocator.getPixelColor(-60, 230, 30);
@@ -98,9 +115,9 @@ public class AutonomousBlue extends MasterAutonomous
             // Press right side if it's blue
             telemetry.log().add("Right is blue");
             // Go in front of right button
-            driveToPoint(beaconX - 100, beaconY + 10, 0.0);
+            driveToPointBlue(beaconX - 100, beaconY + 10, 0.0);
             // Move forward to press button
-            driveToPoint(beaconX - 25, beaconY + 10, 0.0);
+            driveToPointBlue(beaconX - 25, beaconY + 10, 0.0);
             sleep(500);
         }
         else
@@ -108,14 +125,14 @@ public class AutonomousBlue extends MasterAutonomous
             // Press left side if it's blue
             telemetry.log().add("Left is blue");
             // Go in front of left button
-            driveToPoint(beaconX - 100, beaconY + 140, 0);
+            driveToPointBlue(beaconX - 100, beaconY + 140, 0);
             // Move forward to press button
-            driveToPoint(beaconX - 25, beaconY + 140, 0);
+            driveToPointBlue(beaconX - 25, beaconY + 140, 0);
             sleep(500);
         }
 
         // Back away from beacon
-        driveToPoint(beaconX - 450, beaconY, 0);
+        driveToPointBlue(beaconX - 450, beaconY, 0);
     }
 
     // TODO: The methods below should only be temporary until we find a better solution to other alliance's targets giving bogus numbers
@@ -161,7 +178,7 @@ public class AutonomousBlue extends MasterAutonomous
     }
 
     // Turns to the specified angle
-    void turnToAngle(double targetAngle) throws InterruptedException
+    void turnToAngleBlue(double targetAngle) throws InterruptedException
     {
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
         double ANGLE_TOLERANCE = 2.0; // In degrees
@@ -195,7 +212,7 @@ public class AutonomousBlue extends MasterAutonomous
     }
 
     // Makes robot drive to a point on the field
-    void driveToPoint(double targetX, double targetY, double targetAngle) throws InterruptedException
+    void driveToPointBlue(double targetX, double targetY, double targetAngle) throws InterruptedException
     {
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
@@ -228,5 +245,20 @@ public class AutonomousBlue extends MasterAutonomous
             idle();
         }
         stopDriving();
+    }
+
+    // Robot sometimes won't see the vision targets when it should. This is to be used in places
+    // where we need to be sure that we're tracking the target. Only uses red alliance vision targets
+    public void lookForVisionTargetBlue() throws InterruptedException
+    {
+        //TODO: This won't always find the target, so make better
+        // Turn until target is found
+        while(!vuforiaLocator.isTracking() && opModeIsActive()
+                && vuforiaLocator.getTargetName().equals("Target Red Left")
+                && vuforiaLocator.getTargetName().equals("Target Red Right"))
+        {
+            turnToAngleBlue(robotAngle - 10);
+            sleep(500);
+        }
     }
 }
