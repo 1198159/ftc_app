@@ -67,12 +67,25 @@ public class AutonomousRed extends MasterAutonomous
         pressLeftBeacon();
         pressRightBeacon();
 
-        // Park on ramp
-        turnToAngle(180);
-        driveToPointRed(600, 3300, 180);
+        parkOnRamp();
 
         // TODO: Remove when testing is done. This is just so we can read the results
         sleep(10000);
+    }
+
+    private void parkOnRamp() throws InterruptedException
+    {
+        double angleToRamp = Math.atan2(3300 - robotY, 3300 - robotX);
+        turnToAngleRed(angleToRamp);
+        driveToPointRed(600, 3300, angleToRamp);
+    }
+
+    // TODO: Test me
+    private void parkOnCenter() throws InterruptedException
+    {
+        double angleToCenter = Math.atan2(1500 - robotY, 2000 - robotX);
+        turnToAngleRed(angleToCenter);
+        driveToPointRed(1500, 2000, angleToCenter);
     }
 
     private void pressLeftBeacon() throws InterruptedException
