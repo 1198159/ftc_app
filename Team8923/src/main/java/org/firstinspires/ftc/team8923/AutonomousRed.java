@@ -237,9 +237,12 @@ public class AutonomousRed extends MasterAutonomous
     {
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
+        double deltaAngle = subtractAngles(targetAngle, robotAngle);
         double DISTANCE_TOLERANCE = 10; // In mm
+        double ANGLE_TOLERANCE = 2.0; // In degrees
 
-        while(distanceToTarget > DISTANCE_TOLERANCE && opModeIsActive())
+        // Run until robot is within tolerable distance and angle
+        while(distanceToTarget > DISTANCE_TOLERANCE && deltaAngle > ANGLE_TOLERANCE && opModeIsActive())
         {
             updateRobotLocationRed();
 
@@ -250,7 +253,8 @@ public class AutonomousRed extends MasterAutonomous
             double drivePower = Range.clip(distanceToTarget * DRIVE_POWER_CONSTANT, MIN_DRIVE_POWER, MAX_DRIVE_POWER);
 
             // In case the robot turns while driving
-            double turnPower = subtractAngles(targetAngle, robotAngle) * TURN_POWER_CONSTANT;
+            deltaAngle = subtractAngles(targetAngle, robotAngle);
+            double turnPower = deltaAngle * TURN_POWER_CONSTANT;
 
             // Set drive motor powers
             driveMecanum(driveAngle, drivePower, turnPower);
