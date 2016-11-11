@@ -87,18 +87,18 @@ public class AutonomousRed extends MasterAutonomous
         double angleToEndOfTape = Math.atan2(beaconY - robotY - 450, beaconX - robotX);
 
         // Go to the end of the tape in front of the beacon
-        turnToAngle(angleToEndOfTape);
-        driveToPoint(beaconX, beaconY - 450, angleToEndOfTape);
-        turnToAngle(90);
+        turnToAngleRed(angleToEndOfTape);
+        driveToPointRed(beaconX, beaconY - 450, angleToEndOfTape);
+        turnToAngleRed(90);
 
         // Give Vuforia a chance to start tracking the target
         sleep(1000);
 
         // Only actually looks if vision target isn't visible
-        lookForVisionTarget();
+        lookForVisionTargetRed();
 
         // Reposition after tracking target
-        driveToPoint(beaconX, beaconY - 450, 90);
+        driveToPointRed(beaconX, beaconY - 450, 90);
 
         // Get colors of both sides of beacon. Parameters are in mm from center of vision target
         int colorLeft = vuforiaLocator.getPixelColor(-60, 230, 30);
@@ -111,9 +111,9 @@ public class AutonomousRed extends MasterAutonomous
             // Press left side if it's red
             telemetry.log().add("Left is red");
             // Go in front of left button
-            driveToPoint(beaconX - 140, beaconY - 100, 90);
+            driveToPointRed(beaconX - 140, beaconY - 100, 90);
             // Move forward to press button
-            driveToPoint(beaconX - 140, beaconY - 35, 90);
+            driveToPointRed(beaconX - 140, beaconY - 35, 90);
             sleep(500);
         }
         else
@@ -121,14 +121,14 @@ public class AutonomousRed extends MasterAutonomous
             // Press right side if it's red
             telemetry.log().add("Right is red");
             // Go in front of right button
-            driveToPoint(beaconX - 10, beaconY - 100, 90.0);
+            driveToPointRed(beaconX - 10, beaconY - 100, 90.0);
             // Move forward to press button
-            driveToPoint(beaconX - 10, beaconY - 35, 90.0);
+            driveToPointRed(beaconX - 10, beaconY - 35, 90.0);
             sleep(500);
         }
 
         // Back away from beacon
-        driveToPoint(beaconX, beaconY - 450, 90);
+        driveToPointRed(beaconX, beaconY - 450, 90);
     }
 
     // TODO: The methods below should only be temporary until we find a better solution to other alliance's targets giving bogus numbers
@@ -174,7 +174,7 @@ public class AutonomousRed extends MasterAutonomous
     }
 
     // Turns to the specified angle
-    void turnToAngle(double targetAngle) throws InterruptedException
+    void turnToAngleRed(double targetAngle) throws InterruptedException
     {
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
         double ANGLE_TOLERANCE = 2.0; // In degrees
@@ -208,7 +208,7 @@ public class AutonomousRed extends MasterAutonomous
     }
 
     // Makes robot drive to a point on the field
-    void driveToPoint(double targetX, double targetY, double targetAngle) throws InterruptedException
+    void driveToPointRed(double targetX, double targetY, double targetAngle) throws InterruptedException
     {
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
@@ -241,5 +241,20 @@ public class AutonomousRed extends MasterAutonomous
             idle();
         }
         stopDriving();
+    }
+
+    // Robot sometimes won't see the vision targets when it should. This is to be used in places
+    // where we need to be sure that we're tracking the target. Only uses red alliance vision targets
+    public void lookForVisionTargetRed() throws InterruptedException
+    {
+        //TODO: This won't always find the target, so make better
+        // Turn until target is found
+        while(!vuforiaLocator.isTracking() && opModeIsActive()
+                && vuforiaLocator.getTargetName().equals("Target Blue Left")
+                && vuforiaLocator.getTargetName().equals("Target Blue Right"))
+        {
+            turnToAngleRed(robotAngle - 10);
+            sleep(500);
+        }
     }
 }
