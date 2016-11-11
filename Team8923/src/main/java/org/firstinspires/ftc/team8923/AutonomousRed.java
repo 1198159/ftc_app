@@ -24,33 +24,41 @@ public class AutonomousRed extends MasterAutonomous
         robotY = RED_LEFT_START_Y;
         robotAngle = RED_LEFT_START_ANGLE;
 
+        // Used to make sure buttons are not continuously counted
+        boolean buttonWasPressed = false;
+
         // TODO: Add code to use gamepad to setup autonomous routine
         // Used to setup autonomous routine
         while(true)
         {
-            if(gamepad1.x)
+            if(gamepad1.x && !buttonWasPressed)
             {
                 // Robot will start on left
                 robotX = RED_LEFT_START_X;
                 robotY = RED_LEFT_START_Y;
                 robotAngle = RED_LEFT_START_ANGLE;
                 telemetry.log().add("Left Selected");
+                buttonWasPressed = true;
             }
-            else if(gamepad1.b)
+            else if(gamepad1.b && !buttonWasPressed)
             {
                 // Robot will start on right
                 robotX = RED_RIGHT_START_X;
                 robotY = RED_RIGHT_START_Y;
                 robotAngle = RED_RIGHT_START_ANGLE;
                 telemetry.log().add("Right Selected");
+                buttonWasPressed = true;
             }
             // Start button should only be pressed after robot is placed in starting position. Init
             // auto assumes the robot is in it's starting position
-            else if(gamepad1.start)
+            else if(gamepad1.start && !buttonWasPressed)
             {
                 telemetry.log().add("Setup complete. Initializing...");
                 break;
             }
+            else
+                buttonWasPressed = false;
+
             telemetry.update();
             idle();
         }
