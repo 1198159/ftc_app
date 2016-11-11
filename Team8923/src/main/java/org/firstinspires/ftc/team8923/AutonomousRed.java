@@ -67,6 +67,10 @@ public class AutonomousRed extends MasterAutonomous
         pressLeftBeacon();
         pressRightBeacon();
 
+        // Park on ramp
+        turnToAngle(180);
+        driveToPointRed(600, 3300, 180);
+
         // TODO: Remove when testing is done. This is just so we can read the results
         sleep(10000);
     }
