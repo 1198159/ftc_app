@@ -20,9 +20,9 @@ public class AutonomousBlue extends MasterAutonomous
         telemetry.update();
 
         // Set defaults in case they're not set below
-        robotX = BLUE_LEFT_START_X;
-        robotY = BLUE_LEFT_START_Y;
-        robotAngle = BLUE_LEFT_START_ANGLE;
+        robotX = StartLocations.BLUE_LEFT_START_X.val;
+        robotY = StartLocations.BLUE_LEFT_START_Y.val;
+        robotAngle = StartLocations.BLUE_LEFT_START_ANGLE.val;
 
         // TODO: Add code to use gamepad to setup autonomous routine
         // Used to setup autonomous routine
@@ -31,17 +31,17 @@ public class AutonomousBlue extends MasterAutonomous
             if(gamepad1.x)
             {
                 // Robot will start on left
-                robotX = BLUE_LEFT_START_X;
-                robotY = BLUE_LEFT_START_Y;
-                robotAngle = BLUE_LEFT_START_ANGLE;
+                robotX = StartLocations.BLUE_LEFT_START_X.val;
+                robotY = StartLocations.BLUE_LEFT_START_Y.val;
+                robotAngle = StartLocations.BLUE_LEFT_START_ANGLE.val;
                 telemetry.log().add("Left Selected");
             }
             else if(gamepad1.b)
             {
                 // Robot will start on right
-                robotX = BLUE_RIGHT_START_X;
-                robotY = BLUE_RIGHT_START_Y;
-                robotAngle = BLUE_RIGHT_START_ANGLE;
+                robotX = StartLocations.BLUE_RIGHT_START_X.val;
+                robotY = StartLocations.BLUE_RIGHT_START_Y.val;
+                robotAngle = StartLocations.BLUE_RIGHT_START_ANGLE.val;
                 telemetry.log().add("Right Selected");
             }
             // Start button should only be pressed after robot is placed in starting position. Init

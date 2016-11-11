@@ -20,9 +20,9 @@ public class AutonomousRed extends MasterAutonomous
         telemetry.update();
 
         // Set defaults in case they're not set below
-        robotX = RED_LEFT_START_X;
-        robotY = RED_LEFT_START_Y;
-        robotAngle = RED_LEFT_START_ANGLE;
+        robotX = StartLocations.RED_LEFT_START_X.val;
+        robotY = StartLocations.RED_LEFT_START_Y.val;
+        robotAngle = StartLocations.RED_LEFT_START_ANGLE.val;
 
         // Used to make sure buttons are not continuously counted
         boolean buttonWasPressed = false;
@@ -34,18 +34,18 @@ public class AutonomousRed extends MasterAutonomous
             if(gamepad1.x && !buttonWasPressed)
             {
                 // Robot will start on left
-                robotX = RED_LEFT_START_X;
-                robotY = RED_LEFT_START_Y;
-                robotAngle = RED_LEFT_START_ANGLE;
+                robotX = StartLocations.RED_LEFT_START_X.val;
+                robotY = StartLocations.RED_LEFT_START_Y.val;
+                robotAngle = StartLocations.RED_LEFT_START_ANGLE.val;
                 telemetry.log().add("Left Selected");
                 buttonWasPressed = true;
             }
             else if(gamepad1.b && !buttonWasPressed)
             {
                 // Robot will start on right
-                robotX = RED_RIGHT_START_X;
-                robotY = RED_RIGHT_START_Y;
-                robotAngle = RED_RIGHT_START_ANGLE;
+                robotX = StartLocations.RED_RIGHT_START_X.val;
+                robotY = StartLocations.RED_RIGHT_START_Y.val;
+                robotAngle = StartLocations.RED_RIGHT_START_ANGLE.val;
                 telemetry.log().add("Right Selected");
                 buttonWasPressed = true;
             }

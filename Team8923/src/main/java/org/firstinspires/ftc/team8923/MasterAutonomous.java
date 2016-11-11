@@ -9,23 +9,30 @@ import com.qualcomm.robotcore.util.Range;
  */
 abstract class MasterAutonomous extends Master
 {
-    // TODO: Check values of starting locations
-    // Starting locations for robot. Measurements are in millimeters and degrees
-    static final double RED_LEFT_START_X = 17 * 25.4;
-    static final double RED_LEFT_START_Y = 100 * 25.4;
-    static final double RED_LEFT_START_ANGLE = 45.0;
+    enum StartLocations
+    {
+        RED_LEFT_START_X(17 * 25.4),
+        RED_LEFT_START_Y(100 * 25.4),
+        RED_LEFT_START_ANGLE(45.0),
 
-    static final double RED_RIGHT_START_X = 17 * 25.4;
-    static final double RED_RIGHT_START_Y = 52 * 25.4;
-    static final double RED_RIGHT_START_ANGLE = 45.0;
+        RED_RIGHT_START_X(17 * 25.4),
+        RED_RIGHT_START_Y(52 * 25.4),
+        RED_RIGHT_START_ANGLE(45.0),
 
-    static final double BLUE_LEFT_START_X = 52 * 25.4;
-    static final double BLUE_LEFT_START_Y = 17 * 25.4;
-    static final double BLUE_LEFT_START_ANGLE = 45.0;
+        BLUE_LEFT_START_X(52 * 25.4),
+        BLUE_LEFT_START_Y(17 * 25.4),
+        BLUE_LEFT_START_ANGLE(45.0),
 
-    static final double BLUE_RIGHT_START_X = 100 * 25.4;
-    static final double BLUE_RIGHT_START_Y = 17 * 25.4;
-    static final double BLUE_RIGHT_START_ANGLE = 45.0;
+        BLUE_RIGHT_START_X(100 * 25.4),
+        BLUE_RIGHT_START_Y(17 * 25.4),
+        BLUE_RIGHT_START_ANGLE(45.0);
+
+        public final double val;
+        StartLocations(double i)
+        {
+            val = i;
+        }
+    }
 
     // Constants for robot in autonomous
     // Max drive power is less than 1 to ensure speed controller works
