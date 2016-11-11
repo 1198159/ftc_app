@@ -11,6 +11,11 @@ abstract class MasterAutonomous extends Master
 {
     enum StartLocations
     {
+        // Values of these 2 are arbitrary. Intended to be generic to allow one method for both
+        // alliances. Other values should be used for actually setting the coordinates
+        LEFT(0),
+        RIGHT(0),
+
         RED_LEFT_START_X(17 * 25.4),
         RED_LEFT_START_Y(100 * 25.4),
         RED_LEFT_START_ANGLE(45.0),

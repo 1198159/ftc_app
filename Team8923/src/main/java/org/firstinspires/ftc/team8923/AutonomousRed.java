@@ -19,10 +19,9 @@ public class AutonomousRed extends MasterAutonomous
         telemetry.log().add("Press start button when robot is on field");
         telemetry.update();
 
-        // Set defaults in case they're not set below
-        robotX = StartLocations.RED_LEFT_START_X.val;
-        robotY = StartLocations.RED_LEFT_START_Y.val;
-        robotAngle = StartLocations.RED_LEFT_START_ANGLE.val;
+        // TODO: Should we add default objectives?
+        // Set default starting location in case they're not set below
+        StartLocations startLocation = StartLocations.LEFT;
 
         // Used to make sure buttons are not continuously counted
         boolean buttonWasPressed = false;
@@ -34,18 +33,14 @@ public class AutonomousRed extends MasterAutonomous
             if(gamepad1.x && !buttonWasPressed)
             {
                 // Robot will start on left
-                robotX = StartLocations.RED_LEFT_START_X.val;
-                robotY = StartLocations.RED_LEFT_START_Y.val;
-                robotAngle = StartLocations.RED_LEFT_START_ANGLE.val;
+                startLocation = StartLocations.LEFT;
                 telemetry.log().add("Left Selected");
                 buttonWasPressed = true;
             }
             else if(gamepad1.b && !buttonWasPressed)
             {
                 // Robot will start on right
-                robotX = StartLocations.RED_RIGHT_START_X.val;
-                robotY = StartLocations.RED_RIGHT_START_Y.val;
-                robotAngle = StartLocations.RED_RIGHT_START_ANGLE.val;
+                startLocation = StartLocations.RIGHT;
                 telemetry.log().add("Right Selected");
                 buttonWasPressed = true;
             }
@@ -59,8 +54,24 @@ public class AutonomousRed extends MasterAutonomous
             else
                 buttonWasPressed = false;
 
+            telemetry.addData("Start Location", startLocation.name());
             telemetry.update();
             idle();
+        }
+
+        // Set starting location
+        switch(startLocation)
+        {
+            case LEFT:
+                robotX = StartLocations.RED_LEFT_START_X.val;
+                robotY = StartLocations.RED_LEFT_START_Y.val;
+                robotAngle = StartLocations.RED_LEFT_START_ANGLE.val;
+                break;
+            case RIGHT:
+                robotX = StartLocations.RED_RIGHT_START_X.val;
+                robotY = StartLocations.RED_RIGHT_START_Y.val;
+                robotAngle = StartLocations.RED_RIGHT_START_ANGLE.val;
+                break;
         }
 
         initHardware();
