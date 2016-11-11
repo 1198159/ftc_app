@@ -46,6 +46,14 @@ abstract class MasterAutonomous extends Master
     static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
     static final double DRIVE_POWER_CONSTANT = 1.0 / 1000.0;
 
+    enum Objectives
+    {
+        BEACON_LEFT,
+        BEACON_RIGHT,
+        PARK_RAMP,
+        PARK_CENTER
+    }
+
     // Information on robot's location. Units are millimeters and degrees
     double robotX = 0.0, robotY = 0.0, robotAngle = 0.0;
 
