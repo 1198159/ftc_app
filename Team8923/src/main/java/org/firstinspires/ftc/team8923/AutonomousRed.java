@@ -27,6 +27,9 @@ public class AutonomousRed extends MasterAutonomous
         boolean buttonWasPressed = false;
 
         // TODO: Add code to use gamepad to setup autonomous routine
+        // Delays the start of autonomous to allow other robot to complete objectives first. Value is in seconds
+        int delayTime = 0;
+
         // Used to setup autonomous routine
         while(true)
         {
@@ -44,6 +47,21 @@ public class AutonomousRed extends MasterAutonomous
                 telemetry.log().add("Right Selected");
                 buttonWasPressed = true;
             }
+            else if(gamepad1.dpad_up && !buttonWasPressed)
+            {
+                // Increase delay time
+                delayTime += 1;
+                buttonWasPressed = true;
+            }
+            else if(gamepad1.dpad_up && !buttonWasPressed)
+            {
+                // Decrease delay time
+                delayTime -= 1;
+                // Ensure delay isn't negative
+                if(delayTime < 0)
+                    delayTime = 0;
+                buttonWasPressed = true;
+            }
             // Start button should only be pressed after robot is placed in starting position. Init
             // auto assumes the robot is in it's starting position
             else if(gamepad1.start && !buttonWasPressed)
@@ -55,6 +73,8 @@ public class AutonomousRed extends MasterAutonomous
                 buttonWasPressed = false;
 
             telemetry.addData("Start Location", startLocation.name());
+            telemetry.addData("Delay Seconds", delayTime);
+
             telemetry.update();
             idle();
         }
@@ -80,6 +100,9 @@ public class AutonomousRed extends MasterAutonomous
         telemetry.log().add("Initialized. Ready to start!");
 
         waitForStart();
+
+        // Wait for requested number of milliseconds
+        sleep(delayTime * 1000);
 
         vuforiaLocator.startTracking();
 
