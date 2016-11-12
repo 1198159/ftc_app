@@ -68,7 +68,7 @@ abstract class MasterAutonomous extends Master
     VuforiaLocator vuforiaLocator = new VuforiaLocator();
 
     // Variables used for autonomous routine setup
-    ArrayList<Objectives> routine = new ArrayList<Objectives>();
+    ArrayList<Objectives> routine = new ArrayList<>();
     StartLocations startLocation;
     int delayTime = 0; // In seconds
 
@@ -84,64 +84,91 @@ abstract class MasterAutonomous extends Master
 
         while(true)
         {
-            if(gamepad1.x && !buttonWasPressed)
+            if(gamepad1.x)
             {
-                // Robot will start on left
-                startLocation = StartLocations.LEFT;
-                buttonWasPressed = true;
+                if(!buttonWasPressed)
+                {
+                    // Robot will start on left
+                    startLocation = StartLocations.LEFT;
+                    buttonWasPressed = true;
+                }
             }
-            else if(gamepad1.b && !buttonWasPressed)
+            else if(gamepad1.b)
             {
-                // Robot will start on right
-                startLocation = StartLocations.RIGHT;
-                buttonWasPressed = true;
+                if(!buttonWasPressed)
+                {
+                    // Robot will start on right
+                    startLocation = StartLocations.RIGHT;
+                    buttonWasPressed = true;
+                }
             }
-            else if(gamepad1.dpad_up && !buttonWasPressed)
+            else if(gamepad1.dpad_up)
             {
-                // Increase delay time
-                delayTime += 1;
-                buttonWasPressed = true;
+                if(!buttonWasPressed)
+                {
+                    // Increase delay time
+                    delayTime += 1;
+                    buttonWasPressed = true;
+                }
             }
-            else if(gamepad1.dpad_up && !buttonWasPressed)
+            else if(gamepad1.dpad_up)
             {
-                // Decrease delay time
-                delayTime -= 1;
-                // Ensure delay isn't negative
-                if(delayTime < 0)
-                    delayTime = 0;
-                buttonWasPressed = true;
+                if(!buttonWasPressed)
+                {
+                    // Decrease delay time
+                    delayTime -= 1;
+                    // Ensure delay isn't negative
+                    if(delayTime < 0)
+                        delayTime = 0;
+                    buttonWasPressed = true;
+                }
             }
             // TODO: Make it so routine can be changed if needed
-            else if(gamepad1.dpad_left && !buttonWasPressed)
+            else if(gamepad1.dpad_left)
             {
-                // Left beacon
-                routine.add(Objectives.BEACON_LEFT);
-                buttonWasPressed = true;
+                if(!buttonWasPressed)
+                {
+                    // Left beacon
+                    routine.add(Objectives.BEACON_LEFT);
+                    buttonWasPressed = true;
+                }
             }
-            else if(gamepad1.dpad_right && !buttonWasPressed)
+            else if(gamepad1.dpad_right)
             {
-                // Right beacon
-                routine.add(Objectives.BEACON_RIGHT);
-                buttonWasPressed = true;
+                if(!buttonWasPressed)
+                {
+                    // Right beacon
+                    routine.add(Objectives.BEACON_RIGHT);
+                    buttonWasPressed = true;
+                }
             }
-            else if(gamepad1.right_bumper && !buttonWasPressed)
+            else if(gamepad1.right_bumper)
             {
-                // Park on ramp
-                routine.add(Objectives.PARK_RAMP);
-                buttonWasPressed = true;
+                if(!buttonWasPressed)
+                {
+                    // Park on ramp
+                    routine.add(Objectives.PARK_RAMP);
+                    buttonWasPressed = true;
+                }
             }
-            else if(gamepad1.left_bumper && !buttonWasPressed)
+            else if(gamepad1.left_bumper)
             {
-                // Park on center
-                routine.add(Objectives.PARK_CENTER);
-                buttonWasPressed = true;
+                if(!buttonWasPressed)
+                {
+                    // Park on center
+                    routine.add(Objectives.PARK_CENTER);
+                    buttonWasPressed = true;
+                }
             }
             // Start button should only be pressed after robot is placed in starting position. Init
             // auto assumes the robot is in it's starting position
-            else if(gamepad1.start && !buttonWasPressed)
+            else if(gamepad1.start)
             {
-                telemetry.log().add("Setup complete. Initializing...");
-                break;
+                if(!buttonWasPressed)
+                {
+                    telemetry.log().add("Setup complete. Initializing...");
+                    break;
+                }
             }
             else
                 buttonWasPressed = false;
@@ -160,7 +187,7 @@ abstract class MasterAutonomous extends Master
         }
     }
 
-    public void initAuto()
+    void initAuto()
     {
         // Used to calculate distance traveled between loops
         lastEncoderFL = motorFL.getCurrentPosition();
