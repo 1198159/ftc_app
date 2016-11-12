@@ -15,44 +15,21 @@ public class AutonomousBlue extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        telemetry.log().add("Starting Position: Press x for left, b for right");
-        telemetry.log().add("Press start button when robot is on field");
-        telemetry.update();
+        setUpRoutine();
 
-        // Set defaults in case they're not set below
-        robotX = StartLocations.BLUE_LEFT_START_X.val;
-        robotY = StartLocations.BLUE_LEFT_START_Y.val;
-        robotAngle = StartLocations.BLUE_LEFT_START_ANGLE.val;
-
-        // TODO: Add code to use gamepad to setup autonomous routine
-        // Used to setup autonomous routine
-        while(opModeIsActive())
+        // Set starting location
+        switch(startLocation)
         {
-            if(gamepad1.x)
-            {
-                // Robot will start on left
+            case LEFT:
                 robotX = StartLocations.BLUE_LEFT_START_X.val;
                 robotY = StartLocations.BLUE_LEFT_START_Y.val;
                 robotAngle = StartLocations.BLUE_LEFT_START_ANGLE.val;
-                telemetry.log().add("Left Selected");
-            }
-            else if(gamepad1.b)
-            {
-                // Robot will start on right
+                break;
+            case RIGHT:
                 robotX = StartLocations.BLUE_RIGHT_START_X.val;
                 robotY = StartLocations.BLUE_RIGHT_START_Y.val;
                 robotAngle = StartLocations.BLUE_RIGHT_START_ANGLE.val;
-                telemetry.log().add("Right Selected");
-            }
-            // Start button should only be pressed after robot is placed in starting position. Init
-            // auto assumes the robot is in it's starting position
-            else if(gamepad1.start)
-            {
-                telemetry.log().add("Setup complete. Initializing...");
                 break;
-            }
-            telemetry.update();
-            idle();
         }
 
         initHardware();
@@ -62,17 +39,52 @@ public class AutonomousBlue extends MasterAutonomous
         
         waitForStart();
 
+        // Wait for requested number of milliseconds
+        sleep(delayTime * 1000);
+
         vuforiaLocator.startTracking();
 
-        pressRightBeacon();
-        pressLeftBeacon();
+        // Completes each objective in the routine in order
+        for(Objectives objective : routine)
+        {
+            // Get the next objective from the routine, and run it
+            switch(objective)
+            {
+                // Only complete the requested objective
+                case BEACON_LEFT:
+                    pressLeftBeacon();
+                    break;
+                case BEACON_RIGHT:
+                    pressRightBeacon();
+                    break;
+                case PARK_RAMP:
+                    parkOnRamp();
+                    break;
+                case PARK_CENTER:
+                    parkOnCenter();
+                    break;
+                default:
 
-        // Park on ramp
-        turnToAngleBlue(-90);
-        driveToPointBlue(3300, 600, -90);
+            }
+        }
 
         // TODO: Remove when testing is done. This is just so we can read the results
         sleep(10000);
+    }
+
+    private void parkOnRamp() throws InterruptedException
+    {
+        double angleToRamp = Math.atan2(3300 - robotY, 600 - robotX);
+        turnToAngleBlue(angleToRamp);
+        driveToPointBlue(3300, 600, angleToRamp);
+    }
+
+    // TODO: Test me
+    private void parkOnCenter() throws InterruptedException
+    {
+        double angleToCenter = Math.atan2(2000 - robotY, 1500 - robotX);
+        turnToAngleBlue(angleToCenter);
+        driveToPointBlue(2000, 1500, angleToCenter);
     }
 
     private void pressLeftBeacon() throws InterruptedException

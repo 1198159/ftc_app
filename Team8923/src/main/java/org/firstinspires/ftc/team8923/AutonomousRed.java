@@ -74,7 +74,7 @@ public class AutonomousRed extends MasterAutonomous
 
     private void parkOnRamp() throws InterruptedException
     {
-        double angleToRamp = Math.atan2(3300 - robotY, 3300 - robotX);
+        double angleToRamp = Math.atan2(600 - robotY, 3300 - robotX);
         turnToAngleRed(angleToRamp);
         driveToPointRed(600, 3300, angleToRamp);
     }
