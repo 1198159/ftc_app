@@ -228,6 +228,9 @@ abstract class MasterAutonomous extends Master
 
     void initAuto()
     {
+        setUpRoutine();
+        initHardware();
+
         // Used to calculate distance traveled between loops
         lastEncoderFL = motorFL.getCurrentPosition();
         lastEncoderFR = motorFR.getCurrentPosition();
@@ -235,6 +238,8 @@ abstract class MasterAutonomous extends Master
         lastEncoderBR = motorBR.getCurrentPosition();
 
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
+
+        telemetry.log().add("Initialized. Ready to start!");
     }
 
     // Turns to the specified angle

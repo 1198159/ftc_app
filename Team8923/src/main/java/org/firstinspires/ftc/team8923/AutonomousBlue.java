@@ -17,12 +17,7 @@ public class AutonomousBlue extends MasterAutonomous
     {
         allaince = Allaince.BLUE;
 
-        setUpRoutine();
-
-        initHardware();
         initAuto();
-
-        telemetry.log().add("Initialized. Ready to start!");
         
         waitForStart();
 
