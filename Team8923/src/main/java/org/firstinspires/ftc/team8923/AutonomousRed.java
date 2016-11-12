@@ -5,8 +5,6 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.Range;
 
-import java.util.ArrayList;
-
 /*
  *  Autonomous OpMode for red alliance. The OpMode is setup with a gamepad during initialization,
  *  so robot can start at one of two locations, and can complete any objective in any order
@@ -17,100 +15,7 @@ public class AutonomousRed extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        telemetry.log().add("Starting Position: Press x for left, b for right");
-        telemetry.log().add("Press start button when robot is on field");
-        telemetry.update();
-
-        // TODO: Should we add default objectives?
-        // Set default starting location in case they're not set below
-        StartLocations startLocation = StartLocations.LEFT;
-
-        // Used to make sure buttons are not continuously counted
-        boolean buttonWasPressed = false;
-
-        ArrayList<Objectives> routine = new ArrayList<Objectives>();
-
-        // Delays the start of autonomous to allow other robot to complete objectives first. Value is in seconds
-        int delayTime = 0;
-
-        // TODO: Test me
-        // Used to setup autonomous routine
-        while(true)
-        {
-            if(gamepad1.x && !buttonWasPressed)
-            {
-                // Robot will start on left
-                startLocation = StartLocations.LEFT;
-                buttonWasPressed = true;
-            }
-            else if(gamepad1.b && !buttonWasPressed)
-            {
-                // Robot will start on right
-                startLocation = StartLocations.RIGHT;
-                buttonWasPressed = true;
-            }
-            else if(gamepad1.dpad_up && !buttonWasPressed)
-            {
-                // Increase delay time
-                delayTime += 1;
-                buttonWasPressed = true;
-            }
-            else if(gamepad1.dpad_up && !buttonWasPressed)
-            {
-                // Decrease delay time
-                delayTime -= 1;
-                // Ensure delay isn't negative
-                if(delayTime < 0)
-                    delayTime = 0;
-                buttonWasPressed = true;
-            }
-            // TODO: Make it so routine can be changed if needed
-            else if(gamepad1.dpad_left && !buttonWasPressed)
-            {
-                // Left beacon
-                routine.add(Objectives.BEACON_LEFT);
-                buttonWasPressed = true;
-            }
-            else if(gamepad1.dpad_right && !buttonWasPressed)
-            {
-                // Right beacon
-                routine.add(Objectives.BEACON_RIGHT);
-                buttonWasPressed = true;
-            }
-            else if(gamepad1.right_bumper && !buttonWasPressed)
-            {
-                // Park on ramp
-                routine.add(Objectives.PARK_RAMP);
-                buttonWasPressed = true;
-            }
-            else if(gamepad1.left_bumper && !buttonWasPressed)
-            {
-                // Park on center
-                routine.add(Objectives.PARK_CENTER);
-                buttonWasPressed = true;
-            }
-            // Start button should only be pressed after robot is placed in starting position. Init
-            // auto assumes the robot is in it's starting position
-            else if(gamepad1.start && !buttonWasPressed)
-            {
-                telemetry.log().add("Setup complete. Initializing...");
-                break;
-            }
-            else
-                buttonWasPressed = false;
-
-            // Display current routine
-            telemetry.addData("Start Location", startLocation.name());
-            telemetry.addData("Delay Seconds", delayTime);
-
-            // Get the next objective in the routine, and add to telemetry
-            // The + 1 is to shift from 0 index to 1 index for display
-            for(Objectives objective : routine)
-                telemetry.addData("Objective " + routine.indexOf(objective) + 1, objective.name());
-
-            telemetry.update();
-            idle();
-        }
+        setUpRoutine();
 
         // Set starting location
         switch(startLocation)

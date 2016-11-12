@@ -2,6 +2,8 @@ package org.firstinspires.ftc.team8923;
 
 import com.qualcomm.robotcore.util.Range;
 
+import java.util.ArrayList;
+
 /*
  * This class contains all objects and methods that should be accessible by all Autonomous OpModes
  * The axes of the field are defined where the origin is the corner between the driver stations,
@@ -64,6 +66,99 @@ abstract class MasterAutonomous extends Master
     int lastEncoderBR = 0;
 
     VuforiaLocator vuforiaLocator = new VuforiaLocator();
+
+    // Variables used for autonomous routine setup
+    ArrayList<Objectives> routine = new ArrayList<Objectives>();
+    StartLocations startLocation;
+    int delayTime = 0; // In seconds
+
+    // TODO: Test me
+    void setUpRoutine()
+    {
+        telemetry.log().add("Starting Position: Press x for left, b for right");
+        telemetry.log().add("Press start button when robot is on field");
+        telemetry.update();
+
+        // Used to make sure buttons are not continuously counted
+        boolean buttonWasPressed = false;
+
+        while(true)
+        {
+            if(gamepad1.x && !buttonWasPressed)
+            {
+                // Robot will start on left
+                startLocation = StartLocations.LEFT;
+                buttonWasPressed = true;
+            }
+            else if(gamepad1.b && !buttonWasPressed)
+            {
+                // Robot will start on right
+                startLocation = StartLocations.RIGHT;
+                buttonWasPressed = true;
+            }
+            else if(gamepad1.dpad_up && !buttonWasPressed)
+            {
+                // Increase delay time
+                delayTime += 1;
+                buttonWasPressed = true;
+            }
+            else if(gamepad1.dpad_up && !buttonWasPressed)
+            {
+                // Decrease delay time
+                delayTime -= 1;
+                // Ensure delay isn't negative
+                if(delayTime < 0)
+                    delayTime = 0;
+                buttonWasPressed = true;
+            }
+            // TODO: Make it so routine can be changed if needed
+            else if(gamepad1.dpad_left && !buttonWasPressed)
+            {
+                // Left beacon
+                routine.add(Objectives.BEACON_LEFT);
+                buttonWasPressed = true;
+            }
+            else if(gamepad1.dpad_right && !buttonWasPressed)
+            {
+                // Right beacon
+                routine.add(Objectives.BEACON_RIGHT);
+                buttonWasPressed = true;
+            }
+            else if(gamepad1.right_bumper && !buttonWasPressed)
+            {
+                // Park on ramp
+                routine.add(Objectives.PARK_RAMP);
+                buttonWasPressed = true;
+            }
+            else if(gamepad1.left_bumper && !buttonWasPressed)
+            {
+                // Park on center
+                routine.add(Objectives.PARK_CENTER);
+                buttonWasPressed = true;
+            }
+            // Start button should only be pressed after robot is placed in starting position. Init
+            // auto assumes the robot is in it's starting position
+            else if(gamepad1.start && !buttonWasPressed)
+            {
+                telemetry.log().add("Setup complete. Initializing...");
+                break;
+            }
+            else
+                buttonWasPressed = false;
+
+            // Display current routine
+            telemetry.addData("Start Location", startLocation.name());
+            telemetry.addData("Delay Seconds", delayTime);
+
+            // Get the next objective in the routine, and add to telemetry
+            // The + 1 is to shift from 0 index to 1 index for display
+            for(Objectives objective : routine)
+                telemetry.addData("Objective " + routine.indexOf(objective) + 1, objective.name());
+
+            telemetry.update();
+            idle();
+        }
+    }
 
     public void initAuto()
     {
