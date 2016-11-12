@@ -17,7 +17,6 @@ abstract class Master extends LinearOpMode
     DcMotor motorBL = null;
     DcMotor motorBR = null;
 
-    ColorSensor colorSensor;
     BNO055IMU imu;
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -53,8 +52,6 @@ abstract class Master extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        colorSensor = hardwareMap.colorSensor.get("colorSensor");
-
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -64,10 +61,6 @@ abstract class Master extends LinearOpMode
     // Sends information to Driver Station screen for drivers to see
     void sendTelemetry()
     {
-        telemetry.addData("R", colorSensor.red());
-        telemetry.addData("G", colorSensor.green());
-        telemetry.addData("B", colorSensor.blue());
-
         //TODO: Probably won't need this after testing. It takes up a lot of room, so remove if no longer needed.
         // Drive motor info
         telemetry.addData("FL Enc", formatNumber(motorFL.getCurrentPosition()));
