@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team417;
 import android.graphics.Bitmap;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
+import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -35,28 +36,50 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double TURN_SPEED = 0.5;
 
 
-    // Vuforia stuff
-    public static final String TAG = "Vuforia Sample";
-
-    OpenGLMatrix lastLocation = null;
-    VuforiaLocalizer.CloseableFrame frame;
-    Image image = null;
-    Image imageRGB565 = null;
-    Image imageRGB888 = null;
-    int imageFormat;
-    Bitmap bm;      // android.graphics
-    boolean gamePadButtonA;  // determine which half of beacon to sample
-
-    VuforiaLocalizer vuforia;
-
     public void initializeHardware()
-    {
+    {/*
+
+        // Initialize motors to be the hardware motors
         motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
         motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
 
+        // run to position mode
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
         motorBackRight.setDirection(DcMotor.Direction.REVERSE);
+
+        motorFrontLeft.setPower(0);
+        motorFrontRight.setPower(0);
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+
+        // Set up the parameters with which we will use our IMU. Note that integration
+        // algorithm here just reports accelerations to the logcat log; it doesn't actually
+        // provide positional information.
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+        float angle;
+        for (int i = 0; i < 3; i++) {
+            sleep(100);
+            angle = imu.getAngularOrientation().firstAngle;
+
+        }*/
     }
 }

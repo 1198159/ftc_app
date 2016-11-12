@@ -94,59 +94,61 @@ public class VuforiaNavigation {
 
         // TODO: create a function to create a location matrix for target
         // set target locations
-        OpenGLMatrix wheelsTargetLocationOnField = OpenGLMatrix
+        OpenGLMatrix wheelsTargetLocationOnField = OpenGLMatrix // blue right
                 /* Then we translate the target off to the RED WALL. Our translation here
                 is a negative translation in X.*/
-                .translation(-mmFTCFieldWidth / 2, 0, 0)
+                .translation(mmFTCFieldWidth, 1524, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         /* First, in the fixed (field) coordinate system, we rotate 90deg in X, then 90 in Z */
-                        AxesReference.EXTRINSIC, AxesOrder.XZX,
-                        AngleUnit.DEGREES, 90, 90, 0));
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
+                        AngleUnit.DEGREES, 90, 0, -90));
         trackableTargets[0].setLocation(wheelsTargetLocationOnField);
         //RobotLog.ii(TAG, "Wheels Target=%s", format(wheelsTargetLocationOnField));
 
-        OpenGLMatrix toolsTargetLocationOnField = OpenGLMatrix
+        OpenGLMatrix toolsTargetLocationOnField = OpenGLMatrix // red right
                 /* Then we translate the target off to the Blue Audience wall.
                 Our translation here is a positive translation in Y.*/
-                .translation(0, mmFTCFieldWidth / 2, 0)
+                .translation(2743.2f, mmFTCFieldWidth, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         /* First, in the fixed (field) coordinate system, we rotate 90deg in X */
-                        AxesReference.EXTRINSIC, AxesOrder.XZX,
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
                         AngleUnit.DEGREES, 90, 0, 0));
         trackableTargets[1].setLocation(toolsTargetLocationOnField);
         //RobotLog.ii(TAG, "Tools Target=%s", format(toolsTargetLocationOnField));
 
-        OpenGLMatrix gearsTargetLocationOnField = OpenGLMatrix
+        OpenGLMatrix gearsTargetLocationOnField = OpenGLMatrix // red left
                 /* Then we translate the target off to the Blue Audience wall.
                 Our translation here is a positive translation in Y.*/
-                .translation(0, mmFTCFieldWidth / 2, 0)
+                .translation(1524, mmFTCFieldWidth, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         /* First, in the fixed (field) coordinate system, we rotate 90deg in X */
-                        AxesReference.EXTRINSIC, AxesOrder.XZX,
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
                         AngleUnit.DEGREES, 90, 0, 0));
-        trackableTargets[2].setLocation(gearsTargetLocationOnField);
+        trackableTargets[3].setLocation(gearsTargetLocationOnField);
         //RobotLog.ii(TAG, "Gears Target=%s", format(toolsTargetLocationOnField));
 
-        OpenGLMatrix legosTargetLocationOnField = OpenGLMatrix
+        OpenGLMatrix legosTargetLocationOnField = OpenGLMatrix // blue left
                 /* Then we translate the target off to the Blue Audience wall.
                 Our translation here is a positive translation in Y.*/
-                .translation(0, mmFTCFieldWidth / 2, 0)
+                .translation(mmFTCFieldWidth, 2743.2f, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         /* First, in the fixed (field) coordinate system, we rotate 90deg in X */
-                        AxesReference.EXTRINSIC, AxesOrder.XZX,
-                        AngleUnit.DEGREES, 90, 0, 0));
-        trackableTargets[3].setLocation(legosTargetLocationOnField);
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
+                        AngleUnit.DEGREES, 90, 0, -90));
+        trackableTargets[2].setLocation(legosTargetLocationOnField);
         //RobotLog.ii(TAG, "Legos Target=%s", format(toolsTargetLocationOnField));
 
 
         // set phone location
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
-                .translation(mmBotWidth / 2, 0, 0)
+                .translation(-25.4f, 228.6f, 0)
                 .multiplied(Orientation.getRotationMatrix(
-                        AxesReference.EXTRINSIC, AxesOrder.YZY,
-                        AngleUnit.DEGREES, 0, 0, 0));  // portrait phone
-        //AngleUnit.DEGREES, -90, 0, 0));  // landscape
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
+                        AngleUnit.DEGREES, 90, 0, 0));  // portrait phone
+
         //RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
+
+
         for (int i = 0; i < listeners.length; i++)
         {
             listeners[i].setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
@@ -312,8 +314,14 @@ public class VuforiaNavigation {
             }
             //telemetry.log().add(String.format("Hue: %f, Sat: %f, Val: %f", colorHSV[0], colorHSV[1], colorHSV[2]));
         }
+    }
 
-
+    private OpenGLMatrix createMatrix(float x, float y, float z, float u, float v, float w)
+    {
+        return OpenGLMatrix.translation(x, y, z)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
     }
 
 }
+
