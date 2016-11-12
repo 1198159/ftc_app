@@ -11,6 +11,12 @@ import java.util.ArrayList;
  */
 abstract class MasterAutonomous extends Master
 {
+    enum Allaince
+    {
+        BLUE,
+        RED
+    }
+
     enum StartLocations
     {
         // Values of these 2 are arbitrary. Intended to be generic to allow one method for both
@@ -70,6 +76,7 @@ abstract class MasterAutonomous extends Master
     // Variables used for autonomous routine setup
     ArrayList<Objectives> routine = new ArrayList<>();
     StartLocations startLocation;
+    Allaince allaince;
     int delayTime = 0; // In seconds
 
     // TODO: Test me
@@ -184,6 +191,38 @@ abstract class MasterAutonomous extends Master
 
             telemetry.update();
             idle();
+        }
+
+        // Set coordinates based on alliance and starting location
+        if(startLocation == StartLocations.LEFT)
+        {
+            if(allaince == Allaince.RED)
+            {
+                robotX = StartLocations.RED_LEFT_START_X.val;
+                robotY = StartLocations.RED_LEFT_START_Y.val;
+                robotAngle = StartLocations.RED_LEFT_START_ANGLE.val;
+            }
+            else if(allaince == Allaince.BLUE)
+            {
+                robotX = StartLocations.BLUE_LEFT_START_X.val;
+                robotY = StartLocations.BLUE_LEFT_START_Y.val;
+                robotAngle = StartLocations.BLUE_LEFT_START_ANGLE.val;
+            }
+        }
+        else if(startLocation == StartLocations.RIGHT)
+        {
+            if(allaince == Allaince.RED)
+            {
+                robotX = StartLocations.RED_RIGHT_START_X.val;
+                robotY = StartLocations.RED_RIGHT_START_Y.val;
+                robotAngle = StartLocations.RED_RIGHT_START_ANGLE.val;
+            }
+            else if(allaince == Allaince.BLUE)
+            {
+                robotX = StartLocations.BLUE_RIGHT_START_X.val;
+                robotY = StartLocations.BLUE_RIGHT_START_Y.val;
+                robotAngle = StartLocations.BLUE_RIGHT_START_ANGLE.val;
+            }
         }
     }
 

@@ -15,22 +15,9 @@ public class AutonomousRed extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        setUpRoutine();
+        allaince = Allaince.RED;
 
-        // Set starting location
-        switch(startLocation)
-        {
-            case LEFT:
-                robotX = StartLocations.RED_LEFT_START_X.val;
-                robotY = StartLocations.RED_LEFT_START_Y.val;
-                robotAngle = StartLocations.RED_LEFT_START_ANGLE.val;
-                break;
-            case RIGHT:
-                robotX = StartLocations.RED_RIGHT_START_X.val;
-                robotY = StartLocations.RED_RIGHT_START_Y.val;
-                robotAngle = StartLocations.RED_RIGHT_START_ANGLE.val;
-                break;
-        }
+        setUpRoutine();
 
         initHardware();
         initAuto();

@@ -15,22 +15,9 @@ public class AutonomousBlue extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        setUpRoutine();
+        allaince = Allaince.BLUE;
 
-        // Set starting location
-        switch(startLocation)
-        {
-            case LEFT:
-                robotX = StartLocations.BLUE_LEFT_START_X.val;
-                robotY = StartLocations.BLUE_LEFT_START_Y.val;
-                robotAngle = StartLocations.BLUE_LEFT_START_ANGLE.val;
-                break;
-            case RIGHT:
-                robotX = StartLocations.BLUE_RIGHT_START_X.val;
-                robotY = StartLocations.BLUE_RIGHT_START_Y.val;
-                robotAngle = StartLocations.BLUE_RIGHT_START_ANGLE.val;
-                break;
-        }
+        setUpRoutine();
 
         initHardware();
         initAuto();
