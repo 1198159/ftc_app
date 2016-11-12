@@ -57,16 +57,16 @@ public class AutonomousBlue extends MasterAutonomous
     private void parkOnRamp() throws InterruptedException
     {
         double angleToRamp = Math.atan2(3300 - robotY, 600 - robotX);
-        turnToAngleBlue(angleToRamp);
-        driveToPointBlue(3300, 600, angleToRamp);
+        turnToAngle(angleToRamp);
+        driveToPoint(3300, 600, angleToRamp);
     }
 
     // TODO: Test me
     private void parkOnCenter() throws InterruptedException
     {
         double angleToCenter = Math.atan2(2000 - robotY, 1500 - robotX);
-        turnToAngleBlue(angleToCenter);
-        driveToPointBlue(2000, 1500, angleToCenter);
+        turnToAngle(angleToCenter);
+        driveToPoint(2000, 1500, angleToCenter);
     }
 
     private void pressLeftBeacon() throws InterruptedException
@@ -85,18 +85,18 @@ public class AutonomousBlue extends MasterAutonomous
         double angleToEndOfTape = Math.atan2(beaconY - robotY, beaconX - robotX - 450);
 
         // Go to the end of the tape in front of the beacon
-        turnToAngleBlue(angleToEndOfTape);
-        driveToPointBlue(beaconX - 450, beaconY, angleToEndOfTape);
-        turnToAngleBlue(0);
+        turnToAngle(angleToEndOfTape);
+        driveToPoint(beaconX - 450, beaconY, angleToEndOfTape);
+        turnToAngle(0);
 
         // Give Vuforia a chance to start tracking the target
         sleep(1000);
 
         // Only actually looks if vision target isn't visible
-        lookForVisionTargetBlue();
+        lookForVisionTarget();
 
         // Reposition after tracking target
-        driveToPointBlue(beaconX - 450, beaconY, 0);
+        driveToPoint(beaconX - 450, beaconY, 0);
 
         // Get colors of both sides of beacon. Parameters are in mm from center of vision target
         int colorLeft = vuforiaLocator.getPixelColor(-60, 230, 30);
@@ -109,9 +109,9 @@ public class AutonomousBlue extends MasterAutonomous
             // Press right side if it's blue
             telemetry.log().add("Right is blue");
             // Go in front of right button
-            driveToPointBlue(beaconX - 100, beaconY + 10, 0.0);
+            driveToPoint(beaconX - 100, beaconY + 10, 0.0);
             // Move forward to press button
-            driveToPointBlue(beaconX - 25, beaconY + 10, 0.0);
+            driveToPoint(beaconX - 25, beaconY + 10, 0.0);
             sleep(500);
         }
         else
@@ -119,140 +119,13 @@ public class AutonomousBlue extends MasterAutonomous
             // Press left side if it's blue
             telemetry.log().add("Left is blue");
             // Go in front of left button
-            driveToPointBlue(beaconX - 100, beaconY + 140, 0);
+            driveToPoint(beaconX - 100, beaconY + 140, 0);
             // Move forward to press button
-            driveToPointBlue(beaconX - 25, beaconY + 140, 0);
+            driveToPoint(beaconX - 25, beaconY + 140, 0);
             sleep(500);
         }
 
         // Back away from beacon
-        driveToPointBlue(beaconX - 450, beaconY, 0);
-    }
-
-    // TODO: The methods below should only be temporary until we find a better solution to other alliance's targets giving bogus numbers
-    // Updates robot's coordinates and angle. Only to be used when on blue alliance. The red
-    // alliance's vision targets have been giving us some not so useful numbers, so we make sure to
-    // only use the blue targets
-    void updateRobotLocationBlue()
-    {
-        // Use Vuforia if a it's tracking something, and ensure it's not a red target
-        if(vuforiaLocator.isTracking()
-                && !vuforiaLocator.getTargetName().equals("Target Red Left")
-                && !vuforiaLocator.getTargetName().equals("Target Red Right"))
-        {
-            float[] location = vuforiaLocator.getRobotLocation();
-            robotX = location[0];
-            robotY = location[1];
-
-            robotAngle = vuforiaLocator.getRobotAngle();
-        }
-        // Otherwise, use other sensors to determine distance travelled and angle
-        else
-        {
-            robotAngle = imu.getAngularOrientation().firstAngle - headingOffset;
-
-            int deltaFL = motorFL.getCurrentPosition() - lastEncoderFL;
-            int deltaFR = motorFR.getCurrentPosition() - lastEncoderFR;
-            int deltaBL = motorBL.getCurrentPosition() - lastEncoderBL;
-            int deltaBR = motorBR.getCurrentPosition() - lastEncoderBR;
-
-            // Take average of encoders ticks, and convert to mm. Some are negative because of 45 degree roller angle
-            double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4 * MM_PER_TICK;
-            double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4 * MM_PER_TICK;
-
-            // Delta x and y are intrinsic to robot, so make extrinsic and update robot location
-            robotX += deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
-            robotY += deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
-        }
-
-        lastEncoderFL = motorFL.getCurrentPosition();
-        lastEncoderFR = motorFR.getCurrentPosition();
-        lastEncoderBL = motorBL.getCurrentPosition();
-        lastEncoderBR = motorBR.getCurrentPosition();
-    }
-
-    // Turns to the specified angle
-    void turnToAngleBlue(double targetAngle) throws InterruptedException
-    {
-        double deltaAngle = subtractAngles(targetAngle, robotAngle);
-        double ANGLE_TOLERANCE = 2.0; // In degrees
-
-        while(Math.abs(deltaAngle) > ANGLE_TOLERANCE && opModeIsActive())
-        {
-            updateRobotLocationBlue();
-
-            // Recalculate how far away we are
-            deltaAngle = subtractAngles(targetAngle, robotAngle);
-
-            // Slow down as we approach target
-            double turnPower = Range.clip(deltaAngle * TURN_POWER_CONSTANT, -MAX_DRIVE_POWER, MAX_DRIVE_POWER);
-
-            // Make sure turn power doesn't go below minimum power
-            if(turnPower > 0 && turnPower < MIN_DRIVE_POWER)
-                turnPower = MIN_DRIVE_POWER;
-            else if(turnPower < 0 && turnPower > -MIN_DRIVE_POWER)
-                turnPower = -MIN_DRIVE_POWER;
-
-            // Set drive motor power
-            driveMecanum(0.0, 0.0, turnPower);
-
-            telemetry.addData("X", robotX);
-            telemetry.addData("Y", robotY);
-            telemetry.addData("RobotAngle", robotAngle);
-            sendTelemetry();
-            idle();
-        }
-        stopDriving();
-    }
-
-    // Makes robot drive to a point on the field
-    void driveToPointBlue(double targetX, double targetY, double targetAngle) throws InterruptedException
-    {
-        // Calculate how far we are from target point
-        double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
-        double DISTANCE_TOLERANCE = 10; // In mm
-
-        while(distanceToTarget > DISTANCE_TOLERANCE && opModeIsActive())
-        {
-            updateRobotLocationBlue();
-
-            // In case robot drifts to the side
-            double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
-
-            // Decrease power as robot approaches target. Ensure it doesn't exceed power limits
-            double drivePower = Range.clip(distanceToTarget * DRIVE_POWER_CONSTANT, MIN_DRIVE_POWER, MAX_DRIVE_POWER);
-
-            // In case the robot turns while driving
-            double turnPower = subtractAngles(targetAngle, robotAngle) * TURN_POWER_CONSTANT;
-
-            // Set drive motor powers
-            driveMecanum(driveAngle, drivePower, turnPower);
-
-            // Recalculate distance for next check
-            distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
-
-            // Inform drivers of robot location
-            telemetry.addData("X", robotX);
-            telemetry.addData("Y", robotY);
-            telemetry.addData("RobotAngle", robotAngle);
-            sendTelemetry();
-            idle();
-        }
-        stopDriving();
-    }
-
-    // Robot sometimes won't see the vision targets when it should. This is to be used in places
-    // where we need to be sure that we're tracking the target. Only uses red alliance vision targets
-    public void lookForVisionTargetBlue() throws InterruptedException
-    {
-        //TODO: This won't always find the target, so make better
-        // Turn until target is found
-        while(!vuforiaLocator.isTracking() && opModeIsActive()
-                && vuforiaLocator.getTargetName().equals("Target Red Left")
-                && vuforiaLocator.getTargetName().equals("Target Red Right"))
-        {
-            turnToAngleBlue(robotAngle - 10);
-            sleep(500);
-        }
+        driveToPoint(beaconX - 450, beaconY, 0);
     }
 }

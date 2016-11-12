@@ -278,12 +278,15 @@ abstract class MasterAutonomous extends Master
 
     // Makes robot drive to a point on the field
     void driveToPoint(double targetX, double targetY, double targetAngle) throws InterruptedException
-        {
-            // Calculate how far we are from target point
+    {
+        // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
+        double deltaAngle = subtractAngles(targetAngle, robotAngle);
         double DISTANCE_TOLERANCE = 10; // In mm
+        double ANGLE_TOLERANCE = 2.0; // In degrees
 
-        while(distanceToTarget > DISTANCE_TOLERANCE && opModeIsActive())
+        // Run until robot is within tolerable distance and angle
+        while(distanceToTarget > DISTANCE_TOLERANCE && deltaAngle > ANGLE_TOLERANCE && opModeIsActive())
         {
             updateRobotLocation();
 
@@ -294,7 +297,8 @@ abstract class MasterAutonomous extends Master
             double drivePower = Range.clip(distanceToTarget * DRIVE_POWER_CONSTANT, MIN_DRIVE_POWER, MAX_DRIVE_POWER);
 
             // In case the robot turns while driving
-            double turnPower = subtractAngles(targetAngle, robotAngle) * TURN_POWER_CONSTANT;
+            deltaAngle = subtractAngles(targetAngle, robotAngle);
+            double turnPower = deltaAngle * TURN_POWER_CONSTANT;
 
             // Set drive motor powers
             driveMecanum(driveAngle, drivePower, turnPower);
@@ -316,9 +320,18 @@ abstract class MasterAutonomous extends Master
     // where we need to be sure that we're tracking the target
     public void lookForVisionTarget() throws InterruptedException
     {
+        boolean trackingOtherAllainceTarget = false;
+
+        if(allaince == Allaince.RED)
+            trackingOtherAllainceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
+                    || vuforiaLocator.getTargetName().equals("Target Blue Right");
+        else if(allaince == Allaince.BLUE)
+            trackingOtherAllainceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
+                    || vuforiaLocator.getTargetName().equals("Target Red Right");
+
         //TODO: This won't always find the target, so make better
         // Turn until target is found
-        while(!vuforiaLocator.isTracking() && opModeIsActive())
+        while(!vuforiaLocator.isTracking() && !trackingOtherAllainceTarget && opModeIsActive())
         {
             turnToAngle(robotAngle - 10);
             sleep(500);
@@ -328,8 +341,17 @@ abstract class MasterAutonomous extends Master
     // Updates robot's coordinates and angle
     void updateRobotLocation()
     {
+        boolean trackingOtherAllainceTarget = false;
+
+        if(allaince == Allaince.RED)
+            trackingOtherAllainceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
+                    || vuforiaLocator.getTargetName().equals("Target Blue Right");
+        else if(allaince == Allaince.BLUE)
+            trackingOtherAllainceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
+                    || vuforiaLocator.getTargetName().equals("Target Red Right");
+
         // Use Vuforia if a it's tracking something
-        if(vuforiaLocator.isTracking())
+        if(vuforiaLocator.isTracking() && !trackingOtherAllainceTarget)
         {
             float[] location = vuforiaLocator.getRobotLocation();
             robotX = location[0];
