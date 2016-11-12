@@ -45,8 +45,6 @@ public class AutonomousBlue extends MasterAutonomous
                 case PARK_CENTER:
                     parkOnCenter();
                     break;
-                default:
-
             }
         }
 
@@ -54,6 +52,8 @@ public class AutonomousBlue extends MasterAutonomous
         sleep(10000);
     }
 
+    // TODO: Should we make these generic, or keep them alliance specific?
+    // TODO: Should the numbers below use constants? At least some, like vision target locations?
     private void parkOnRamp() throws InterruptedException
     {
         double angleToRamp = Math.atan2(3300 - robotY, 600 - robotX);
@@ -62,6 +62,7 @@ public class AutonomousBlue extends MasterAutonomous
     }
 
     // TODO: Test me
+    // This also knocks off the cap ball if it's present
     private void parkOnCenter() throws InterruptedException
     {
         double angleToCenter = Math.atan2(2000 - robotY, 1500 - robotX);
@@ -81,7 +82,6 @@ public class AutonomousBlue extends MasterAutonomous
 
     private void pressBeacon(double beaconX, double beaconY) throws InterruptedException
     {
-        // TODO: Do we need sleep commands in here?
         double angleToEndOfTape = Math.atan2(beaconY - robotY, beaconX - robotX - 450);
 
         // Go to the end of the tape in front of the beacon
