@@ -14,8 +14,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.vuforia.Image;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+
+import java.util.Locale;
 
 abstract public class MasterOpMode extends LinearOpMode
 {
@@ -27,7 +30,7 @@ abstract public class MasterOpMode extends LinearOpMode
     BNO055IMU imu;
     Orientation angles;
     DeviceInterfaceModule dim;                  // Device Object
-    DigitalChannel digIn;                // Device Object
+    DigitalChannel liftSwitch;                // Device Object
 
 
 
@@ -46,7 +49,6 @@ abstract public class MasterOpMode extends LinearOpMode
 
     public void initializeHardware()
     {
-
         // Initialize motors to be the hardware motors
         motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
         motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
@@ -55,19 +57,9 @@ abstract public class MasterOpMode extends LinearOpMode
         motorLift = hardwareMap.dcMotor.get("motorLift");
 
         // get a reference to a Modern Robotics DIM, and IO channels.
-        dim = hardwareMap.get(DeviceInterfaceModule.class, "dim");   //  Use generic form of device mapping
-        digIn  = hardwareMap.get(DigitalChannel.class, "digin");     //  Use generic form of device mapping
-        digIn.setMode(DigitalChannelController.Mode.INPUT);          // Set the direction of each channel
-
-        // run to position mode
-        motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
-        motorBackRight.setDirection(DcMotor.Direction.REVERSE);
+        //dim = hardwareMap.get(DeviceInterfaceModule.class, "dim");   //  Use generic form of device mapping
+        liftSwitch  = hardwareMap.get(DigitalChannel.class, "liftSwitch");     //  Use generic form of device mapping
+        liftSwitch.setMode(DigitalChannelController.Mode.INPUT);          // Set the direction of each channel
 
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
@@ -95,7 +87,29 @@ abstract public class MasterOpMode extends LinearOpMode
         for (int i = 0; i < 3; i++) {
             sleep(100);
             angle = imu.getAngularOrientation().firstAngle;
-
         }
     }
+
+    public double adjustAngles(double angle)
+    {
+        while(angle > 180)
+            angle -= 360;
+        while(angle < -180)
+            angle += 360;
+        return angle;
+    }
+
+
+    //----------------------------------------------------------------------------------------------
+    // Formatting
+    //----------------------------------------------------------------------------------------------
+
+    String formatAngle(AngleUnit angleUnit, double angle) {
+        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
+    }
+
+    String formatDegrees(double degrees){
+        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+    }
+
 }

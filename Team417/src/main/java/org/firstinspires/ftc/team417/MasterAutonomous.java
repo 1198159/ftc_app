@@ -53,7 +53,7 @@ public class MasterAutonomous extends MasterOpMode
         waitForStart();
 
         VuforiaNav.startTracking();
-
+/*
         while (opModeIsActive()) {
 
             VuforiaNav.getLocation();
@@ -66,14 +66,21 @@ public class MasterAutonomous extends MasterOpMode
             telemetry.update();
             //sleep(500);
         }
+*/
 
 // TODO: test these forwards and backwards, etc. tomorrow
-/*
-        forwards(-39, 3, 0.3);
-        sleep(1000);
-        pivot(60, 0.3);
+
+        forwards(-24, 3, 0.5);  // inches, timeout, speed
         sleep(500);
- */
+        pivot(60, 0.7);
+        sleep(500);
+        moveAngle(20, 45, .8, 3);
+        sleep(500);
+        pivot(-60, 0.7);
+
+
+        sleep(500);
+
        // forwards(-6, 3, 0.2);
        // sleep(500);
        // forwards(-6, 3, 0.2);
@@ -100,6 +107,19 @@ public class MasterAutonomous extends MasterOpMode
     public void initializeRobot()
     {
         super.initializeHardware(); // call master op mode's init method
+
+        // run to position mode
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
+        motorBackRight.setDirection(DcMotor.Direction.REVERSE);
+
+        motorLift.setPower(0);
+
         //Set up telemetry data
         // We show the log in oldest-to-newest order, as that's better for poetry
         telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.OLDEST_FIRST);
@@ -206,7 +226,7 @@ public class MasterAutonomous extends MasterOpMode
         // wait until the motors reach the position
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
-                (motorFrontLeft.isBusy() && motorFrontRight.isBusy() && motorBackLeft.isBusy() && motorBackRight.isBusy()));
+                (motorFrontLeft.isBusy() || motorFrontRight.isBusy() || motorBackLeft.isBusy() || motorBackRight.isBusy()));
 
         // stop the motors
         motorFrontLeft.setPower(0);
@@ -251,7 +271,7 @@ public class MasterAutonomous extends MasterOpMode
             curTurnAngle = adjustAngles(curTurnAngle);
             error =  turnAngle - curTurnAngle;
             pivotSpeed = speed * Math.abs(error) / 100;
-            pivotSpeed = Range.clip(pivotSpeed, 0.18, 0.8); // limit abs speed
+            pivotSpeed = Range.clip(pivotSpeed, 0.18, 0.7); // limit abs speed
             pivotSpeed = - pivotSpeed * Math.signum(error); // set the sign of speed
 
 
@@ -275,7 +295,7 @@ public class MasterAutonomous extends MasterOpMode
 
             telemetry.log().add(String.format("StartAngle: %f, CurAngle: %f, error: %f", startAngle, curTurnAngle, error));
 
-        } while (opModeIsActive() && (Math.abs(error) > 0.3 || Math.abs(errorP1) > 0.3 || Math.abs(errorP2) > 0.3) );
+        } while (opModeIsActive() && (Math.abs(error) > 0.3 && Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
 
         // stop motors
         motorFrontLeft.setPower(0);
@@ -331,7 +351,7 @@ public class MasterAutonomous extends MasterOpMode
             motSpeed = Math.abs(error)/100;
             motSpeed =  Range.clip(motSpeed, 0.35, 0.7); // limit abs speed
             incDst = Math.abs(error) / 20;
-            incDst = Range.clip(incDst, 0.15, 5); // limit incDst
+            incDst = Range.clip(incDst, 0.18, 5); // limit incDst
             incDst = incDst * Math.signum(error);
 
             // ccw rotation for pos pivot angle
@@ -406,16 +426,6 @@ public class MasterAutonomous extends MasterOpMode
         return String.format("%.2f", d);
     }
 
-
-
-    public double adjustAngles(double angle)
-    {
-        while(angle > 180)
-            angle -= 360;
-        while(angle < -180)
-            angle += 360;
-        return angle;
-    }
 
     String format(OpenGLMatrix transformationMatrix) {
         return transformationMatrix.formatAsTransform();

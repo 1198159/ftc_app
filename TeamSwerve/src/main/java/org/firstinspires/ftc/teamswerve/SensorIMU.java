@@ -64,6 +64,7 @@ public class SensorIMU extends LinearOpMode
     {
         double currentAngle;
         double startAngle;
+        double imuAngle;
         // double currentAngleY;
         // double currentAngleZ;
         Orientation angles;
@@ -114,7 +115,7 @@ public class SensorIMU extends LinearOpMode
 
             // Wait until we're told to go
         waitForStart();
-        startAngle = angles.firstAngle;
+        //startAngle = angles.firstAngle;
         // Start the logging of measured acceleration
         // imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
@@ -122,11 +123,17 @@ public class SensorIMU extends LinearOpMode
         // to do that in each of the three items that need that info, as that's
         // three times the necessary expense.
 
+        startAngle = imu.getAngularOrientation().firstAngle;
+
         // Loop and update the dashboard
         while (opModeIsActive())
         {
-            angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-            currentAngle = angles.firstAngle - startAngle;
+            //angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+            //currentAngle = angles.firstAngle - startAngle;
+
+            imuAngle = imu.getAngularOrientation().firstAngle;
+            currentAngle = imuAngle - startAngle;
+
             // currentAngleY = angles.firstAngle - startAngle;
             // currentAngleZ = angles.firstAngle - startAngle;
             telemetry.update();
@@ -173,9 +180,9 @@ public class SensorIMU extends LinearOpMode
                     return formatAngle(angles.angleUnit, startAngle);
                     }
                 })
-            .addData("pitch", new Func<String>() {
+            .addData("imuAngle", new Func<String>() {
                 @Override public String value() {
-                    return formatAngle(angles.angleUnit, angles.thirdAngle);
+                    return formatAngle(angles.angleUnit, imuAngle);
                     }
                 });
 

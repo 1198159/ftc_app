@@ -6,20 +6,24 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
 /**
  * Program not used to control Drive-A-Bots.
  * This can be a good reference for drive controls.
  */
-@TeleOp(name="Mecanum Drive", group = "Swerve")
+@TeleOp(name="TeleOp", group = "Swerve")
 // @Disabled
 public class MasterTeleOp extends MasterOpMode
 {
     boolean isLiftActivated = false;
     private ElapsedTime runtime = new ElapsedTime();
     boolean isSwitchPressed = false;
-
+    Orientation angles;
+    double startAngle;
+    double currentAngle;
+    double imuAngle;
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -27,13 +31,24 @@ public class MasterTeleOp extends MasterOpMode
         // Initialize hardware and other important things
         initializeRobot();
 
+        telemetry.addData("Path", "InitDone");
+        telemetry.update();
+
+        startAngle = imu.getAngularOrientation().firstAngle;
+
         // Wait until start button has been pressed
         waitForStart();
+        startAngle = imu.getAngularOrientation().firstAngle;
+
 
         // Main loop
         while (opModeIsActive())
        {
-           isSwitchPressed = digIn.getState();    //  Read the input pin
+           imuAngle = imu.getAngularOrientation().firstAngle;
+           currentAngle = imuAngle - startAngle;
+           currentAngle = adjustAngles(currentAngle);
+
+           isSwitchPressed = liftSwitch.getState();    //  Read the input pin
             if (gamepad1.b)
             {
                 if (isLiftActivated == false)
@@ -47,9 +62,20 @@ public class MasterTeleOp extends MasterOpMode
                 }
             }
 
-            if (gamepad1.dpad_up && isLiftActivated && !isSwitchPressed) // if the switch is NOT pressed
+            if (isLiftActivated && !isSwitchPressed) // if the switch is NOT pressed
             {
-                motorLift.setPower(0.5f);
+                if (gamepad1.dpad_up)
+                {
+                    motorLift.setPower(0.5f);
+                }
+                else if (gamepad1.dpad_down)
+                {
+                    motorLift.setPower(-0.3f);
+                }
+                else
+                {
+                    motorLift.setPower(0);
+                }
             }
            else
             {
@@ -64,6 +90,13 @@ public class MasterTeleOp extends MasterOpMode
             telemetry.update();
             idle();
         }
+
+        // for safety, turn off all motors
+        motorFrontLeft.setPower(0);
+        motorFrontRight.setPower(0);
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+        motorLift.setPower(0);
     }
 
     /*
@@ -128,6 +161,16 @@ public class MasterTeleOp extends MasterOpMode
     {
         // Initialize motors to be the hardware motors
         super.initializeHardware(); // comment out this line if blank config
+        // run to position mode
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
+        motorBackRight.setDirection(DcMotor.Direction.REVERSE);
+
         // Set up telemetry data
         configureDashboard();
     }
@@ -154,10 +197,43 @@ public class MasterTeleOp extends MasterOpMode
                     @Override public String value() {
                         return formatNumber(motorBackRight.getPower());
                     }
+                });
+
+        telemetry.addLine()
+                .addData("currentAnglet: ", new Func<String>() {
+                    @Override public String value() {
+                        return formatNumber(currentAngle);
+                    }
                 })
+                .addData("startAngle: ", new Func<String>() {
+                    @Override public String value() {
+                        return formatNumber(startAngle);
+                    }
+                })
+                .addData("imuAngle: ", new Func<String>() {
+                    @Override public String value() {
+                        return formatNumber(imuAngle);
+                    }
+                });
 
-        ;
-
+        /*
+        telemetry.addLine()
+                .addData("heading", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, currentAngle);
+                    }
+                })
+                .addData("startAngle", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, startAngle);
+                    }
+                })
+                .addData("imuAngle", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, imuAngle);
+                    }
+                });
+*/
     }
 
     public String formatNumber(double d)
