@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.vuforia.Image;
 
@@ -20,13 +23,18 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorBackLeft = null;
     DcMotor motorFrontRight = null;
     DcMotor motorBackRight = null;
+    DcMotor motorLift = null;
     BNO055IMU imu;
     Orientation angles;
+    DeviceInterfaceModule dim;                  // Device Object
+    DigitalChannel digIn;                // Device Object
+
+
 
     private ElapsedTime runtime = new ElapsedTime();
 
     // Declare constants
-    static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
+    static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     // static final double DRIVE_GEAR_REDUCTION = 0.25;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 6.0;     // For figuring circumference
@@ -37,19 +45,26 @@ abstract public class MasterOpMode extends LinearOpMode
 
 
     public void initializeHardware()
-    {/*
+    {
 
         // Initialize motors to be the hardware motors
         motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
         motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
+        motorLift = hardwareMap.dcMotor.get("motorLift");
+
+        // get a reference to a Modern Robotics DIM, and IO channels.
+        dim = hardwareMap.get(DeviceInterfaceModule.class, "dim");   //  Use generic form of device mapping
+        digIn  = hardwareMap.get(DigitalChannel.class, "digin");     //  Use generic form of device mapping
+        digIn.setMode(DigitalChannelController.Mode.INPUT);          // Set the direction of each channel
 
         // run to position mode
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
         motorBackRight.setDirection(DcMotor.Direction.REVERSE);
@@ -58,6 +73,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
+        motorLift.setPower(0);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -80,6 +96,6 @@ abstract public class MasterOpMode extends LinearOpMode
             sleep(100);
             angle = imu.getAngularOrientation().firstAngle;
 
-        }*/
+        }
     }
 }
