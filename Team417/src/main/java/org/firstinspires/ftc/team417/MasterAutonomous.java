@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -31,15 +32,48 @@ public class MasterAutonomous extends MasterOpMode
     // HardwarePushbot robot = new HardwarePushbot();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
 
+    float mmPerInch = 25.4f;
+    float mmBotWidth = 18 * mmPerInch;            // ... or whatever is right for your robot
+    float mmFTCFieldWidth = (12 * 12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
+
+    // declare "what team we're on" variables
+    boolean isRedTeam;
+    boolean isPosOne;
+    double startDelay;
+    double teamAngle; // will be 60, -60
+    float[] targetPos = {1524, mmFTCFieldWidth};
+    VuforiaNavigation VuforiaNav = new VuforiaNavigation();
+
+
     @Override
     public void runOpMode() throws InterruptedException
-
     {
+        double pivotAngle;
+        double targetAngle;
+        double startDist; // the distance traveled depending on pos one or two
         // Initialize hardware and other important things
         initializeRobot();
 
+        // allow driver to choose a team
+        if (gamepad1.x)
+        {
+            isRedTeam = true;
+        }
+        if (gamepad1.b)
+        {
+            isRedTeam = false;
+        }
 
-        VuforiaNavigation VuforiaNav = new VuforiaNavigation();
+        // select position one or two, one is closer to the origin
+        if (gamepad1.y)
+        {
+            isPosOne = true;
+        }
+        if (gamepad1.b)
+        {
+            isPosOne = false;
+        }
+
         VuforiaNav.initVuforia();
         /*
          * Initialize the drive system variables.
@@ -47,7 +81,53 @@ public class MasterAutonomous extends MasterOpMode
          */
 
         telemetry.addData("Path", "InitDone");
+        if (isRedTeam) // if team RED
+        {
+            if (isPosOne)
+            {
+                // OPTION RED ONE (TOOLS)
+                startDelay = 2000;
+                pivotAngle = 60; // pivot this amount before aquiring target
+                targetAngle = 0; // Vuforia angle
+                targetPos[0] = 2743.2f;
+                targetPos[1] = mmFTCFieldWidth;
+                telemetry.addData("Team: ", "Red 1"); // display what team we're on after choosing with the buttons
+            }
+            else
+            {
+                // OPTION RED TWO (GEARS)
+                pivotAngle = 60; // pivot this amount before aquiring target
+                targetAngle = 0; // Vuforia angle
+                targetPos[0] = 1524;
+                targetPos[1] = mmFTCFieldWidth;
+                telemetry.addData("Team: ", "Red 2"); // display what team we're on after choosing with the buttons
+            }
+
+        }
+        else // if team BLUE
+        {
+            if (isPosOne)
+            {
+                // OPTION BLUE ONE (LEGOS)
+                pivotAngle = -60;
+                targetAngle = -90;
+                targetPos[0] = mmFTCFieldWidth;
+                targetPos[1] = 2743.2f;
+                telemetry.addData("Team: ", "Blue 1");
+            }
+            else
+            {
+                // OPTION BLUE TWO (WHEELS)
+                pivotAngle = -60;
+                targetAngle = -90;
+                targetPos[0] = mmFTCFieldWidth;
+                targetPos[1] = 1524;
+                telemetry.addData("Team: ", "Blue 2");
+            }
+        }
         telemetry.update();
+
+
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -70,16 +150,15 @@ public class MasterAutonomous extends MasterOpMode
 
 // TODO: test these forwards and backwards, etc. tomorrow
 
-        forwards(-24, 3, 0.5);  // inches, timeout, speed
+        /*forwards(-24, 3, 0.5);  // inches, timeout, speed
         sleep(500);
         pivot(60, 0.7);
         sleep(500);
         moveAngle(20, 45, .8, 3);
         sleep(500);
         pivot(-60, 0.7);
-
-
         sleep(500);
+        */
 
        // forwards(-6, 3, 0.2);
        // sleep(500);
@@ -115,8 +194,8 @@ public class MasterAutonomous extends MasterOpMode
         motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
-        motorBackRight.setDirection(DcMotor.Direction.REVERSE);
+        motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
 
         motorLift.setPower(0);
 
@@ -163,6 +242,63 @@ public class MasterAutonomous extends MasterOpMode
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
+    }
+
+    public void pivotVuforia (float targetAngle, double speed)
+    {
+        double error;
+        double curTurnAngle;
+        double pivotSpeed;
+
+        do
+        {
+//            angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+//            curTurnAngle = adjustAngles(angles.firstAngle) - startAngle;
+            VuforiaNav.getLocation(); // update target location and angle
+            // now extract the angle out of "get location", andn stores your location
+            curTurnAngle = Orientation.getOrientation(VuforiaNav.lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
+            curTurnAngle = adjustAngles(curTurnAngle);
+            error =  targetAngle - curTurnAngle;
+            pivotSpeed = speed * Math.abs(error) / 100;
+            pivotSpeed = Range.clip(pivotSpeed, 0.18, 0.7); // limit abs speed
+            pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
+
+
+            // positive angle means CCW rotation
+            motorFrontLeft.setPower(-pivotSpeed);
+            motorFrontRight.setPower(pivotSpeed);
+            motorBackLeft.setPower(-pivotSpeed);
+            motorBackRight.setPower(pivotSpeed);
+
+            // allow some time for IMU to catch up
+            if (Math.abs(error) < 2)
+            {
+                sleep(15);
+                // stop motors
+                motorFrontLeft.setPower(0);
+                motorFrontRight.setPower(0);
+                motorBackLeft.setPower(0);
+                motorBackRight.setPower(0);
+                sleep(150);
+            }
+
+            telemetry.log().add(String.format("CurAngle: %f, error: %f", curTurnAngle, error));
+
+        } while (opModeIsActive() && (Math.abs(error) > 0.3));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
+
+        // stop motors
+        motorFrontLeft.setPower(0);
+        motorFrontRight.setPower(0);
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+
+    }
+
+
+    // move the robot hora. sideways to align with image target
+    public void alignVuforia (double targetPos, double speed)
+    {
+
     }
 
     // drive at an angle function
@@ -272,7 +408,7 @@ public class MasterAutonomous extends MasterOpMode
             error =  turnAngle - curTurnAngle;
             pivotSpeed = speed * Math.abs(error) / 100;
             pivotSpeed = Range.clip(pivotSpeed, 0.18, 0.7); // limit abs speed
-            pivotSpeed = - pivotSpeed * Math.signum(error); // set the sign of speed
+            pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
 
 
             // positive angle means CCW rotation

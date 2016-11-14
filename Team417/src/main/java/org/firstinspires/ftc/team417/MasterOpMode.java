@@ -37,7 +37,7 @@ abstract public class MasterOpMode extends LinearOpMode
     private ElapsedTime runtime = new ElapsedTime();
 
     // Declare constants
-    static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder
+    static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder, this was changed when we switched to 40:1 motors
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     // static final double DRIVE_GEAR_REDUCTION = 0.25;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 6.0;     // For figuring circumference

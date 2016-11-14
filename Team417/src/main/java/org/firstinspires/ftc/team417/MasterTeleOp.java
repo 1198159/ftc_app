@@ -15,6 +15,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 @TeleOp(name="TeleOp", group = "Swerve")
 // @Disabled
+
+// IMPORTANT: GAMEPAD ON EIS THE DRIVER THAT MOVES THE ROBOT AROUND
 public class MasterTeleOp extends MasterOpMode
 {
     boolean isLiftActivated = false;
@@ -49,7 +51,7 @@ public class MasterTeleOp extends MasterOpMode
            currentAngle = adjustAngles(currentAngle);
 
            isSwitchPressed = liftSwitch.getState();    //  Read the input pin
-            if (gamepad1.b)
+            if (gamepad2.b)
             {
                 if (isLiftActivated == false)
                 {
@@ -64,11 +66,11 @@ public class MasterTeleOp extends MasterOpMode
 
             if (isLiftActivated && !isSwitchPressed) // if the switch is NOT pressed
             {
-                if (gamepad1.dpad_up)
+                if (gamepad2.dpad_up)
                 {
-                    motorLift.setPower(0.5f);
+                    motorLift.setPower(0.9f);
                 }
-                else if (gamepad1.dpad_down)
+                else if (gamepad2.dpad_down)
                 {
                     motorLift.setPower(-0.3f);
                 }
