@@ -7,9 +7,15 @@ import com.qualcomm.hardware.adafruit.BNO055IMU;
  */
 abstract public class MasterAutonomous extends MasterOpMode
 {
-    //used to initialize vuforia only in autonomous
-    public void initializeVuforia()
+    public double headingOffset;
+
+    //used for initializations only necessary in autonomous
+    public void initializeAuto()
     {
+        initializeHardware();
+
+        double headingOffset;
+
         vuforiaHelper = new VuforiaHelper();
 
         vuforiaHelper.setupVuforia();
@@ -23,6 +29,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         return Distance;
     }
 
+    //uses vuforia to move to a location
     public void vuforiaDriveToPosition(double TargetX, double TargetY, double TargetAngle )
     {
         //Start tracking targets

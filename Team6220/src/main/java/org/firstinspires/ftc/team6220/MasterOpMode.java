@@ -52,12 +52,13 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies = new DriveAssembly[5];
 
         //TODO adjust correction factor if necessary
+        //TODO fix all switched front and back labels on motors
         //our robot uses an omni drive, so our motors are positioned at 45 degree angles to motor positions on a normal drive.
                                                                         //mtr,                                       x,   y,   rot,  gear, radius, correction factor
-        driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"),new Transform2D( 1.0, 1.0, 135), 1.0, 0.1016, 1.0);
-        driveAssemblies[FRONT_LEFT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft") ,new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016, 1.0);
-        driveAssemblies[BACK_LEFT]   = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft")  ,new Transform2D(-1.0,-1.0, 315), 1.0, 0.1016, 1.0);
-        driveAssemblies[BACK_RIGHT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight") ,new Transform2D( 1.0,-1.0,  45), 1.0, 0.1016, 1.0);
+        driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"),new Transform2D( 1.0, 1.0, 135), 1.0, 0.1016, 1.0);
+        driveAssemblies[FRONT_LEFT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft") ,new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016, 1.0);
+        driveAssemblies[BACK_LEFT]   = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft")  ,new Transform2D(-1.0,-1.0, 315), 1.0, 0.1016, 1.0);
+        driveAssemblies[BACK_RIGHT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight") ,new Transform2D( 1.0,-1.0,  45), 1.0, 0.1016, 1.0);
 
         CollectorMotor = hardwareMap.dcMotor.get("motorCollector");
 
