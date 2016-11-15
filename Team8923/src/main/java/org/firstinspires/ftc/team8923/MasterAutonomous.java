@@ -286,7 +286,7 @@ abstract class MasterAutonomous extends Master
         double ANGLE_TOLERANCE = 2.0; // In degrees
 
         // Run until robot is within tolerable distance and angle
-        while(distanceToTarget > DISTANCE_TOLERANCE && deltaAngle > ANGLE_TOLERANCE && opModeIsActive())
+        while(!(distanceToTarget < DISTANCE_TOLERANCE && deltaAngle < ANGLE_TOLERANCE) && opModeIsActive())
         {
             updateRobotLocation();
 
