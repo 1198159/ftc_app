@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 abstract class MasterAutonomous extends Master
 {
-    enum Allaince
+    enum Alliance
     {
         BLUE,
         RED
@@ -75,8 +75,8 @@ abstract class MasterAutonomous extends Master
 
     // Variables used for autonomous routine setup
     ArrayList<Objectives> routine = new ArrayList<>();
-    StartLocations startLocation;
-    Allaince allaince;
+    StartLocations startLocation = StartLocations.LEFT;
+    Alliance alliance = Alliance.RED;
     int delayTime = 0; // In seconds
 
     // TODO: Test me
@@ -196,13 +196,13 @@ abstract class MasterAutonomous extends Master
         // Set coordinates based on alliance and starting location
         if(startLocation == StartLocations.LEFT)
         {
-            if(allaince == Allaince.RED)
+            if(alliance == Alliance.RED)
             {
                 robotX = StartLocations.RED_LEFT_START_X.val;
                 robotY = StartLocations.RED_LEFT_START_Y.val;
                 robotAngle = StartLocations.RED_LEFT_START_ANGLE.val;
             }
-            else if(allaince == Allaince.BLUE)
+            else if(alliance == Alliance.BLUE)
             {
                 robotX = StartLocations.BLUE_LEFT_START_X.val;
                 robotY = StartLocations.BLUE_LEFT_START_Y.val;
@@ -211,13 +211,13 @@ abstract class MasterAutonomous extends Master
         }
         else if(startLocation == StartLocations.RIGHT)
         {
-            if(allaince == Allaince.RED)
+            if(alliance == Alliance.RED)
             {
                 robotX = StartLocations.RED_RIGHT_START_X.val;
                 robotY = StartLocations.RED_RIGHT_START_Y.val;
                 robotAngle = StartLocations.RED_RIGHT_START_ANGLE.val;
             }
-            else if(allaince == Allaince.BLUE)
+            else if(alliance == Alliance.BLUE)
             {
                 robotX = StartLocations.BLUE_RIGHT_START_X.val;
                 robotY = StartLocations.BLUE_RIGHT_START_Y.val;
@@ -322,10 +322,10 @@ abstract class MasterAutonomous extends Master
     {
         boolean trackingOtherAllianceTarget = false;
 
-        if(allaince == Allaince.RED)
+        if(alliance == Alliance.RED)
             trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
                     || vuforiaLocator.getTargetName().equals("Target Blue Right");
-        else if(allaince == Allaince.BLUE)
+        else if(alliance == Alliance.BLUE)
             trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
                     || vuforiaLocator.getTargetName().equals("Target Red Right");
 
@@ -343,10 +343,10 @@ abstract class MasterAutonomous extends Master
     {
         boolean trackingOtherAllianceTarget = false;
 
-        if(allaince == Allaince.RED)
+        if(alliance == Alliance.RED)
             trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
                     || vuforiaLocator.getTargetName().equals("Target Blue Right");
-        else if(allaince == Allaince.BLUE)
+        else if(alliance == Alliance.BLUE)
             trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
                     || vuforiaLocator.getTargetName().equals("Target Red Right");
 

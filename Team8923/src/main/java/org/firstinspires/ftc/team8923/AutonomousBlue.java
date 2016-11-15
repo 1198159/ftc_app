@@ -3,7 +3,6 @@ package org.firstinspires.ftc.team8923;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.util.Range;
 
 /*
  *  Autonomous OpMode for blue alliance. The OpMode is setup with a gamepad during initialization,
@@ -15,7 +14,7 @@ public class AutonomousBlue extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        allaince = Allaince.BLUE;
+        alliance = Alliance.BLUE;
 
         initAuto();
         
