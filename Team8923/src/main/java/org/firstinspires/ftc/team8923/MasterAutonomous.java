@@ -118,7 +118,7 @@ abstract class MasterAutonomous extends Master
                     buttonWasPressed = true;
                 }
             }
-            else if(gamepad1.dpad_up)
+            else if(gamepad1.dpad_down)
             {
                 if(!buttonWasPressed)
                 {
