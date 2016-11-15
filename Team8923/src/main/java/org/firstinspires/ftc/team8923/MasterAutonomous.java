@@ -320,18 +320,18 @@ abstract class MasterAutonomous extends Master
     // where we need to be sure that we're tracking the target
     public void lookForVisionTarget() throws InterruptedException
     {
-        boolean trackingOtherAllainceTarget = false;
+        boolean trackingOtherAllianceTarget = false;
 
         if(allaince == Allaince.RED)
-            trackingOtherAllainceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
+            trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
                     || vuforiaLocator.getTargetName().equals("Target Blue Right");
         else if(allaince == Allaince.BLUE)
-            trackingOtherAllainceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
+            trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
                     || vuforiaLocator.getTargetName().equals("Target Red Right");
 
         //TODO: This won't always find the target, so make better
         // Turn until target is found
-        while(!vuforiaLocator.isTracking() && !trackingOtherAllainceTarget && opModeIsActive())
+        while(!vuforiaLocator.isTracking() && !trackingOtherAllianceTarget && opModeIsActive())
         {
             turnToAngle(robotAngle - 10);
             sleep(500);
@@ -341,17 +341,17 @@ abstract class MasterAutonomous extends Master
     // Updates robot's coordinates and angle
     void updateRobotLocation()
     {
-        boolean trackingOtherAllainceTarget = false;
+        boolean trackingOtherAllianceTarget = false;
 
         if(allaince == Allaince.RED)
-            trackingOtherAllainceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
+            trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
                     || vuforiaLocator.getTargetName().equals("Target Blue Right");
         else if(allaince == Allaince.BLUE)
-            trackingOtherAllainceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
+            trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
                     || vuforiaLocator.getTargetName().equals("Target Red Right");
 
         // Use Vuforia if a it's tracking something
-        if(vuforiaLocator.isTracking() && !trackingOtherAllainceTarget)
+        if(vuforiaLocator.isTracking() && !trackingOtherAllianceTarget)
         {
             float[] location = vuforiaLocator.getRobotLocation();
             robotX = location[0];
