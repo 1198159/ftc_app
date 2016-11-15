@@ -43,6 +43,7 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double WHEEL_DIAMETER_INCHES = 6.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4;
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
 

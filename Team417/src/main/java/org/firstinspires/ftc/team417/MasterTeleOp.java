@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team417;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -173,6 +174,15 @@ public class MasterTeleOp extends MasterOpMode
         motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
         motorBackRight.setDirection(DcMotor.Direction.REVERSE);
 
+        motorFrontLeft.setDirection(DcMotor.Direction.FORWARD);
+        motorBackLeft.setDirection(DcMotor.Direction.FORWARD);
+
+        motorLift.setDirection(DcMotor.Direction.REVERSE);
+
+        motorFrontLeft.setMaxSpeed(2700);   // try this setting from 8923
+        motorFrontRight.setMaxSpeed(2700);   // try this setting from 8923
+        motorBackLeft.setMaxSpeed(2700);   // try this setting from 8923
+        motorBackRight.setMaxSpeed(2700);   // try this setting from 8923
         // Set up telemetry data
         configureDashboard();
     }
