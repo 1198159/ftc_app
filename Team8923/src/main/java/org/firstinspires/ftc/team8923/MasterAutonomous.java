@@ -186,8 +186,9 @@ abstract class MasterAutonomous extends Master
 
             // Get the next objective in the routine, and add to telemetry
             // The + 1 is to shift from 0 index to 1 index for display
-            for(Objectives objective : routine)
-                telemetry.addData("Objective " + routine.indexOf(objective) + 1, objective.name());
+            if(routine != null)
+                for(Objectives objective : routine)
+                    telemetry.addData("Objective " + (routine.indexOf(objective) + 1), objective.name());
 
             telemetry.update();
             idle();
