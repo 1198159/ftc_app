@@ -2,8 +2,8 @@ package org.firstinspires.ftc.team8923;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 /*
@@ -16,6 +16,9 @@ abstract class Master extends LinearOpMode
     DcMotor motorFR = null;
     DcMotor motorBL = null;
     DcMotor motorBR = null;
+    DcMotor motorLift = null;
+
+    Servo servoGrabber = null;
 
     BNO055IMU imu;
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -30,6 +33,19 @@ abstract class Master extends LinearOpMode
     static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
     static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION;
 
+    enum GrabberPositions
+    {
+        STOW(0.4),
+        GRAB(0.6),
+        RELEASE(0.8);
+
+        public double pos;
+        GrabberPositions(double i)
+        {
+            pos = i;
+        }
+    }
+
     // Initialize hardware on robot
     void initHardware()
     {
@@ -37,6 +53,7 @@ abstract class Master extends LinearOpMode
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorLift = hardwareMap.dcMotor.get("motorLift");
 
         motorFR.setDirection(DcMotor.Direction.REVERSE);
         motorBR.setDirection(DcMotor.Direction.REVERSE);
@@ -51,6 +68,10 @@ abstract class Master extends LinearOpMode
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        servoGrabber = hardwareMap.servo.get("servoGrabber");
+
+        servoGrabber.setPosition(GrabberPositions.STOW.pos);
 
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
