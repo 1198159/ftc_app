@@ -26,9 +26,9 @@ public class TeleOpCompetition extends MasterTeleOp
 
         while (opModeIsActive())
         {
-            driveRobotWithJoysticks(-gamepad1.right_stick_x,    //local x motion power; reversed
-                                    gamepad1.right_stick_y,     //local y motion power
-                                    gamepad1.left_stick_x);    //rotation power; reversed
+            driveRobotWithJoysticks(-gamepad1.left_stick_x,    //local x motion power; reversed
+                                    gamepad1.left_stick_y,     //local y motion power
+                                    gamepad1.right_stick_x);    //rotation power; reversed
 
             updateLocationUsingEncoders();
 
@@ -41,6 +41,7 @@ public class TeleOpCompetition extends MasterTeleOp
             {
                 motorTogglerReverse.toggleMotor();
             }
+            idle();
         }
     }
 }
