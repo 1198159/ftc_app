@@ -162,10 +162,8 @@ public class VuforiaNavigation {
         /** Wait for the game to begin */
         //telemetry.addData(">", "Press Play to start tracking");
         //telemetry.update();
-
-        /** Start tracking the data sets we care about. */
-        imageTargets.activate();
     }
+
 
     void startTracking()
     {
@@ -205,8 +203,9 @@ public class VuforiaNavigation {
         return location;
     }
 
+    // return 0: blue, 1: red
     // get image from Vuforia, project beacon point onto image
-    public void GetImage() throws InterruptedException
+    public int GetBeaconColor() throws InterruptedException
     {
         for (int i = 0; i < listeners.length; i++) {
             if (listeners[i].isVisible())   // if tracking image
@@ -262,7 +261,17 @@ public class VuforiaNavigation {
                 }
             }
         }
+        if (leftColorHSV[0] < 250 && leftColorHSV[0] > 150) // BLUE
+        {
+            return 0;
+        }
+        else
+        {
+            return 1; // RED
+        }
     }
+
+
 
     // sample area in image to determine color hue for beacon - detect red or blue
     public void GetImageColor(Image image, Vec2F beaconPoint, float[] colorHsvOut) throws InterruptedException
@@ -314,6 +323,25 @@ public class VuforiaNavigation {
             }
             //telemetry.log().add(String.format("Hue: %f, Sat: %f, Val: %f", colorHSV[0], colorHSV[1], colorHSV[2]));
         }
+
+    }
+
+    public float GetImageCenter (int targetIndex)
+    {
+        if (listeners[targetIndex].isVisible() )
+        {
+            pose = listeners[targetIndex].getRawPose();
+            if (pose != null) {
+                Matrix34F rawPose = new Matrix34F();
+                float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
+                rawPose.setData(poseData);
+                // image size is 254 mm x 184 mm
+                // point to upper left
+                Vec2F center = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(0, 0, 0));
+                return center.getData()[1]; // return y coordinate of picture (horizontal if image because we're in portrait view
+            }
+        }
+        return 10000; // return invalid value
     }
 
     private OpenGLMatrix createMatrix(float x, float y, float z, float u, float v, float w)
