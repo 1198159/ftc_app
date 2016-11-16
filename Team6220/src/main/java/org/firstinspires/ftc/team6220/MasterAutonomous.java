@@ -68,7 +68,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         //the addend's sign depends on the sign of the angle difference.  If the angle difference is sufficiently small, we want
         //to remove the addend to stop the robot.
-        if (angleDiff > 1.0)
+        if (angleDiff < 3.0 && -3.0 < angleDiff)
         {
             signedAddend = 0.3;
         }
@@ -84,6 +84,10 @@ abstract public class MasterAutonomous extends MasterOpMode
         if (angleDiff > 0.7)
         {
             angleDiff = 0.7;
+        }
+        else if (angleDiff < -0.7)
+        {
+            angleDiff = -0.7;
         }
 
         //sets the power of the motors to turn.  Since the turning direction of the robot is reversed from the motors,
