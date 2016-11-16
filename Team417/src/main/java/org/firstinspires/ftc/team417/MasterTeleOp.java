@@ -73,7 +73,7 @@ public class MasterTeleOp extends MasterOpMode
                 }
                 else if (gamepad2.dpad_down)
                 {
-                    motorLift.setPower(-0.3f);
+                    motorLift.setPower(-0.9f);
                 }
                 else
                 {

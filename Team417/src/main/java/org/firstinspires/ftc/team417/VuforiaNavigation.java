@@ -164,10 +164,14 @@ public class VuforiaNavigation {
         //telemetry.update();
     }
 
-
     void startTracking()
     {
         imageTargets.activate();
+    }
+
+    void stopTracking()
+    {
+        imageTargets.deactivate();
     }
 
     // TODO: make it tell us which target is visible
@@ -204,7 +208,8 @@ public class VuforiaNavigation {
     }
 
     // return 0: blue, 1: red
-    // get image from Vuforia, project beacon point onto image
+    // get the image from Vuforia, project beacon point onto image
+    // Gets the COLOR of the LEFT side of beacon
     public int GetBeaconColor() throws InterruptedException
     {
         for (int i = 0; i < listeners.length; i++) {
@@ -255,10 +260,14 @@ public class VuforiaNavigation {
                     float rightColorHSV[] = {0f, 0f, 0f};
 
                     GetImageColor(image, beaconLeft, leftColorHSV);
-                    GetImageColor(image, beaconRight, rightColorHSV);
+                    //GetImageColor(image, beaconRight, rightColorHSV);  // for now, we're just looking at the left side
                     //telemetry.log().add(String.format("LeftSideHue: %f RightSideHue: %f", leftColorHSV[0], rightColorHSV[0]));
                     frame.close();  // close frame to free memory
                 }
+            }
+            else // if not visible
+            {
+                return 2; // return illegal color value
             }
         }
         if (leftColorHSV[0] < 250 && leftColorHSV[0] > 150) // BLUE

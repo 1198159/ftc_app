@@ -1,10 +1,6 @@
 package org.firstinspires.ftc.team417;
 
-import com.qualcomm.hardware.adafruit.BNO055IMU;
-import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -16,18 +12,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 
 
 /**
  * Program used to control Drive-A-Bots.
  * This can be a good reference for drive controls.
  */
-@Autonomous(name="Master Autonomous", group = "Swerve")
+@Autonomous(name="Test", group = "Swerve")
 // @Disabled
 
-public class MasterAutonomous extends MasterOpMode
+public class TestVuforia extends MasterOpMode
 {
     // HardwarePushbot robot = new HardwarePushbot();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
@@ -57,7 +51,8 @@ public class MasterAutonomous extends MasterOpMode
     public void runOpMode() throws InterruptedException
     {
         // Initialize hardware and other important things
-        initializeRobot();
+        //initializeRobot();
+        initTelemetry();
 
         VuforiaNav.initVuforia();
         telemetry.addData("Path", "Select Team and Pos...");
@@ -179,20 +174,18 @@ public class MasterAutonomous extends MasterOpMode
         // START OF AUTONOMOUS
 // TODO: test new functions!!
 
-        // go towards target
-        forwards(startDist, 0.5, 3);  // inches, speed, timeout
-        sleep(500);
-
-        // pivot to face target
-        pivot(pivotAngle, 0.7);
-        sleep(500);
-
-        // align sideways with image
-        alignVuforia(0.5, 3);   // speed, timeout
+        telemetry.addData("State: ", "Align Vuforia");
+        telemetry.update();
+        alignVuforia(0.5, 300);   // speed, timeout
 
         // pivot to center target in camera view
+        telemetry.addData("State: ", "Center Image");
+        telemetry.update();
         centerImage(0.5, 3);
 
+
+        telemetry.addData("State: ", "Move Forward");
+        telemetry.update();
         // move foward until 25 inches away
         VuforiaNav.getLocation(); // update target location and angle
         float error = targetPos[targetDimY] - VuforiaNav.lastLocation.getTranslation().getData()[targetDimY];
@@ -200,6 +193,7 @@ public class MasterAutonomous extends MasterOpMode
         {
             forwards( (error - 635) * 25.4, 0.5, 3);     // go until 25 inches away from beacon
         }
+
 
         // detect beacon color of left side: 0 - blue, 1 - red
         // TODO: handle failure of getBeaconColor
@@ -290,7 +284,10 @@ public class MasterAutonomous extends MasterOpMode
         motorBackRight.setMaxSpeed(2700);   // try this setting from 8923
 
         motorLift.setPower(0);
+    }
 
+    public void initTelemetry()
+    {
         //Set up telemetry data
         // We show the log in oldest-to-newest order, as that's better for poetry
         telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.OLDEST_FIRST);
@@ -446,10 +443,12 @@ public class MasterAutonomous extends MasterOpMode
         float xPos;
 
         // run with encoder mode
+        /*
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        */
 
         do
         {
@@ -462,6 +461,7 @@ public class MasterAutonomous extends MasterOpMode
             int newTargetBR;
 
             // go sideways opposite of error
+           /*
             newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (-error));
             newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (error));
             newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (error));
@@ -477,9 +477,10 @@ public class MasterAutonomous extends MasterOpMode
             motorBackLeft.setPower(0.7);
             motorBackRight.setPower(0.7);
             runtime.reset();
+            */
 
             // wait until the motors reach the position
-            while (opModeIsActive() &&
+            /*while (opModeIsActive() &&
                     (runtime.seconds() < timeout) &&
                     (motorFrontLeft.isBusy() || motorFrontRight.isBusy() || motorBackLeft.isBusy() || motorBackRight.isBusy()));
 
@@ -488,15 +489,18 @@ public class MasterAutonomous extends MasterOpMode
             motorFrontRight.setPower(0);
             motorBackLeft.setPower(0);
             motorBackRight.setPower(0);
+            */
             telemetry.log().add(String.format("CurXPos: %f, error: %f", xPos, error));
 
         } while (opModeIsActive() && (Math.abs(error) > 0.3));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
 
         // stop motors
+        /*
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
+        */
     }
 
     // drive at an angle function
