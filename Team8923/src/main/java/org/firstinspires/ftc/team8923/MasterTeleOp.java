@@ -17,5 +17,21 @@ abstract class MasterTeleOp extends Master
         driveMecanum(angle, power, turnPower);
     }
 
-    // TODO: Add functionality of other mechanisms when complete
+    void runLift()
+    {
+        if(gamepad2.dpad_up)
+            motorLift.setPower(1.0);
+        else if(gamepad2.dpad_down)
+            motorLift.setPower(-1.0);
+        else
+            motorLift.setPower(0);
+    }
+
+    void grabCapBall()
+    {
+        if(gamepad2.a)
+            servoGrabber.setPosition(GrabberPositions.RELEASE.pos);
+        if(gamepad2.x)
+            servoGrabber.setPosition(GrabberPositions.GRAB.pos);
+    }
 }

@@ -62,7 +62,7 @@ class VuforiaLocator
     {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
         parameters.useExtendedTracking = false;
         vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
 
@@ -96,7 +96,7 @@ class VuforiaLocator
         targets[BLUE_RIGHT].setLocation(createMatrix(MM_FIELD_SIZE, 1524, 0, 90, 0, -90));
 
         // Set phone location on robot. Center of the camera is the origin
-        phoneLocation = createMatrix(0, 0, 0, 90, 0, -90);
+        phoneLocation = createMatrix(0, 0, 0, 90, 0, 90);
 
         // Setup listeners
         for(int i = 0; i < targets.length; i++)

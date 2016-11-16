@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 abstract class MasterAutonomous extends Master
 {
-    enum Allaince
+    enum Alliance
     {
         BLUE,
         RED
@@ -75,8 +75,8 @@ abstract class MasterAutonomous extends Master
 
     // Variables used for autonomous routine setup
     ArrayList<Objectives> routine = new ArrayList<>();
-    StartLocations startLocation;
-    Allaince allaince;
+    StartLocations startLocation = StartLocations.LEFT;
+    Alliance alliance = Alliance.RED;
     int delayTime = 0; // In seconds
 
     // TODO: Test me
@@ -118,7 +118,7 @@ abstract class MasterAutonomous extends Master
                     buttonWasPressed = true;
                 }
             }
-            else if(gamepad1.dpad_up)
+            else if(gamepad1.dpad_down)
             {
                 if(!buttonWasPressed)
                 {
@@ -186,8 +186,9 @@ abstract class MasterAutonomous extends Master
 
             // Get the next objective in the routine, and add to telemetry
             // The + 1 is to shift from 0 index to 1 index for display
-            for(Objectives objective : routine)
-                telemetry.addData("Objective " + routine.indexOf(objective) + 1, objective.name());
+            if(routine != null)
+                for(Objectives objective : routine)
+                    telemetry.addData("Objective " + (routine.indexOf(objective) + 1), objective.name());
 
             telemetry.update();
             idle();
@@ -196,13 +197,13 @@ abstract class MasterAutonomous extends Master
         // Set coordinates based on alliance and starting location
         if(startLocation == StartLocations.LEFT)
         {
-            if(allaince == Allaince.RED)
+            if(alliance == Alliance.RED)
             {
                 robotX = StartLocations.RED_LEFT_START_X.val;
                 robotY = StartLocations.RED_LEFT_START_Y.val;
                 robotAngle = StartLocations.RED_LEFT_START_ANGLE.val;
             }
-            else if(allaince == Allaince.BLUE)
+            else if(alliance == Alliance.BLUE)
             {
                 robotX = StartLocations.BLUE_LEFT_START_X.val;
                 robotY = StartLocations.BLUE_LEFT_START_Y.val;
@@ -211,13 +212,13 @@ abstract class MasterAutonomous extends Master
         }
         else if(startLocation == StartLocations.RIGHT)
         {
-            if(allaince == Allaince.RED)
+            if(alliance == Alliance.RED)
             {
                 robotX = StartLocations.RED_RIGHT_START_X.val;
                 robotY = StartLocations.RED_RIGHT_START_Y.val;
                 robotAngle = StartLocations.RED_RIGHT_START_ANGLE.val;
             }
-            else if(allaince == Allaince.BLUE)
+            else if(alliance == Alliance.BLUE)
             {
                 robotX = StartLocations.BLUE_RIGHT_START_X.val;
                 robotY = StartLocations.BLUE_RIGHT_START_Y.val;
@@ -286,7 +287,7 @@ abstract class MasterAutonomous extends Master
         double ANGLE_TOLERANCE = 2.0; // In degrees
 
         // Run until robot is within tolerable distance and angle
-        while(distanceToTarget > DISTANCE_TOLERANCE && deltaAngle > ANGLE_TOLERANCE && opModeIsActive())
+        while(!(distanceToTarget < DISTANCE_TOLERANCE && deltaAngle < ANGLE_TOLERANCE) && opModeIsActive())
         {
             updateRobotLocation();
 
@@ -320,18 +321,18 @@ abstract class MasterAutonomous extends Master
     // where we need to be sure that we're tracking the target
     public void lookForVisionTarget() throws InterruptedException
     {
-        boolean trackingOtherAllainceTarget = false;
+        boolean trackingOtherAllianceTarget = false;
 
-        if(allaince == Allaince.RED)
-            trackingOtherAllainceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
+        if(alliance == Alliance.RED)
+            trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
                     || vuforiaLocator.getTargetName().equals("Target Blue Right");
-        else if(allaince == Allaince.BLUE)
-            trackingOtherAllainceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
+        else if(alliance == Alliance.BLUE)
+            trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
                     || vuforiaLocator.getTargetName().equals("Target Red Right");
 
         //TODO: This won't always find the target, so make better
         // Turn until target is found
-        while(!vuforiaLocator.isTracking() && !trackingOtherAllainceTarget && opModeIsActive())
+        while(!vuforiaLocator.isTracking() && !trackingOtherAllianceTarget && opModeIsActive())
         {
             turnToAngle(robotAngle - 10);
             sleep(500);
@@ -341,17 +342,17 @@ abstract class MasterAutonomous extends Master
     // Updates robot's coordinates and angle
     void updateRobotLocation()
     {
-        boolean trackingOtherAllainceTarget = false;
+        boolean trackingOtherAllianceTarget = false;
 
-        if(allaince == Allaince.RED)
-            trackingOtherAllainceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
+        if(alliance == Alliance.RED)
+            trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
                     || vuforiaLocator.getTargetName().equals("Target Blue Right");
-        else if(allaince == Allaince.BLUE)
-            trackingOtherAllainceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
+        else if(alliance == Alliance.BLUE)
+            trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
                     || vuforiaLocator.getTargetName().equals("Target Red Right");
 
         // Use Vuforia if a it's tracking something
-        if(vuforiaLocator.isTracking() && !trackingOtherAllainceTarget)
+        if(vuforiaLocator.isTracking() && !trackingOtherAllianceTarget)
         {
             float[] location = vuforiaLocator.getRobotLocation();
             robotX = location[0];
