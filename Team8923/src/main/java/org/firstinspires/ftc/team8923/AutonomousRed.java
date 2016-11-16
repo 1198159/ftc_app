@@ -85,17 +85,17 @@ public class AutonomousRed extends MasterAutonomous
 
         // Go to the end of the tape in front of the beacon
         turnToAngle(angleToEndOfTape);
-        driveToPoint(beaconX, beaconY - 450, angleToEndOfTape);
+        driveToPoint(beaconX, beaconY - 700, angleToEndOfTape);
         turnToAngle(90);
 
         // Give Vuforia a chance to start tracking the target
-        sleep(1000);
+        sleep(500);
 
         // Only actually looks if vision target isn't visible
         lookForVisionTarget();
 
         // Reposition after tracking target
-        driveToPoint(beaconX, beaconY - 450, 90);
+        driveToPoint(beaconX, beaconY - 700, 90);
 
         // Get colors of both sides of beacon. Parameters are in mm from center of vision target
         int colorLeft = vuforiaLocator.getPixelColor(-60, 230, 30);
@@ -108,9 +108,9 @@ public class AutonomousRed extends MasterAutonomous
             // Press left side if it's red
             telemetry.log().add("Left is red");
             // Go in front of left button
-            driveToPoint(beaconX - 140, beaconY - 100, 90);
+            driveToPoint(beaconX - 65, beaconY - 100, 90);
             // Move forward to press button
-            driveToPoint(beaconX - 140, beaconY - 35, 90);
+            driveToPoint(beaconX - 65, beaconY - 37, 90);
             sleep(500);
         }
         else
@@ -118,13 +118,13 @@ public class AutonomousRed extends MasterAutonomous
             // Press right side if it's red
             telemetry.log().add("Right is red");
             // Go in front of right button
-            driveToPoint(beaconX - 10, beaconY - 100, 90.0);
+            driveToPoint(beaconX + 65, beaconY - 100, 90.0);
             // Move forward to press button
-            driveToPoint(beaconX - 10, beaconY - 35, 90.0);
+            driveToPoint(beaconX + 65, beaconY - 37, 90.0);
             sleep(500);
         }
 
         // Back away from beacon
-        driveToPoint(beaconX, beaconY - 450, 90);
+        driveToPoint(beaconX, beaconY - 700, 90);
     }
 }

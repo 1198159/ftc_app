@@ -283,7 +283,7 @@ abstract class MasterAutonomous extends Master
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
-        double DISTANCE_TOLERANCE = 10; // In mm
+        double DISTANCE_TOLERANCE = 15; // In mm
         double ANGLE_TOLERANCE = 2.0; // In degrees
 
         // Run until robot is within tolerable distance and angle
@@ -332,7 +332,7 @@ abstract class MasterAutonomous extends Master
 
         //TODO: This won't always find the target, so make better
         // Turn until target is found
-        while(!vuforiaLocator.isTracking() && !trackingOtherAllianceTarget && opModeIsActive())
+        while(!(vuforiaLocator.isTracking() && !trackingOtherAllianceTarget) && opModeIsActive())
         {
             turnToAngle(robotAngle - 10);
             sleep(500);

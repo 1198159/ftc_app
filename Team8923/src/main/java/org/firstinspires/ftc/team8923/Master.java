@@ -77,6 +77,8 @@ abstract class Master extends LinearOpMode
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+
+        telemetry.setMsTransmissionInterval(50);
     }
 
     // Sends information to Driver Station screen for drivers to see
