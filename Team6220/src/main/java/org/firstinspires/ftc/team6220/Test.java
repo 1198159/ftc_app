@@ -16,10 +16,10 @@ public class Test extends LinearOpMode
         {
             newTime = (System.nanoTime() - initialTime)/1000/1000;
             initialTime = System.nanoTime();
+            telemetry.addData("Time: ", newTime);
+            telemetry.update();
             idle();
         }
 
-        telemetry.addData("Time: ", newTime);
-        telemetry.update();
     }
 }

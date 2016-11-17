@@ -41,6 +41,7 @@ public class TeleOpCompetition extends MasterTeleOp
             {
                 motorTogglerReverse.toggleMotor();
             }
+
             idle();
         }
     }
