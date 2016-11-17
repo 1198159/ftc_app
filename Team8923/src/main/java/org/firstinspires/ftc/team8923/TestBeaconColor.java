@@ -23,6 +23,15 @@ public class TestBeaconColor extends MasterAutonomous
             int colorLeft = vuforiaLocator.getPixelColor(-60, 230, 30);
             int colorRight = vuforiaLocator.getPixelColor(60, 230, 30);
 
+            float[] leftHSV = new float[3];
+            float[] rightHSV = new float[3];
+
+            Color.colorToHSV(colorLeft, leftHSV);
+            Color.colorToHSV(colorRight, rightHSV);
+
+            telemetry.addData("Hue Left", leftHSV[0]);
+            telemetry.addData("Hue Right", rightHSV[0]);
+            telemetry.addData("", "");
             telemetry.addData("LeftRed", Color.red(colorLeft));
             telemetry.addData("LeftGreen", Color.green(colorLeft));
             telemetry.addData("LeftBlue", Color.blue(colorLeft));

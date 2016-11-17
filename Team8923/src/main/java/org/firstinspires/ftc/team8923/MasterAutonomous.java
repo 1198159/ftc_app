@@ -392,7 +392,7 @@ abstract class MasterAutonomous extends Master
         double delta = first - second;
         while(delta > 180)
             delta -= 360;
-        while(delta < -180)
+        while(delta <= -180)
             delta += 360;
         return delta;
     }

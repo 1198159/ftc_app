@@ -98,12 +98,18 @@ public class AutonomousBlue extends MasterAutonomous
         driveToPoint(beaconX - 450, beaconY, 0);
 
         // Get colors of both sides of beacon. Parameters are in mm from center of vision target
-        int colorLeft = vuforiaLocator.getPixelColor(-60, 230, 30);
-        int colorRight = vuforiaLocator.getPixelColor(60, 230, 30);
+        float[] colorLeft = new float[3];
+        float[] colorRight = new float[3];
+        Color.colorToHSV(vuforiaLocator.getPixelColor(-60, 230, 30), colorLeft);
+        Color.colorToHSV(vuforiaLocator.getPixelColor(60, 230, 30), colorRight);
 
-        // Check which side is more blue to determine which side is which color. The red value
-        // doesn't change as much as blue for some reason, so we compare the blue values
-        if(Color.blue(colorRight) > Color.blue(colorLeft))
+        /*
+         * Compare the hues of each side. The hue color wheel has red at 360 degrees, and blue at
+         * 240 degrees. Subtracting the angles from each other results in some positive or negative
+         * number. The sign can tell us which side is red and blue. In this case, the left hue is
+         * subtracted from the right hue; a positive sign means left is red, negative mean right.
+         */
+        if(subtractAngles(colorLeft[0], colorRight[0]) > 0)
         {
             // Press right side if it's blue
             telemetry.log().add("Right is blue");
