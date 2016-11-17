@@ -155,7 +155,7 @@ public class TestVuforia extends MasterOpMode
 
         VuforiaNav.startTracking();
         sleep(startDelay);
-/*
+
         while (opModeIsActive()) {
 
             VuforiaNav.getLocation();
@@ -168,7 +168,6 @@ public class TestVuforia extends MasterOpMode
             telemetry.update();
             //sleep(500);
         }
-*/
 
 
         // START OF AUTONOMOUS
@@ -176,11 +175,13 @@ public class TestVuforia extends MasterOpMode
 
         telemetry.addData("State: ", "Align Vuforia");
         telemetry.update();
+
         alignVuforia(0.5, 300);   // speed, timeout
 
         // pivot to center target in camera view
         telemetry.addData("State: ", "Center Image");
         telemetry.update();
+
         centerImage(0.5, 3);
 
 

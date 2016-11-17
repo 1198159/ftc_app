@@ -65,7 +65,7 @@ public class VuforiaNavigation {
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "ARvv/bz/////AAAAGVPnoD3yyERZqCnr7KHm3FgrFIn4fQGOfufF8iBOidgC9FrsCDLKKjDvkgVJybQpEu3brET0BeFbyb746Cu/gT8E6S89bGDF2h6iSlKk4IRoB60EPX/p+yTPMr82hZRxS5SGDlU1JVarJwhN3el/donXpG70LYWRrInA/51wa+pSkM64ZdhRcVwTutBBoXvFMdil6YBwmHTgPK8TpGLHBFYlJskNT2FxdGQiB5JyXkzNLoNSE3MeUDBsdZ0H2X39BOqcEh0hgZrLQ33WuQBwLR5nQcqo7oWJf3VUMrryUfJfO7TGEkMyl8aOkbkzODob4SP/v6XhS83e/4WUXW4a9YlXd+ZC6qB+xPsNYw3OJJ/y";
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT; // SWITCH TO FRONT-FACING CAMERA??
         parameters.useExtendedTracking = false;
         vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
@@ -144,7 +144,7 @@ public class VuforiaNavigation {
                 .translation(-25.4f, 228.6f, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.XYZ,
-                        AngleUnit.DEGREES, 90, 0, 0));  // portrait phone
+                        AngleUnit.DEGREES, 90, 0, 180));  // portrait phone
 
         //RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
 

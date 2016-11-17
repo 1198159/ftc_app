@@ -159,8 +159,10 @@ public class MasterAutonomous extends MasterOpMode
         waitForStart();
 
         VuforiaNav.startTracking();
-        sleep(startDelay);
-/*
+   //     sleep(startDelay);
+        VuforiaNav.getLocation();
+
+        /*
         while (opModeIsActive()) {
 
             VuforiaNav.getLocation();
@@ -173,26 +175,37 @@ public class MasterAutonomous extends MasterOpMode
             telemetry.update();
             //sleep(500);
         }
-*/
+        */
+
 
 
         // START OF AUTONOMOUS
 // TODO: test new functions!!
 
         // go towards target
-        forwards(startDist, 0.5, 3);  // inches, speed, timeout
-        sleep(500);
+        //forwards(startDist, 0.5, 3);  // inches, speed, timeout
+        //sleep(500);
 
         // pivot to face target
-        pivot(pivotAngle, 0.7);
+        //pivot(pivotAngle, 0.7);
+        //sleep(500);
+
+        forwards(45, 0.7, 3);
         sleep(500);
+        forwards(5, 0.7, 3);
+
+        //forwards(20, 0.7, 3);
+        //moveAngle(27, 90, 0.7, 3);
+        //sleep(3000);
 
         // align sideways with image
-        alignVuforia(0.5, 3);   // speed, timeout
+        //alignVuforia(0.5, 3);   // speed, timeout
+        //sleep(10000);
 
         // pivot to center target in camera view
-        centerImage(0.5, 3);
+        //centerImage(0.5, 3);
 
+        /*
         // move foward until 25 inches away
         VuforiaNav.getLocation(); // update target location and angle
         float error = targetPos[targetDimY] - VuforiaNav.lastLocation.getTranslation().getData()[targetDimY];
@@ -200,6 +213,7 @@ public class MasterAutonomous extends MasterOpMode
         {
             forwards( (error - 635) * 25.4, 0.5, 3);     // go until 25 inches away from beacon
         }
+
 
         // detect beacon color of left side: 0 - blue, 1 - red
         // TODO: handle failure of getBeaconColor
@@ -235,6 +249,7 @@ public class MasterAutonomous extends MasterOpMode
             }
         }
         forwards(25-9, 0.3, 3); // push the button
+        */
 
 
         //moveAngle(20, 45, .8, 3); // forward Inches, angle, speed, timeout
@@ -453,19 +468,24 @@ public class MasterAutonomous extends MasterOpMode
 
         do
         {
-            VuforiaNav.getLocation(); // update target location and angle
+            do
+            {
+                VuforiaNav.getLocation(); // update target location and angle
+            }
+            while (VuforiaNav.lastLocation == null);
+
             xPos = VuforiaNav.lastLocation.getTranslation().getData()[targetDimX];
-            error = xPos - targetPos[targetDimX];
+            error = targetPos[targetDimX] - xPos;
             int newTargetFL;
             int newTargetBL;
             int newTargetFR;
             int newTargetBR;
 
             // go sideways opposite of error
-            newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (-error));
-            newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (error));
-            newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (error));
-            newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (-error));
+            newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (error));
+            newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (-error));
+            newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (-error));
+            newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (error));
 
             motorFrontLeft.setTargetPosition(newTargetFL);
             motorFrontRight.setTargetPosition(newTargetFR);
@@ -477,6 +497,9 @@ public class MasterAutonomous extends MasterOpMode
             motorBackLeft.setPower(0.7);
             motorBackRight.setPower(0.7);
             runtime.reset();
+            sleep(5000);
+            telemetry.log().add(String.format("X pos: %f, error: %f", xPos, error));
+            telemetry.update();
 
             // wait until the motors reach the position
             while (opModeIsActive() &&
@@ -769,15 +792,15 @@ public class MasterAutonomous extends MasterOpMode
     }
 }
 
- /* TABLE: Mecanum Drive
-    treat back side (phone) as front
-    reverse left side motors instead of right side
-    reverse directions for rotation
+
+/* TABLE:
+
                  FL      FR      BL      BR
-    rotate <-    +        -      +        -
+    rotate CCW   +        -      +        -
     forward      +        +      +        +
-    left         -        +      +        -
+    right        +        -      -        +
     d. left      0        +      +        0
     d. right     +        0      0        +
+
 
     */
