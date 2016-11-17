@@ -246,6 +246,8 @@ abstract class MasterAutonomous extends Master
     // Turns to the specified angle
     void turnToAngle(double targetAngle) throws InterruptedException
     {
+        updateRobotLocation();
+
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
         double ANGLE_TOLERANCE = 2.0; // In degrees
 
@@ -280,6 +282,8 @@ abstract class MasterAutonomous extends Master
     // Makes robot drive to a point on the field
     void driveToPoint(double targetX, double targetY, double targetAngle) throws InterruptedException
     {
+        updateRobotLocation();
+
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
