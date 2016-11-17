@@ -81,15 +81,22 @@ abstract class MasterAutonomous extends Master
 
     private void setUpRoutine()
     {
-        telemetry.log().add("Starting Position: Press x for left, b for right");
-        telemetry.log().add("Press start button when robot is on field");
-        telemetry.update();
+        telemetry.log().add("Left Starting Position: X");
+        telemetry.log().add("Right Starting Position: B");
+        telemetry.log().add("Left Beacon: Left d-pad");
+        telemetry.log().add("Park on Ramp: Right bumper");
+        telemetry.log().add("Park on Center: Left bumper");
+        telemetry.log().add("Right Beacon: Right d-pad");
+        telemetry.log().add("Reset Routine: Back");
+        telemetry.log().add("");
+        telemetry.log().add("After routine is complete and robot is on field, press Start");
 
         // Used to make sure buttons are not continuously counted
         boolean buttonWasPressed = false;
 
         while(true)
         {
+            // TODO: Is there a better way to write this code?
             if(gamepad1.x)
             {
                 if(!buttonWasPressed)
@@ -129,7 +136,6 @@ abstract class MasterAutonomous extends Master
                     buttonWasPressed = true;
                 }
             }
-            // TODO: Make it so routine can be changed if needed
             else if(gamepad1.dpad_left)
             {
                 if(!buttonWasPressed)
@@ -163,6 +169,15 @@ abstract class MasterAutonomous extends Master
                 {
                     // Park on center
                     routine.add(Objectives.PARK_CENTER);
+                    buttonWasPressed = true;
+                }
+            }
+            else if(gamepad1.back)
+            {
+                if(!buttonWasPressed)
+                {
+                    // Park on center
+                    routine.clear();
                     buttonWasPressed = true;
                 }
             }
