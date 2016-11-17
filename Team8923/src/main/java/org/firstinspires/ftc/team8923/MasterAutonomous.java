@@ -17,7 +17,7 @@ abstract class MasterAutonomous extends Master
         RED
     }
 
-    enum StartLocations
+    private enum StartLocations
     {
         // Values of these 2 are arbitrary. Intended to be generic to allow one method for both
         // alliances. Other values should be used for actually setting the coordinates
@@ -49,10 +49,10 @@ abstract class MasterAutonomous extends Master
 
     // Constants for robot in autonomous
     // Max drive power is less than 1 to ensure speed controller works
-    static final double MAX_DRIVE_POWER = 0.6;
-    static final double MIN_DRIVE_POWER = 0.07;
-    static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
-    static final double DRIVE_POWER_CONSTANT = 1.0 / 1000.0;
+    private static final double MAX_DRIVE_POWER = 0.6;
+    private static final double MIN_DRIVE_POWER = 0.07;
+    private static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
+    private static final double DRIVE_POWER_CONSTANT = 1.0 / 1000.0;
 
     enum Objectives
     {
@@ -66,21 +66,20 @@ abstract class MasterAutonomous extends Master
     double robotX = 0.0, robotY = 0.0, robotAngle = 0.0;
 
     // Used to calculate distance traveled between loops
-    int lastEncoderFL = 0;
-    int lastEncoderFR = 0;
-    int lastEncoderBL = 0;
-    int lastEncoderBR = 0;
+    private int lastEncoderFL = 0;
+    private int lastEncoderFR = 0;
+    private int lastEncoderBL = 0;
+    private int lastEncoderBR = 0;
 
     VuforiaLocator vuforiaLocator = new VuforiaLocator();
 
     // Variables used for autonomous routine setup
     ArrayList<Objectives> routine = new ArrayList<>();
-    StartLocations startLocation = StartLocations.LEFT;
+    private StartLocations startLocation = StartLocations.LEFT;
     Alliance alliance = Alliance.RED;
     int delayTime = 0; // In seconds
 
-    // TODO: Test me
-    void setUpRoutine()
+    private void setUpRoutine()
     {
         telemetry.log().add("Starting Position: Press x for left, b for right");
         telemetry.log().add("Press start button when robot is on field");
@@ -329,7 +328,7 @@ abstract class MasterAutonomous extends Master
 
     // Robot sometimes won't see the vision targets when it should. This is to be used in places
     // where we need to be sure that we're tracking the target
-    public void lookForVisionTarget() throws InterruptedException
+    void lookForVisionTarget() throws InterruptedException
     {
         boolean trackingOtherAllianceTarget = false;
 

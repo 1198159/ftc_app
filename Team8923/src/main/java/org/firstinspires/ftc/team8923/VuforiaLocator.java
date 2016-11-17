@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.team8923;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 
 import com.qualcomm.ftcrobotcontroller.R;
 import com.vuforia.HINT;
@@ -55,7 +54,6 @@ class VuforiaLocator
     private static final int BLUE_RIGHT = 3;
 
     private static final float MM_PER_INCH = 25.4f;
-    private static final float MM_BOT_SIZE = 18 * MM_PER_INCH;
     private static final float MM_FIELD_SIZE = 12 * 12 * MM_PER_INCH;
 
     VuforiaLocator()

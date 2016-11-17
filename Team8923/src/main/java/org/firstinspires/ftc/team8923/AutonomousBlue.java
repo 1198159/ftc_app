@@ -51,7 +51,6 @@ public class AutonomousBlue extends MasterAutonomous
         sleep(10000);
     }
 
-    // TODO: Should we make these generic, or keep them alliance specific?
     // TODO: Should the numbers below use constants? At least some, like vision target locations?
     private void parkOnRamp() throws InterruptedException
     {
@@ -60,7 +59,6 @@ public class AutonomousBlue extends MasterAutonomous
         driveToPoint(3300, 600, angleToRamp);
     }
 
-    // TODO: Test me
     // This also knocks off the cap ball if it's present
     private void parkOnCenter() throws InterruptedException
     {
