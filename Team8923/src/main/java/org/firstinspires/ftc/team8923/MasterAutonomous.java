@@ -50,7 +50,7 @@ abstract class MasterAutonomous extends Master
     // Constants for robot in autonomous
     // Max drive power is less than 1 to ensure speed controller works
     static final double MAX_DRIVE_POWER = 0.6;
-    static final double MIN_DRIVE_POWER = 0.1;
+    static final double MIN_DRIVE_POWER = 0.07;
     static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
     static final double DRIVE_POWER_CONSTANT = 1.0 / 1000.0;
 
@@ -293,8 +293,8 @@ abstract class MasterAutonomous extends Master
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
-        double DISTANCE_TOLERANCE = 15; // In mm
-        double ANGLE_TOLERANCE = 2.0; // In degrees
+        double DISTANCE_TOLERANCE = 20; // In mm
+        double ANGLE_TOLERANCE = 5; // In degrees
 
         // Run until robot is within tolerable distance and angle
         while(!(distanceToTarget < DISTANCE_TOLERANCE && deltaAngle < ANGLE_TOLERANCE) && opModeIsActive())

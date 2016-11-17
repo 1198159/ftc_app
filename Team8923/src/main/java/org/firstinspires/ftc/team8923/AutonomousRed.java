@@ -55,7 +55,7 @@ public class AutonomousRed extends MasterAutonomous
     // TODO: Should the numbers below use constants? At least some, like vision target locations?
     private void parkOnRamp() throws InterruptedException
     {
-        double angleToRamp = Math.atan2(600 - robotY, 3300 - robotX);
+        double angleToRamp = Math.toDegrees(Math.atan2(3300 - robotY, 600 - robotX));
         turnToAngle(angleToRamp);
         driveToPoint(600, 3300, angleToRamp);
     }
@@ -64,7 +64,7 @@ public class AutonomousRed extends MasterAutonomous
     // This also knocks off the cap ball if it's present
     private void parkOnCenter() throws InterruptedException
     {
-        double angleToCenter = Math.atan2(1500 - robotY, 2000 - robotX);
+        double angleToCenter = Math.toDegrees(Math.atan2(2000 - robotY, 1500 - robotX));
         turnToAngle(angleToCenter);
         driveToPoint(1500, 2000, angleToCenter);
     }
@@ -81,7 +81,7 @@ public class AutonomousRed extends MasterAutonomous
 
     private void pressBeacon(double beaconX, double beaconY) throws InterruptedException
     {
-        double angleToEndOfTape = Math.atan2(beaconY - robotY - 450, beaconX - robotX);
+        double angleToEndOfTape = Math.toDegrees(Math.atan2(beaconY - robotY - 450, beaconX - robotX));
 
         // Go to the end of the tape in front of the beacon
         turnToAngle(angleToEndOfTape);
