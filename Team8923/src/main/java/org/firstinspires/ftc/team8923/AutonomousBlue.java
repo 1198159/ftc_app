@@ -114,9 +114,9 @@ public class AutonomousBlue extends MasterAutonomous
             // Press right side if it's blue
             telemetry.log().add("Right is blue");
             // Go in front of right button
-            driveToPoint(beaconX - 100, beaconY - 65, 0.0);
+            driveToPoint(beaconX - 100, beaconY - 65, 0, 0.3);
             // Move forward to press button
-            driveToPoint(beaconX - 35, beaconY - 65, 0.0);
+            driveToPoint(beaconX - 37, beaconY - 65, 0, 0.3);
             sleep(500);
         }
         else
@@ -124,13 +124,13 @@ public class AutonomousBlue extends MasterAutonomous
             // Press left side if it's blue
             telemetry.log().add("Left is blue");
             // Go in front of left button
-            driveToPoint(beaconX - 100, beaconY + 65, 0);
+            driveToPoint(beaconX - 100, beaconY + 65, 0, 0.3);
             // Move forward to press button
-            driveToPoint(beaconX - 35, beaconY + 65, 0);
+            driveToPoint(beaconX - 37, beaconY + 65, 0, 0.3);
             sleep(500);
         }
 
         // Back away from beacon
-        driveToPoint(beaconX - 450, beaconY, 0);
+        driveToPoint(beaconX - 700, beaconY, 0, 0.3);
     }
 }

@@ -282,6 +282,12 @@ abstract class MasterAutonomous extends Master
     // Makes robot drive to a point on the field
     void driveToPoint(double targetX, double targetY, double targetAngle) throws InterruptedException
     {
+        driveToPoint(targetX, targetY, targetAngle, MAX_DRIVE_POWER);
+    }
+
+    // Makes robot drive to a point on the field
+    void driveToPoint(double targetX, double targetY, double targetAngle, double maxPower) throws InterruptedException
+    {
         updateRobotLocation();
 
         // Calculate how far we are from target point
@@ -299,7 +305,7 @@ abstract class MasterAutonomous extends Master
             double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
 
             // Decrease power as robot approaches target. Ensure it doesn't exceed power limits
-            double drivePower = Range.clip(distanceToTarget * DRIVE_POWER_CONSTANT, MIN_DRIVE_POWER, MAX_DRIVE_POWER);
+            double drivePower = Range.clip(distanceToTarget * DRIVE_POWER_CONSTANT, MIN_DRIVE_POWER, maxPower);
 
             // In case the robot turns while driving
             deltaAngle = subtractAngles(targetAngle, robotAngle);
