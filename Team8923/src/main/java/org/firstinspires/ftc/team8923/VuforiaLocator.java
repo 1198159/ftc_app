@@ -53,8 +53,24 @@ class VuforiaLocator
     private static final int BLUE_LEFT = 2;
     private static final int BLUE_RIGHT = 3;
 
-    private static final float MM_PER_INCH = 25.4f;
-    private static final float MM_FIELD_SIZE = 12 * 12 * MM_PER_INCH;
+    enum TargetLocations
+    {
+        // All vision targets are centered on the middle of the tiles, which are 2 feet wide
+        RED_LEFT_X(5 * 12 * 25.4f),
+        RED_LEFT_Y(12 * 12 * 25.4f),
+        RED_RIGHT_X(9 * 12 * 25.4f),
+        RED_RIGHT_Y(12 * 12 * 25.4f),
+        BLUE_LEFT_X(12 * 12 * 25.4f),
+        BLUE_LEFT_Y(9 * 12 * 25.4f),
+        BLUE_RIGHT_X(12 * 12 * 25.4f),
+        BLUE_RIGHT_Y(5 * 12 * 25.4f);
+
+        float val;
+        TargetLocations(float i)
+        {
+            val = i;
+        }
+    }
 
     VuforiaLocator()
     {
@@ -87,11 +103,14 @@ class VuforiaLocator
         // Set vision target locations on field. Origin is at corner of field between driver
         // stations, with the positive x-axis extending to the blue side, and positive y-axis
         // extending to the red side. Units in mm and degrees
-        // TODO: Should we use constants for these?
-        targets[RED_LEFT].setLocation(createMatrix(1524, MM_FIELD_SIZE, 0, 90, 0, 0));
-        targets[RED_RIGHT].setLocation(createMatrix(2743.2f, MM_FIELD_SIZE, 0, 90, 0, 0));
-        targets[BLUE_LEFT].setLocation(createMatrix(MM_FIELD_SIZE, 2743.2f, 0, 90, 0, -90));
-        targets[BLUE_RIGHT].setLocation(createMatrix(MM_FIELD_SIZE, 1524, 0, 90, 0, -90));
+        targets[RED_LEFT].setLocation(createMatrix(
+                TargetLocations.RED_LEFT_X.val, TargetLocations.RED_LEFT_Y.val, 0, 90, 0, 0));
+        targets[RED_RIGHT].setLocation(createMatrix(
+                TargetLocations.RED_RIGHT_X.val, TargetLocations.RED_RIGHT_Y.val, 0, 90, 0, 0));
+        targets[BLUE_LEFT].setLocation(createMatrix(
+                TargetLocations.BLUE_LEFT_X.val, TargetLocations.BLUE_LEFT_Y.val, 0, 90, 0, -90));
+        targets[BLUE_RIGHT].setLocation(createMatrix(
+                TargetLocations.BLUE_RIGHT_X.val, TargetLocations.BLUE_RIGHT_Y.val, 0, 90, 0, -90));
 
         // Set phone location on robot. Center of the camera is the origin
         phoneLocation = createMatrix(0, 0, 0, 90, 0, 90);

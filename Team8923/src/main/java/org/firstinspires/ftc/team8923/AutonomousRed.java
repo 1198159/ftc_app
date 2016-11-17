@@ -69,17 +69,17 @@ public class AutonomousRed extends MasterAutonomous
 
     private void pressLeftBeacon() throws InterruptedException
     {
-        pressBeacon(1524, 3657.6);
+        pressBeacon(VuforiaLocator.TargetLocations.RED_LEFT_X.val, VuforiaLocator.TargetLocations.RED_LEFT_Y.val);
     }
 
     private void pressRightBeacon() throws InterruptedException
     {
-        pressBeacon(2743.2, 3657.6);
+        pressBeacon(VuforiaLocator.TargetLocations.RED_RIGHT_X.val, VuforiaLocator.TargetLocations.RED_RIGHT_Y.val);
     }
 
     private void pressBeacon(double beaconX, double beaconY) throws InterruptedException
     {
-        double angleToEndOfTape = Math.toDegrees(Math.atan2(beaconY - robotY - 450, beaconX - robotX));
+        double angleToEndOfTape = Math.toDegrees(Math.atan2(beaconY - robotY - 700, beaconX - robotX));
 
         // Go to the end of the tape in front of the beacon
         turnToAngle(angleToEndOfTape);
