@@ -21,7 +21,7 @@ public class TeleOpCompetition extends MasterTeleOp
     //CodeReview: Define an enum for reading/writing the elements of your lastBtn array instead of using magic numbers in your code.
     //temporary tap trigger variable
     //                                   a      b      x      y
-    boolean lastBtn[] = new boolean[]{false,false,false,false};
+    boolean lastBtn[] = new boolean[]{false, false, false, false};
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -36,8 +36,8 @@ public class TeleOpCompetition extends MasterTeleOp
                                      gamepad1.left_stick_y,     //local y motion power
                                      gamepad1.right_stick_x/2);    //rotation power; reversed
 
-            updateLocationUsingEncoders(); //CodeReview: what is this getting you? Seems like it reads data that you never use again.
-
+            //values are displayed for testing purposes
+            updateLocationUsingEncoders();
 
             if (gamepad2.x && !lastBtn[2])
             {
