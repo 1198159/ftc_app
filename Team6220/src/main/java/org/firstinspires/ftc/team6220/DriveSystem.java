@@ -42,6 +42,18 @@ public class DriveSystem
         double xRate = LocationControlFilter[0].getFilteredValue();
         double yRate = LocationControlFilter[1].getFilteredValue();
         double wRate = RotationControlFilter.getFilteredValue();
+        if(Math.abs(xRate) > 1)
+        {
+            xRate = Math.signum(xRate);
+        }
+        if(Math.abs(yRate) > 1)
+        {
+            yRate = Math.signum(yRate);
+        }
+        if(Math.abs(wRate) > 1)
+        {
+            wRate = Math.signum(wRate);
+        }
         moveRobot(xRate,yRate,wRate);
         getRobotMotionFromEncoders();
     }

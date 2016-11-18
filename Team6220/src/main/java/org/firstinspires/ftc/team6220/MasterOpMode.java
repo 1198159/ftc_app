@@ -102,7 +102,7 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         Transform2D location;
 
-        currentAngle = imu.getAngularOrientation().firstAngle;
+        currentAngle = imu.getAngularOrientation().firstAngle/57.3;
 
         EncoderFR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
         EncoderFL = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
@@ -118,6 +118,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         telemetry.addData("X:", robotXPos);
         telemetry.addData("Y:", robotYPos);
+        telemetry.addData("W:", currentAngle);
         telemetry.update();
 
         return location;
