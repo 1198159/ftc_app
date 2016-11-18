@@ -35,7 +35,7 @@ public class TeleOpAlternate extends MasterTeleOp
             double y = gamepad1.left_stick_y;
             mag = Math.pow(Math.pow(x,2)+Math.pow(y,2),0.5);
             ang = Math.atan2(y, x);
-            double rAng = imu.getAngularOrientation().firstAngle/57.3;
+            double rAng = imu.getAngularOrientation().firstAngle/57.3;  //CodeReview: magic numbers == bad. Please name this constant something descriptive
 
             newX = Math.cos(ang+rAng)*mag;
             newY = Math.sin(ang+rAng)*mag;
