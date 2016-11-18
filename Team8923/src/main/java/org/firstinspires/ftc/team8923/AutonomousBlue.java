@@ -93,7 +93,7 @@ public class AutonomousBlue extends MasterAutonomous
         lookForVisionTarget();
 
         // Reposition after tracking target
-        driveToPoint(beaconX - 450, beaconY, 0);
+        driveToPoint(beaconX - 700, beaconY, 0);
 
         // Get colors of both sides of beacon. Parameters are in mm from center of vision target
         float[] colorLeft = new float[3];
@@ -112,9 +112,9 @@ public class AutonomousBlue extends MasterAutonomous
             // Press right side if it's blue
             telemetry.log().add("Right is blue");
             // Go in front of right button
-            driveToPoint(beaconX - 100, beaconY - 65, 0, 0.3);
+            driveToPoint(beaconX - 700, beaconY - 65, 0, 0.3);
             // Move forward to press button
-            driveToPoint(beaconX - 37, beaconY - 65, 0, 0.3);
+            driveToPoint(beaconX - 40, beaconY - 65, 0, 0.3);
             sleep(500);
         }
         else
@@ -122,9 +122,9 @@ public class AutonomousBlue extends MasterAutonomous
             // Press left side if it's blue
             telemetry.log().add("Left is blue");
             // Go in front of left button
-            driveToPoint(beaconX - 100, beaconY + 65, 0, 0.3);
+            driveToPoint(beaconX - 700, beaconY + 65, 0, 0.3);
             // Move forward to press button
-            driveToPoint(beaconX - 37, beaconY + 65, 0, 0.3);
+            driveToPoint(beaconX - 40, beaconY + 65, 0, 0.3);
             sleep(500);
         }
 

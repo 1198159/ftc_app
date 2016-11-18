@@ -263,7 +263,7 @@ abstract class MasterAutonomous extends Master
         updateRobotLocation();
 
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
-        double ANGLE_TOLERANCE = 2.0; // In degrees
+        double ANGLE_TOLERANCE = 5.0; // In degrees
 
         while(Math.abs(deltaAngle) > ANGLE_TOLERANCE && opModeIsActive())
         {
@@ -307,7 +307,7 @@ abstract class MasterAutonomous extends Master
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
-        double DISTANCE_TOLERANCE = 20; // In mm
+        double DISTANCE_TOLERANCE = 30; // In mm
         double ANGLE_TOLERANCE = 5; // In degrees
 
         // Run until robot is within tolerable distance and angle

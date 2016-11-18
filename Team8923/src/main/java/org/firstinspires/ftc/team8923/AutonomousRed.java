@@ -112,9 +112,9 @@ public class AutonomousRed extends MasterAutonomous
             // Press left side if it's red
             telemetry.log().add("Left is red");
             // Go in front of left button
-            driveToPoint(beaconX - 65, beaconY - 100, 90, 0.3);
+            driveToPoint(beaconX - 65, beaconY - 700, 90, 0.3);
             // Move forward to press button
-            driveToPoint(beaconX - 65, beaconY - 37, 90, 0.3);
+            driveToPoint(beaconX - 65, beaconY - 40, 90, 0.3);
             sleep(500);
         }
         else
@@ -122,9 +122,9 @@ public class AutonomousRed extends MasterAutonomous
             // Press right side if it's red
             telemetry.log().add("Right is red");
             // Go in front of right button
-            driveToPoint(beaconX + 65, beaconY - 100, 90, 0.3);
+            driveToPoint(beaconX + 65, beaconY - 700, 90, 0.3);
             // Move forward to press button
-            driveToPoint(beaconX + 65, beaconY - 37, 90, 0.3);
+            driveToPoint(beaconX + 65, beaconY - 40, 90, 0.3);
             sleep(500);
         }
 
