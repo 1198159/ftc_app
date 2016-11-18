@@ -104,11 +104,10 @@ abstract public class MasterOpMode extends LinearOpMode
 
         currentAngle = imu.getAngularOrientation().firstAngle/57.3;
 
-        //CodeReview: Bug? This is either a bug or redundant: all are pointing to the same array element FRONT_RIGHT
         EncoderFR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
-        EncoderFL = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
-        EncoderBL = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
-        EncoderBR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
+        EncoderFL = driveAssemblies[FRONT_LEFT].motor.getCurrentPosition();
+        EncoderBL = driveAssemblies[BACK_LEFT].motor.getCurrentPosition();
+        EncoderBR = driveAssemblies[BACK_RIGHT].motor.getCurrentPosition();
 
         //math to calculate x and y positions based on encoder ticks and robot angle
         //factors after EncoderFL are equivalent to circumference / encoder ticks per rotation
