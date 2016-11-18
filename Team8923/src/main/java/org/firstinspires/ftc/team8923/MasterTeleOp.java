@@ -37,6 +37,6 @@ abstract class MasterTeleOp extends Master
         if(gamepad2.a)
             servoGrabber.setPosition(GrabberPositions.RELEASE.pos);
         if(gamepad2.x)
-            servoGrabber.setPosition(GrabberPositions.GRAB.pos);
+            servoGrabber.setPosition(GrabberPositions.STOW.pos);
     }
 }

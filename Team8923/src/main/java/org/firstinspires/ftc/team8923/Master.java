@@ -38,8 +38,7 @@ abstract class Master extends LinearOpMode
     enum GrabberPositions
     {
         STOW(0.4),
-        GRAB(0.6),
-        RELEASE(0.8);
+        RELEASE(0.7);
 
         public double pos;
         GrabberPositions(double i)
