@@ -24,21 +24,28 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
  * Program used to control Drive-A-Bots.
  * This can be a good reference for drive controls.
  */
+//CodeReview: you shouldn't register the master autonomous. You should create one or more subclasses of MasterAutonomous and register those.
+//            That's useful in case you are experimenting with different autonomous programs: they can all use the methods you have in here.
 @Autonomous(name="Master Autonomous", group = "Swerve")
 // @Disabled
 
 public class MasterAutonomous extends MasterOpMode
 {
     // HardwarePushbot robot = new HardwarePushbot();   // Use a Pushbot's hardware
+    //CodeReview: runtime is also declared in MasterOpMode. You don't need to declare this here. It's duplicating/overriding that variable.
     private ElapsedTime runtime = new ElapsedTime();
 
-    float mmPerInch = 25.4f;
+    //CodeReview: the following three variables have values that never change (in other words, they are constants).
+    //            Mark them as such by using the keyword "final".
+    //            This prevents someone from accidentally modifying the values later and makes it clearer that these are constants.
+    //            I've fixed the first one as an example.
+    final float mmPerInch = 25.4f;
     float mmBotWidth = 18 * mmPerInch;            // ... or whatever is right for your robot
     float mmFTCFieldWidth = (12 * 12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
 
     // declare "what team we're on" variables
-    boolean isRedTeam;
-    boolean isPosOne;
+    boolean isRedTeam; //CodeReview: add comments describing what each variables is for. Some of the following variables don't have explanations
+    boolean isPosOne;  //CodeReview: the name of this variable could be clearer. E.g., isStartingPositionOne
     double startDist; // the distance traveled depending on pos one or two
     int startDelay;
     int targetIndex; // specify what image target it is
@@ -53,6 +60,11 @@ public class MasterAutonomous extends MasterOpMode
     VuforiaNavigation VuforiaNav = new VuforiaNavigation();
 
 
+    //CodeReview: add a comment before every method describing what the method does. It can be a single sentence.
+    //CodeReview: If the method has input parameters, describe what they are.
+
+    //CodeReview: MasterAutonomous shouldn't have a runOpMode because it's not meant to be an opmode by itself.
+    //            Instead, you should create one or more subclasses of MasterAutonomous for each of your autonomous programs.
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -89,6 +101,16 @@ public class MasterAutonomous extends MasterOpMode
             {
                 isPosOne = false;
             }
+
+            //CodeReview: it would be a good idea to have some indication that these choices were accepted (team, start position),
+            //            e.g. a telemetry message or an LED on the robot showing the current state.
+
+
+            //CodeReview: move the following code outside of this while loop.
+            //            This code is executing every loop even if your choice hasn't changed.
+            //            The only thing you really need here is the telemetry, and you only need to output that when
+            //            the driver makes a choice (so you can do it in the keyhandling above).
+            //            The other operations are just wasting cycles.
 
             if (isRedTeam) // if team RED
             {
@@ -304,7 +326,7 @@ public class MasterAutonomous extends MasterOpMode
         motorBackLeft.setMaxSpeed(2700);   // try this setting from 8923
         motorBackRight.setMaxSpeed(2700);   // try this setting from 8923
 
-        motorLift.setPower(0);
+        motorLift.setPower(0); //CodeReview: this is duplicated in MasterOpMode's initializeHardware method; you don't need it here.
 
         //Set up telemetry data
         // We show the log in oldest-to-newest order, as that's better for poetry
@@ -323,6 +345,11 @@ public class MasterAutonomous extends MasterOpMode
         int newTargetBR;
 
 
+        //CodeReview: when multiplying (COUNTS_PER_INCH * forwardInches), you are casting it to an (int) which will truncate its fractional value.
+        //            There is a potential slight accuracy improvement by rounding this number instead of truncating it.
+        //            The way to do that is to use (int) Math.round(COUNTS_PER_INCH * forwardInches);
+        //            Note that the (int) cast is still needed because Math.round returns a long, but you're safe to do this because
+        //            you won't be using bigger numbers than an int can hold.
         newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches);
         newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches);
         newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches);
@@ -333,7 +360,7 @@ public class MasterAutonomous extends MasterOpMode
         motorBackLeft.setTargetPosition(newTargetBL);
         motorBackRight.setTargetPosition(newTargetBR);
 
-        runtime.reset();
+        runtime.reset(); //CodeReview: add a comment to this line because it's not self-evident what this call is doing for you.
         motorFrontLeft.setPower(Math.abs(speed));
         motorFrontRight.setPower(Math.abs(speed));
         motorBackLeft.setPower(Math.abs(speed));
@@ -368,6 +395,7 @@ public class MasterAutonomous extends MasterOpMode
 //            angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 //            curTurnAngle = adjustAngles(angles.firstAngle) - startAngle;
             VuforiaNav.getLocation(); // update target location and angle
+            //CodeReview: sometimes getLocation returns null. Sometimes Vuforia.lastLocation might be null. Does your code handle that case gracefully?
             // now extract the angle out of "get location", andn stores your location
             curTurnAngle = Orientation.getOrientation(VuforiaNav.lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
             curTurnAngle = adjustAngles(curTurnAngle);
@@ -472,7 +500,7 @@ public class MasterAutonomous extends MasterOpMode
             {
                 VuforiaNav.getLocation(); // update target location and angle
             }
-            while (VuforiaNav.lastLocation == null);
+            while (VuforiaNav.lastLocation == null);  //CodeReview: this will hang your robot while Vuforia can't get its location. That could be a long time.
 
             xPos = VuforiaNav.lastLocation.getTranslation().getData()[targetDimX];
             error = targetPos[targetDimX] - xPos;

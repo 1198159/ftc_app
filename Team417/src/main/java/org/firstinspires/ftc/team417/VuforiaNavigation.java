@@ -33,7 +33,10 @@ import java.util.List;
  */
 
 public class VuforiaNavigation {
-    OpenGLMatrix lastLocation = null;
+    OpenGLMatrix lastLocation = null; //CodeReview: it seems some code in other classes isn't handling this being null.
+                                      //            Perhaps you should initialize it to something other than null.
+                                      //            Also, I would recommend creating a method on this object that returns this value,
+                                      //            instead of letting other classes read this variable directly.
     VuforiaLocalizer.CloseableFrame frame;
     Image image = null;
     Image imageRGB565 = null;
@@ -50,6 +53,8 @@ public class VuforiaNavigation {
 
     OpenGLMatrix pose;
 
+    //CodeReview: these constants are also declared in MasterAutonomous. You should declare them once (in MasterOpMode)
+    //            so there's no chance that the values will be different in different files.
     float mmPerInch = 25.4f;
     float mmBotWidth = 18 * mmPerInch;            // ... or whatever is right for your robot
     float mmFTCFieldWidth = (12 * 12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
