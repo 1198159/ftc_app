@@ -104,6 +104,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         currentAngle = imu.getAngularOrientation().firstAngle;
 
+        //CodeReview: Bug? This is either a bug or redundant: all are pointing to the same array element FRONT_RIGHT
         EncoderFR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
         EncoderFL = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
         EncoderBL = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();

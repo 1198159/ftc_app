@@ -14,8 +14,8 @@ public class DriveAssembly
     public DcMotor motor;
     public double gearRatio;   //between motor and  wheel, not gearbox
     public double wheelRadius;
-    public int encoderTicks = 1120;
-    public double encoderCorrectionFactor = 1.0;//correct for mismatch or reversed gearboxes
+    public int encoderTicks = 1120;  //CodeReview: make this final so it's a constant
+    public double encoderCorrectionFactor = 1.0;//correct for mismatch or reversed gearboxes  //CodeReview: make this final so it's a constant
     private int lastEncoderValue = 0;
     private double lastReadTime = 0;
     public Transform2D location;

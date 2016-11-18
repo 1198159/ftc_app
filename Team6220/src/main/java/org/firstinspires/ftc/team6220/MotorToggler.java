@@ -16,6 +16,7 @@ public class MotorToggler
     {
         motor = s;
         onPower = power;
+        //CodeReview: initialize isPowered too. (Even though it does default to false, it's better to be explicit)
     }
 
     public void turnOn ()

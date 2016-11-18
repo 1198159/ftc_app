@@ -58,6 +58,8 @@ public class VuforiaHelper
     public static final int BLUE_LEFT = 2;
     public static final int BLUE_RIGHT = 3;
 
+    //CodeReview: The botsize is a constant that relate to your robot - should it be in MasterOpMode? (Probably) (Well, definitely)
+    //            Except that it's not actually used... hmm. So maybe delete it :)
     public static final float MM_PER_INCH = 25.4f;
     public static final float MM_BOT_SIZE = 18 * MM_PER_INCH;
     public static final float MM_FIELD_SIZE = 12 * 12 * MM_PER_INCH;

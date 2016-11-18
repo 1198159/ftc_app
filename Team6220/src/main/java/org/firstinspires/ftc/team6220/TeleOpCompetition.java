@@ -17,6 +17,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class TeleOpCompetition extends MasterTeleOp
 {
     ElapsedTime timer = new ElapsedTime();
+
+    //CodeReview: Define an enum for reading/writing the elements of your lastBtn array instead of using magic numbers in your code.
     //temporary tap trigger variable
     //                                   a      b      x      y
     boolean lastBtn[] = new boolean[]{false,false,false,false};
@@ -34,7 +36,7 @@ public class TeleOpCompetition extends MasterTeleOp
                                      gamepad1.left_stick_y,     //local y motion power
                                      gamepad1.right_stick_x);    //rotation power; reversed
 
-            updateLocationUsingEncoders();
+            updateLocationUsingEncoders(); //CodeReview: what is this getting you? Seems like it reads data that you never use again.
 
 
             if (gamepad2.x && !lastBtn[2])

@@ -16,6 +16,9 @@ package org.firstinspires.ftc.team6220;
 //TODO decide if this should handle the PID enforcement mode
 public class PIDFilter implements Filter
 {
+    //CodeReview: while cute, and legal, using greek characters in your code makes it harder for others to work with this code
+    //           (they may not know how to type those chars, and/or may not understand what they mean).
+    //           You would be better off making these less obscure by using descriptive names.
 
     //Proportional coefficient
     private double εP;
