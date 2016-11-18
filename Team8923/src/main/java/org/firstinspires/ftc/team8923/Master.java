@@ -33,6 +33,8 @@ abstract class Master extends LinearOpMode
     private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
     static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION;
 
+    double slowModeDivisor = 1.0;
+
     enum GrabberPositions
     {
         STOW(0.4),
@@ -137,10 +139,10 @@ abstract class Master extends LinearOpMode
             scalar = 1;
 
         // Apply scalar
-        powerFL /= scalar;
-        powerFR /= scalar;
-        powerBL /= scalar;
-        powerBR /= scalar;
+        powerFL /= (scalar * slowModeDivisor);
+        powerFR /= (scalar * slowModeDivisor);
+        powerBL /= (scalar * slowModeDivisor);
+        powerBR /= (scalar * slowModeDivisor);
 
         // Set motor powers
         motorFL.setPower(powerFL);

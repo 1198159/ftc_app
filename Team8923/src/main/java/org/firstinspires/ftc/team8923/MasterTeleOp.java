@@ -7,6 +7,11 @@ abstract class MasterTeleOp extends Master
 {
     void driveMecanumTeleOp()
     {
+        if(gamepad1.dpad_down)
+            slowModeDivisor = 4.0;
+        else if(gamepad1.dpad_up)
+            slowModeDivisor = 1.0;
+
         double y = -gamepad1.left_stick_y; // Y axis is negative when up
         double x = gamepad1.left_stick_x;
 
