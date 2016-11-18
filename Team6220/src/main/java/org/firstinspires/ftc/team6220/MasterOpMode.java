@@ -73,7 +73,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         //TODO decide if we should initialize at opmode level
         //                      drive assemblies   initial loc:     x    y    w
-        drive = new DriveSystem( driveAssemblies,  new Transform2D(0.0, 0.0, 0.0),
+        drive = new DriveSystem( this, driveAssemblies,  new Transform2D(0.0, 0.0, 0.0),
                 new PIDFilter[]{
                         new PIDFilter(2.0,0.0,0.0),    //x location control
                         new PIDFilter(2.0,0.0,0.0),    //y location control

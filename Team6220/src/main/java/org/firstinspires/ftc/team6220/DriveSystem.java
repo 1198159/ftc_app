@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team6220;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 /*
     Contains the robot's drive assemblies, and gives them power or velocity targets based upon robot velocity, power, or position targets.
 
@@ -17,10 +19,12 @@ public class DriveSystem
     private PIDFilter[] LocationControlFilter = new PIDFilter[2];
     private PIDFilter RotationControlFilter;
     public Transform2D robotLocation;
+    OpMode currentOpmode; //provide access to current opmode so we can use telemetry commands
     //TODO add Kalman filter for position estimation
 
-    public DriveSystem(DriveAssembly[] driveAssemblyArray, Transform2D initialLocation, PIDFilter[] filter)
+    public DriveSystem(OpMode opmode, DriveAssembly[] driveAssemblyArray, Transform2D initialLocation, PIDFilter[] filter)
     {
+        this.currentOpmode = opmode;
         this.assemblies = driveAssemblyArray;
         this.robotLocation = initialLocation;
         this.LocationControlFilter[0] = filter[0];
@@ -86,8 +90,12 @@ public class DriveSystem
         //write motor powers
         for (int corner = 0; corner < 4; corner++)
         {
-            assemblies[corner].setPower(rawPowers[corner]/scalingFactor);
+            double power = rawPowers[corner]/scalingFactor;
+            assemblies[corner].setPower(power);
+            currentOpmode.telemetry.addData( corner + ": ", power);
         }
+
+        currentOpmode.telemetry.update();
     }
 
     //estimate the robot's last motion using encoders
