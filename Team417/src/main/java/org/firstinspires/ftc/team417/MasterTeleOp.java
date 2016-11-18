@@ -41,7 +41,7 @@ public class MasterTeleOp extends MasterOpMode
 
         // Wait until start button has been pressed
         waitForStart();
-        startAngle = imu.getAngularOrientation().firstAngle;
+        startAngle = imu.getAngularOrientation().firstAngle; //CodeReview: you don't need this statement, you make it again a few lines from now.
 
 
         // Main loop
@@ -59,7 +59,7 @@ public class MasterTeleOp extends MasterOpMode
                     isLiftActivated = true;
                     runtime.reset();
                 }
-                else if (runtime.seconds() > 1) // timeout is one second
+                else if (runtime.seconds() > 1) // timeout is one second  //CodeReview: see me about this, I have questions about what you intend this to do
                 {
                     isLiftActivated = false;
                 }
@@ -171,6 +171,7 @@ public class MasterTeleOp extends MasterOpMode
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        //CodeReview: Do these directions ever change? If not, put this into MasterOpMode's initializeHardware
         motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
         motorBackRight.setDirection(DcMotor.Direction.REVERSE);
 
@@ -179,6 +180,7 @@ public class MasterTeleOp extends MasterOpMode
 
         motorLift.setDirection(DcMotor.Direction.REVERSE);
 
+        //CodeReview: Put this into MasterOpMode's initializeHardware
         motorFrontLeft.setMaxSpeed(2700);   // try this setting from 8923
         motorFrontRight.setMaxSpeed(2700);   // try this setting from 8923
         motorBackLeft.setMaxSpeed(2700);   // try this setting from 8923
