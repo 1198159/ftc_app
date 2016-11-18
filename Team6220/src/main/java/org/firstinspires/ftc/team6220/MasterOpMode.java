@@ -102,7 +102,7 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         Transform2D location;
 
-        currentAngle = imu.getAngularOrientation().firstAngle;
+        currentAngle = imu.getAngularOrientation().firstAngle/57.3;
 
         //CodeReview: Bug? This is either a bug or redundant: all are pointing to the same array element FRONT_RIGHT
         EncoderFR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
@@ -119,6 +119,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         telemetry.addData("X:", robotXPos);
         telemetry.addData("Y:", robotYPos);
+        telemetry.addData("W:", currentAngle);
         telemetry.update();
 
         return location;

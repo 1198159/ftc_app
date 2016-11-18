@@ -32,9 +32,9 @@ public class TeleOpCompetition extends MasterTeleOp
 
         while (opModeIsActive())
         {
-            driveRobotWithJoysticks(-gamepad1.left_stick_x/2,    //local x motion power; reversed
+            driveRobotWithJoysticks(-gamepad1.left_stick_x,    //local x motion power; reversed
                                      gamepad1.left_stick_y,     //local y motion power
-                                     gamepad1.right_stick_x);    //rotation power; reversed
+                                     gamepad1.right_stick_x/2);    //rotation power; reversed
 
             updateLocationUsingEncoders(); //CodeReview: what is this getting you? Seems like it reads data that you never use again.
 
