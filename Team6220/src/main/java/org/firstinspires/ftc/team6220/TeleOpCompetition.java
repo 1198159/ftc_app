@@ -17,6 +17,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class TeleOpCompetition extends MasterTeleOp
 {
     ElapsedTime timer = new ElapsedTime();
+    //temporary tap trigger variable
+    //                                   a      b      x      y
+    boolean lastBtn[] = new boolean[]{false,false,false,false};
+
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -26,21 +30,26 @@ public class TeleOpCompetition extends MasterTeleOp
 
         while (opModeIsActive())
         {
-            driveRobotWithJoysticks(-gamepad1.left_stick_x,    //local x motion power; reversed
-                                    gamepad1.left_stick_y,     //local y motion power
-                                    gamepad1.right_stick_x);    //rotation power; reversed
+            driveRobotWithJoysticks(-gamepad1.left_stick_x/2,    //local x motion power; reversed
+                                     gamepad1.left_stick_y,     //local y motion power
+                                     gamepad1.right_stick_x);    //rotation power; reversed
 
             updateLocationUsingEncoders();
 
-            if (gamepad2.x)
+
+            if (gamepad2.x && !lastBtn[2])
             {
                 motorToggler.toggleMotor();
             }
 
-            if (gamepad2.b)
+            if (gamepad2.b && !lastBtn[1])
             {
                 motorTogglerReverse.toggleMotor();
             }
+            lastBtn[0] = gamepad2.a;
+            lastBtn[1] = gamepad2.b;
+            lastBtn[2] = gamepad2.x;
+            lastBtn[3] = gamepad2.y;
 
             idle();
         }
