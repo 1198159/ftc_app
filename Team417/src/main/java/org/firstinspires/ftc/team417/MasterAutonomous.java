@@ -132,7 +132,7 @@ public class MasterAutonomous extends MasterOpMode
                     startDelay = 0;
                     pivotAngle = 60; // pivot this amount before acquiring target
                     targetAngle = 0; // Vuforia angle
-                    startDist = 57;
+                    startDist = 50;
                     targetIndex = 3;
                     targetPos[0] = 1524;
                     targetPos[1] = mmFTCFieldWidth;
@@ -148,7 +148,7 @@ public class MasterAutonomous extends MasterOpMode
                 {
                     // OPTION BLUE ONE (LEGOS)
                     startDelay = 2000;
-                    pivotAngle = -60;
+                    pivotAngle = -60; // recalc pivot?? also for red one??
                     targetAngle = -90;
                     startDist = 80;
                     targetIndex = 2;
@@ -162,7 +162,7 @@ public class MasterAutonomous extends MasterOpMode
                     startDelay = 0;
                     pivotAngle = -60;
                     targetAngle = -90;
-                    startDist = 57;
+                    startDist = 50;
                     targetIndex = 0;
                     targetPos[0] = mmFTCFieldWidth;
                     targetPos[1] = 1524;
@@ -204,37 +204,36 @@ public class MasterAutonomous extends MasterOpMode
         // START OF AUTONOMOUS
 // TODO: test new functions!!
 
+        /* HERE!
         // go towards target
-        //forwards(startDist, 0.5, 3);  // inches, speed, timeout
-        //sleep(500);
+        forwards(startDist, 0.5, 3);  // inches, speed, timeout
+        sleep(500);
 
         // pivot to face target
-        //pivot(pivotAngle, 0.7);
-        //sleep(500);
-
-        forwards(45, 0.7, 3);
+        pivot(pivotAngle, 0.7);
         sleep(500);
-        forwards(5, 0.7, 3);
-
-        //forwards(20, 0.7, 3);
-        //moveAngle(27, 90, 0.7, 3);
-        //sleep(3000);
 
         // align sideways with image
-        //alignVuforia(0.5, 3);   // speed, timeout
-        //sleep(10000);
+        pivotVuforia(targetAngle, 0.5);
+        sleep(500);
+        alignVuforia(0.5, 800, 3);   // speed, timeout
+        sleep(500);
+        pivotVuforia(targetAngle, 0.5);
+        sleep(500);
+        alignVuforia(0.5, 700, 3);   // speed, timeout
+        sleep(500);
+*/
 
-        // pivot to center target in camera view
-        //centerImage(0.5, 3);
+
+        PushCapBall();
 
         /*
-        // move foward until 25 inches away
-        VuforiaNav.getLocation(); // update target location and angle
-        float error = targetPos[targetDimY] - VuforiaNav.lastLocation.getTranslation().getData()[targetDimY];
-        if (error > 635)  // further than 25 inches away
+
+        do
         {
-            forwards( (error - 635) * 25.4, 0.5, 3);     // go until 25 inches away from beacon
+            VuforiaNav.getLocation(); // update target location and angle
         }
+        while (VuforiaNav.lastLocation == null);
 
 
         // detect beacon color of left side: 0 - blue, 1 - red
@@ -252,44 +251,33 @@ public class MasterAutonomous extends MasterOpMode
         {
             if (isRedTeam == false)     // blue team
             {
-                moveAngle(10, 90, 0.5, 3);   // shift left
+                //moveAngle(10, 90, 0.5, 3);   // no shift (left side)
             }
             else    // red team
             {
-                moveAngle(5, -90, 0.5, 3);   // shift right
+                moveAngle(5.25, -90, 0.5, 3);   // shift right
             }
         }
         else if (beaconColor == 1)  // if beacon is red
         {
             if (isRedTeam == false)     // blue team
             {
-                moveAngle(5, -90, 0.5, 3);   // shift right
+                moveAngle(5.25, -90, 0.5, 3);   // shift right
             }
             else    // red team
             {
-                moveAngle(10, 90, 0.5, 3);   // shift left
+                //moveAngle(10, 90, 0.5, 3);   // no shift (left side)
             }
         }
-        forwards(25-9, 0.3, 3); // push the button
-        */
+        forwards(23, 0.3, 3); // push the button
+        sleep(200);
+        forwards(-5, 0.3, 3);
+        sleep(200);
+        forwards(6.5, 0.3, 3);
+        sleep(200);
+        forwards(-10, 0.3, 3);
+*/
 
-
-        //moveAngle(20, 45, .8, 3); // forward Inches, angle, speed, timeout
-        //moveAngle(20, 90, .8, 3);
-        //sleep(500);
-        //pivot(-60, 0.7);
-        //sleep(500);
-       // forwards(-6, 0.3, 3);
-       // sleep(500);
-       // forwards(-6, 0.3, 3);
-       // sleep(500);
-       // forwards(6, 0.3, 3);
-       // sleep(500);
-       // pivotDst(90, 0.6);
-       // sleep(1000);
-       // pivotDst(-90, 0.6);
-        // moveAngle(6, 45, .8, 3);
-        // sleep(5000);
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
@@ -378,7 +366,7 @@ public class MasterAutonomous extends MasterOpMode
         motorBackRight.setPower(0);
     }
 
-    public void pivotVuforia (float targetAngle, double speed)
+    public void pivotVuforia (double targetAngle, double speed)
     {
         double error;
         double curTurnAngle;
@@ -394,8 +382,16 @@ public class MasterAutonomous extends MasterOpMode
         {
 //            angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 //            curTurnAngle = adjustAngles(angles.firstAngle) - startAngle;
+<<<<<<< Updated upstream
             VuforiaNav.getLocation(); // update target location and angle
             //CodeReview: sometimes getLocation returns null. Sometimes Vuforia.lastLocation might be null. Does your code handle that case gracefully?
+=======
+            do
+            {
+                VuforiaNav.getLocation(); // update target location and angle
+            }
+            while (VuforiaNav.lastLocation == null);
+>>>>>>> Stashed changes
             // now extract the angle out of "get location", andn stores your location
             curTurnAngle = Orientation.getOrientation(VuforiaNav.lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
             curTurnAngle = adjustAngles(curTurnAngle);
@@ -404,15 +400,14 @@ public class MasterAutonomous extends MasterOpMode
             pivotSpeed = Range.clip(pivotSpeed, 0.18, 0.7); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
 
-/*
-            // positive angle means CCW rotation
-            motorFrontLeft.setPower(pivotSpeed);
-            motorFrontRight.setPower(-pivotSpeed);
-            motorBackLeft.setPower(pivotSpeed);
-            motorBackRight.setPower(-pivotSpeed);
+
+            pivot(error, 0.3);
 
             // allow some time for IMU to catch up
+
+            /*
             if (Math.abs(error) < 2)
+
             {
                 sleep(15);
                 // stop motors
@@ -422,7 +417,8 @@ public class MasterAutonomous extends MasterOpMode
                 motorBackRight.setPower(0);
                 sleep(150);
             }
-*/
+            */
+
             telemetry.log().add(String.format("CurAngle: %f, error: %f", curTurnAngle, error));
 
         } while (opModeIsActive() && (Math.abs(error) > 0.3));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
@@ -483,10 +479,21 @@ public class MasterAutonomous extends MasterOpMode
     }
 
     // move the robot hora. sideways to align with image target
-    public void alignVuforia (double speed, double timeout)
+    public void alignVuforia (double speed, double distAway, double timeout)
     {
         float error;
         float xPos;
+        float yPos;
+        float errorX;
+        float errorY;
+        double robotErrorX;
+        double robotErrorY;
+        int newTargetFL;
+        int newTargetBL;
+        int newTargetFR;
+        int newTargetBR;
+
+        // add a new pos. Y in the future
 
         // run with encoder mode
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -502,18 +509,28 @@ public class MasterAutonomous extends MasterOpMode
             }
             while (VuforiaNav.lastLocation == null);  //CodeReview: this will hang your robot while Vuforia can't get its location. That could be a long time.
 
-            xPos = VuforiaNav.lastLocation.getTranslation().getData()[targetDimX];
-            error = targetPos[targetDimX] - xPos;
-            int newTargetFL;
-            int newTargetBL;
-            int newTargetFR;
-            int newTargetBR;
+            xPos = VuforiaNav.lastLocation.getTranslation().getData()[0];
+            yPos = VuforiaNav.lastLocation.getTranslation().getData()[1];
+            errorX = targetPos[0] - xPos;
+            errorY = targetPos[1] - yPos;
+
+            // transform extrinsic to robot intrinsic
+            robotErrorX = errorX * Math.cos(Math.toRadians(targetAngle)) + errorY * Math.sin(Math.toRadians(targetAngle));
+            robotErrorY = -errorX * Math.sin(Math.toRadians(targetAngle)) + errorY * Math.cos(Math.toRadians(targetAngle));
+            // shift position back 25 inches away from target image
+            robotErrorY -= distAway;
+
+            //error = targetPos[targetDimX] - xPos;
 
             // go sideways opposite of error
-            newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (error));
-            newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (-error));
-            newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (-error));
-            newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (error));
+            newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (robotErrorX))
+                    + (int) (COUNTS_PER_MM * (robotErrorY));
+            newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (-robotErrorX))
+                    + (int) (COUNTS_PER_MM * (robotErrorY));
+            newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (-robotErrorX))
+                    + (int) (COUNTS_PER_MM * (robotErrorY));
+            newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (robotErrorX))
+                    + (int) (COUNTS_PER_MM * (robotErrorY));
 
             motorFrontLeft.setTargetPosition(newTargetFL);
             motorFrontRight.setTargetPosition(newTargetFR);
@@ -525,9 +542,8 @@ public class MasterAutonomous extends MasterOpMode
             motorBackLeft.setPower(0.7);
             motorBackRight.setPower(0.7);
             runtime.reset();
-            sleep(5000);
-            telemetry.log().add(String.format("X pos: %f, error: %f", xPos, error));
-            telemetry.update();
+            telemetry.log().add(String.format("X pos: %f, Y Pos: %f, NewXPos: %f", xPos, yPos, robotErrorX));
+            //telemetry.update();
 
             // wait until the motors reach the position
             while (opModeIsActive() &&
@@ -539,9 +555,8 @@ public class MasterAutonomous extends MasterOpMode
             motorFrontRight.setPower(0);
             motorBackLeft.setPower(0);
             motorBackRight.setPower(0);
-            telemetry.log().add(String.format("CurXPos: %f, error: %f", xPos, error));
 
-        } while (opModeIsActive() && (Math.abs(error) > 0.3));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
+        } while (opModeIsActive() && (Math.abs(robotErrorX) > 3.0));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
 
         // stop motors
         motorFrontLeft.setPower(0);
@@ -779,6 +794,14 @@ public class MasterAutonomous extends MasterOpMode
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
     }
+
+    public void PushCapBall() throws InterruptedException
+    {
+        forwards(45, 0.7, 3);
+        sleep(500);
+        forwards(5, 0.7, 3);
+    }
+
 
     public void configureDashboard()
     {

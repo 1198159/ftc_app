@@ -159,6 +159,7 @@ public class TestVuforia extends MasterOpMode
         while (opModeIsActive()) {
 
             VuforiaNav.getLocation();
+            int beaconColor = VuforiaNav.GetBeaconColor();
             telemetry.addData("tracking ", VuforiaNav.isVisible() ? "Visible" : "Not Visible");
             if (VuforiaNav.lastLocation != null)
             {
@@ -192,13 +193,13 @@ public class TestVuforia extends MasterOpMode
         float error = targetPos[targetDimY] - VuforiaNav.lastLocation.getTranslation().getData()[targetDimY];
         if (error > 635)  // further than 25 inches away
         {
-            forwards( (error - 635) * 25.4, 0.5, 3);     // go until 25 inches away from beacon
+            //forwards( (error - 635) * 25.4, 0.5, 3);     // go until 25 inches away from beacon
         }
 
 
         // detect beacon color of left side: 0 - blue, 1 - red
         // TODO: handle failure of getBeaconColor
-        int beaconColor = VuforiaNav.GetBeaconColor();
+
 
 
         // TODO:  Decide what to do after detecting beacon color
@@ -207,6 +208,7 @@ public class TestVuforia extends MasterOpMode
         //   move forwards to press button
 
         // shift left or right before pushing button
+        /*
         if (beaconColor == 0)   // blue
         {
             if (isRedTeam == false)     // blue team
@@ -230,7 +232,7 @@ public class TestVuforia extends MasterOpMode
             }
         }
         forwards(25-9, 0.3, 3); // push the button
-
+*/
 
         //moveAngle(20, 45, .8, 3); // forward Inches, angle, speed, timeout
         //moveAngle(20, 90, .8, 3);
