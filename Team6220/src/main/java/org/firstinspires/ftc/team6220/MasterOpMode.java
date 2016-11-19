@@ -96,13 +96,17 @@ abstract public class MasterOpMode extends LinearOpMode
         imu.initialize(parameters);
     }
 
-    //TODO check encoder and imu location function
+    //TODO fix encoder function to add incremental parts; taking the sin or cos of the current angle is innacurate
+    //will use after first league event
+    /*
     //keeps track of the robot's location on the field based on Encoders and IMU
     public Transform2D updateLocationUsingEncoders()
     {
-        Transform2D location;
+        double xLocation;
+        double yLocation;
 
-        currentAngle = imu.getAngularOrientation().firstAngle/57.3;
+        //converted to radians for Math.sin() function
+        currentAngle = imu.getAngularOrientation().firstAngle * Math.PI / 180;
 
         EncoderFR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
         EncoderFL = driveAssemblies[FRONT_LEFT].motor.getCurrentPosition();
@@ -111,8 +115,14 @@ abstract public class MasterOpMode extends LinearOpMode
 
         //math to calculate x and y positions based on encoder ticks and robot angle
         //factors after EncoderFL are equivalent to circumference / encoder ticks per rotation
-        robotXPos = Math.cos(currentAngle) * (EncoderFR + EncoderFL) * 2 * Math.PI * 0.1016 / 1120 / Math.pow(2, 0.5);
-        robotYPos = Math.sin(currentAngle) * (EncoderFR + EncoderFL) * 2 * Math.PI * 0.1016 / 1120 / Math.pow(2, 0.5);
+        //robotXPos = Math.cos(currentAngle) * (EncoderFL + EncoderFR) * 2 * Math.PI * 0.1016 / (1120 * Math.pow(2, 0.5));
+        //robotYPos = Math.sin(currentAngle) * (EncoderFL - EncoderFR) * 2 * Math.PI * 0.1016 / (1120 * Math.pow(2, 0.5));
+
+
+        Transform2D motion = drive.getRobotMotionFromEncoders();
+
+        xLocation += eTime*( motion.x*Math.cos(drive.robotLocation.rot/57.3) - motion.y*Math.sin(drive.robotLocation.rot/57.3) );
+        yLocation += eTime*( motion.x*Math.sin(drive.robotLocation.rot/57.3) + motion.y*Math.cos(drive.robotLocation.rot/57.3) );
 
         location = new Transform2D(robotXPos, robotYPos, currentAngle);
 
@@ -126,9 +136,19 @@ abstract public class MasterOpMode extends LinearOpMode
 
     public void navigateUsingEncoders(Transform2D target)
     {
-        updateLocationUsingEncoders();
-        drive.navigateTo(target);
+        double lTime;
+        double iTime = System.nanoTime()/1000/1000/1000;
+
+        Transform2D newLocation = updateLocationUsingEncoders();
+
+        while (newLocation != target)
+        {
+            drive.navigateTo(target);
+        }
+
+        lTime = iTime;
     }
+    */
 
     //wait a number of milliseconds
     public void pause(int t) throws InterruptedException
@@ -139,5 +159,13 @@ abstract public class MasterOpMode extends LinearOpMode
         {
             idle();
         }
+    }
+
+    public void stopAllDriveMotors()
+    {
+        driveAssemblies[FRONT_RIGHT].setPower(0.0);
+        driveAssemblies[FRONT_LEFT].setPower(0.0);
+        driveAssemblies[BACK_LEFT].setPower(0.0);
+        driveAssemblies[BACK_RIGHT].setPower(0.0);
     }
 }

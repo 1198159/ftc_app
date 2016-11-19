@@ -24,7 +24,15 @@ public class AutoRed2 extends MasterAutonomous
         waitForStart();
 
         //vuforia is not reliably available yet, so we must use encoders at first
-        navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
+        //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
+
+        drive.moveRobot(0.35, 1.0, 0.0);
+
+        pause(1300);
+
+        stopAllDriveMotors();
+
+        turnTo(90.0 - headingOffset);
 
         ActivateBeacon(1.500);
 
@@ -70,20 +78,25 @@ public class AutoRed2 extends MasterAutonomous
 
             turnTo(-90.0 - headingOffset);
 
-            drive.moveRobot(0.2, 0.0, 0.0);
+            drive.moveRobot(-0.2, 0.0, 0.0);
 
-            wait(1000);
+            pause(1000);
 
-            navigateUsingEncoders(new Transform2D(xPosition- 0.150, 3.318, -90.0 - headingOffset));
+            stopAllDriveMotors();
+
+            //navigateUsingEncoders(new Transform2D(xPosition- 0.150, 3.318, -90.0 - headingOffset));
+
+            //TODO replace later
+            drive.moveRobot(1.0, 0.0, 0.0);
+
+            pause(200);
+
+            stopAllDriveMotors();
 
             turnTo(90.0 - headingOffset);
 
-            //vuforiaDriveToPosition(xPosition - 0.150, 3.318, 180.0 - headingOffset);
             vuforiaDriveToPosition(xPosition, 2.600, 90.0 - headingOffset);
 
-            //this turnTo(90) is necessary since otherwise, vuforia will not see the vision target
-            //when attempting to move, and thus will not work
-            //turnTo(90.0 - headingOffset);
         }
         else
         {
@@ -91,20 +104,25 @@ public class AutoRed2 extends MasterAutonomous
 
             turnTo(-90.0 - headingOffset);
 
-            drive.moveRobot(0.2, 0.0, 0.0);
+            drive.moveRobot(-0.2, 0.0, 0.0);
 
-            wait(1000);
+            pause(1000);
 
-            navigateUsingEncoders(new Transform2D(xPosition + 0.150, 3.318, -90.0-headingOffset));
+            stopAllDriveMotors();
+
+            //navigateUsingEncoders(new Transform2D(xPosition + 0.150, 3.318, -90.0-headingOffset));
+
+            //TODO replace later
+            drive.moveRobot(1.0, 0.0, 0.0);
+
+            pause(200);
+
+            stopAllDriveMotors();
 
             turnTo(90.0 - headingOffset);
 
-            //vuforiaDriveToPosition(xPosition + 0.150, 3.318, 180.0 - headingOffset);
             vuforiaDriveToPosition(xPosition, 2.600, 90.0 - headingOffset);
-
-            //this turnTo(90) is necessary since otherwise, vuforia will not see the vision target
-            //when attempting to move, and thus will not work
-            //turnTo(90.0 - headingOffset);
         }
+
     }
 }

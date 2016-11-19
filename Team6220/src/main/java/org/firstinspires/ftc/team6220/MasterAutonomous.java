@@ -16,9 +16,9 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         double headingOffset;
 
-        vuforiaHelper = new VuforiaHelper();
+        //vuforiaHelper = new VuforiaHelper();
 
-        vuforiaHelper.setupVuforia();
+        //vuforiaHelper.setupVuforia();
     }
 
     //a function for finding the distance between two points
@@ -37,6 +37,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         Transform2D TargetLocation = new Transform2D(TargetX, TargetY, TargetAngle);
 
+        //TODO FIX!!!!! are not exactly equal
         while(drive.robotLocation != TargetLocation)
         {
             //updateLocation()
@@ -64,38 +65,48 @@ abstract public class MasterAutonomous extends MasterOpMode
     {
         double currentAngle = imu.getAngularOrientation().firstAngle;
         double angleDiff = TargetAngle - currentAngle;
-        double signedAddend;
-
-        //the addend's sign depends on the sign of the angle difference.  If the angle difference is sufficiently small, we want
-        //to remove the addend to stop the robot.
-        if (angleDiff < 3.0 && -3.0 < angleDiff)
-        {
-            signedAddend = 0.3;
-        }
-        else if (angleDiff < -1.0)
-        {
-            signedAddend = -0.3;
-        }
-        else
-        {
-            signedAddend = 0.0;
-        }
-
-        if (angleDiff > 0.7)
-        {
-            angleDiff = 0.7;
-        }
-        else if (angleDiff < -0.7)
-        {
-            angleDiff = -0.7;
-        }
+        double turningPower;
 
         //sets the power of the motors to turn.  Since the turning direction of the robot is reversed from the motors,
         //negative signs are necessary.  The extra added number is to make sure the robot does not slow down too
         //drastically when nearing its target angle.
-        driveAssemblies[FRONT_RIGHT].setPower(-angleDiff - signedAddend);
-        driveAssemblies[FRONT_LEFT].setPower(-angleDiff - signedAddend);
-        driveAssemblies[BACK_LEFT].setPower(-angleDiff - signedAddend);
-        driveAssemblies[BACK_RIGHT].setPower(-angleDiff - signedAddend);
+        while(Math.abs(angleDiff) > 5.0)
+        {
+            currentAngle = imu.getAngularOrientation().firstAngle;
+            angleDiff = drive.optimizeRotationTarget(TargetAngle - currentAngle);
+            turningPower = angleDiff / 1000;
+
+            if (Math.abs(turningPower) > 1.0)
+            {
+                turningPower = Math.signum(turningPower);
+            }
+
+            // Make sure turn power doesn't go below minimum power
+            if(turningPower > 0 && turningPower < 0.1)
+            {
+                turningPower = 0.1;
+            }
+            else if (turningPower < 0 && turningPower > -0.1)
+            {
+                turningPower = -0.1;
+            }
+            else
+            {
+
+            }
+
+            telemetry.addData("angleDiff: ", angleDiff);
+            telemetry.update();
+
+            driveAssemblies[FRONT_RIGHT].setPower(-turningPower);
+            driveAssemblies[FRONT_LEFT].setPower(-turningPower);
+            driveAssemblies[BACK_LEFT].setPower(-turningPower);
+            driveAssemblies[BACK_RIGHT].setPower(-turningPower);
+
+            idle();
+        }
+
+        stopAllDriveMotors();
+
     }
 }

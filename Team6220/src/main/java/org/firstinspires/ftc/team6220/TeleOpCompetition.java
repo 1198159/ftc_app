@@ -37,7 +37,7 @@ public class TeleOpCompetition extends MasterTeleOp
                                      gamepad1.right_stick_x/2);    //rotation power; reversed
 
             //values are displayed for testing purposes
-            updateLocationUsingEncoders();
+            //updateLocationUsingEncoders();
 
             if (gamepad2.x && !lastBtn[2])
             {
