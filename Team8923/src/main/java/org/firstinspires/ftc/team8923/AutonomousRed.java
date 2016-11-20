@@ -96,10 +96,12 @@ public class AutonomousRed extends MasterAutonomous
         driveToPoint(beaconX, beaconY - 700, 90);
 
         // Get colors of both sides of beacon. Parameters are in mm from center of vision target
+        // Sample location is lowest inside corner of beacon's colored regions
+        // Float arrays are in HSV format, where 0 index is hue (which we care about)
         float[] colorLeft = new float[3];
         float[] colorRight = new float[3];
-        Color.colorToHSV(vuforiaLocator.getPixelColor(-60, 230, 30), colorLeft);
-        Color.colorToHSV(vuforiaLocator.getPixelColor(60, 230, 30), colorRight);
+        Color.colorToHSV(vuforiaLocator.getPixelColor(-40, 170, 30), colorLeft);
+        Color.colorToHSV(vuforiaLocator.getPixelColor(40, 170, 30), colorRight);
 
         /*
          * Compare the hues of each side. The hue color wheel has red at 360 degrees, and blue at
