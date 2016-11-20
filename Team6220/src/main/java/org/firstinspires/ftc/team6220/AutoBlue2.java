@@ -31,7 +31,7 @@ public class AutoBlue2 extends MasterAutonomous
 
         drive.moveRobot(0.5, 1.0, 0.0);
 
-        pause(1500);
+        pause(1400);
 
         stopAllDriveMotors();
 
@@ -86,14 +86,14 @@ public class AutoBlue2 extends MasterAutonomous
     }
 
     //once at a beacon, we use this function to press it
-    private void ActivateBeacon(double xPosition) throws InterruptedException
+    private void ActivateBeacon(double yPosition) throws InterruptedException
     {
         int colorLeftSide = vuforiaHelper.getPixelColor(-60, 230, 30);
         int colorRightSide = vuforiaHelper.getPixelColor(60, 230, 30);
 
-        if(Color.blue(colorRightSide) > Color.blue(colorLeftSide))
+        if(Color.blue(colorRightSide) < Color.blue(colorLeftSide))
         {
-            vuforiaDriveToPosition(xPosition - 0.150, 3.318, 90.0 - headingOffset);
+            vuforiaDriveToPosition(3.318, yPosition + 0.150, 90.0 - headingOffset);
 
             turnTo(-90.0 - headingOffset);
 
@@ -114,12 +114,12 @@ public class AutoBlue2 extends MasterAutonomous
 
             turnTo(90.0 - headingOffset);
 
-            vuforiaDriveToPosition(xPosition, 2.600, 90.0 - headingOffset);
+            vuforiaDriveToPosition(2.600, yPosition, 90.0 - headingOffset);
 
         }
         else
         {
-            vuforiaDriveToPosition(xPosition + 0.150, 3.318, 90.0 - headingOffset);
+            vuforiaDriveToPosition(3.318, yPosition - 0.150, 90.0 - headingOffset);
 
             turnTo(-90.0 - headingOffset);
 
@@ -140,7 +140,7 @@ public class AutoBlue2 extends MasterAutonomous
 
             turnTo(90.0 - headingOffset);
 
-            vuforiaDriveToPosition(xPosition, 2.600, 90.0 - headingOffset);
+            vuforiaDriveToPosition(2.600, yPosition, 90.0 - headingOffset);
         }
 
     }

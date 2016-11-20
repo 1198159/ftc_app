@@ -31,7 +31,7 @@ public class AutoRed2 extends MasterAutonomous
 
         drive.moveRobot(-0.5, 1.0, 0.0);
 
-        pause(1500);
+        pause(1400);
 
         stopAllDriveMotors();
 
