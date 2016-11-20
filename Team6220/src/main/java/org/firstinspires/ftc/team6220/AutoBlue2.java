@@ -17,26 +17,29 @@ public class AutoBlue2 extends MasterAutonomous
         initializeAuto();
 
         //this is used to add absolute orientation to each autonomous program
-        headingOffset = 0.0;
+        headingOffset = 90.0;
 
-        drive.robotLocation = new Transform2D(0.210, 2.395, 0.0 - headingOffset);
+        drive.robotLocation = new Transform2D(2.395, 0.210, 0.0 + headingOffset);
 
         waitForStart();
+
+        //Start tracking targets
+        vuforiaHelper.startTracking();
 
         //vuforia is not reliably available yet, so we must use encoders at first
         //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
 
-        drive.moveRobot(0.7, 1.0, 0.0);
+        drive.moveRobot(0.5, 1.0, 0.0);
 
         pause(1500);
 
         stopAllDriveMotors();
 
-        turnTo(90.0 - headingOffset);
+        turnTo(0.0 - headingOffset);
 
-        drive.moveRobot(0.5, 0.0, 0.0);
+        drive.moveRobot(0.0, 0.5, 0.0);
 
-        pause(800);
+        pause(400);
 
         stopAllDriveMotors();
 
@@ -58,6 +61,7 @@ public class AutoBlue2 extends MasterAutonomous
         drive.moveRobot(0.0, - 0.2, 0.0);
         drive.moveRobot(0.0, 0.2, 0.0);
         */
+
 
         //testing section; use later in season to push ball
         /*

@@ -19,7 +19,7 @@ public class AutoRed2 extends MasterAutonomous
         //this is used to add absolute orientation to each autonomous program
         headingOffset = 0.0;
 
-        drive.robotLocation = new Transform2D(0.210, 2.395, 0.0 - headingOffset);
+        drive.robotLocation = new Transform2D(0.210, 2.395, 0.0 + headingOffset);
 
         waitForStart();
 
