@@ -28,6 +28,12 @@ public class Transform2D
         return new VectorF((float)this.x, (float)this.y, 0);
     }
 
+    public void SetPositionFromFloatArray(float[] Array)
+    {
+        this.x = Array[0];
+        this.y = Array[1];
+    }
+
     //return a xy plane matrix that is this transformation
     public OpenGLMatrix getMatrix()
     {

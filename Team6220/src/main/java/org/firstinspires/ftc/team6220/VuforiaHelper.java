@@ -124,8 +124,8 @@ public class VuforiaHelper
         targets[BLUE_RIGHT].setLocation(createMatrix(MM_FIELD_SIZE, 1524, 0, 90, 0, -90));
 
         // Set phone location on robot. Center of the camera is the origin
-        //TODO: check phone location with design team
-        phoneLocation = createMatrix(25, 164, 0, 90, 0, -90);
+        //phoneLocation = createMatrix(25, 164, 0, 90, 0, 90);
+        phoneLocation = createMatrix(0, 0, 0, 90, 0, 90);
 
         // Setup listeners
         for(int i = 0; i < targets.length; i++)
@@ -133,6 +133,9 @@ public class VuforiaHelper
             listeners[i] = (VuforiaTrackableDefaultListener) targets[i].getListener();
             listeners[i].setPhoneInformation(phoneLocation, parameters.cameraDirection);
         }
+
+        // avoids nullpointer errors
+        lastKnownLocation = createMatrix(0, 0, 0, 0, 0, 0);
     }
 
     // Used to find pixel color from the camera. Parameters are actually a coordinate

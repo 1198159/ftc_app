@@ -5,11 +5,11 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
- * This opmode is used to experiment with autonomous ideas before implementing them in our competition code.
+ * Created by Colew on 11/19/2016.
  */
 
-@Autonomous(name = "AutoRed2", group = "Autonomous")
-public class AutoRed2 extends MasterAutonomous
+@Autonomous(name = "AutoBlue2", group = "Autonomous")
+public class AutoBlue2 extends MasterAutonomous
 {
     @Override
     public void runOpMode() throws InterruptedException
@@ -23,13 +23,10 @@ public class AutoRed2 extends MasterAutonomous
 
         waitForStart();
 
-        //Start tracking targets
-        vuforiaHelper.startTracking();
-
         //vuforia is not reliably available yet, so we must use encoders at first
         //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
 
-        drive.moveRobot(-0.5, 1.0, 0.0);
+        drive.moveRobot(0.7, 1.0, 0.0);
 
         pause(1500);
 
@@ -37,9 +34,9 @@ public class AutoRed2 extends MasterAutonomous
 
         turnTo(90.0 - headingOffset);
 
-        drive.moveRobot(0.0, 0.5, 0.0);
+        drive.moveRobot(0.5, 0.0, 0.0);
 
-        pause(400);
+        pause(800);
 
         stopAllDriveMotors();
 
@@ -61,7 +58,6 @@ public class AutoRed2 extends MasterAutonomous
         drive.moveRobot(0.0, - 0.2, 0.0);
         drive.moveRobot(0.0, 0.2, 0.0);
         */
-
 
         //testing section; use later in season to push ball
         /*

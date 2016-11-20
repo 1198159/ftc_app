@@ -71,13 +71,15 @@ abstract public class MasterOpMode extends LinearOpMode
 
         CollectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        vuforiaHelper = new VuforiaHelper();
+
         //TODO decide if we should initialize at opmode level
         //                      drive assemblies   initial loc:     x    y    w
-        drive = new DriveSystem( this, driveAssemblies,  new Transform2D(0.0, 0.0, 0.0),
+        drive = new DriveSystem( this, vuforiaHelper, driveAssemblies,  new Transform2D(0.0, 0.0, 0.0),
                 new PIDFilter[]{
                         new PIDFilter(2.0,0.0,0.0),    //x location control
                         new PIDFilter(2.0,0.0,0.0),    //y location control
-                        new PIDFilter(0.017,0.0,0.0)} ); //rotation control
+                        new PIDFilter(1/1500,0.0,0.0)} ); //rotation control
 
         motorToggler = new MotorToggler(CollectorMotor, 1.0);
         motorTogglerReverse = new MotorToggler(CollectorMotor, -1.0);

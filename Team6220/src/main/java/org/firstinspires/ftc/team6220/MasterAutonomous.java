@@ -16,9 +16,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         double headingOffset;
 
-        //vuforiaHelper = new VuforiaHelper();
-
-        //vuforiaHelper.setupVuforia();
+        vuforiaHelper.setupVuforia();
     }
 
     //a function for finding the distance between two points
@@ -30,23 +28,30 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     //uses vuforia to move to a location
-    public void vuforiaDriveToPosition(double TargetX, double TargetY, double TargetAngle )
+    public void vuforiaDriveToPosition(double TargetX, double TargetY, double TargetAngle)
     {
-        //Start tracking targets
-        vuforiaHelper.visionTargets.activate();
+        double xTolerance = .010;
+        double yTolerance = .010;
+        double wTolerance = 3.0;
+
+        drive.robotLocation.SetPositionFromFloatArray(vuforiaHelper.getRobotLocation());
+
+        currentAngle = imu.getAngularOrientation().firstAngle;
 
         Transform2D TargetLocation = new Transform2D(TargetX, TargetY, TargetAngle);
 
-        //TODO FIX!!!!! are not exactly equal
-        while(drive.robotLocation != TargetLocation)
+        while(Math.abs(TargetX - drive.robotLocation.x) > xTolerance && Math.abs(TargetY - drive.robotLocation.y) > yTolerance && Math.abs(TargetAngle - currentAngle) > wTolerance)
         {
-            //updateLocation()
-            vuforiaHelper.lastKnownLocation = vuforiaHelper.getLatestLocation();
+            drive.robotLocation.SetPositionFromFloatArray(vuforiaHelper.getRobotLocation());
+
+            drive.robotLocation.rot = currentAngle;
 
             //Inform drivers of robot location. Location is null if we lose track of targets
             if(vuforiaHelper.lastKnownLocation != null)
             {
                 telemetry.addData("Pos:", vuforiaHelper.format(vuforiaHelper.lastKnownLocation));
+
+                telemetry.update();
             }
             else
             {

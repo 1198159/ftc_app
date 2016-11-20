@@ -20,11 +20,13 @@ public class DriveSystem
     private PIDFilter RotationControlFilter;
     public Transform2D robotLocation;
     OpMode currentOpmode; //provide access to current opmode so we can use telemetry commands
+    VuforiaHelper vuforiaHelper;
     //TODO add Kalman filter for position estimation
 
-    public DriveSystem(OpMode opmode, DriveAssembly[] driveAssemblyArray, Transform2D initialLocation, PIDFilter[] filter)
+    public DriveSystem(OpMode opmode, VuforiaHelper vuforia, DriveAssembly[] driveAssemblyArray, Transform2D initialLocation, PIDFilter[] filter)
     {
         this.currentOpmode = opmode;
+        this.vuforiaHelper = vuforia;
         this.assemblies = driveAssemblyArray;
         this.robotLocation = initialLocation;
         this.LocationControlFilter[0] = filter[0];
@@ -39,6 +41,9 @@ public class DriveSystem
     //assumes robot position had already been updated
     public void navigateTo(Transform2D target)
     {
+        //update location
+        robotLocation.SetPositionFromFloatArray(vuforiaHelper.getRobotLocation());
+
         //update error terms
         LocationControlFilter[0].roll(target.x - robotLocation.x);
         LocationControlFilter[1].roll(target.y - robotLocation.y);
@@ -59,7 +64,6 @@ public class DriveSystem
             wRate = Math.signum(wRate);
         }
         moveRobot(xRate,yRate,wRate);
-        getRobotMotionFromEncoders();
     }
 
     //TODO make this more configurable
@@ -92,10 +96,10 @@ public class DriveSystem
         {
             double power = rawPowers[corner]/scalingFactor;
             assemblies[corner].setPower(power);
-            currentOpmode.telemetry.addData( corner + ": ", power);
+            //currentOpmode.telemetry.addData( corner + ": ", power);
         }
 
-        currentOpmode.telemetry.update();
+        //currentOpmode.telemetry.update();
     }
 
     //estimate the robot's last motion using encoders
