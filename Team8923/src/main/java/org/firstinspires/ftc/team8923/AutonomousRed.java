@@ -103,13 +103,23 @@ public class AutonomousRed extends MasterAutonomous
         Color.colorToHSV(vuforiaLocator.getPixelColor(-40, 170, 30), colorLeft);
         Color.colorToHSV(vuforiaLocator.getPixelColor(40, 170, 30), colorRight);
 
+        // Red value will sometimes be near 0 rather than 360. If so, make it above 360
+        // We never get any values near 90 degrees, so anything lower must be red
+        if(colorLeft[0] < 90)
+            colorLeft[0] += 360;
+        if(colorRight[0] < 90)
+            colorRight[0] += 360;
+
+        telemetry.log().add("Left hue: " + colorLeft[0]);
+        telemetry.log().add("Right hue: " + colorRight[0]);
+
         /*
          * Compare the hues of each side. The hue color wheel has red at 360 degrees, and blue at
          * 240 degrees. Subtracting the angles from each other results in some positive or negative
          * number. The sign can tell us which side is red and blue. In this case, the left hue is
          * subtracted from the right hue; a positive sign means left is red, negative mean right.
          */
-        if(subtractAngles(colorLeft[0], colorRight[0]) > 0)
+        if(colorLeft[0] - colorRight[0] > 0)
         {
             // Press left side if it's red
             telemetry.log().add("Left is red");
