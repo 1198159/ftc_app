@@ -77,8 +77,8 @@ abstract public class MasterOpMode extends LinearOpMode
         //                      drive assemblies   initial loc:     x    y    w
         drive = new DriveSystem( this, vuforiaHelper, driveAssemblies,  new Transform2D(0.0, 0.0, 0.0),
                 new PIDFilter[]{
-                        new PIDFilter(2.0,0.0,0.0),    //x location control
-                        new PIDFilter(2.0,0.0,0.0),    //y location control
+                        new PIDFilter(0.8,0.0,0.0),    //x location control
+                        new PIDFilter(0.8,0.0,0.0),    //y location control
                         new PIDFilter(1/1500,0.0,0.0)} ); //rotation control
 
         motorToggler = new MotorToggler(CollectorMotor, 1.0);

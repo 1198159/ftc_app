@@ -34,23 +34,22 @@ abstract public class MasterAutonomous extends MasterOpMode
         double yTolerance = .010;
         double wTolerance = 3.0;
 
-        drive.robotLocation.SetPositionFromFloatArray(vuforiaHelper.getRobotLocation());
-
-        currentAngle = imu.getAngularOrientation().firstAngle;
-
         Transform2D TargetLocation = new Transform2D(TargetX, TargetY, TargetAngle);
 
-        while(Math.abs(TargetX - drive.robotLocation.x) > xTolerance && Math.abs(TargetY - drive.robotLocation.y) > yTolerance && Math.abs(TargetAngle - currentAngle) > wTolerance)
+        while((Math.abs(TargetX - drive.robotLocation.x) > xTolerance) || (Math.abs(TargetY - drive.robotLocation.y) > yTolerance))
         {
-            drive.robotLocation.SetPositionFromFloatArray(vuforiaHelper.getRobotLocation());
+            float[] l = vuforiaHelper.getRobotLocation();
+            l[0] = l[0]/1000;
+            l[1] = l[1]/1000;
+            drive.robotLocation.SetPositionFromFloatArray(l);
 
             drive.robotLocation.rot = currentAngle;
 
             //Inform drivers of robot location. Location is null if we lose track of targets
             if(vuforiaHelper.lastKnownLocation != null)
             {
-                telemetry.addData("Pos:", vuforiaHelper.format(vuforiaHelper.lastKnownLocation));
-
+                telemetry.addData("PosX:", drive.robotLocation.x);
+                telemetry.addData("PosY:", drive.robotLocation.y);
                 telemetry.update();
             }
             else
@@ -61,8 +60,12 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
 
             //move to the desired location
-            drive.navigateTo(TargetLocation);
+            double[] m = drive.navigateTo(TargetLocation);
+            telemetry.addData("mX:", m[0]);
+            telemetry.addData("mY:", m[1]);
+            telemetry.addData("mW:", m[2]);
         }
+        turnTo(TargetAngle);
     }
 
     //makes our robot turn to a specified angle

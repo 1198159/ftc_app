@@ -39,11 +39,15 @@ public class DriveSystem
     //TODO add ability to use non "zig-zag" paths
     //call once per loop
     //assumes robot position had already been updated
-    public void navigateTo(Transform2D target)
+    public double[] navigateTo(Transform2D target)
     {
+        /*
+        float[] l = vuforiaHelper.getRobotLocation();
+        l[0] = l[0]/1000;
+        l[1] = l[1]/1000;
         //update location
-        robotLocation.SetPositionFromFloatArray(vuforiaHelper.getRobotLocation());
-
+        robotLocation.SetPositionFromFloatArray(l);
+*/
         //update error terms
         LocationControlFilter[0].roll(target.x - robotLocation.x);
         LocationControlFilter[1].roll(target.y - robotLocation.y);
@@ -64,6 +68,7 @@ public class DriveSystem
             wRate = Math.signum(wRate);
         }
         moveRobot(xRate,yRate,wRate);
+        return new double[]{xRate,yRate,wRate};
     }
 
     //TODO make this more configurable

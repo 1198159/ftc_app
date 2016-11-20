@@ -47,9 +47,10 @@ public class AutoRed2 extends MasterAutonomous
 
         ActivateBeacon(1.500);
 
-        vuforiaDriveToPosition(2.743, 2.600, 90.0 - headingOffset);
+        //2.74,2.6
+        vuforiaDriveToPosition(2.7, 2.6, 90.0 - headingOffset);
 
-        ActivateBeacon(2.743);
+        ActivateBeacon(2.7);
 
         turnTo(45 - headingOffset);
 
