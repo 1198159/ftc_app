@@ -96,10 +96,22 @@ public class AutonomousRed extends MasterAutonomous
         driveToPoint(beaconX, beaconY - 700, 90);
 
         // Get colors of both sides of beacon. Parameters are in mm from center of vision target
+        // Sample location is lowest inside corner of beacon's colored regions
+        // Float arrays are in HSV format, where 0 index is hue (which we care about)
         float[] colorLeft = new float[3];
         float[] colorRight = new float[3];
-        Color.colorToHSV(vuforiaLocator.getPixelColor(-60, 230, 30), colorLeft);
-        Color.colorToHSV(vuforiaLocator.getPixelColor(60, 230, 30), colorRight);
+        Color.colorToHSV(vuforiaLocator.getPixelColor(-40, 170, 30), colorLeft);
+        Color.colorToHSV(vuforiaLocator.getPixelColor(40, 170, 30), colorRight);
+
+        // Red value will sometimes be near 0 rather than 360. If so, make it above 360
+        // We never get any values near 90 degrees, so anything lower must be red
+        if(colorLeft[0] < 90)
+            colorLeft[0] += 360;
+        if(colorRight[0] < 90)
+            colorRight[0] += 360;
+
+        telemetry.log().add("Left hue: " + colorLeft[0]);
+        telemetry.log().add("Right hue: " + colorRight[0]);
 
         /*
          * Compare the hues of each side. The hue color wheel has red at 360 degrees, and blue at
@@ -107,7 +119,7 @@ public class AutonomousRed extends MasterAutonomous
          * number. The sign can tell us which side is red and blue. In this case, the left hue is
          * subtracted from the right hue; a positive sign means left is red, negative mean right.
          */
-        if(subtractAngles(colorLeft[0], colorRight[0]) > 0)
+        if(colorLeft[0] - colorRight[0] > 0)
         {
             // Press left side if it's red
             telemetry.log().add("Left is red");

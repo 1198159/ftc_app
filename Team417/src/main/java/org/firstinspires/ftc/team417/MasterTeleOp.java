@@ -37,19 +37,19 @@ public class MasterTeleOp extends MasterOpMode
         telemetry.addData("Path", "InitDone");
         telemetry.update();
 
-        startAngle = imu.getAngularOrientation().firstAngle;
+        //startAngle = imu.getAngularOrientation().firstAngle;
 
         // Wait until start button has been pressed
         waitForStart();
-        startAngle = imu.getAngularOrientation().firstAngle; //CodeReview: you don't need this statement, you make it again a few lines from now.
-
 
         // Main loop
         while (opModeIsActive())
        {
+           /*
            imuAngle = imu.getAngularOrientation().firstAngle;
            currentAngle = imuAngle - startAngle;
            currentAngle = adjustAngles(currentAngle);
+           */
 
            isSwitchPressed = liftSwitch.getState();    //  Read the input pin
             if (gamepad2.b)
@@ -213,6 +213,7 @@ public class MasterTeleOp extends MasterOpMode
                     }
                 });
 
+/*
         telemetry.addLine()
                 .addData("currentAnglet: ", new Func<String>() {
                     @Override public String value() {
@@ -229,6 +230,7 @@ public class MasterTeleOp extends MasterOpMode
                         return formatNumber(imuAngle);
                     }
                 });
+*/
 
         /*
         telemetry.addLine()

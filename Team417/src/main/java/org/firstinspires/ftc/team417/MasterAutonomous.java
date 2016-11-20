@@ -225,7 +225,17 @@ public class MasterAutonomous extends MasterOpMode
 */
 
 
-        PushCapBall();
+        if (isPosOne)
+        {
+            PushCapBall();
+        }
+        else
+        {
+            parkCornerVortex();
+        }
+
+
+
 
         /*
 
@@ -382,16 +392,15 @@ public class MasterAutonomous extends MasterOpMode
         {
 //            angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 //            curTurnAngle = adjustAngles(angles.firstAngle) - startAngle;
-<<<<<<< Updated upstream
             VuforiaNav.getLocation(); // update target location and angle
             //CodeReview: sometimes getLocation returns null. Sometimes Vuforia.lastLocation might be null. Does your code handle that case gracefully?
-=======
+
             do
             {
                 VuforiaNav.getLocation(); // update target location and angle
             }
             while (VuforiaNav.lastLocation == null);
->>>>>>> Stashed changes
+
             // now extract the angle out of "get location", andn stores your location
             curTurnAngle = Orientation.getOrientation(VuforiaNav.lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
             curTurnAngle = adjustAngles(curTurnAngle);
@@ -800,6 +809,19 @@ public class MasterAutonomous extends MasterOpMode
         forwards(45, 0.7, 3);
         sleep(500);
         forwards(5, 0.7, 3);
+    }
+
+    public void parkCornerVortex() throws InterruptedException
+    {
+        forwards(30, 0.7, 3);
+        if (isRedTeam)
+        {
+            moveAngle(20, -90, 0.8, 3); // horizontal left (20 inches)
+        }
+        else
+        {
+            moveAngle(20, 90, 0.8, 3); // horizontal right
+        }
     }
 
 
