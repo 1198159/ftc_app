@@ -14,7 +14,15 @@ public class AutoBlue2 extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        initializeAuto();
+        try
+        {
+            initializeAuto();
+        }
+        catch (Exception ex)
+        {
+            telemetry.addData("exception", ex);
+            return;
+        }
 
         //this is used to add absolute orientation to each autonomous program
         headingOffset = 90.0;
@@ -29,7 +37,7 @@ public class AutoBlue2 extends MasterAutonomous
         //vuforia is not reliably available yet, so we must use encoders at first
         //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
 
-        drive.moveRobot(0.5, 1.0, 0.0);
+        drive.moveRobot(0.5, 1.0, -15.0);
 
         pause(1400);
 
@@ -37,22 +45,23 @@ public class AutoBlue2 extends MasterAutonomous
 
         turnTo(0.0 - headingOffset);
 
-        drive.moveRobot(0.0, 0.5, 0.0);
-
-        pause(400);
-
         stopAllDriveMotors();
+
+        pause(1000);
+
+        vuforiaDriveToPosition(3.428, 1.500, 90.0 - headingOffset);
 
         pause(1000);
 
         ActivateBeacon(1.500);
 
-        vuforiaDriveToPosition(2.743, 2.600, 90.0 - headingOffset);
+        vuforiaDriveToPosition(3.428, 2.700, 90.0 - headingOffset);
 
-        ActivateBeacon(2.743);
+        ActivateBeacon(2.700);
 
         turnTo(45 - headingOffset);
 
+        //@TODO incorrect for blue side
         vuforiaDriveToPosition(1.880, 2.313, 45 - headingOffset);
 
         /*
@@ -88,25 +97,25 @@ public class AutoBlue2 extends MasterAutonomous
     //once at a beacon, we use this function to press it
     private void ActivateBeacon(double yPosition) throws InterruptedException
     {
-        int colorLeftSide = vuforiaHelper.getPixelColor(-60, 230, 30);
-        int colorRightSide = vuforiaHelper.getPixelColor(60, 230, 30);
+        int colorLeftSide = vuforiaHelper.getPixelColor(-40, 230, 30);
+        int colorRightSide = vuforiaHelper.getPixelColor(40, 230, 30);
 
         if(Color.blue(colorRightSide) < Color.blue(colorLeftSide))
         {
-            vuforiaDriveToPosition(3.318, yPosition + 0.150, 90.0 - headingOffset);
+            vuforiaDriveToPosition(3.000, yPosition + 0.110, 90.0 - headingOffset);
 
             turnTo(-90.0 - headingOffset);
 
-            drive.moveRobot(-0.2, 0.0, 0.0);
+            drive.moveRobot(0.0, -0.2, 0.0);
 
-            pause(1000);
+            pause(800);
 
             stopAllDriveMotors();
 
             //navigateUsingEncoders(new Transform2D(xPosition- 0.150, 3.318, -90.0 - headingOffset));
 
             //TODO replace later
-            drive.moveRobot(1.0, 0.0, 0.0);
+            drive.moveRobot(0.0, 1.0, 0.0);
 
             pause(200);
 
@@ -119,20 +128,20 @@ public class AutoBlue2 extends MasterAutonomous
         }
         else
         {
-            vuforiaDriveToPosition(3.318, yPosition - 0.150, 90.0 - headingOffset);
+            vuforiaDriveToPosition(3.000, yPosition - 0.110, 90.0 - headingOffset);
 
             turnTo(-90.0 - headingOffset);
 
-            drive.moveRobot(-0.2, 0.0, 0.0);
+            drive.moveRobot(0.0, -0.2, 0.0);
 
-            pause(1000);
+            pause(800);
 
             stopAllDriveMotors();
 
             //navigateUsingEncoders(new Transform2D(xPosition + 0.150, 3.318, -90.0-headingOffset));
 
             //TODO replace later
-            drive.moveRobot(1.0, 0.0, 0.0);
+            drive.moveRobot(0.0, 1.0, 0.0);
 
             pause(200);
 
