@@ -43,8 +43,8 @@ public class VuforiaNavigation {
     Image imageRGB888 = null;
     int imageFormat;
     Bitmap bm;      // android.graphics
-    float leftColorHSV[] = {0f, 0f, 0f};
-    float rightColorHSV[] = {0f, 0f, 0f};
+    public float leftColorHSV[] = {0f, 0f, 0f};
+    public float rightColorHSV[] = {0f, 0f, 0f};
 
 
     VuforiaTrackables imageTargets;
@@ -261,11 +261,8 @@ public class VuforiaNavigation {
             telemetry.log().add(String.format("BeaconRight X: %f, Y: %f", beaconRight.getData()[0], beaconRight.getData()[1]));
             */
 
-                    float leftColorHSV[] = {0f, 0f, 0f};
-                    float rightColorHSV[] = {0f, 0f, 0f};
-
                     GetImageColor(image, beaconLeft, leftColorHSV);
-                    //GetImageColor(image, beaconRight, rightColorHSV);  // for now, we're just looking at the left side
+                    GetImageColor(image, beaconRight, rightColorHSV);  // for now, we're just looking at the left side
                     //telemetry.log().add(String.format("LeftSideHue: %f RightSideHue: %f", leftColorHSV[0], rightColorHSV[0]));
                     frame.close();  // close frame to free memory
                 }
@@ -275,9 +272,10 @@ public class VuforiaNavigation {
                 return 2; // return illegal color value
             }
         }
-        if (leftColorHSV[0] < 250 && leftColorHSV[0] > 150) // BLUE
+        float deltaColorHSV = leftColorHSV[0] - rightColorHSV[0];
+        if (deltaColorHSV < 0) // if left color is negative, then left side is blue
         {
-            return 0;
+            return 0; // BLUE
         }
         else
         {

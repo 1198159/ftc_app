@@ -199,12 +199,9 @@ public class MasterAutonomous extends MasterOpMode
         }
         */
 
-
-
         // START OF AUTONOMOUS
 // TODO: test new functions!!
 
-        /* HERE!
         // go towards target
         forwards(startDist, 0.5, 3);  // inches, speed, timeout
         sleep(500);
@@ -222,22 +219,7 @@ public class MasterAutonomous extends MasterOpMode
         sleep(500);
         alignVuforia(0.5, 700, 3);   // speed, timeout
         sleep(500);
-*/
 
-
-        if (isPosOne)
-        {
-            PushCapBall();
-        }
-        else
-        {
-            parkCornerVortex();
-        }
-
-
-
-
-        /*
 
         do
         {
@@ -249,7 +231,7 @@ public class MasterAutonomous extends MasterOpMode
         // detect beacon color of left side: 0 - blue, 1 - red
         // TODO: handle failure of getBeaconColor
         int beaconColor = VuforiaNav.GetBeaconColor();
-
+        telemetry.log().add(String.format("LeftSide: %f, RightSide: %f", VuforiaNav.leftColorHSV[0], VuforiaNav.rightColorHSV[0]));
 
         // TODO:  Decide what to do after detecting beacon color
         //
@@ -279,6 +261,12 @@ public class MasterAutonomous extends MasterOpMode
                 //moveAngle(10, 90, 0.5, 3);   // no shift (left side)
             }
         }
+        else
+        {
+            forwards(-5, 0.5, 3);
+        }
+        sleep(30000);
+        /*
         forwards(23, 0.3, 3); // push the button
         sleep(200);
         forwards(-5, 0.3, 3);
@@ -286,7 +274,8 @@ public class MasterAutonomous extends MasterOpMode
         forwards(6.5, 0.3, 3);
         sleep(200);
         forwards(-10, 0.3, 3);
-*/
+        */
+
 
 
         // Step through each leg of the path,
@@ -430,7 +419,7 @@ public class MasterAutonomous extends MasterOpMode
 
             telemetry.log().add(String.format("CurAngle: %f, error: %f", curTurnAngle, error));
 
-        } while (opModeIsActive() && (Math.abs(error) > 0.3));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
+        } while (opModeIsActive() && (Math.abs(error) > 0.8));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
 
         // stop motors
         motorFrontLeft.setPower(0);
@@ -565,7 +554,7 @@ public class MasterAutonomous extends MasterOpMode
             motorBackLeft.setPower(0);
             motorBackRight.setPower(0);
 
-        } while (opModeIsActive() && (Math.abs(robotErrorX) > 3.0));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
+        } while (opModeIsActive() && (Math.abs(robotErrorX) > 5.0));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
 
         // stop motors
         motorFrontLeft.setPower(0);
