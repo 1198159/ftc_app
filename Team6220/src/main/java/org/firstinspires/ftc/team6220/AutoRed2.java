@@ -31,25 +31,26 @@ public class AutoRed2 extends MasterAutonomous
 
         drive.moveRobot(-0.5, 1.0, 0.0);
 
-        pause(1500);
+        pause(1400);
 
         stopAllDriveMotors();
 
         turnTo(90.0 - headingOffset);
 
-        drive.moveRobot(0.0, 0.5, 0.0);
-
-        pause(400);
-
         stopAllDriveMotors();
+
+        pause(1000);
+
+        vuforiaDriveToPosition(1.500, 3.428, 90.0 - headingOffset);
 
         pause(1000);
 
         ActivateBeacon(1.500);
 
-        vuforiaDriveToPosition(2.743, 2.600, 90.0 - headingOffset);
+        //2.74, 2.6
+        vuforiaDriveToPosition(2.700, 3.428, 90.0 - headingOffset);
 
-        ActivateBeacon(2.743);
+        ActivateBeacon(2.700);
 
         turnTo(45 - headingOffset);
 
@@ -88,25 +89,25 @@ public class AutoRed2 extends MasterAutonomous
     //once at a beacon, we use this function to press it
     private void ActivateBeacon(double xPosition) throws InterruptedException
     {
-        int colorLeftSide = vuforiaHelper.getPixelColor(-60, 230, 30);
-        int colorRightSide = vuforiaHelper.getPixelColor(60, 230, 30);
+        int colorLeftSide = vuforiaHelper.getPixelColor(-40, 230, 30);
+        int colorRightSide = vuforiaHelper.getPixelColor(40, 230, 30);
 
         if(Color.blue(colorRightSide) > Color.blue(colorLeftSide))
         {
-            vuforiaDriveToPosition(xPosition - 0.150, 3.318, 90.0 - headingOffset);
+            vuforiaDriveToPosition(xPosition - 0.110, 3.000, 90.0 - headingOffset);
 
             turnTo(-90.0 - headingOffset);
 
-            drive.moveRobot(-0.2, 0.0, 0.0);
+            drive.moveRobot(0.0, -0.2, 0.0);
 
-            pause(1000);
+            pause(800);
 
             stopAllDriveMotors();
 
             //navigateUsingEncoders(new Transform2D(xPosition- 0.150, 3.318, -90.0 - headingOffset));
 
             //TODO replace later
-            drive.moveRobot(1.0, 0.0, 0.0);
+            drive.moveRobot(0.0, 1.0, 0.0);
 
             pause(200);
 
@@ -114,25 +115,25 @@ public class AutoRed2 extends MasterAutonomous
 
             turnTo(90.0 - headingOffset);
 
-            vuforiaDriveToPosition(xPosition, 2.600, 90.0 - headingOffset);
+            vuforiaDriveToPosition(xPosition, 3.428, 90.0 - headingOffset);
 
         }
         else
         {
-            vuforiaDriveToPosition(xPosition + 0.150, 3.318, 90.0 - headingOffset);
+            vuforiaDriveToPosition(xPosition + 0.110, 3.000, 90.0 - headingOffset);
 
             turnTo(-90.0 - headingOffset);
 
-            drive.moveRobot(-0.2, 0.0, 0.0);
+            drive.moveRobot(0.0, -0.2, 0.0);
 
-            pause(1000);
+            pause(800);
 
             stopAllDriveMotors();
 
             //navigateUsingEncoders(new Transform2D(xPosition + 0.150, 3.318, -90.0-headingOffset));
 
             //TODO replace later
-            drive.moveRobot(1.0, 0.0, 0.0);
+            drive.moveRobot(0.0, 1.0, 0.0);
 
             pause(200);
 
@@ -140,7 +141,7 @@ public class AutoRed2 extends MasterAutonomous
 
             turnTo(90.0 - headingOffset);
 
-            vuforiaDriveToPosition(xPosition, 2.600, 90.0 - headingOffset);
+            vuforiaDriveToPosition(xPosition, 3.428, 90.0 - headingOffset);
         }
 
     }
