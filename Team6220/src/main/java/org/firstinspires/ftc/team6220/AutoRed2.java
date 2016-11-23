@@ -14,15 +14,7 @@ public class AutoRed2 extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        try
-        {
-            initializeAuto();
-        }
-        catch (Exception ex)
-        {
-            telemetry.addData("exception", ex);
-            return;
-        }
+        initializeAuto();
 
         //this is used to add absolute orientation to each autonomous program
         headingOffset = 0.0;
