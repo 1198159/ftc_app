@@ -50,7 +50,7 @@ abstract class MasterAutonomous extends Master
     // Constants for robot in autonomous
     // Max drive power is less than 1 to ensure speed controller works
     private static final double MAX_DRIVE_POWER = 0.6;
-    private static final double MIN_DRIVE_POWER = 0.20; // used to be 0.07
+    private static final double MIN_DRIVE_POWER = 0.2;
     private static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
     private static final double DRIVE_POWER_CONSTANT = 1.0 / 1000.0;
 
@@ -81,6 +81,7 @@ abstract class MasterAutonomous extends Master
 
     private void setUpRoutine()
     {
+        telemetry.log().add("");
         telemetry.log().add("Left Starting Position: X");
         telemetry.log().add("Right Starting Position: B");
         telemetry.log().add("Left Beacon: Left d-pad");
@@ -176,7 +177,7 @@ abstract class MasterAutonomous extends Master
             {
                 if(!buttonWasPressed)
                 {
-                    // Park on center
+                    // Reset routine in case something was accidentally added
                     routine.clear();
                     buttonWasPressed = true;
                 }
@@ -246,12 +247,13 @@ abstract class MasterAutonomous extends Master
         setUpRoutine();
         initHardware();
 
-        // Used to calculate distance traveled between loops
+        // Set last known encoder values
         lastEncoderFL = motorFL.getCurrentPosition();
         lastEncoderFR = motorFR.getCurrentPosition();
         lastEncoderBL = motorBL.getCurrentPosition();
         lastEncoderBR = motorBR.getCurrentPosition();
 
+        // Set IMU heading offset
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
 
         telemetry.log().add("Initialized. Ready to start!");
@@ -375,7 +377,8 @@ abstract class MasterAutonomous extends Master
             trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
                     || vuforiaLocator.getTargetName().equals("Target Red Right");
 
-        // Use Vuforia if a it's tracking something
+        // Use Vuforia if a it's tracking something. We only use the robot's own alliance's
+        // vision targets, because the others give us bogus numbers for some reason
         if(vuforiaLocator.isTracking() && !trackingOtherAllianceTarget)
         {
             float[] location = vuforiaLocator.getRobotLocation();
@@ -384,7 +387,7 @@ abstract class MasterAutonomous extends Master
 
             robotAngle = vuforiaLocator.getRobotAngle();
         }
-        // Otherwise, use other sensors to determine distance travelled and angle
+        // Otherwise, use encoders and IMU to determine distance travelled and angle
         else
         {
             robotAngle = imu.getAngularOrientation().firstAngle - headingOffset;
