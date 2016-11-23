@@ -79,11 +79,14 @@ public class AutonomousRed extends MasterAutonomous
 
     private void pressBeacon(double beaconX, double beaconY) throws InterruptedException
     {
-        double angleToEndOfTape = Math.toDegrees(Math.atan2(beaconY - robotY - 700, beaconX - robotX));
+        // Distance from which we look at the vision target and beacon in mm
+        double observationDistance = 300;
+
+        double angleToEndOfTape = Math.toDegrees(Math.atan2(beaconY - observationDistance - robotY, beaconX - robotX));
 
         // Go to the end of the tape in front of the beacon
         turnToAngle(angleToEndOfTape);
-        driveToPoint(beaconX, beaconY - 700, angleToEndOfTape);
+        driveToPoint(beaconX, beaconY - observationDistance, angleToEndOfTape);
         turnToAngle(90);
 
         // Give Vuforia a chance to start tracking the target
@@ -93,7 +96,7 @@ public class AutonomousRed extends MasterAutonomous
         lookForVisionTarget();
 
         // Reposition after tracking target
-        driveToPoint(beaconX, beaconY - 700, 90);
+        driveToPoint(beaconX, beaconY - observationDistance, 90);
 
         // Get colors of both sides of beacon. Parameters are in mm from center of vision target
         // Sample location is lowest inside corner of beacon's colored regions
@@ -124,7 +127,7 @@ public class AutonomousRed extends MasterAutonomous
             // Press left side if it's red
             telemetry.log().add("Left is red");
             // Go in front of left button
-            driveToPoint(beaconX - 65, beaconY - 700, 90, 0.3);
+            driveToPoint(beaconX - 65, beaconY - observationDistance, 90, 0.3);
             // Move forward to press button
             driveToPoint(beaconX - 65, beaconY - 40, 90, 0.3);
             sleep(500);
@@ -134,13 +137,13 @@ public class AutonomousRed extends MasterAutonomous
             // Press right side if it's red
             telemetry.log().add("Right is red");
             // Go in front of right button
-            driveToPoint(beaconX + 65, beaconY - 700, 90, 0.3);
+            driveToPoint(beaconX + 65, beaconY - observationDistance, 90, 0.3);
             // Move forward to press button
             driveToPoint(beaconX + 65, beaconY - 40, 90, 0.3);
             sleep(500);
         }
 
         // Back away from beacon
-        driveToPoint(beaconX, beaconY - 700, 90, 0.3);
+        driveToPoint(beaconX, beaconY - observationDistance, 90, 0.3);
     }
 }
