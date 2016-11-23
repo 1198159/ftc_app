@@ -122,27 +122,25 @@ public class AutonomousBlue extends MasterAutonomous
          * number. The sign can tell us which side is red and blue. In this case, the left hue is
          * subtracted from the right hue; a positive sign means left is red, negative mean right.
          */
+        double buttonDistance;
         if(colorLeft[0] - colorRight[0] > 0)
         {
-            // Press right side if it's blue
             telemetry.log().add("Right is blue");
-            // Go in front of right button
-            driveToPoint(beaconX - observationDistance, beaconY - 65, 0, 0.3);
-            // Move forward to press button
-            driveToPoint(beaconX - 40, beaconY - 65, 0, 0.3);
-            sleep(500);
+            // Left button is -65 mm from center of beacon
+            buttonDistance = -65;
         }
         else
         {
-            // Press left side if it's blue
             telemetry.log().add("Left is blue");
-            // Go in front of left button
-            driveToPoint(beaconX - observationDistance, beaconY + 65, 0, 0.3);
-            // Move forward to press button
-            driveToPoint(beaconX - 40, beaconY + 65, 0, 0.3);
-            sleep(500);
+            // Right button is 65 mm from center of beacon
+            buttonDistance = 65;
         }
 
+        // Line up with button
+        driveToPoint(beaconX - observationDistance, beaconY + buttonDistance, 0, 0.3);
+        // Move forward to press button
+        driveToPoint(beaconX - 40, beaconY + buttonDistance, 0, 0.3);
+        sleep(500); // TODO: Is this needed?
         // Back away from beacon
         driveToPoint(beaconX - observationDistance, beaconY, 0, 0.3);
     }
