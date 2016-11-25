@@ -98,17 +98,38 @@ abstract public class MasterOpMode extends LinearOpMode
         imu.initialize(parameters);
     }
 
-    //TODO fix encoder function to add incremental parts; taking the sin or cos of the current angle is innacurate
-    //will use after first league event
-    /*
-    //keeps track of the robot's location on the field based on Encoders and IMU
+    //TODO test encoder function; likely has errors
+    //keeps track of the robot's location on the field based on Encoders and IMU; make sure to call once each loop
     public Transform2D updateLocationUsingEncoders()
     {
+        //stands for elapsed time
+        double eTime;
+
+        //get time when loop starts
+        double startTime = System.nanoTime()/1000/1000/1000;
+        double finalTime = 0;
+
+        eTime = finalTime - startTime;
+
+        //x and y positions not considering robot rotation
+        double xRawPosition = 0.0;
+        double yRawPosition = 0.0;
+
+        //x and y positions taking into account robot rotation
         double xLocation;
         double yLocation;
 
+        //angles relative to starting angle used to determine our x and y positions
+        double xAngle;
+        double yAngle;
+
+        Transform2D location;
+
         //converted to radians for Math.sin() function
         currentAngle = imu.getAngularOrientation().firstAngle * Math.PI / 180;
+
+        //angle in degrees for return value
+        double currentAngleDegrees = imu.getAngularOrientation().firstAngle;
 
         EncoderFR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
         EncoderFL = driveAssemblies[FRONT_LEFT].motor.getCurrentPosition();
@@ -120,37 +141,55 @@ abstract public class MasterOpMode extends LinearOpMode
         //robotXPos = Math.cos(currentAngle) * (EncoderFL + EncoderFR) * 2 * Math.PI * 0.1016 / (1120 * Math.pow(2, 0.5));
         //robotYPos = Math.sin(currentAngle) * (EncoderFL - EncoderFR) * 2 * Math.PI * 0.1016 / (1120 * Math.pow(2, 0.5));
 
-
+        //not currently in use
         Transform2D motion = drive.getRobotMotionFromEncoders();
 
-        xLocation += eTime*( motion.x*Math.cos(drive.robotLocation.rot/57.3) - motion.y*Math.sin(drive.robotLocation.rot/57.3) );
-        yLocation += eTime*( motion.x*Math.sin(drive.robotLocation.rot/57.3) + motion.y*Math.cos(drive.robotLocation.rot/57.3) );
+        //these are shorthand for the encoder derivative for each motor and will be plugged into our encoder function
+        double FLencDerivative = driveAssemblies[BACK_RIGHT].getLinearEncoderDerivative();
+        double FRencDerivative = driveAssemblies[BACK_RIGHT].getLinearEncoderDerivative();
+        double BLencDerivative = driveAssemblies[BACK_RIGHT].getLinearEncoderDerivative();
+        double BRencDerivative = driveAssemblies[BACK_RIGHT].getLinearEncoderDerivative();
 
-        location = new Transform2D(robotXPos, robotYPos, currentAngle);
 
-        telemetry.addData("X:", robotXPos);
-        telemetry.addData("Y:", robotYPos);
-        telemetry.addData("W:", currentAngle);
+        yAngle = Math.PI / 2 + currentAngle;
+        xAngle = 90 - yAngle;
+
+        //math to calculate x and y positions based on encoder ticks and not accounting for angle
+        xRawPosition += eTime * ((FLencDerivative + FRencDerivative -(BLencDerivative + BRencDerivative)) / (4 * Math.sqrt(2)));
+        yRawPosition += eTime * ((FLencDerivative + BLencDerivative -(FRencDerivative + BRencDerivative)) / (4 * Math.sqrt(2)));
+
+        //final location utilizing angles
+        xLocation = yRawPosition * Math.cos(yAngle) + xRawPosition * Math.cos(xAngle);
+        yLocation = yRawPosition * Math.sin(yAngle) - xRawPosition * Math.sin(xAngle);
+
+        location = new Transform2D(xLocation, yLocation, currentAngleDegrees);
+
+        telemetry.addData("X:", xLocation);
+        telemetry.addData("Y:", yLocation);
+        telemetry.addData("W:", currentAngleDegrees);
         telemetry.update();
+
+        //get time at end of loop
+        finalTime = System.nanoTime()/1000/1000/1000;
 
         return location;
     }
 
     public void navigateUsingEncoders(Transform2D target)
     {
-        double lTime;
-        double iTime = System.nanoTime()/1000/1000/1000;
+        double xTolerance = .010;
+        double yTolerance = .010;
+        double wTolerance = 3.0;
 
         Transform2D newLocation = updateLocationUsingEncoders();
 
-        while (newLocation != target)
+        while ((Math.abs(target.x - drive.robotLocation.x) > xTolerance) || (Math.abs(target.y - drive.robotLocation.y) > yTolerance)|| (Math.abs(target.rot - drive.robotLocation.rot) > wTolerance))
         {
             drive.navigateTo(target);
-        }
 
-        lTime = iTime;
+            newLocation = updateLocationUsingEncoders();
+        }
     }
-    */
 
     //wait a number of milliseconds
     public void pause(int t) throws InterruptedException

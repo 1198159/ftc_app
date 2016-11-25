@@ -14,7 +14,8 @@ public class DriveAssembly
     public DcMotor motor;
     public double gearRatio;   //between motor and  wheel, not gearbox
     public double wheelRadius;
-    public int encoderTicks = 1120;  //CodeReview: make this final so it's a constant
+    //this value is only for andymark 20 motors; should be changed if used for other motors
+    public static final int encoderTicks = 560;
     public double encoderCorrectionFactor = 1.0;//correct for mismatch or reversed gearboxes  //CodeReview: make this final so it's a constant
     private int lastEncoderValue = 0;
     private double lastReadTime = 0;
@@ -53,22 +54,22 @@ public class DriveAssembly
 
 
     //get the average rate of motion for this drive along its tangent in m/s
-    public double getLinearEncoderDifferential()
+    public double getLinearEncoderDerivative()
     {
         double currentTime = System.nanoTime()/1000/1000/1000;
         double timeDiff = currentTime - lastReadTime;
-        int pos  = (int)(motor.getCurrentPosition()*encoderCorrectionFactor);
+        int pos  = (int)(motor.getCurrentPosition() * encoderCorrectionFactor);
         int diff = pos - lastEncoderValue;
         lastEncoderValue = pos;
         lastReadTime = currentTime;
 
-        return pos*gearRatio*wheelRadius*2*Math.PI/encoderTicks / timeDiff;
+        return pos * gearRatio * wheelRadius * 2 * Math.PI / encoderTicks / timeDiff;
     }
 
     //return a vector representing the last motion made by the drive
     public double[] getVectorEncoderDifferential()
     {
-        double length = getLinearEncoderDifferential();
+        double length = getLinearEncoderDerivative();
         double[] v = new double[]{ length * Math.cos(location.rot),
                                    length * Math.sin(location.rot)  };
 
@@ -78,7 +79,7 @@ public class DriveAssembly
     //return the angle the robot has turned due to this drive
     public double getRotationEncoderDifferential()
     {
-        double length = getLinearEncoderDifferential();
+        double length = getLinearEncoderDerivative();
         double radius = location.getPositionVector().magnitude();
         return length/radius/Math.PI*180;
     }

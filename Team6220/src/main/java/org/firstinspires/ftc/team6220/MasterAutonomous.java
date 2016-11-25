@@ -36,7 +36,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         Transform2D TargetLocation = new Transform2D(TargetX, TargetY, TargetAngle);
 
-        while((Math.abs(TargetX - drive.robotLocation.x) > xTolerance) || (Math.abs(TargetY - drive.robotLocation.y) > yTolerance))
+        while((Math.abs(TargetX - drive.robotLocation.x) > xTolerance) || (Math.abs(TargetY - drive.robotLocation.y) > yTolerance) || (Math.abs(TargetAngle - drive.robotLocation.rot) > wTolerance))
         {
             float[] l = vuforiaHelper.getRobotLocation();
             l[0] = l[0]/1000;
