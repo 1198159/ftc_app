@@ -79,11 +79,14 @@ public class AutonomousBlue extends MasterAutonomous
 
     private void pressBeacon(double beaconX, double beaconY) throws InterruptedException
     {
-        double angleToEndOfTape = Math.toDegrees(Math.atan2(beaconY - robotY, beaconX - robotX - 700));
+        // Distance from which we look at the vision target and beacon in mm
+        double observationDistance = 300;
+
+        double angleToEndOfTape = Math.toDegrees(Math.atan2(beaconY - robotY, beaconX - observationDistance - robotX));
 
         // Go to the end of the tape in front of the beacon
         turnToAngle(angleToEndOfTape);
-        driveToPoint(beaconX - 700, beaconY, angleToEndOfTape);
+        driveToPoint(beaconX - observationDistance, beaconY, angleToEndOfTape);
         turnToAngle(0);
 
         // Give Vuforia a chance to start tracking the target
@@ -93,7 +96,7 @@ public class AutonomousBlue extends MasterAutonomous
         lookForVisionTarget();
 
         // Reposition after tracking target
-        driveToPoint(beaconX - 700, beaconY, 0);
+        driveToPoint(beaconX - observationDistance, beaconY, 0);
 
         // Get colors of both sides of beacon. Parameters are in mm from center of vision target
         // Sample location is lowest inside corner of beacon's colored regions
@@ -119,28 +122,26 @@ public class AutonomousBlue extends MasterAutonomous
          * number. The sign can tell us which side is red and blue. In this case, the left hue is
          * subtracted from the right hue; a positive sign means left is red, negative mean right.
          */
+        double buttonDistance;
         if(colorLeft[0] - colorRight[0] > 0)
         {
-            // Press right side if it's blue
             telemetry.log().add("Right is blue");
-            // Go in front of right button
-            driveToPoint(beaconX - 700, beaconY - 65, 0, 0.3);
-            // Move forward to press button
-            driveToPoint(beaconX - 40, beaconY - 65, 0, 0.3);
-            sleep(500);
+            // Left button is -65 mm from center of beacon
+            buttonDistance = -65;
         }
         else
         {
-            // Press left side if it's blue
             telemetry.log().add("Left is blue");
-            // Go in front of left button
-            driveToPoint(beaconX - 700, beaconY + 65, 0, 0.3);
-            // Move forward to press button
-            driveToPoint(beaconX - 40, beaconY + 65, 0, 0.3);
-            sleep(500);
+            // Right button is 65 mm from center of beacon
+            buttonDistance = 65;
         }
 
+        // Line up with button
+        driveToPoint(beaconX - observationDistance, beaconY + buttonDistance, 0, 0.3);
+        // Move forward to press button
+        driveToPoint(beaconX - 40, beaconY + buttonDistance, 0, 0.3);
+        sleep(500); // TODO: Is this needed?
         // Back away from beacon
-        driveToPoint(beaconX - 700, beaconY, 0, 0.3);
+        driveToPoint(beaconX - observationDistance, beaconY, 0, 0.3);
     }
 }

@@ -156,10 +156,11 @@ public class TestVuforia extends MasterOpMode
         VuforiaNav.startTracking();
         sleep(startDelay);
 
+        int beaconColor = 0;
         while (opModeIsActive()) {
 
             VuforiaNav.getLocation();
-            int beaconColor = VuforiaNav.GetBeaconColor();
+            beaconColor = VuforiaNav.GetBeaconColor();
             telemetry.addData("tracking ", VuforiaNav.isVisible() ? "Visible" : "Not Visible");
             if (VuforiaNav.lastLocation != null)
             {
@@ -208,7 +209,7 @@ public class TestVuforia extends MasterOpMode
         //   move forwards to press button
 
         // shift left or right before pushing button
-        /*
+
         if (beaconColor == 0)   // blue
         {
             if (isRedTeam == false)     // blue team
@@ -232,7 +233,7 @@ public class TestVuforia extends MasterOpMode
             }
         }
         forwards(25-9, 0.3, 3); // push the button
-*/
+
 
         //moveAngle(20, 45, .8, 3); // forward Inches, angle, speed, timeout
         //moveAngle(20, 90, .8, 3);
