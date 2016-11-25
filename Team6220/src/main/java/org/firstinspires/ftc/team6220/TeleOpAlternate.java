@@ -29,12 +29,20 @@ public class TeleOpAlternate extends MasterTeleOp
 
         waitForStart();
 
+        double lTime = 0;
+        DriverInput driver1 = new DriverInput(gamepad1);
+        DriverInput driver2 = new DriverInput(gamepad2);
         while (opModeIsActive())
         {
-            double x = -gamepad1.left_stick_x;
-            double y = gamepad1.left_stick_y;
-            mag = Math.pow(Math.pow(x,2)+Math.pow(y,2),0.5);
-            ang = Math.atan2(y, x);
+            double iTime = System.nanoTime()/1000/1000/1000;
+            double eTime = iTime-lTime;
+
+
+            driver1.update(eTime);
+            driver2.update(eTime);
+
+            mag = driver1.getLeftStickMagnitude();
+            ang = driver1.getLeftStickAngle();
             double rAng = imu.getAngularOrientation().firstAngle/57.3;  //CodeReview: magic numbers == bad. Please name this constant something descriptive
 
             newX = Math.cos(ang+rAng)*mag;
@@ -44,11 +52,11 @@ public class TeleOpAlternate extends MasterTeleOp
                             gamepad1.right_stick_x/2);    //rotation power; reversed
 
 
-            if (gamepad2.x)
+            if (driver2.isButtonPressed("A"))
             {
                 CollectorMotor.setPower(1.0);
             }
-            else if (gamepad2.b)
+            else if (driver2.isButtonPressed("B"))
             {
                 CollectorMotor.setPower(-1.0);
             }
@@ -57,6 +65,9 @@ public class TeleOpAlternate extends MasterTeleOp
                 CollectorMotor.setPower(0.0);
             }
 
+            driver1.roll();
+            driver2.roll();
+            lTime = iTime;
             idle();
         }
     }
