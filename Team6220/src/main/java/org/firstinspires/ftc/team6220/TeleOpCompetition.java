@@ -53,6 +53,13 @@ public class TeleOpCompetition extends MasterTeleOp
             lastBtn[2] = gamepad2.x;
             lastBtn[3] = gamepad2.y;
 
+            /*
+            if(gamepad2.left_stick_x > 0)
+            {
+                double[] m = drive.navigateTo();
+            }
+            */
+
             idle();
         }
     }
