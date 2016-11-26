@@ -215,15 +215,6 @@ public class MasterAutonomous extends MasterOpMode
 
         // START OF AUTONOMOUS
 // TODO: test new functions!!
-
-        /*
-        forwards(0, 10, 0.5, 4);
-        forwards(10, 0, 0.5, 4);
-        forwards(-10, 0, 0.5, 4);
-        forwards(0, -10, 0.5, 4);
-sleep(30000);
-*/
-
         // go towards target
         forwards(startDist, 0, 0.5, 3);  // inches, speed, timeout
         sleep(100);
@@ -243,16 +234,13 @@ sleep(30000);
         sleep(100);
         pivotVuforia(targetAngle, 0.5);
 
-
         do
         {
             VuforiaNav.getLocation(); // update target location and angle
         }
         while (VuforiaNav.lastLocation == null);
 
-
-        // detect beacon color of left side: 0 - blue, 1 - red
-        // TODO: handle failure of getBeaconColor
+        // detect beacon color of left side: 0 is blue, 1 is red
         int beaconColor = VuforiaNav.GetBeaconColor();
         telemetry.log().add(String.format("LeftSide: %f, RightSide: %f", VuforiaNav.leftColorHSV[0], VuforiaNav.rightColorHSV[0]));
         telemetry.log().add(String.format("Returned Color: %d", beaconColor));
@@ -282,14 +270,86 @@ sleep(30000);
             }
             else    // blue team
             {
-                //moveAngle(10, 90, 0.5, 3);   // no shift (left side)
+                forwards(0, 2, 0.25, 4);   // no shift (left side)
             }
         }
         else if (beaconColor == 1)  // if left side beacon is red
         {
             if (isRedTeam)     // red team
             {
-                //moveAngle(10, 90, 0.5, 3);   // no shift (left side)
+                forwards(0, 2, 0.25, 4);   // no shift (left side)
+            }
+            else    // blue team
+            {
+                forwards(0, 3.5, 0.25, 3);   // shift right
+                sleep(100);
+            }
+        }
+        else
+        {
+            forwards(-5, 0, 0.5, 3);
+        }
+
+        forwards(16, 0, 0.25, 3); // push the button!!
+        sleep(100);
+
+        // back up and align one again
+        forwards(-5, 0, 0.3, 3);
+        pivotVuforia(targetAngle, 0.3);
+
+        // shift to new target
+        if (beaconColor == 0) // if left side blue
+        {
+            if (isRedTeam) // move shorter
+            {
+                forwards(0, 43.5, 0.5, 4);
+            }
+            else // move longer
+            {
+                forwards(0, 51, 0.5, 4);
+            }
+        }
+        else if (beaconColor == 1) // if left side red
+        {
+            if (isRedTeam) // move longer
+            {
+                forwards(0, 51, 0.5, 4);
+            }
+            else // move shorter
+            {
+                forwards(0, 43.5, 0.5, 4);
+            }
+        }
+
+        // align on new target
+        alignVuforia(0.4, 700, 2);
+        pivotVuforia(targetAngle, 0.5);
+
+        do
+        {
+            VuforiaNav.getLocation(); // update target location and angle
+        }
+        while (VuforiaNav.lastLocation == null);
+
+        // detect beacon color of left side: 0 is blue, 1 is red
+        beaconColor = VuforiaNav.GetBeaconColor();
+
+        if (beaconColor == 0)   // if left side beacon is blue
+        {
+            if (isRedTeam)     // red team
+            {
+                forwards(0, 3.5, 0.25, 3);   // shift right
+            }
+            else    // blue team
+            {
+                forwards(0, 2, 0.25, 4);   // no shift (left side)
+            }
+        }
+        else if (beaconColor == 1)  // if left side beacon is red
+        {
+            if (isRedTeam)     // red team
+            {
+                forwards(0, 2, 0.25, 4);   // no shift (left side)
             }
             else    // blue team
             {
@@ -304,14 +364,7 @@ sleep(30000);
 
         forwards(16, 0, 0.25, 3); // push the button
         sleep(100);
-        //forwards(-5, 0, 0.3, 3);
-        //sleep(200);
-        //forwards(6.5, 0, 0.3, 3);
-        //sleep(200);
-        forwards(-10, 0, 0.3, 3);
-
-
-
+        forwards(-10, 0, 0.5, 3);
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
