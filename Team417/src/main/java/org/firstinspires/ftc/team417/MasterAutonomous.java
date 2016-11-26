@@ -102,80 +102,94 @@ public class MasterAutonomous extends MasterOpMode
                 isPosOne = false;
             }
 
-            //CodeReview: it would be a good idea to have some indication that these choices were accepted (team, start position),
-            //            e.g. a telemetry message or an LED on the robot showing the current state.
-
-
-            //CodeReview: move the following code outside of this while loop.
-            //            This code is executing every loop even if your choice hasn't changed.
-            //            The only thing you really need here is the telemetry, and you only need to output that when
-            //            the driver makes a choice (so you can do it in the keyhandling above).
-            //            The other operations are just wasting cycles.
-
-            if (isRedTeam) // if team RED
+            if (isRedTeam)
             {
                 if (isPosOne)
                 {
-                    // OPTION RED ONE (TOOLS)
-                    startDelay = 2000;
-                    pivotAngle = 60; // pivot this amount before acquiring target
-                    targetAngle = 0; // Vuforia angle
-                    startDist = 80;
-                    targetIndex = 1;
-                    targetPos[0] = 2743.2f;
-                    targetPos[1] = mmFTCFieldWidth;
-                    telemetry.addData("Team: ", "Red 1"); // display what team we're on after choosing with the buttons
+                    telemetry.addData("Team: ", "Red 1");
                 }
                 else
                 {
-                    // OPTION RED TWO (GEARS)
-                    startDelay = 0;
-                    pivotAngle = 60; // pivot this amount before acquiring target
-                    targetAngle = 0; // Vuforia angle
-                    startDist = 50;
-                    targetIndex = 3;
-                    targetPos[0] = 1524;
-                    targetPos[1] = mmFTCFieldWidth;
-                    telemetry.addData("Team: ", "Red 2"); // display what team we're on after choosing with the buttons
+                    telemetry.addData("Team: ", "Red 2");
                 }
-                targetDimY = 0; // x
-                targetDimY = 1;
-
             }
-            else // if team BLUE
+            else
             {
                 if (isPosOne)
                 {
-                    // OPTION BLUE ONE (LEGOS)
-                    startDelay = 2000;
-                    pivotAngle = -60; // recalc pivot?? also for red one??
-                    targetAngle = -90;
-                    startDist = 80;
-                    targetIndex = 2;
-                    targetPos[0] = mmFTCFieldWidth;
-                    targetPos[1] = 2743.2f;
                     telemetry.addData("Team: ", "Blue 1");
                 }
                 else
                 {
-                    // OPTION BLUE TWO (WHEELS)
-                    startDelay = 0;
-                    pivotAngle = -60;
-                    targetAngle = -90;
-                    startDist = 50;
-                    targetIndex = 0;
-                    targetPos[0] = mmFTCFieldWidth;
-                    targetPos[1] = 1524;
                     telemetry.addData("Team: ", "Blue 2");
                 }
-                targetDimX = 1; // y
-                targetDimY = 0;
             }
 
             telemetry.update();
             idle();
         }
         telemetry.update();
+
+        if (isRedTeam) // if team RED
+        {
+            if (isPosOne)
+            {
+                // OPTION RED ONE (TOOLS)
+                startDelay = 2000;
+                pivotAngle = 60; // pivot this amount before acquiring target
+                targetAngle = 0; // Vuforia angle
+                startDist = 80;
+                targetIndex = 1;
+                targetPos[0] = 2743.2f;
+                targetPos[1] = mmFTCFieldWidth;
+                //telemetry.addData("Team: ", "Red 1"); // display what team we're on after choosing with the buttons
+            }
+            else
+            {
+                // OPTION RED TWO (GEARS)
+                startDelay = 0;
+                pivotAngle = 60; // pivot this amount before acquiring target
+                targetAngle = 0; // Vuforia angle
+                startDist = 50;
+                targetIndex = 3;
+                targetPos[0] = 1524;
+                targetPos[1] = mmFTCFieldWidth;
+                //telemetry.addData("Team: ", "Red 2"); // display what team we're on after choosing with the buttons
+            }
+            targetDimY = 0; // x
+            targetDimY = 1;
+            telemetry.update();
+
+        }
+        else // if team BLUE
+        {
+            if (isPosOne)
+            {
+                // OPTION BLUE ONE (LEGOS)
+                startDelay = 2000;
+                pivotAngle = -60; // recalc pivot?? also for red one??
+                targetAngle = -90;
+                startDist = 80;
+                targetIndex = 2;
+                targetPos[0] = mmFTCFieldWidth;
+                targetPos[1] = 2743.2f;
+                //telemetry.addData("Team: ", "Blue 1");
+            }
+            else
+            {
+                // OPTION BLUE TWO (WHEELS)
+                startDelay = 0;
+                pivotAngle = -60;
+                targetAngle = -90;
+                startDist = 50;
+                targetIndex = 0;
+                targetPos[0] = mmFTCFieldWidth;
+                targetPos[1] = 1524;
+                //telemetry.addData("Team: ", "Blue 2");
+            }
+            targetDimX = 1; // y
+            targetDimY = 0;
+        }
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -202,23 +216,32 @@ public class MasterAutonomous extends MasterOpMode
         // START OF AUTONOMOUS
 // TODO: test new functions!!
 
+        /*
+        forwards(0, 10, 0.5, 4);
+        forwards(10, 0, 0.5, 4);
+        forwards(-10, 0, 0.5, 4);
+        forwards(0, -10, 0.5, 4);
+sleep(30000);
+*/
+
         // go towards target
-        forwards(startDist, 0.5, 3);  // inches, speed, timeout
-        sleep(500);
+        forwards(startDist, 0, 0.5, 3);  // inches, speed, timeout
+        sleep(100);
 
         // pivot to face target
         pivot(pivotAngle, 0.7);
-        sleep(500);
+        sleep(100);
 
         // align sideways with image
         pivotVuforia(targetAngle, 0.5);
-        sleep(500);
+        sleep(100);
         alignVuforia(0.5, 800, 3);   // speed, timeout
-        sleep(500);
+        sleep(100);
         pivotVuforia(targetAngle, 0.5);
-        sleep(500);
+        sleep(100);
         alignVuforia(0.5, 700, 3);   // speed, timeout
-        sleep(500);
+        sleep(100);
+        pivotVuforia(targetAngle, 0.5);
 
 
         do
@@ -232,6 +255,18 @@ public class MasterAutonomous extends MasterOpMode
         // TODO: handle failure of getBeaconColor
         int beaconColor = VuforiaNav.GetBeaconColor();
         telemetry.log().add(String.format("LeftSide: %f, RightSide: %f", VuforiaNav.leftColorHSV[0], VuforiaNav.rightColorHSV[0]));
+        telemetry.log().add(String.format("Returned Color: %d", beaconColor));
+        if (isRedTeam)
+        {
+            telemetry.log().add(String.format("team red"));
+        }
+        else
+        {
+            telemetry.log().add(String.format("team blue"));
+        }
+        telemetry.update();
+        //sleep(10000);
+
 
         // TODO:  Decide what to do after detecting beacon color
         //
@@ -239,42 +274,42 @@ public class MasterAutonomous extends MasterOpMode
         //   move forwards to press button
 
         // shift left or right before pushing button
-        if (beaconColor == 0)   // blue
+        if (beaconColor == 0)   // if left side beacon is blue
         {
-            if (isRedTeam == false)     // blue team
+            if (isRedTeam)     // red team
+            {
+                forwards(0, 3.5, 0.25, 3);   // shift right
+            }
+            else    // blue team
             {
                 //moveAngle(10, 90, 0.5, 3);   // no shift (left side)
-            }
-            else    // red team
-            {
-                moveAngle(5.25, -90, 0.5, 3);   // shift right
             }
         }
-        else if (beaconColor == 1)  // if beacon is red
+        else if (beaconColor == 1)  // if left side beacon is red
         {
-            if (isRedTeam == false)     // blue team
-            {
-                moveAngle(5.25, -90, 0.5, 3);   // shift right
-            }
-            else    // red team
+            if (isRedTeam)     // red team
             {
                 //moveAngle(10, 90, 0.5, 3);   // no shift (left side)
+            }
+            else    // blue team
+            {
+                forwards(0, 3.5, 0.25, 3);   // shift right
+                sleep(100);
             }
         }
         else
         {
-            forwards(-5, 0.5, 3);
+            forwards(-5, 0, 0.5, 3);
         }
-        sleep(30000);
-        /*
-        forwards(23, 0.3, 3); // push the button
-        sleep(200);
-        forwards(-5, 0.3, 3);
-        sleep(200);
-        forwards(6.5, 0.3, 3);
-        sleep(200);
-        forwards(-10, 0.3, 3);
-        */
+
+        forwards(16, 0, 0.25, 3); // push the button
+        sleep(100);
+        //forwards(-5, 0, 0.3, 3);
+        //sleep(200);
+        //forwards(6.5, 0, 0.3, 3);
+        //sleep(200);
+        forwards(-10, 0, 0.3, 3);
+
 
 
 
@@ -286,12 +321,18 @@ public class MasterAutonomous extends MasterOpMode
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(5000);
+        sleep(10000);
     }
 
     public void initializeRobot()
     {
         super.initializeHardware(); // call master op mode's init method
+
+        // zero the motor controllers before running, don't know if motors start out at zero
+        motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // run to position mode
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -324,12 +365,27 @@ public class MasterAutonomous extends MasterOpMode
     }
 
     // drive forwards/backwards function
-    public void forwards(double forwardInches, double speed, double timeout) throws InterruptedException
+    public void forwards(double forwardInches, double horiInches, double speed, double timeout) throws InterruptedException
     {
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         int newTargetFL;
         int newTargetBL;
         int newTargetFR;
         int newTargetBR;
+
+        int errorFL;
+        int errorFR;
+        int errorBL;
+        int errorBR;
+
+        double speedFL;
+        double speedFR;
+        double speedBL;
+        double speedBR;
 
 
         //CodeReview: when multiplying (COUNTS_PER_INCH * forwardInches), you are casting it to an (int) which will truncate its fractional value.
@@ -337,10 +393,10 @@ public class MasterAutonomous extends MasterOpMode
         //            The way to do that is to use (int) Math.round(COUNTS_PER_INCH * forwardInches);
         //            Note that the (int) cast is still needed because Math.round returns a long, but you're safe to do this because
         //            you won't be using bigger numbers than an int can hold.
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches);
-        newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches);
-        newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches);
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches);
+        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) + (int) (COUNTS_PER_INCH * horiInches * 1.414);
+        newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) - (int) (COUNTS_PER_INCH * horiInches * 1.414);
+        newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) - (int) (COUNTS_PER_INCH * horiInches * 1.414);
+        newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) + (int) (COUNTS_PER_INCH * horiInches * 1.414);
 
         motorFrontLeft.setTargetPosition(newTargetFL);
         motorFrontRight.setTargetPosition(newTargetFR);
@@ -348,15 +404,58 @@ public class MasterAutonomous extends MasterOpMode
         motorBackRight.setTargetPosition(newTargetBR);
 
         runtime.reset(); //CodeReview: add a comment to this line because it's not self-evident what this call is doing for you.
-        motorFrontLeft.setPower(Math.abs(speed));
-        motorFrontRight.setPower(Math.abs(speed));
-        motorBackLeft.setPower(Math.abs(speed));
-        motorBackRight.setPower(Math.abs(speed));
+
 
         // wait until the motors reach the position
+        do
+        {
+            errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
+            speedFL = Math.abs(errorFL / 150);
+            speedFL = Range.clip(speedFL, 0.2, speed);
+            speedFL = speedFL * Math.signum(errorFL);
+
+            errorFR = newTargetFR - motorFrontRight.getCurrentPosition();
+            speedFR = Math.abs(errorFR / 150);
+            speedFR = Range.clip(speedFR, 0.2, speed);
+            speedFR = speedFR * Math.signum(errorFR);
+
+            errorBL = newTargetBL - motorBackLeft.getCurrentPosition();
+            speedBL = Math.abs(errorBL / 150);
+            speedBL = Range.clip(speedBL, 0.2, speed);
+            speedBL = speedBL * Math.signum(errorBL);
+
+            errorBR = newTargetBR - motorBackRight.getCurrentPosition();
+            speedBR = Math.abs(errorBR / 150);
+            speedBR = Range.clip(speedBR, 0.2, speed);
+            speedBR = speedBR * Math.signum(errorBR);
+
+            if (Math.abs(errorFL) < 10)
+            {
+                speedFL = 0;
+            }
+            if (Math.abs(errorFR) < 10)
+            {
+                speedFR = 0;
+            }
+            if (Math.abs(errorBL) < 10)
+            {
+                speedBL = 0;
+            }
+            if (Math.abs(errorBR) < 10)
+            {
+                speedBR = 0;
+            }
+
+            motorFrontLeft.setPower(speedFL);
+            motorFrontRight.setPower(speedFR);
+            motorBackLeft.setPower(speedBL);
+            motorBackRight.setPower(speedBR);
+
+            idle();
+        }
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
-                (motorFrontLeft.isBusy() && motorFrontRight.isBusy() && motorBackLeft.isBusy() && motorBackRight.isBusy()));
+                (Math.abs(errorFL) > 10 && Math.abs(errorFR) > 10 && Math.abs(errorBL) > 10 && Math.abs(errorBR) > 10));
 
         // stop the motors
         motorFrontLeft.setPower(0);
@@ -395,7 +494,7 @@ public class MasterAutonomous extends MasterOpMode
             curTurnAngle = adjustAngles(curTurnAngle);
             error =  targetAngle - curTurnAngle;
             pivotSpeed = speed * Math.abs(error) / 100;
-            pivotSpeed = Range.clip(pivotSpeed, 0.18, 0.7); // limit abs speed
+            pivotSpeed = Range.clip(pivotSpeed, 0.2, 0.7); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
 
 
@@ -418,6 +517,7 @@ public class MasterAutonomous extends MasterOpMode
             */
 
             telemetry.log().add(String.format("CurAngle: %f, error: %f", curTurnAngle, error));
+            idle();
 
         } while (opModeIsActive() && (Math.abs(error) > 0.8));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
 
@@ -433,50 +533,8 @@ public class MasterAutonomous extends MasterOpMode
         motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void centerImage (double speed, float timeout) // pivot in little steps and check after each pivot to see if error = 0
-    {
-        double error;
-        double incDst;
-        int newTargetFL;
-        int newTargetFR;
-        int newTargetBL;
-        int newTargetBR;
-
-        float x = VuforiaNav.GetImageCenter(targetIndex);
-
-        motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        do
-        {
-            x = VuforiaNav.GetImageCenter(targetIndex);
-            error = 360 - x;      // center of camera frame 1280x720 resolution
-            incDst = Math.signum(error) * 2;    // pivot dist
-            // ccw rotation for pos pivot angle
-            newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * incDst);
-            newTargetFR = motorFrontRight.getCurrentPosition() - (int) (COUNTS_PER_INCH * incDst);
-            newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * incDst);
-            newTargetBR = motorBackRight.getCurrentPosition() - (int) (COUNTS_PER_INCH * incDst);
-
-            motorFrontLeft.setTargetPosition(newTargetFL);
-            motorFrontRight.setTargetPosition(newTargetFR);
-            motorBackLeft.setTargetPosition(newTargetBL);
-            motorBackRight.setTargetPosition(newTargetBR);
-
-            runtime.reset();
-            motorFrontLeft.setPower(Math.abs(speed));
-            motorFrontRight.setPower(Math.abs(speed));
-            motorBackLeft.setPower(Math.abs(speed));
-            motorBackRight.setPower(Math.abs(speed));
-
-        }while (opModeIsActive() &&  // if there is time left and error less than 100 pixels
-            (runtime.seconds() < timeout) &&
-            (Math.abs(error) < 100));
-    }
-
     // move the robot hora. sideways to align with image target
+    // look at double speed
     public void alignVuforia (double speed, double distAway, double timeout)
     {
         float error;
@@ -546,7 +604,10 @@ public class MasterAutonomous extends MasterOpMode
             // wait until the motors reach the position
             while (opModeIsActive() &&
                     (runtime.seconds() < timeout) &&
-                    (motorFrontLeft.isBusy() || motorFrontRight.isBusy() || motorBackLeft.isBusy() || motorBackRight.isBusy()));
+                    (motorFrontLeft.isBusy() || motorFrontRight.isBusy() || motorBackLeft.isBusy() || motorBackRight.isBusy()))
+            {
+                idle();
+            };
 
             // stop the motors
             motorFrontLeft.setPower(0);
@@ -624,7 +685,10 @@ public class MasterAutonomous extends MasterOpMode
         // wait until the motors reach the position
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
-                (motorFrontLeft.isBusy() || motorFrontRight.isBusy() || motorBackLeft.isBusy() || motorBackRight.isBusy()));
+                (motorFrontLeft.isBusy() || motorFrontRight.isBusy() || motorBackLeft.isBusy() || motorBackRight.isBusy()))
+        {
+            idle();
+        };
 
         // stop the motors
         motorFrontLeft.setPower(0);
@@ -671,7 +735,7 @@ public class MasterAutonomous extends MasterOpMode
             curTurnAngle = adjustAngles(curTurnAngle);
             error =  turnAngle - curTurnAngle;
             pivotSpeed = speed * Math.abs(error) / 100;
-            pivotSpeed = Range.clip(pivotSpeed, 0.18, 0.7); // limit abs speed
+            pivotSpeed = Range.clip(pivotSpeed, 0.2, 0.7); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
 
 
@@ -694,6 +758,7 @@ public class MasterAutonomous extends MasterOpMode
             }
 
             telemetry.log().add(String.format("StartAngle: %f, CurAngle: %f, error: %f", startAngle, curTurnAngle, error));
+            idle();
 
         } while (opModeIsActive() && (Math.abs(error) > 0.3 && Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
 
@@ -795,14 +860,14 @@ public class MasterAutonomous extends MasterOpMode
 
     public void PushCapBall() throws InterruptedException
     {
-        forwards(45, 0.7, 3);
+        forwards(45, 0, 0.7, 3);
         sleep(500);
-        forwards(5, 0.7, 3);
+        forwards(5, 0, 0.7, 3);
     }
 
     public void parkCornerVortex() throws InterruptedException
     {
-        forwards(30, 0.7, 3);
+        forwards(30, 0, 0.7, 3);
         if (isRedTeam)
         {
             moveAngle(20, -90, 0.8, 3); // horizontal left (20 inches)
