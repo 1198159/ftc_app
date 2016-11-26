@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -127,13 +128,16 @@ public class MasterTeleOp extends MasterOpMode
         double jy2;
 
         jx2 = modJoyStickInput(rx);
+        jx2 = Range.clip(jx2, -1, 1);
         jy2 = modJoyStickInput(ry);
+        jy2 = Range.clip(jy2, -1, 1);
         turn = modJoyStickInput(lx);
+        turn = Range.clip(turn, -1, 1);
 
-        motorFrontLeft.setPower(jx2 + jy2 + turn/2);
-        motorFrontRight.setPower(-jx2 + jy2 - turn/2);
-        motorBackLeft.setPower(-jx2 + jy2 + turn/2);
-        motorBackRight.setPower(jx2 + jy2 - turn/2);
+        motorFrontLeft.setPower(jx2 + jy2 + turn * 0.6);
+        motorFrontRight.setPower(-jx2 + jy2 - turn * 0.6);
+        motorBackLeft.setPower(-jx2 + jy2 + turn *0.6);
+        motorBackRight.setPower(jx2 + jy2 - turn * 0.6);
         // lx is defined as game pad input, then turn gets value from function "modJoyStickInput"
         // turn used in final equation for each motor
     }

@@ -232,20 +232,15 @@ public class VuforiaNavigation {
                     image = frame.getImage(j);
                     imageFormat = image.getFormat();
 
-                    if (imageFormat == PIXEL_FORMAT.RGB888) {
-                        imageRGB888 = image;
-                        //telemetry.log().add("got image888");
-                        break;
-                    } else if (imageFormat == PIXEL_FORMAT.RGB565) {
-                        imageRGB565 = image;
+                    if (imageFormat == PIXEL_FORMAT.RGB565)
+                    {
                         //telemetry.log().add("got image565");
                         break;
                     } // if
                 } // for
 
                 pose = listeners[i].getRawPose();
-                if (pose != null)
-                {
+                if (pose != null) {
                     Matrix34F rawPose = new Matrix34F();
                     float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
                     rawPose.setData(poseData);
@@ -255,32 +250,28 @@ public class VuforiaNavigation {
                     Vec2F upperRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(127, 92, 0));
                     Vec2F beaconLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(-127 + 85, 92 + 90, 0));
                     Vec2F beaconRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(127 - 85, 92 + 90, 0));
-            /*telemetry.log().add(String.format("UpperLeft X: %f, Y: %f", upperLeft.getData()[0], upperLeft.getData()[1]));
-            telemetry.log().add(String.format("UpperRight X: %f, Y: %f", upperRight.getData()[0], upperRight.getData()[1]));
-            telemetry.log().add(String.format("BeaconLeft X: %f, Y: %f", beaconLeft.getData()[0], beaconLeft.getData()[1]));
-            telemetry.log().add(String.format("BeaconRight X: %f, Y: %f", beaconRight.getData()[0], beaconRight.getData()[1]));
-            */
 
                     GetImageColor(image, beaconLeft, leftColorHSV);
                     GetImageColor(image, beaconRight, rightColorHSV);  // for now, we're just looking at the left side
-                    //telemetry.log().add(String.format("LeftSideHue: %f RightSideHue: %f", leftColorHSV[0], rightColorHSV[0]));
                     frame.close();  // close frame to free memory
+
+                    // adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
+                    float colorLeft = (leftColorHSV[0] < 45) ? leftColorHSV[0] + 300 : leftColorHSV[0];
+                    float colorRight = (rightColorHSV[0] < 45) ? rightColorHSV[0] + 300 : rightColorHSV[0];
+
+                    float deltaColorHSV = colorLeft - colorRight;
+                    if (deltaColorHSV < 0) // if left color is negative, then left side is blue
+                    {
+                        return 0; // BLUE
+                    } else {
+                        return 1; // RED
+                    }
+
+                    //telemetry.log().add(String.format("LeftSideHue: %f RightSideHue: %f", leftColorHSV[0], rightColorHSV[0]));
                 }
             }
-            else // if not visible
-            {
-                return 2; // return illegal color value
-            }
         }
-        float deltaColorHSV = leftColorHSV[0] - rightColorHSV[0];
-        if (deltaColorHSV < 0) // if left color is negative, then left side is blue
-        {
-            return 0; // BLUE
-        }
-        else
-        {
-            return 1; // RED
-        }
+        return 2; // return illegal color value
     }
 
 

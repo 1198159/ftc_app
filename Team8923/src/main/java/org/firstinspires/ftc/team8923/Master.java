@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team8923;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
@@ -169,5 +170,14 @@ abstract class Master extends LinearOpMode
     double calculateDistance(double deltaX, double deltaY)
     {
         return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    }
+
+    // Used to see if any buttons on the specified gamepad are currently pressed
+    boolean buttonsAreReleased(Gamepad pad)
+    {
+        return !(pad.a || pad.b || pad.x || pad.y || pad.left_bumper || pad.right_bumper
+                || pad.dpad_up || pad.dpad_down || pad.dpad_left || pad.dpad_right
+                || pad.left_stick_button || pad.right_stick_button
+                || pad.start || pad.back || pad.guide);
     }
 }
