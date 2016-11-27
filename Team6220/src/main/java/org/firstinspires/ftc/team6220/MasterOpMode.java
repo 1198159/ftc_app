@@ -33,7 +33,7 @@ abstract public class MasterOpMode extends LinearOpMode
     double robotYPos = 0;
 
     //TODO deal with angles at all starting positions
-    double currentAngle = 0;
+    double currentAngle = 0.0;
 
     BNO055IMU imu;
 

@@ -19,7 +19,7 @@ public class AutoBlue2 extends MasterAutonomous
         //this is used to add absolute orientation to each autonomous program
         headingOffset = 90.0;
 
-        drive.robotLocation = new Transform2D(2.395, 0.210, 0.0 + headingOffset);
+        drive.robotLocation = new Transform2D(2.395, 0.210, 90.0);
 
         waitForStart();
 
@@ -29,32 +29,32 @@ public class AutoBlue2 extends MasterAutonomous
         //vuforia is not reliably available yet, so we must use encoders at first
         //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
 
-        drive.moveRobot(0.5, 1.0, -15.0);
+        drive.moveRobot(0.5, 1.0, -0.0);
 
         pause(1400);
 
         stopAllDriveMotors();
 
-        turnTo(0.0 - headingOffset);
+        turnTo(0.0);
 
         stopAllDriveMotors();
 
         pause(1000);
 
-        vuforiaDriveToPosition(3.428, 1.500, 90.0 - headingOffset);
+        vuforiaDriveToPosition(3.428, 1.500, 0.0);
 
         pause(1000);
 
         ActivateBeacon(1.500);
 
-        vuforiaDriveToPosition(3.428, 2.700, 90.0 - headingOffset);
+        vuforiaDriveToPosition(3.428, 2.700, 0.0);
 
         ActivateBeacon(2.700);
 
-        turnTo(45 - headingOffset);
+        turnTo(45);
 
         //@TODO incorrect for blue side
-        vuforiaDriveToPosition(1.880, 2.313, 45 - headingOffset);
+        vuforiaDriveToPosition(1.880, 2.313, 45);
 
         /*
         just in case the code above does not work
@@ -94,9 +94,9 @@ public class AutoBlue2 extends MasterAutonomous
 
         if(Color.blue(colorRightSide) < Color.blue(colorLeftSide))
         {
-            vuforiaDriveToPosition(3.000, yPosition + 0.110, 90.0 - headingOffset);
+            vuforiaDriveToPosition(3.000, yPosition + 0.110, 0.0);
 
-            turnTo(-90.0 - headingOffset);
+            turnTo(-180.0);
 
             drive.moveRobot(0.0, -0.2, 0.0);
 
@@ -113,16 +113,16 @@ public class AutoBlue2 extends MasterAutonomous
 
             stopAllDriveMotors();
 
-            turnTo(90.0 - headingOffset);
+            turnTo(0.0);
 
-            vuforiaDriveToPosition(2.600, yPosition, 90.0 - headingOffset);
+            vuforiaDriveToPosition(2.600, yPosition, 0.0);
 
         }
         else
         {
-            vuforiaDriveToPosition(3.000, yPosition - 0.110, 90.0 - headingOffset);
+            vuforiaDriveToPosition(3.000, yPosition - 0.110, 0.0);
 
-            turnTo(-90.0 - headingOffset);
+            turnTo(-180.0);
 
             drive.moveRobot(0.0, -0.2, 0.0);
 
@@ -139,9 +139,9 @@ public class AutoBlue2 extends MasterAutonomous
 
             stopAllDriveMotors();
 
-            turnTo(90.0 - headingOffset);
+            turnTo(0.0);
 
-            vuforiaDriveToPosition(2.600, yPosition, 90.0 - headingOffset);
+            vuforiaDriveToPosition(2.600, yPosition, 0.0);
         }
 
     }

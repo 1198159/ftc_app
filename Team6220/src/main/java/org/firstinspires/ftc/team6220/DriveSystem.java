@@ -47,7 +47,7 @@ public class DriveSystem
         l[1] = l[1]/1000;
         //update location
         robotLocation.SetPositionFromFloatArray(l);
-*/
+        */
         //update error terms
         LocationControlFilter[0].roll(target.x - robotLocation.x);
         LocationControlFilter[1].roll(target.y - robotLocation.y);
@@ -56,6 +56,7 @@ public class DriveSystem
         double yRate = LocationControlFilter[1].getFilteredValue();
         double wRate = target.rot - robotLocation.rot;       //RotationControlFilter.getFilteredValue();
 
+        //makes sure that the robot does not move too slowly when nearing its target
         if(Math.abs(xRate) > 1)
         {
             xRate = Math.signum(xRate);
