@@ -4,6 +4,8 @@ import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import java.text.Normalizer;
+
 
 
 /*
@@ -34,6 +36,9 @@ abstract public class MasterOpMode extends LinearOpMode
 
     //TODO deal with angles at all starting positions
     double currentAngle = 0.0;
+
+    //set to 0.0 to mitigate null pointer errors
+    public double headingOffset = 0.0;
 
     BNO055IMU imu;
 
@@ -77,9 +82,9 @@ abstract public class MasterOpMode extends LinearOpMode
         //                      drive assemblies   initial loc:     x    y    w
         drive = new DriveSystem( this, vuforiaHelper, driveAssemblies,  new Transform2D(0.0, 0.0, 0.0),
                 new PIDFilter[]{
-                        new PIDFilter(0.8,0.0,0.0),    //x location control
-                        new PIDFilter(0.8,0.0,0.0),    //y location control
-                        new PIDFilter(1/1500,0.0,0.0)} ); //rotation control
+                        new PIDFilter(0.8, 0.0, 0.0),    //x location control
+                        new PIDFilter(0.8, 0.0, 0.0),    //y location control
+                        new PIDFilter(1/150, 0.0, 0.0)} ); //rotation control
 
         motorToggler = new MotorToggler(CollectorMotor, 1.0);
         motorTogglerReverse = new MotorToggler(CollectorMotor, -1.0);
@@ -175,7 +180,7 @@ abstract public class MasterOpMode extends LinearOpMode
         return location;
     }
 
-    public void navigateUsingEncoders(Transform2D target)
+    public void navigateUsingEncoders(Transform2D Target)
     {
         double xTolerance = .010;
         double yTolerance = .010;
@@ -183,12 +188,22 @@ abstract public class MasterOpMode extends LinearOpMode
 
         Transform2D newLocation = updateLocationUsingEncoders();
 
-        while ((Math.abs(target.x - drive.robotLocation.x) > xTolerance) || (Math.abs(target.y - drive.robotLocation.y) > yTolerance)|| (Math.abs(target.rot - drive.robotLocation.rot) > wTolerance))
+        while ((Math.abs(Target.x - drive.robotLocation.x) > xTolerance) || (Math.abs(Target.y - drive.robotLocation.y) > yTolerance)|| (Math.abs(Target.rot - drive.robotLocation.rot) > wTolerance))
         {
-            drive.navigateTo(target);
+            drive.navigateTo(Target);
 
             newLocation = updateLocationUsingEncoders();
+
+            idle();
         }
+    }
+
+    //takes into account headingOffset to utilize global orientation
+    public double getAngularOrientationWithOffset()
+    {
+        double correctedHeading = imu.getAngularOrientation().firstAngle + headingOffset;
+
+        return correctedHeading;
     }
 
     //wait a number of milliseconds

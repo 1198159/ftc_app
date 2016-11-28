@@ -51,7 +51,7 @@ public class DriveSystem
         //update error terms
         LocationControlFilter[0].roll(target.x - robotLocation.x);
         LocationControlFilter[1].roll(target.y - robotLocation.y);
-        RotationControlFilter.roll(optimizeRotationTarget(target.rot - robotLocation.rot));
+        RotationControlFilter.roll(normalizeRotationTarget(target.rot, robotLocation.rot));
         double xRate = LocationControlFilter[0].getFilteredValue();
         double yRate = LocationControlFilter[1].getFilteredValue();
         double wRate = target.rot - robotLocation.rot;       //RotationControlFilter.getFilteredValue();
@@ -138,13 +138,25 @@ public class DriveSystem
         return diff;
     }
 
-    //prevent an unlimited rotary system from rotating further than it needs
-    double optimizeRotationTarget(double angle)
+    //prevent angle differences from being out of range
+    double normalizeRotationTarget(double finalAngle, double initialAngle)
     {
-        double q = Math.floor(angle/180);
-        angle -= q*180;
+        double diff = finalAngle - initialAngle;
 
-        return angle;
+        if (diff >= 180)
+        {
+            diff -= 360;
+        }
+        else if (diff < -180)
+        {
+            diff += 360;
+        }
+        else
+        {
+
+        }
+
+        return diff;
     }
 
 }

@@ -28,6 +28,48 @@ public class TeleOpCompetition extends MasterTeleOp
     {
         initializeHardware();
 
+        drive.robotLocation = new Transform2D(0.609, 2.395, 0.0);
+
+        //@TODO test
+        //navigation test for y direction
+        while(gamepad2.left_stick_y > 0.1)
+        {
+            float[] l = vuforiaHelper.getRobotLocation();
+
+            //we use this to convert our location from an array to a transform
+            drive.robotLocation.SetPositionFromFloatArray(l);
+
+            //location 2 feet out from the wall with same y coordinate as AutoRed2 starting position
+            double[] m = drive.navigateTo(new Transform2D(1.609, 2.395, 0.0));
+
+            telemetry.addData("robot location: ", drive.robotLocation);
+            telemetry.update();
+        }
+
+        //@TODO test
+        //navigation test for x direction
+        while(gamepad2.left_stick_x > 0.1)
+        {
+            float[] l = vuforiaHelper.getRobotLocation();
+
+            //we use this to convert our location from an array to a transform
+            drive.robotLocation.SetPositionFromFloatArray(l);
+
+            //location 2 feet out from the wall with same x coordinate as AutoRed2 starting position
+            double[] m = drive.navigateTo(new Transform2D(0.609, 1.395, 0.0));
+
+            telemetry.addData("robot location: ", drive.robotLocation);
+            telemetry.update();
+        }
+
+        //navigation test for rotation
+        if(gamepad2.right_stick_x > 0.1)
+        {
+            //location 2 feet out from the wall with same x and y coordinate as AutoRed2 starting position, but different rot
+            //double[] m = drive.navigateTo(new Transform2D(0.609, 2.395, -90.0));
+            //turnTo(90.0);
+        }
+
         waitForStart();
 
         while (opModeIsActive())
@@ -48,17 +90,11 @@ public class TeleOpCompetition extends MasterTeleOp
             {
                 motorTogglerReverse.toggleMotor();
             }
+
             lastBtn[0] = gamepad2.a;
             lastBtn[1] = gamepad2.b;
             lastBtn[2] = gamepad2.x;
             lastBtn[3] = gamepad2.y;
-
-            /*
-            if(gamepad2.left_stick_x > 0)
-            {
-                double[] m = drive.navigateTo();
-            }
-            */
 
             idle();
         }

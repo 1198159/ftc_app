@@ -1,26 +1,20 @@
 package org.firstinspires.ftc.team6220;
 
-import com.qualcomm.hardware.adafruit.BNO055IMU;
-
 /**
  * Created by Colew on 9/18/2016.
  */
 abstract public class MasterAutonomous extends MasterOpMode
 {
-    public double headingOffset;
-
     //used for initializations only necessary in autonomous
     public void initializeAuto()
     {
         initializeHardware();
 
-        double headingOffset;
-
         vuforiaHelper.setupVuforia();
     }
 
     //a function for finding the distance between two points
-    public double findDistance(double x1,double y1, double x2, double y2)
+    public double findDistance(double x1, double y1, double x2, double y2)
     {
         double Distance = Math.pow(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2), 0.5);
 
@@ -36,7 +30,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         Transform2D TargetLocation = new Transform2D(TargetX, TargetY, TargetAngle);
 
-        currentAngle = imu.getAngularOrientation().firstAngle + headingOffset;
+        currentAngle = getAngularOrientationWithOffset();
 
         while((Math.abs(TargetX - drive.robotLocation.x) > xTolerance) || (Math.abs(TargetY - drive.robotLocation.y) > yTolerance) || (Math.abs(TargetAngle - drive.robotLocation.rot) > wTolerance))
         {
@@ -48,7 +42,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             drive.robotLocation.SetPositionFromFloatArray(l);
 
             //use the imu to find our angle instead of vuforia; prevents wild rotation if vuforia does not locate target
-            currentAngle = imu.getAngularOrientation().firstAngle + headingOffset;
+            currentAngle = getAngularOrientationWithOffset();
 
             drive.robotLocation.rot = currentAngle;
 
@@ -73,24 +67,26 @@ abstract public class MasterAutonomous extends MasterOpMode
             telemetry.addData("mX:", m[0]);
             telemetry.addData("mY:", m[1]);
             telemetry.addData("mW:", m[2]);
+
+            idle();
         }
         //turnTo(TargetAngle);
     }
 
     public void driveWhileTurning(double x, double y, double w)
     {
-        double currentAngle = imu.getAngularOrientation().firstAngle + headingOffset;
+        double currentAngle = getAngularOrientationWithOffset();
         double angleDiff = w - currentAngle;
         double turningPower;
 
         //sets the power of the motors to turn.  Since the turning direction of the robot is reversed from the motors,
         //negative signs are necessary.  The extra added number is to make sure the robot does not slow down too
         //drastically when nearing its target angle.
-        while(Math.abs(angleDiff) > 5.0)
+        while(Math.abs(angleDiff) > 3.0)
         {
-            currentAngle = imu.getAngularOrientation().firstAngle + headingOffset;
-            angleDiff = drive.optimizeRotationTarget(w - currentAngle);
-            turningPower = angleDiff / 1000;
+            currentAngle = getAngularOrientationWithOffset();
+            angleDiff = drive.normalizeRotationTarget(w, currentAngle);
+            turningPower = angleDiff / 350;
 
             if (Math.abs(turningPower) > 1.0)
             {
@@ -98,13 +94,13 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
 
             // Make sure turn power doesn't go below minimum power
-            if(turningPower > 0 && turningPower < 0.1)
+            if(turningPower > 0 && turningPower < 0.08)
             {
-                turningPower = 0.1;
+                turningPower = 0.08;
             }
-            else if (turningPower < 0 && turningPower > -0.1)
+            else if (turningPower < 0 && turningPower > -0.08)
             {
-                turningPower = -0.1;
+                turningPower = -0.08;
             }
             else
             {
@@ -131,18 +127,19 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     //tells our robot to turn to a specified angle
-    public void turnTo(double TargetAngle)
+    public void turnTo(double targetAngle)
     {
-        double currentAngle = imu.getAngularOrientation().firstAngle + headingOffset;
-        double angleDiff = TargetAngle - currentAngle;
+        double currentAngle = getAngularOrientationWithOffset();
+        double angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);
         double turningPower;
 
 
-        while(Math.abs(angleDiff) > 5.0)
+        while(Math.abs(angleDiff) > 3.0)
         {
-            currentAngle = imu.getAngularOrientation().firstAngle + headingOffset;
-            angleDiff = drive.optimizeRotationTarget(TargetAngle - currentAngle);
-            turningPower = angleDiff / 1000;
+            currentAngle = getAngularOrientationWithOffset();
+            angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);
+            //constant at end of line is for adjusting how fast the robot turns
+            turningPower = angleDiff / 350;
 
             if (Math.abs(turningPower) > 1.0)
             {
@@ -150,20 +147,20 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
 
             // Makes sure turn power doesn't go below minimum power
-            if(turningPower > 0 && turningPower < 0.1)
+            if(turningPower > 0 && turningPower < 0.08)
             {
-                turningPower = 0.1;
+                turningPower = 0.08;
             }
-            else if (turningPower < 0 && turningPower > -0.1)
+            else if (turningPower < 0 && turningPower > -0.08)
             {
-                turningPower = -0.1;
+                turningPower = -0.08;
             }
             else
             {
 
             }
 
-            telemetry.addData("angleDiff: ", angleDiff);
+            telemetry.addData("current angle: ", imu.getAngularOrientation().firstAngle);
             telemetry.update();
 
             /*

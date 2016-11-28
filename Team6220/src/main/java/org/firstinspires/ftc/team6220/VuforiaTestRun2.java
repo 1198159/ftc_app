@@ -23,6 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * @see org.firstinspires.ftc.robotcontroller.external.samples.ConceptVuforiaNavigation
  */
 @Autonomous(name = "Vuforia Test Run 2", group = "6220")
+@Disabled
 public class VuforiaTestRun2 extends LinearOpMode
 {
     // Vuforia variables
