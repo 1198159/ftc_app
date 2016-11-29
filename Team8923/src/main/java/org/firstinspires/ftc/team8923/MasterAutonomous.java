@@ -82,12 +82,11 @@ abstract class MasterAutonomous extends Master
     private void setUpRoutine()
     {
         telemetry.log().add("");
-        telemetry.log().add("Left Starting Position: X");
-        telemetry.log().add("Right Starting Position: B");
-        telemetry.log().add("Left Beacon: Left d-pad");
-        telemetry.log().add("Park on Ramp: Right bumper");
-        telemetry.log().add("Park on Center: Left bumper");
-        telemetry.log().add("Right Beacon: Right d-pad");
+        telemetry.log().add("Alliance Blue/Red: X/B");
+        telemetry.log().add("Starting Position Left/Right: D-Pad Left/Right");
+        telemetry.log().add("Delay Time Up/Down: D-Pad Up/Down");
+        telemetry.log().add("Beacon Left/Right: Bumper Left/Right");
+        telemetry.log().add("Park Ramp/Center: Y/A");
         telemetry.log().add("Reset Routine: Back");
         telemetry.log().add("");
         telemetry.log().add("After routine is complete and robot is on field, press Start");
@@ -96,28 +95,38 @@ abstract class MasterAutonomous extends Master
 
         while(settingUp)
         {
-            // Select start location
+            // Select alliance
             if(gamepad1.x)
-                startLocation = StartLocations.LEFT;
+                alliance = Alliance.BLUE;
             else if(gamepad1.b)
+                alliance = Alliance.RED;
+
+            // Select start location
+            else if(gamepad1.dpad_left)
+                startLocation = StartLocations.LEFT;
+            else if(gamepad1.dpad_right)
                 startLocation = StartLocations.RIGHT;
+
             // Change delay time
             else if(gamepad1.dpad_up)
                 delayTime += 1;
             else if(gamepad1.dpad_down)
                 delayTime -= 1;
+
             // Select objectives to complete
-            else if(gamepad1.dpad_left)
-                routine.add(Objectives.BEACON_LEFT);
-            else if(gamepad1.dpad_right)
-                routine.add(Objectives.BEACON_RIGHT);
-            else if(gamepad1.right_bumper)
-                routine.add(Objectives.PARK_RAMP);
             else if(gamepad1.left_bumper)
+                routine.add(Objectives.BEACON_LEFT);
+            else if(gamepad1.right_bumper)
+                routine.add(Objectives.BEACON_RIGHT);
+            else if(gamepad1.y)
+                routine.add(Objectives.PARK_RAMP);
+            else if(gamepad1.a)
                 routine.add(Objectives.PARK_CENTER);
+
             // Clear objectives if a mistake was made
             else if(gamepad1.back)
                 routine.clear();
+
             // Finish setup and initialization. Should only be run when robot has been placed
             // in starting location, because the encoders and IMU need to initialize there
             else if(gamepad1.start)
@@ -128,6 +137,7 @@ abstract class MasterAutonomous extends Master
                 delayTime = 0;
 
             // Display current routine
+            telemetry.addData("Alliance", alliance.name());
             telemetry.addData("Start Location", startLocation.name());
             telemetry.addData("Delay Seconds", delayTime);
             // Get the next objective in the routine, and add to telemetry
@@ -141,7 +151,8 @@ abstract class MasterAutonomous extends Master
 
             while(!buttonsAreReleased(gamepad1))
             {
-                // Wait for all buttons to be release before continuing
+                // Wait for all buttons to be release before continuing. Otherwise buttons are read
+                // continuously in setup, and add many objectives
                 idle();
             }
         }
