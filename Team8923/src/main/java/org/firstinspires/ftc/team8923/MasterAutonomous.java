@@ -284,6 +284,13 @@ abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
+    void turnAndDrive(double x, double y) throws InterruptedException
+    {
+        double driveAngle = Math.toDegrees(Math.atan2(y - robotY, x - robotX));
+        turnToAngle(driveAngle);
+        driveToPoint(x, y, driveAngle);
+    }
+
     // Robot sometimes won't see the vision targets when it should. This is to be used in places
     // where we need to be sure that we're tracking the target
     void lookForVisionTarget() throws InterruptedException

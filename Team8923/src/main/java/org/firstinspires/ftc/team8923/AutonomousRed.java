@@ -54,17 +54,13 @@ public class AutonomousRed extends MasterAutonomous
     // TODO: Should the numbers below use constants? At least some, like vision target locations?
     private void parkOnRamp() throws InterruptedException
     {
-        double angleToRamp = Math.toDegrees(Math.atan2(3300 - robotY, 600 - robotX));
-        turnToAngle(angleToRamp);
-        driveToPoint(600, 3300, angleToRamp);
+        turnAndDrive(600, 3300);
     }
 
     // This also knocks off the cap ball if it's present
     private void parkOnCenter() throws InterruptedException
     {
-        double angleToCenter = Math.toDegrees(Math.atan2(2000 - robotY, 1500 - robotX));
-        turnToAngle(angleToCenter);
-        driveToPoint(1500, 2000, angleToCenter);
+        turnAndDrive(1500, 2000);
     }
 
     private void pressLeftBeacon() throws InterruptedException
@@ -82,11 +78,9 @@ public class AutonomousRed extends MasterAutonomous
         // Distance from which we look at the vision target and beacon in mm
         double observationDistance = 300;
 
-        double angleToEndOfTape = Math.toDegrees(Math.atan2(beaconY - observationDistance - robotY, beaconX - robotX));
+        turnAndDrive(beaconX, beaconY - observationDistance);
 
-        // Go to the end of the tape in front of the beacon
-        turnToAngle(angleToEndOfTape);
-        driveToPoint(beaconX, beaconY - observationDistance, angleToEndOfTape);
+        // Face vision target
         turnToAngle(90);
 
         // Give Vuforia a chance to start tracking the target
