@@ -43,7 +43,7 @@ public class TeleOpAlternate extends MasterTeleOp
 
             mag = driver1.getLeftStickMagnitude();
             ang = driver1.getLeftStickAngle();
-            double rAng = imu.getAngularOrientation().firstAngle/57.3;  //CodeReview: magic numbers == bad. Please name this constant something descriptive
+            double rAng = getAngularOrientationWithOffset()/57.3;  //CodeReview: magic numbers == bad. Please name this constant something descriptive
 
             newX = Math.cos(ang+rAng)*mag;
             newY = Math.sin(ang+rAng)*mag;
