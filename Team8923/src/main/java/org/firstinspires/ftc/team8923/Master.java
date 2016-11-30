@@ -36,13 +36,13 @@ abstract class Master extends LinearOpMode
 
     double slowModeDivisor = 1.0;
 
-    enum GrabberPositions
+    enum ServoPositions
     {
-        STOW(0.4),
-        RELEASE(0.7);
+        GRABBER_STOW(0.4),
+        GRABBER_RELEASE(0.7);
 
         public double pos;
-        GrabberPositions(double i)
+        ServoPositions(double i)
         {
             pos = i;
         }
@@ -73,7 +73,7 @@ abstract class Master extends LinearOpMode
 
         servoGrabber = hardwareMap.servo.get("servoGrabber");
 
-        servoGrabber.setPosition(GrabberPositions.STOW.pos);
+        servoGrabber.setPosition(ServoPositions.GRABBER_STOW.pos);
 
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
