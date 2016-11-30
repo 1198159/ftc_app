@@ -68,7 +68,8 @@ public class VuforiaNavigation {
     public void initVuforia()
     {
 
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId);
+        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId);
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(); // took out the image displayed on the phone
         parameters.vuforiaLicenseKey = "ARvv/bz/////AAAAGVPnoD3yyERZqCnr7KHm3FgrFIn4fQGOfufF8iBOidgC9FrsCDLKKjDvkgVJybQpEu3brET0BeFbyb746Cu/gT8E6S89bGDF2h6iSlKk4IRoB60EPX/p+yTPMr82hZRxS5SGDlU1JVarJwhN3el/donXpG70LYWRrInA/51wa+pSkM64ZdhRcVwTutBBoXvFMdil6YBwmHTgPK8TpGLHBFYlJskNT2FxdGQiB5JyXkzNLoNSE3MeUDBsdZ0H2X39BOqcEh0hgZrLQ33WuQBwLR5nQcqo7oWJf3VUMrryUfJfO7TGEkMyl8aOkbkzODob4SP/v6XhS83e/4WUXW4a9YlXd+ZC6qB+xPsNYw3OJJ/y";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT; // SWITCH TO FRONT-FACING CAMERA??
         parameters.useExtendedTracking = false;
@@ -201,7 +202,8 @@ public class VuforiaNavigation {
              * getRobotLocation() will return null if the trackable is not currently visible.
              */
 
-            OpenGLMatrix robotLocationTransform = listeners[i].getUpdatedRobotLocation();
+            //OpenGLMatrix robotLocationTransform = listeners[i].getUpdatedRobotLocation();
+            OpenGLMatrix robotLocationTransform = listeners[i].getRobotLocation();
             if (robotLocationTransform != null)
             {
                 lastLocation = robotLocationTransform;

@@ -224,7 +224,7 @@ public class MasterAutonomous extends MasterOpMode
 
 
         // go towards target
-        forwards(startDist, 0, 0.75, 3);  // inches, speed, timeout
+        forwards(startDist, 0, 0.85, 3);  // inches, speed, timeout
         sleep(100);
 
         // pivot to face target
@@ -232,13 +232,15 @@ public class MasterAutonomous extends MasterOpMode
         sleep(100);
 
         // align sideways with image
+        /*
         pivotVuforia(targetAngle, 0.5);
         sleep(100);
         alignVuforia(0.5, 800, 3);   // speed, timeout
         sleep(100);
+        */
         pivotVuforia(targetAngle, 0.5);
         sleep(100);
-        alignVuforia(0.5, 700, 3);   // speed, timeout
+        alignVuforia(0.6, 700, 3);   // speed, timeout
         sleep(100);
         pivotVuforia(targetAngle, 0.5);
 
@@ -334,26 +336,26 @@ public class MasterAutonomous extends MasterOpMode
         {
             if (isRedTeam) // move shorter
             {
-                forwards(0, 37, 0.4, 4);
+                forwards(0, 34, 0.6, 4);
             }
             else // move longer
             {
-                forwards(0, -39, 0.4, 4);
+                forwards(0, -36, 0.6, 4);
             }
         }
         else if (beaconColor == 1) // if left side red
         {
             if (isRedTeam) // move longer
             {
-                forwards(0, 39, 0.4, 4);
+                forwards(0, 36, 0.6, 4);
             }
             else // move shorter
             {
-                forwards(0, -37, 0.4, 4);
+                forwards(0, -34, 0.6, 4);
             }
         }
 
-        forwards(-5, 0, 0.4, 2);
+        forwards(-4, 0, 0.4, 2);
 
         VuforiaNav.lastLocation = null;
 
@@ -485,10 +487,10 @@ public class MasterAutonomous extends MasterOpMode
         //            The way to do that is to use (int) Math.round(COUNTS_PER_INCH * forwardInches);
         //            Note that the (int) cast is still needed because Math.round returns a long, but you're safe to do this because
         //            you won't be using bigger numbers than an int can hold.
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) + (int) (COUNTS_PER_INCH * horiInches * 1.2);
-        newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) - (int) (COUNTS_PER_INCH * horiInches * 1.2);
-        newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) - (int) (COUNTS_PER_INCH * horiInches * 1.2);
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) + (int) (COUNTS_PER_INCH * horiInches * 1.2);
+        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) + (int) (COUNTS_PER_INCH * horiInches * 1.414);
+        newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) - (int) (COUNTS_PER_INCH * horiInches * 1.414);
+        newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) - (int) (COUNTS_PER_INCH * horiInches * 1.414);
+        newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) + (int) (COUNTS_PER_INCH * horiInches * 1.414);
 
         motorFrontLeft.setTargetPosition(newTargetFL);
         motorFrontRight.setTargetPosition(newTargetFR);
@@ -502,22 +504,22 @@ public class MasterAutonomous extends MasterOpMode
         do
         {
             errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
-            speedFL = Math.abs(errorFL / 150);
+            speedFL = Math.abs(errorFL / 200);
             speedFL = Range.clip(speedFL, 0.2, speed);
             speedFL = speedFL * Math.signum(errorFL);
 
             errorFR = newTargetFR - motorFrontRight.getCurrentPosition();
-            speedFR = Math.abs(errorFR / 150);
+            speedFR = Math.abs(errorFR / 200);
             speedFR = Range.clip(speedFR, 0.2, speed);
             speedFR = speedFR * Math.signum(errorFR);
 
             errorBL = newTargetBL - motorBackLeft.getCurrentPosition();
-            speedBL = Math.abs(errorBL / 150);
+            speedBL = Math.abs(errorBL / 200);
             speedBL = Range.clip(speedBL, 0.2, speed);
             speedBL = speedBL * Math.signum(errorBL);
 
             errorBR = newTargetBR - motorBackRight.getCurrentPosition();
-            speedBR = Math.abs(errorBR / 150);
+            speedBR = Math.abs(errorBR / 200);
             speedBR = Range.clip(speedBR, 0.2, speed);
             speedBR = speedBR * Math.signum(errorBR);
 
@@ -578,6 +580,7 @@ public class MasterAutonomous extends MasterOpMode
             do
             {
                 VuforiaNav.getLocation(); // update target location and angle
+                idle();
             }
             while (VuforiaNav.lastLocation == null);
 
@@ -611,7 +614,7 @@ public class MasterAutonomous extends MasterOpMode
             telemetry.log().add(String.format("CurAngle: %f, error: %f", curTurnAngle, error));
             idle();
 
-        } while (opModeIsActive() && (Math.abs(error) > 1));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
+        } while (opModeIsActive() && (Math.abs(error) > 2));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
 
         // stop motors
         motorFrontLeft.setPower(0);
@@ -725,6 +728,10 @@ public class MasterAutonomous extends MasterOpMode
     // look at double speed
     public void alignVuforia (double speed, double distAway, double timeout)
     {
+        final float Kp = 1/600; // speed is proportional to error
+
+        final float TOL = 10;
+
         float error;
         float xPos;
         float yPos;
@@ -764,6 +771,7 @@ public class MasterAutonomous extends MasterOpMode
                 VuforiaNav.getLocation(); // update target location and angle
             }
             while (VuforiaNav.lastLocation == null);  //CodeReview: this will hang your robot while Vuforia can't get its location. That could be a long time.
+            idle();
 
             xPos = VuforiaNav.lastLocation.getTranslation().getData()[0];
             yPos = VuforiaNav.lastLocation.getTranslation().getData()[1];
@@ -779,13 +787,13 @@ public class MasterAutonomous extends MasterOpMode
             //error = targetPos[targetDimX] - xPos;
 
             // go sideways opposite of error
-            newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (robotErrorX * 1.2))
+            newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (robotErrorX * 1.414))
                     + (int) (COUNTS_PER_MM * (robotErrorY));
-            newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (-robotErrorX * 1.2))
+            newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (-robotErrorX * 1.414))
                     + (int) (COUNTS_PER_MM * (robotErrorY));
-            newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (-robotErrorX * 1.2))
+            newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (-robotErrorX * 1.414))
                     + (int) (COUNTS_PER_MM * (robotErrorY));
-            newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (robotErrorX * 1.2))
+            newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (robotErrorX * 1.414))
                     + (int) (COUNTS_PER_MM * (robotErrorY));
 
             motorFrontLeft.setTargetPosition(newTargetFL);
@@ -797,38 +805,38 @@ public class MasterAutonomous extends MasterOpMode
             do
             {
                 errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
-                speedFL = Math.abs(errorFL / 150);
+                speedFL = Math.abs(errorFL * Kp); // make this a constant
                 speedFL = Range.clip(speedFL, 0.2, speed);
                 speedFL = speedFL * Math.signum(errorFL);
 
                 errorFR = newTargetFR - motorFrontRight.getCurrentPosition();
-                speedFR = Math.abs(errorFR / 150);
+                speedFR = Math.abs(errorFR * Kp);
                 speedFR = Range.clip(speedFR, 0.2, speed);
                 speedFR = speedFR * Math.signum(errorFR);
 
                 errorBL = newTargetBL - motorBackLeft.getCurrentPosition();
-                speedBL = Math.abs(errorBL / 150);
+                speedBL = Math.abs(errorBL * Kp);
                 speedBL = Range.clip(speedBL, 0.2, speed);
                 speedBL = speedBL * Math.signum(errorBL);
 
                 errorBR = newTargetBR - motorBackRight.getCurrentPosition();
-                speedBR = Math.abs(errorBR / 150);
+                speedBR = Math.abs(errorBR * Kp);
                 speedBR = Range.clip(speedBR, 0.2, speed);
                 speedBR = speedBR * Math.signum(errorBR);
 
-                if (Math.abs(errorFL) < 10)
+                if (Math.abs(errorFL) < TOL)
                 {
                     speedFL = 0;
                 }
-                if (Math.abs(errorFR) < 10)
+                if (Math.abs(errorFR) < TOL)
                 {
                     speedFR = 0;
                 }
-                if (Math.abs(errorBL) < 10)
+                if (Math.abs(errorBL) < TOL)
                 {
                     speedBL = 0;
                 }
-                if (Math.abs(errorBR) < 10)
+                if (Math.abs(errorBR) < TOL)
                 {
                     speedBR = 0;
                 }
@@ -842,7 +850,7 @@ public class MasterAutonomous extends MasterOpMode
             }
             while (opModeIsActive() &&
                     (runtime.seconds() < timeout) &&
-                    (Math.abs(errorFL) > 8 || Math.abs(errorFR) > 8 || Math.abs(errorBL) > 8 || Math.abs(errorBR) > 8));
+                    (Math.abs(errorFL) > TOL || Math.abs(errorFR) > TOL || Math.abs(errorBL) > TOL || Math.abs(errorBR) > TOL));
 
 
             runtime.reset();
@@ -857,7 +865,7 @@ public class MasterAutonomous extends MasterOpMode
             motorBackRight.setPower(0);
 
             // error is in mm
-        } while (opModeIsActive() && (Math.abs(robotErrorX) > 10.0));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
+        } while (opModeIsActive() && (Math.abs(robotErrorX) > TOL));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
 
         // stop motors
         motorFrontLeft.setPower(0);
