@@ -135,7 +135,6 @@ abstract public class MasterAutonomous extends MasterOpMode
         double angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);
         double turningPower;
 
-
         //CodeReview: please make magic numbers be constants
         while(Math.abs(angleDiff) > 3.0)
         {
@@ -163,7 +162,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             }
 
-            telemetry.addData("current angle: ", imu.getAngularOrientation().firstAngle);
+            telemetry.addData("current angle: ", getAngularOrientationWithOffset());
             telemetry.update();
 
             /*

@@ -51,20 +51,18 @@ abstract public class MasterOpMode extends LinearOpMode
     MotorToggler motorToggler;
     MotorToggler motorTogglerReverse;
 
-    public void initializeHardware()
-    {
+    public void initializeHardware() {
         //create a driveAssembly array to allow for easy access to motors
-        driveAssemblies = new DriveAssembly[5];
-        //CodeReview: Don't we only use 4 of these? Why allocate 5? (If we accidentally go beyond 0..3 we want to crash so we can find and fix that bug.
+        driveAssemblies = new DriveAssembly[4];
 
         //TODO adjust correction factor if necessary
         //TODO fix all switched front and back labels on motors
         //our robot uses an omni drive, so our motors are positioned at 45 degree angles to motor positions on a normal drive.
-                                                                        //mtr,                                       x,   y,   rot,  gear, radius, correction factor
-        driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"),new Transform2D( 1.0, 1.0, 135), 1.0, 0.1016, 1.0);
-        driveAssemblies[FRONT_LEFT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft") ,new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016, 1.0);
-        driveAssemblies[BACK_LEFT]   = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft")  ,new Transform2D(-1.0,-1.0, 315), 1.0, 0.1016, 1.0);
-        driveAssemblies[BACK_RIGHT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight") ,new Transform2D( 1.0,-1.0,  45), 1.0, 0.1016, 1.0);
+        //mtr,                                                                                                       x,   y,  rot, gear, radius, correction factor
+        driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"), new Transform2D(1.0, 1.0, 135), 1.0, 0.1016, 1.0);
+        driveAssemblies[FRONT_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"), new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016, 1.0);
+        driveAssemblies[BACK_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"), new Transform2D(-1.0, -1.0, 315), 1.0, 0.1016, 1.0);
+        driveAssemblies[BACK_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"), new Transform2D(1.0, -1.0, 45), 1.0, 0.1016, 1.0);
 
         CollectorMotor = hardwareMap.dcMotor.get("motorCollector");
 
@@ -79,28 +77,28 @@ abstract public class MasterOpMode extends LinearOpMode
 
         vuforiaHelper = new VuforiaHelper();
 
-        //TODO decide if we should initialize at opmode level
-        //                      drive assemblies   initial loc:     x    y    w
+        //TODO remove "magic numbers"
         //CodeReview: please don't use magic numbers (0.8, 1/150). Instead use named constants and
         //            put a comment next to those names explaining where the value comes from (how you derived it)
-        drive = new DriveSystem( this, vuforiaHelper, driveAssemblies,  new Transform2D(0.0, 0.0, 0.0),
+        //                                          drive assemblies  initial loc:     x    y    w
+        drive = new DriveSystem(this, vuforiaHelper, driveAssemblies, new Transform2D(0.0, 0.0, 0.0),
                 new PIDFilter[]{
                         new PIDFilter(0.8, 0.0, 0.0),    //x location control
                         new PIDFilter(0.8, 0.0, 0.0),    //y location control
-                        new PIDFilter(1/150, 0.0, 0.0)} ); //rotation control
+                        new PIDFilter(1 / 150, 0.0, 0.0)}); //rotation control
 
         motorToggler = new MotorToggler(CollectorMotor, 1.0);
         motorTogglerReverse = new MotorToggler(CollectorMotor, -1.0);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
         //CodeReview: Did we include the calibration json somewhere so it can be found in our program?
         //            If we are going to reference this file, it has to exist, and has to be where the
         //            calibration sample opmode puts it (so it can be found)
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
@@ -117,7 +115,7 @@ abstract public class MasterOpMode extends LinearOpMode
         double eTime;
 
         //get time when loop starts
-        double startTime = System.nanoTime()/1000/1000/1000;
+        double startTime = System.nanoTime() / 1000 / 1000 / 1000;
         double finalTime = 0;
 
         eTime = finalTime - startTime; //CodeReview: Can it be correct that this starts as a negative number?
@@ -136,14 +134,11 @@ abstract public class MasterOpMode extends LinearOpMode
 
         Transform2D location;
 
-        //converted to radians for Math.sin() function
-        //CodeReview: BUG: Shouldn't this use getAngularOrientationWithOffset()?
-        currentAngle = imu.getAngularOrientation().firstAngle * Math.PI / 180;
-
         //angle in degrees for return value
-        //CodeReview: BUG: Shouldn't this use getAngularOrientationWithOffset()?
-        //            Also you just read this value a moment ago; just reuse the value, rather than reading the imu twice (which is slow)
-        double currentAngleDegrees = imu.getAngularOrientation().firstAngle;
+        double currentAngleDegrees = getAngularOrientationWithOffset();
+
+        //converted to radians for Math.sin() function
+        currentAngle = currentAngleDegrees * Math.PI / 180;
 
         EncoderFR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
         EncoderFL = driveAssemblies[FRONT_LEFT].motor.getCurrentPosition();
@@ -166,7 +161,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
 
         yAngle = Math.PI / 2 + currentAngle;
-        xAngle = 90 - yAngle;
+        xAngle = Math.PI / 2 - yAngle;
 
         //math to calculate x and y positions based on encoder ticks and not accounting for angle
         xRawPosition += eTime * ((FLencDerivative + FRencDerivative -(BLencDerivative + BRencDerivative)) / (4 * Math.sqrt(2)));
