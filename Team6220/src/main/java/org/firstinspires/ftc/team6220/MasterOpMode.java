@@ -44,6 +44,8 @@ abstract public class MasterOpMode extends LinearOpMode
     //CodeReview: After you do those things, then all the improper uses of headingOffset will show up because they will be compiler errors.
     public double headingOffset = 0.0;
 
+    //CodeReview: make your imu private. Then you will also catch mistakes when other code tries to read the imu directly,
+    //            instead of using the proper method getAngularOrientationWithOffset()
     BNO055IMU imu;
 
     DriveAssembly[] driveAssemblies;

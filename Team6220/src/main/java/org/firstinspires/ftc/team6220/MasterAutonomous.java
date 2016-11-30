@@ -35,7 +35,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         while((Math.abs(TargetX - drive.robotLocation.x) > xTolerance) || (Math.abs(TargetY - drive.robotLocation.y) > yTolerance) || (Math.abs(TargetAngle - drive.robotLocation.rot) > wTolerance))
         {
             float[] l = vuforiaHelper.getRobotLocation();
-            l[0] = l[0]/1000;
+            l[0] = l[0]/1000; //CodeReview: A comment will help others understand why you're doing this.
             l[1] = l[1]/1000;
 
             //we use this to convert our location from an array to a transform
@@ -82,6 +82,8 @@ abstract public class MasterAutonomous extends MasterOpMode
         //sets the power of the motors to turn.  Since the turning direction of the robot is reversed from the motors,
         //negative signs are necessary.  The extra added number is to make sure the robot does not slow down too
         //drastically when nearing its target angle.
+
+        //CodeReview: please make the magic numbers be constants
         while(Math.abs(angleDiff) > 3.0)
         {
             currentAngle = getAngularOrientationWithOffset();
@@ -134,6 +136,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         double turningPower;
 
 
+        //CodeReview: please make magic numbers be constants
         while(Math.abs(angleDiff) > 3.0)
         {
             currentAngle = getAngularOrientationWithOffset();
