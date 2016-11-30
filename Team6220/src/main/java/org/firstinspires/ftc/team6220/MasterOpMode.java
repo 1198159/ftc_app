@@ -59,6 +59,7 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         //create a driveAssembly array to allow for easy access to motors
         driveAssemblies = new DriveAssembly[5];
+        //CodeReview: Don't we only use 4 of these? Why allocate 5? (If we accidentally go beyond 0..3 we want to crash so we can find and fix that bug.
 
         //TODO adjust correction factor if necessary
         //TODO fix all switched front and back labels on motors
@@ -84,6 +85,8 @@ abstract public class MasterOpMode extends LinearOpMode
 
         //TODO decide if we should initialize at opmode level
         //                      drive assemblies   initial loc:     x    y    w
+        //CodeReview: please don't use magic numbers (0.8, 1/150). Instead use named constants and
+        //            put a comment next to those names explaining where the value comes from (how you derived it)
         drive = new DriveSystem( this, vuforiaHelper, driveAssemblies,  new Transform2D(0.0, 0.0, 0.0),
                 new PIDFilter[]{
                         new PIDFilter(0.8, 0.0, 0.0),    //x location control
@@ -97,6 +100,9 @@ abstract public class MasterOpMode extends LinearOpMode
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        //CodeReview: Did we include the calibration json somewhere so it can be found in our program?
+        //            If we are going to reference this file, it has to exist, and has to be where the
+        //            calibration sample opmode puts it (so it can be found)
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
 
@@ -118,7 +124,7 @@ abstract public class MasterOpMode extends LinearOpMode
         double startTime = System.nanoTime()/1000/1000/1000;
         double finalTime = 0;
 
-        eTime = finalTime - startTime;
+        eTime = finalTime - startTime; //CodeReview: Can it be correct that this starts as a negative number?
 
         //x and y positions not considering robot rotation
         double xRawPosition = 0.0;
@@ -135,9 +141,12 @@ abstract public class MasterOpMode extends LinearOpMode
         Transform2D location;
 
         //converted to radians for Math.sin() function
+        //CodeReview: BUG: Shouldn't this use getAngularOrientationWithOffset()?
         currentAngle = imu.getAngularOrientation().firstAngle * Math.PI / 180;
 
         //angle in degrees for return value
+        //CodeReview: BUG: Shouldn't this use getAngularOrientationWithOffset()?
+        //            Also you just read this value a moment ago; just reuse the value, rather than reading the imu twice (which is slow)
         double currentAngleDegrees = imu.getAngularOrientation().firstAngle;
 
         EncoderFR = driveAssemblies[FRONT_RIGHT].motor.getCurrentPosition();
