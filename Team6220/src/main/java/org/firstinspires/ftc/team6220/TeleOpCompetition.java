@@ -28,6 +28,12 @@ public class TeleOpCompetition extends MasterTeleOp
     {
         initializeHardware();
 
+        //CodeReview: how can this be correct? How can you know the robot position when teleop starts,
+        //            since you can't know with certainty where it will end up after autonomous?
+        //            If this is just test code for testing navigation, it should be in a test teleop opmode,
+        //            not in the opmode called "TeleOpCompetition".
+        //            By the way it's fine (and good) to have several test opmodes that you can use
+        //            throughout the season to make sure that everything is working as expected. It's a good idea.
         drive.robotLocation = new Transform2D(0.609, 2.395, 0.0);
 
         //@TODO test
