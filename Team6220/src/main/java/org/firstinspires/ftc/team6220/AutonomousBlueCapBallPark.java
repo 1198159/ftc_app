@@ -3,9 +3,9 @@ package org.firstinspires.ftc.team6220;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-/**
- * Created by Colew on 11/20/2016.
- */
+/*
+    Autonomous program used when only bumping the cap ball on the blue side
+*/
 
 @Autonomous(name = "AutoBlueCapBallPark", group = "Autonomous")
 public class AutonomousBlueCapBallPark extends MasterAutonomous
@@ -16,38 +16,16 @@ public class AutonomousBlueCapBallPark extends MasterAutonomous
         initializeAuto();
 
         //this is used to add absolute orientation to each autonomous program
-        headingOffset = 90.0;
+        setHeadingOffset(90.0);
 
-        drive.robotLocation = new Transform2D(2.395, 0.210, 0.0 + headingOffset);
+        drive.robotLocation = new Transform2D(2.395, 0.210, 90.0);
 
         waitForStart();
 
-        /*
-        //just in case the code above does not work
         drive.moveRobot(0.4, 1.0, 0.0);
+
         pause(1400);
-        stopAllDriveMotors();
-        */
-
-
-        drive.moveRobot(0.0, 0.3, 0.0);
-
-        pause(500);
-
-        turnTo(-45.0 - headingOffset);
 
         stopAllDriveMotors();
-
-        pause(500);
-
-        drive.moveRobot(0.5, 0.0, 0.0);
-
-        pause(500);
-
-        stopAllDriveMotors();
-
-        drive.moveRobot(0.0, -1.0, -45.0 - headingOffset);
-
-        pause(500);
     }
 }

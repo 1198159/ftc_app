@@ -4,9 +4,9 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-/**
- * This opmode is used to experiment with autonomous ideas before implementing them in our competition code.
- */
+/*
+    Standard autonomous for red side
+*/
 
 @Autonomous(name = "AutoRed2", group = "Autonomous")
 public class AutoRed2 extends MasterAutonomous
@@ -16,8 +16,7 @@ public class AutoRed2 extends MasterAutonomous
     {
         initializeAuto();
 
-        //this is used to add absolute orientation to each autonomous program
-        headingOffset = 0.0;
+        setHeadingOffset(0.0);
 
         drive.robotLocation = new Transform2D(0.210, 2.395, 0.0);
 
@@ -52,7 +51,7 @@ public class AutoRed2 extends MasterAutonomous
 
         ActivateBeacon(2.700);
 
-        turnTo(45 - headingOffset);
+        turnTo(45);
 
         vuforiaDriveToPosition(1.880, 2.313, 45.0);
 

@@ -4,9 +4,9 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-/**
- * Created by Colew on 11/19/2016.
- */
+/*
+    Standard autonomous for blue side
+*/
 
 @Autonomous(name = "AutoBlue2", group = "Autonomous")
 public class AutoBlue2 extends MasterAutonomous
@@ -16,8 +16,7 @@ public class AutoBlue2 extends MasterAutonomous
     {
         initializeAuto();
 
-        //this is used to add absolute orientation to each autonomous program
-        headingOffset = 90.0;
+        setHeadingOffset(90.0);
 
         drive.robotLocation = new Transform2D(2.395, 0.210, 90.0);
 

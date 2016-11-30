@@ -37,16 +37,10 @@ abstract public class MasterOpMode extends LinearOpMode
     //TODO deal with angles at all starting positions
     double currentAngle = 0.0;
 
-    //set to 0.0 to mitigate null pointer errors  //CodeReview: this comment is unnecessary.
-    //CodeReview: Please describe what this variable is for because it's one of the vars that is not obvious
-    //CodeReview: Also, this should be private. No other object should touch it besides MasterOpMode.
-    //CodeReview: You should add a method, setHeadingOffset(double offset) that sets this value.
-    //CodeReview: After you do those things, then all the improper uses of headingOffset will show up because they will be compiler errors.
-    public double headingOffset = 0.0;
+    //used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
+    private double headingOffset = 0.0;
 
-    //CodeReview: make your imu private. Then you will also catch mistakes when other code tries to read the imu directly,
-    //            instead of using the proper method getAngularOrientationWithOffset()
-    BNO055IMU imu;
+    private BNO055IMU imu;
 
     DriveAssembly[] driveAssemblies;
 
@@ -211,6 +205,11 @@ abstract public class MasterOpMode extends LinearOpMode
 
             idle();
         }
+    }
+
+    public void setHeadingOffset(double newValue)
+    {
+        headingOffset = newValue;
     }
 
     //takes into account headingOffset to utilize global orientation

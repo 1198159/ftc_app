@@ -34,13 +34,15 @@ public class TeleOpCompetition extends MasterTeleOp
         //navigation test for y direction
         while(gamepad2.left_stick_y > 0.1)
         {
+            pause(1000);
+
             float[] l = vuforiaHelper.getRobotLocation();
 
             //we use this to convert our location from an array to a transform
             drive.robotLocation.SetPositionFromFloatArray(l);
 
-            //location 2 feet out from the wall with same y coordinate as AutoRed2 starting position
-            double[] m = drive.navigateTo(new Transform2D(1.609, 2.395, 0.0));
+            //location directly in front of beacon 1
+            double[] m = drive.navigateTo(new Transform2D(1.500, 3.428, 90.0));
 
             telemetry.addData("robot location: ", drive.robotLocation);
             telemetry.update();
@@ -50,13 +52,15 @@ public class TeleOpCompetition extends MasterTeleOp
         //navigation test for x direction
         while(gamepad2.left_stick_x > 0.1)
         {
+            pause(1000);
+
             float[] l = vuforiaHelper.getRobotLocation();
 
             //we use this to convert our location from an array to a transform
             drive.robotLocation.SetPositionFromFloatArray(l);
 
-            //location 2 feet out from the wall with same x coordinate as AutoRed2 starting position
-            double[] m = drive.navigateTo(new Transform2D(0.609, 1.395, 0.0));
+            //location near center of field and to the right of beacon 1
+            double[] m = drive.navigateTo(new Transform2D(1.800, 2.438, 90.0));
 
             telemetry.addData("robot location: ", drive.robotLocation);
             telemetry.update();
