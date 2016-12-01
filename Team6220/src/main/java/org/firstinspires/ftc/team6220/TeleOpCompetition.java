@@ -28,74 +28,22 @@ public class TeleOpCompetition extends MasterTeleOp
     {
         initializeHardware();
 
-        //CodeReview: how can this be correct? How can you know the robot position when teleop starts,
-        //            since you can't know with certainty where it will end up after autonomous?
-        //            If this is just test code for testing navigation, it should be in a test teleop opmode,
-        //            not in the opmode called "TeleOpCompetition".
-        //            By the way it's fine (and good) to have several test opmodes that you can use
-        //            throughout the season to make sure that everything is working as expected. It's a good idea.
-        drive.robotLocation = new Transform2D(0.609, 2.395, 0.0);
-
-        //@TODO test
-        //navigation test for y direction
-        while(gamepad2.left_stick_y > 0.1)
-        {
-            pause(1000);
-
-            float[] l = vuforiaHelper.getRobotLocation();
-
-            //we use this to convert our location from an array to a transform
-            drive.robotLocation.SetPositionFromFloatArray(l);
-
-            //location directly in front of beacon 1
-            double[] m = drive.navigateTo(new Transform2D(1.500, 3.428, 90.0));
-
-            telemetry.addData("robot location: ", drive.robotLocation);
-            telemetry.update();
-        }
-
-        //@TODO test
-        //navigation test for x direction
-        while(gamepad2.left_stick_x > 0.1)
-        {
-            pause(1000);
-
-            float[] l = vuforiaHelper.getRobotLocation();
-
-            //we use this to convert our location from an array to a transform
-            drive.robotLocation.SetPositionFromFloatArray(l);
-
-            //location near center of field and to the right of beacon 1
-            double[] m = drive.navigateTo(new Transform2D(1.800, 2.438, 90.0));
-
-            telemetry.addData("robot location: ", drive.robotLocation);
-            telemetry.update();
-        }
-
-        //navigation test for rotation
-        if(gamepad2.right_stick_x > 0.1)
-        {
-            //location 2 feet out from the wall with same x and y coordinate as AutoRed2 starting position, but different rot
-            //double[] m = drive.navigateTo(new Transform2D(0.609, 2.395, -90.0));
-            //turnTo(90.0);
-        }
-
         waitForStart();
 
         while (opModeIsActive())
         {
             driveRobotWithJoysticks(-gamepad1.left_stick_x,    //local x motion power; reversed
                                      gamepad1.left_stick_y,     //local y motion power
-                                     gamepad1.right_stick_x/2);    //rotation power; reversed
+                                     gamepad1.right_stick_x/2);    //rotation power; reversed and divided by 2 to reduce our robot's
+                                                                   //high rotational velocity
 
-            //values are displayed for testing purposes
-            //updateLocationUsingEncoders();
-
+            //intake balls with collector
             if (gamepad2.x && !lastBtn[2])
             {
                 motorToggler.toggleMotor();
             }
 
+            //spit out balls with collector
             if (gamepad2.b && !lastBtn[1])
             {
                 motorTogglerReverse.toggleMotor();
