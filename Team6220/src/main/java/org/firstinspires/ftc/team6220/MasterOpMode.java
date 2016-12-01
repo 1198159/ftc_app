@@ -232,4 +232,47 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies[BACK_LEFT].setPower(0.0);
         driveAssemblies[BACK_RIGHT].setPower(0.0);
     }
+
+    //tells our robot to turn to a specified angle
+    public void turnTo(double targetAngle)
+    {
+        double currentAngle = getAngularOrientationWithOffset();
+        double angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);
+        double turningPower;
+
+        while(Math.abs(angleDiff) > Constants.minimumAngleDiff)
+        {
+            currentAngle = getAngularOrientationWithOffset();
+            angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);
+            turningPower = angleDiff * Constants.turningPowerFactor;
+
+            if (Math.abs(turningPower) > 1.0)
+            {
+                turningPower = Math.signum(turningPower);
+            }
+
+            // Makes sure turn power doesn't go below minimum power
+            if(turningPower > 0 && turningPower < Constants.minimumTurningPower)
+            {
+                turningPower = Constants.minimumTurningPower;
+            }
+            else if (turningPower < 0 && turningPower > -Constants.minimumTurningPower)
+            {
+                turningPower = -Constants.minimumTurningPower;
+            }
+            else
+            {
+
+            }
+
+            telemetry.addData("current angle: ", getAngularOrientationWithOffset());
+            telemetry.update();
+
+            drive.moveRobot(0.0, 0.0, -turningPower);
+
+            idle();
+        }
+
+        stopAllDriveMotors();
+    }
 }

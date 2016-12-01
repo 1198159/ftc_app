@@ -26,6 +26,8 @@ public class TeleOpTestingOpMode extends MasterTeleOp
         //the robot is placed in this location when starting the test
         drive.robotLocation = new Transform2D(1.500, 2.438, 90.0);
 
+        setHeadingOffset(90.0);
+
         waitForStart();
 
         //delay to allow vuforia to get ready
@@ -77,7 +79,7 @@ public class TeleOpTestingOpMode extends MasterTeleOp
             {
                 //location 2 feet out from the wall with same x and y coordinate as AutoRed2 starting position, but different rot
                 //double[] m = drive.navigateTo(new Transform2D(0.609, 2.395, -90.0));
-                //turnTo(90.0);
+                turnTo(0.0);
             }
 
             if (gamepad2.x && !lastBtn[2])
