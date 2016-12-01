@@ -24,18 +24,16 @@ abstract public class MasterAutonomous extends MasterOpMode
     //uses vuforia to move to a location
     public void vuforiaDriveToPosition(double TargetX, double TargetY, double TargetAngle)
     {
-        double xTolerance = .010;
-        double yTolerance = .010;
-        double wTolerance = 3.0;
-
         Transform2D TargetLocation = new Transform2D(TargetX, TargetY, TargetAngle);
 
         currentAngle = getAngularOrientationWithOffset();
 
-        while((Math.abs(TargetX - drive.robotLocation.x) > xTolerance) || (Math.abs(TargetY - drive.robotLocation.y) > yTolerance) || (Math.abs(TargetAngle - drive.robotLocation.rot) > wTolerance))
+        while((Math.abs(TargetX - drive.robotLocation.x) > Constants.xTolerance) || (Math.abs(TargetY - drive.robotLocation.y) > Constants.yTolerance) || (Math.abs(TargetAngle - drive.robotLocation.rot) > Constants.wTolerance))
         {
             float[] l = vuforiaHelper.getRobotLocation();
-            l[0] = l[0]/1000; //CodeReview: A comment will help others understand why you're doing this.
+            //vuforia data comes out as an array instead of readable data, so it must be changed to a Transform2D;
+            //also, vuforia data must be converted from millimeters to meters to be consistent with the rest of our code
+            l[0] = l[0]/1000;
             l[1] = l[1]/1000;
 
             //we use this to convert our location from an array to a transform
@@ -46,11 +44,11 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             drive.robotLocation.rot = currentAngle;
 
-            //Inform drivers of robot location. Location is null if we lose track of targets
+            //Inform drivers of robot location. Location is null if we lose track of the targets
             if(vuforiaHelper.lastKnownLocation != null)
             {
-                telemetry.addData("PosX: ", drive.robotLocation.x);
-                telemetry.addData("PosY: ", drive.robotLocation.y);
+                telemetry.addData("XPos: ", drive.robotLocation.x);
+                telemetry.addData("YPos: ", drive.robotLocation.y);
                 telemetry.addData("AngleDiff: ", TargetAngle - drive.robotLocation.rot);
                 telemetry.update();
             }
@@ -61,7 +59,7 @@ abstract public class MasterAutonomous extends MasterOpMode
                 telemetry.update();
             }
 
-            //move to the desired location
+            //move the robot to the desired location
             double[] m = drive.navigateTo(TargetLocation);
 
             telemetry.addData("mX:", m[0]);
@@ -70,7 +68,6 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             idle();
         }
-        //turnTo(TargetAngle);
     }
 
     public void driveWhileTurning(double x, double y, double w)
@@ -84,11 +81,11 @@ abstract public class MasterAutonomous extends MasterOpMode
         //drastically when nearing its target angle.
 
         //CodeReview: please make the magic numbers be constants
-        while(Math.abs(angleDiff) > 3.0)
+        while(Math.abs(angleDiff) > Constants.minimumAngleDiff)
         {
             currentAngle = getAngularOrientationWithOffset();
             angleDiff = drive.normalizeRotationTarget(w, currentAngle);
-            turningPower = angleDiff / 350;
+            turningPower = angleDiff * Constants.turningPowerFactor;
 
             if (Math.abs(turningPower) > 1.0)
             {
@@ -96,13 +93,13 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
 
             // Make sure turn power doesn't go below minimum power
-            if(turningPower > 0 && turningPower < 0.08)
+            if(turningPower > 0 && turningPower < Constants.turningPowerFactor)
             {
-                turningPower = 0.08;
+                turningPower = Constants.turningPowerFactor;
             }
-            else if (turningPower < 0 && turningPower > -0.08)
+            else if (turningPower < 0 && turningPower > -Constants.turningPowerFactor)
             {
-                turningPower = -0.08;
+                turningPower = -Constants.turningPowerFactor;
             }
             else
             {
@@ -136,12 +133,11 @@ abstract public class MasterAutonomous extends MasterOpMode
         double turningPower;
 
         //CodeReview: please make magic numbers be constants
-        while(Math.abs(angleDiff) > 3.0)
+        while(Math.abs(angleDiff) > Constants.minimumAngleDiff)
         {
             currentAngle = getAngularOrientationWithOffset();
             angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);
-            //constant at end of line is for adjusting how fast the robot turns
-            turningPower = angleDiff / 350;
+            turningPower = angleDiff * Constants.turningPowerFactor;
 
             if (Math.abs(turningPower) > 1.0)
             {
@@ -149,13 +145,13 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
 
             // Makes sure turn power doesn't go below minimum power
-            if(turningPower > 0 && turningPower < 0.08)
+            if(turningPower > 0 && turningPower < Constants.minimumTurningPower)
             {
-                turningPower = 0.08;
+                turningPower = Constants.minimumTurningPower;
             }
-            else if (turningPower < 0 && turningPower > -0.08)
+            else if (turningPower < 0 && turningPower > -Constants.minimumTurningPower)
             {
-                turningPower = -0.08;
+                turningPower = -Constants.minimumTurningPower;
             }
             else
             {
@@ -164,13 +160,6 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             telemetry.addData("current angle: ", getAngularOrientationWithOffset());
             telemetry.update();
-
-            /*
-            driveAssemblies[FRONT_RIGHT].setPower(-turningPower);
-            driveAssemblies[FRONT_LEFT].setPower(-turningPower);
-            driveAssemblies[BACK_LEFT].setPower(-turningPower);
-            driveAssemblies[BACK_RIGHT].setPower(-turningPower);
-            */
 
             drive.moveRobot(0.0, 0.0, -turningPower);
 

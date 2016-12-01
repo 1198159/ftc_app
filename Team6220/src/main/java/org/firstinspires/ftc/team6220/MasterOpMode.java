@@ -60,10 +60,10 @@ abstract public class MasterOpMode extends LinearOpMode
         //our robot uses an omni drive, so our motors are positioned at 45 degree angles to motor positions on a normal drive.
         //mtr,                                                                                                       x,   y,  rot, gear, radius, correction factor
         //CodeReview: please fix the config file so "front" and "back" are consistent between drive assemblies and hardwareMap
-        driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"), new Transform2D(1.0, 1.0, 135), 1.0, 0.1016, 1.0);
-        driveAssemblies[FRONT_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"), new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016, 1.0);
-        driveAssemblies[BACK_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"), new Transform2D(-1.0, -1.0, 315), 1.0, 0.1016, 1.0);
-        driveAssemblies[BACK_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"), new Transform2D(1.0, -1.0, 45), 1.0, 0.1016, 1.0);
+        driveAssemblies[BACK_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"), new Transform2D(1.0, 1.0, 135), 1.0, 0.1016, 1.0);
+        driveAssemblies[BACK_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"), new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016, 1.0);
+        driveAssemblies[FRONT_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"), new Transform2D(-1.0, -1.0, 315), 1.0, 0.1016, 1.0);
+        driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"), new Transform2D(1.0, -1.0, 45), 1.0, 0.1016, 1.0);
 
         CollectorMotor = hardwareMap.dcMotor.get("motorCollector");
 
@@ -86,7 +86,7 @@ abstract public class MasterOpMode extends LinearOpMode
                 new PIDFilter[]{
                         new PIDFilter(0.8, 0.0, 0.0),    //x location control
                         new PIDFilter(0.8, 0.0, 0.0),    //y location control
-                        new PIDFilter(1 / 150, 0.0, 0.0)}); //rotation control
+                        new PIDFilter(Constants.turningPowerFactor, 0.0, 0.0)}); //rotation control
 
         motorToggler = new MotorToggler(CollectorMotor, 1.0);
         motorTogglerReverse = new MotorToggler(CollectorMotor, -1.0);
@@ -185,15 +185,12 @@ abstract public class MasterOpMode extends LinearOpMode
         return location;
     }
 
+    //uses solely encoders to move the robot to a desired location
     public void navigateUsingEncoders(Transform2D Target)
     {
-        double xTolerance = .010;
-        double yTolerance = .010;
-        double wTolerance = 3.0;
-
         Transform2D newLocation = updateLocationUsingEncoders();
 
-        while ((Math.abs(Target.x - drive.robotLocation.x) > xTolerance) || (Math.abs(Target.y - drive.robotLocation.y) > yTolerance)|| (Math.abs(Target.rot - drive.robotLocation.rot) > wTolerance))
+        while ((Math.abs(Target.x - drive.robotLocation.x) > Constants.xTolerance) || (Math.abs(Target.y - drive.robotLocation.y) > Constants.yTolerance)|| (Math.abs(Target.rot - drive.robotLocation.rot) > Constants.wTolerance))
         {
             drive.navigateTo(Target);
 
@@ -203,6 +200,7 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
+    //other opmodes must go through this method to prevent others from blithely changing headingOffset
     public void setHeadingOffset(double newValue)
     {
         headingOffset = newValue;
