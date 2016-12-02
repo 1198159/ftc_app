@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
+//CodeReview: This starting comment regarding drivabots seems irrelevant.
 /**
  * Program not used to control Drive-A-Bots.
  * This can be a good reference for drive controls.
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 @TeleOp(name="TeleOp", group = "Swerve")
 // @Disabled
 
+//CodeReview: there's a typo in the next comment. But, it's a great idea to document the robot controls in comments.
 // IMPORTANT: GAMEPAD ON EIS THE DRIVER THAT MOVES THE ROBOT AROUND
 public class MasterTeleOp extends MasterOpMode
 {
@@ -70,6 +72,13 @@ public class MasterTeleOp extends MasterOpMode
             {
                 if (gamepad2.dpad_up)
                 {
+                    //CodeReview: put "magic numbers" like this into constants so they are easily edited
+                    //           (all constants should be defined in one place), and so they are easily
+                    //           understood when reading the code.
+                    //           Note: a "constant" in java is defined as "final" and is usually in all-caps, e.g.
+                    //           final double LIFT_POWER = 0.9;
+                    //           Also note that the 'f' in your number is making it a float, but the method wants a double,
+                    //           so you are inadvertently making this less efficient. Just use 0.9 and the compiler will do the right thing.
                     motorLift.setPower(0.9f);
                 }
                 else if (gamepad2.dpad_down)
@@ -185,6 +194,7 @@ public class MasterTeleOp extends MasterOpMode
         motorLift.setDirection(DcMotor.Direction.REVERSE);
 
         //CodeReview: Put this into MasterOpMode's initializeHardware
+        //CodeReview: Define magic numbers as constants
         motorFrontLeft.setMaxSpeed(2700);   // try this setting from 8923
         motorFrontRight.setMaxSpeed(2700);   // try this setting from 8923
         motorBackLeft.setMaxSpeed(2700);   // try this setting from 8923

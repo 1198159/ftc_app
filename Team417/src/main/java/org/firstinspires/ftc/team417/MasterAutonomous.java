@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 
-
+//CodeReview: this first comment doesn't seem relevant to this file.
 /**
  * Program used to control Drive-A-Bots.
  * This can be a good reference for drive controls.
@@ -295,11 +295,13 @@ public class MasterAutonomous extends MasterOpMode
                 sleep(100);
             }
         }
-        else
+        else //CodeReview: would be good to comment that this code runs when the color is unknown
         {
             forwards(-5, 0, 0.5, 3);
         }
 
+        //CodeReview: do you still try to push the button if the color is unknown?
+        //            Or is this wasted movement because you backed up a moment ago?
         forwards(18, 0, 0.25, 3); // push the button (first target)!!
         telemetry.log().add(String.format("pushed first button"));
         sleep(100);
@@ -354,6 +356,8 @@ public class MasterAutonomous extends MasterOpMode
                 forwards(0, -34, 0.6, 4);
             }
         }
+        //CodeReview: you didn't handle the case where the beaconColor was unknown.
+        //            Don't you still want to move to the next beacon?
 
         forwards(-4, 0, 0.4, 2);
 

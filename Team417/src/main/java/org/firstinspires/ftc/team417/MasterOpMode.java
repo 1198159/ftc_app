@@ -75,15 +75,20 @@ abstract public class MasterOpMode extends LinearOpMode
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        //CodeReview: have you run the calibration sample opmode and created this file? You should ensure this file exists
+        //            if you are going to reference it here. Otherwise you should not set this variable (it's not required).
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        //CodeReview: I believe it's optional to have an accelerationIntegrationAlgorithm and you don't need to specify it here.
+        //            This particular one doesn't seem to be providing your robot any benefit other than adding to logs.
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+        //CodeReview: just curious why you are getting the heading 3 times during your initialization routine. Doesn't seem necessary.
         float angle;
         for (int i = 0; i < 3; i++) {
             sleep(100);
@@ -91,6 +96,8 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
+    //CodeReview: it's good to provide a comment explaining each method. In this case, you're normalizing the angle to be
+    //            between -180..180, which is good to document. Hmm, might be better to rename this method "normalizeAngle".
     public double adjustAngles(double angle)
     {
         while(angle > 180)

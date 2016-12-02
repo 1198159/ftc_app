@@ -214,6 +214,30 @@ public class VuforiaNavigation {
         return location;
     }
 
+
+    //CodeReview: For GetBeaconColor(), it would be better to use enums to return defined/named values, rather than ints.
+    //            An enum lets you define your own names for values.
+    //            It will make your code easier to read and
+    //            reduce the chances of accidental bugs.
+    //            Here's a code sample
+
+    /*
+    enum BeaconColor {
+        red,
+        blue,
+        undefined
+    }
+
+    public BeaconColor GetBeaconColor() throws InterruptedException {
+        return BeaconColor.blue;
+    }
+
+    BeaconColor beaconColor = GetBeaconColor();
+
+    if (beaconColor == BeaconColor.blue) { }
+
+    */
+
     // return 0: blue, 1: red
     // get the image from Vuforia, project beacon point onto image
     // Gets the COLOR of the LEFT side of beacon
