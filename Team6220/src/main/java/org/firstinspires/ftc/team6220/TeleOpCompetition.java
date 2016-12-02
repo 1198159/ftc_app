@@ -32,9 +32,9 @@ public class TeleOpCompetition extends MasterTeleOp
 
         while (opModeIsActive())
         {
-            driveRobotWithJoysticks(-gamepad1.left_stick_x,    //local x motion power; reversed
-                                     gamepad1.left_stick_y,     //local y motion power
-                                     gamepad1.right_stick_x/2);    //rotation power; reversed and divided by 2 to reduce our robot's
+            driveRobotWithJoysticks(gamepad1.left_stick_x,    //local x motion power
+                                    gamepad1.left_stick_y,     //local y motion power
+                                    gamepad1.right_stick_x/2);    //rotation power; divided by 2 to reduce our robot's
                                                                    //high rotational velocity
 
             //intake balls with collector

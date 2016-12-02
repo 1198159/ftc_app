@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /*
- Autonomous program used when only bumping the cap ball on the blue side
+ Autonomous program used when only bumping the cap ball on the red side
 */
 
 @Autonomous(name = "AutoRedCapBallPark", group = "Autonomous")
@@ -21,10 +21,13 @@ public class AutonomousRedCapBallPark extends MasterAutonomous
 
         waitForStart();
 
-        drive.moveRobot(-0.4, 1.0, 0.0);
+        //TODO test turning, then uncomment lower code
+        turnTo(90.0);
+
+        /*drive.moveRobot(-0.4, 1.0, 0.0);
 
         pause(1400);
 
-        stopAllDriveMotors();
+        stopAllDriveMotors();*/
     }
 }

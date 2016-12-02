@@ -70,6 +70,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         }
     }
 
+    //TODO actually implement driving portion of code
     public void driveWhileTurning(double x, double y, double w)
     {
         double currentAngle = getAngularOrientationWithOffset();
@@ -77,10 +78,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         double turningPower;
 
         //sets the power of the motors to turn.  Since the turning direction of the robot is reversed from the motors,
-        //negative signs are necessary.  The extra added number is to make sure the robot does not slow down too
-        //drastically when nearing its target angle.
-
-        //CodeReview: please make the magic numbers be constants
+        //negative signs are necessary.
         while(Math.abs(angleDiff) > Constants.minimumAngleDiff)
         {
             currentAngle = getAngularOrientationWithOffset();
@@ -108,13 +106,6 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             telemetry.addData("angleDiff: ", angleDiff);
             telemetry.update();
-
-            /*
-            driveAssemblies[FRONT_RIGHT].setPower(-turningPower);
-            driveAssemblies[FRONT_LEFT].setPower(-turningPower);
-            driveAssemblies[BACK_LEFT].setPower(-turningPower);
-            driveAssemblies[BACK_RIGHT].setPower(-turningPower);
-            */
 
             drive.moveRobot(0.0, 0.0, -turningPower);
 
