@@ -27,7 +27,7 @@ public class DriverInput
     //            You can define an integer value for each item in the enum:
     //   enum Buttons {
     //        A(0),
-    //        B(1),
+    //        B(1);
     //        public int value;
     //        Buttons(int i) value = i }
     //   }
