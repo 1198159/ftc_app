@@ -7,7 +7,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "Cap Ball Grabber Test", group = "Tests")
 public class TestCapBallGrabber extends LinearOpMode
 {
-    private Servo servo;
+    private Servo servoLeft;
+    private Servo servoRight;
 
     private double servoPosition = 0.5;
 
@@ -18,7 +19,8 @@ public class TestCapBallGrabber extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        servo = hardwareMap.servo.get("servo");
+        servoRight = hardwareMap.servo.get("servoRight");
+        servoLeft = hardwareMap.servo.get("servoLeft");
 
         waitForStart();
 
@@ -37,7 +39,8 @@ public class TestCapBallGrabber extends LinearOpMode
             else if(!gamepad1.dpad_down && !gamepad1.dpad_up)
                 wasPressed = false;
 
-            servo.setPosition(servoPosition);
+            servoRight.setPosition(servoPosition);
+            servoLeft.setPosition(servoPosition);
 
             // Inform drivers
             telemetry.addData("Position", servoPosition);
