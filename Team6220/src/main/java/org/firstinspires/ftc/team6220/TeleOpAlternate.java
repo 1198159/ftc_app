@@ -43,13 +43,13 @@ public class TeleOpAlternate extends MasterTeleOp
 
             mag = driver1.getLeftStickMagnitude();
             ang = driver1.getLeftStickAngle();
-            double rAng = getAngularOrientationWithOffset()/57.3;  //CodeReview: magic numbers == bad. Please name this constant something descriptive
+            double rAng = getAngularOrientationWithOffset() * Constants.degToRadConversionFactor;
 
             newX = Math.cos(ang+rAng)*mag;
             newY = Math.sin(ang+rAng)*mag;
-            driveRobotWithJoysticks(newX,    //local x motion power; reversed
+            driveRobotWithJoysticks(newX,    //local x motion power
                                      newY,     //local y motion power
-                            gamepad1.right_stick_x/2);    //rotation power; reversed
+                            gamepad1.right_stick_x/2);    //rotation power
 
 
             if (driver2.isButtonPressed("A"))

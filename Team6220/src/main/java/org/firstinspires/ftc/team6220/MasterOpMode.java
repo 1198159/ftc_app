@@ -214,7 +214,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     //CodeReview: Might be a little clearer to rename this method "setRobotStartingOrientation" since that is what it means in your opmodes
     //other opmodes must go through this method to prevent others from blithely changing headingOffset
-    public void setHeadingOffset(double newValue)
+    public void setRobotStartingOrientation(double newValue)
     {
         headingOffset = newValue;
     }

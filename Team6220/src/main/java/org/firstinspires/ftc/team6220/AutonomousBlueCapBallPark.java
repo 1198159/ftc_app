@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.team6220;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /*
     Autonomous program used when only bumping the cap ball on the blue side
@@ -16,7 +15,7 @@ public class AutonomousBlueCapBallPark extends MasterAutonomous
         initializeAuto();
 
         //this is used to add absolute orientation to each autonomous program
-        setHeadingOffset(90.0);
+        setRobotStartingOrientation(90.0);
 
         drive.robotLocation = new Transform2D(2.395, 0.210, 90.0);
 

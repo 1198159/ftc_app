@@ -3,7 +3,7 @@ package org.firstinspires.ftc.team6220;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 /**
- * Created by Mridula on 11/14/2016.
+    Move code to for test how long a loop takes
  */
 public class Test extends LinearOpMode
 {

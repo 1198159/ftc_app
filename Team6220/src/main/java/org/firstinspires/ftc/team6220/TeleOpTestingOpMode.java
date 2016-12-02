@@ -26,7 +26,7 @@ public class TeleOpTestingOpMode extends MasterTeleOp
         //the robot is placed in this location when starting the test
         drive.robotLocation = new Transform2D(1.500, 2.438, 90.0);
 
-        setHeadingOffset(90.0);
+        setRobotStartingOrientation(90.0);
 
         waitForStart();
 
@@ -38,9 +38,9 @@ public class TeleOpTestingOpMode extends MasterTeleOp
             //values are displayed for testing purposes
             updateLocationUsingEncoders();
 
-            //@TODO test
+            //@TODO test; not working
             //navigation test for y direction
-            while(gamepad2.left_stick_y > 0.1)
+            while (gamepad2.left_stick_y > 0.1)
             {
                 float[] l = vuforiaHelper.getRobotLocation();
 
@@ -56,9 +56,9 @@ public class TeleOpTestingOpMode extends MasterTeleOp
                 idle();
             }
 
-            //@TODO test
+            //@TODO test; not working
             //navigation test for x direction
-            while(gamepad2.left_stick_x > 0.1)
+            while (gamepad2.left_stick_x > 0.1)
             {
                 float[] l = vuforiaHelper.getRobotLocation();
 
@@ -75,7 +75,8 @@ public class TeleOpTestingOpMode extends MasterTeleOp
             }
 
             //navigation test for rotation
-            if(gamepad2.right_stick_x > 0.1)
+            //TODO test; not working
+            if(gamepad2.right_bumper)
             {
                 //location 2 feet out from the wall with same x and y coordinate as AutoRed2 starting position, but different rot
                 //double[] m = drive.navigateTo(new Transform2D(0.609, 2.395, -90.0));
