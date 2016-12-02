@@ -73,7 +73,7 @@ public class DriveSystem
         {
             wRate = 0.3 * Math.signum(wRate);
         }
-        else
+        else //CodeReview: this last block is unnecessary 
         {
 
         }
