@@ -73,10 +73,7 @@ public class DriveSystem
         {
             wRate = 0.3 * Math.signum(wRate);
         }
-        else //CodeReview: this last block is unnecessary 
-        {
 
-        }
 
         moveRobot(xRate,yRate,wRate);
         return new double[]{xRate,yRate,wRate};
@@ -151,10 +148,7 @@ public class DriveSystem
         {
             diff += 360;
         }
-        else //CodeReview: leave this off since it does nothing. It's not necessary.
-        {
 
-        }
 
         return diff;
     }
