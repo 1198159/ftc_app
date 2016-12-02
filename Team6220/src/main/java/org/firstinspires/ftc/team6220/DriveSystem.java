@@ -143,15 +143,15 @@ public class DriveSystem
     {
         double diff = finalAngle - initialAngle;
 
-        if (diff >= 180)
+        if (diff >= 180) //CodeReview: make this "while" to cover larger numbers, though they aren't expected.
         {
             diff -= 360;
         }
-        else if (diff < -180)
+        else if (diff < -180) //CodeReview: make this "while" to cover larger numbers, though they aren't expected.
         {
             diff += 360;
         }
-        else
+        else //CodeReview: leave this off since it does nothing. It's not necessary.
         {
 
         }

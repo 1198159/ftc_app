@@ -88,6 +88,10 @@ abstract public class MasterOpMode extends LinearOpMode
                         new PIDFilter(0.8, 0.0, 0.0),    //y location control
                         new PIDFilter(Constants.turningPowerFactor, 0.0, 0.0)}); //rotation control
 
+        //CodeReview: It seems like your MotorToggler class should handle both of these cases.
+        //            You shouldn't have to create two variables (one for forwards, one for backwards).
+        //            E.g. your MotorToggler could have setDirection(Direction.Forwards), setDirection(Direction.Backwards)
+        //            and then turnOn() would start the motor in that direction.
         motorToggler = new MotorToggler(CollectorMotor, 1.0);
         motorTogglerReverse = new MotorToggler(CollectorMotor, -1.0);
 
@@ -112,6 +116,12 @@ abstract public class MasterOpMode extends LinearOpMode
     //keeps track of the robot's location on the field based on Encoders and IMU; make sure to call once each loop
     public Transform2D updateLocationUsingEncoders()
     {
+
+        //CodeReview: since you intend this to be called every loop, you should eliminate things
+        //            that you aren't using (e.g. the elapsed time stuff?), because they will slow
+        //            down your main loop and thus slow the responsiveness of your bot.
+        //            You can comment them out for now so you have them for later, if you do intend to use them eventually.
+
         //stands for elapsed time
         double eTime;
 
@@ -182,6 +192,8 @@ abstract public class MasterOpMode extends LinearOpMode
         //get time at end of loop
         finalTime = System.nanoTime()/1000/1000/1000;
 
+        //CodeReview: do you need this return value? (does any caller need it?)
+        //            Seems like all that's needed is to update location in this method.
         return location;
     }
 
@@ -200,6 +212,7 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
+    //CodeReview: Might be a little clearer to rename this method "setRobotStartingOrientation" since that is what it means in your opmodes
     //other opmodes must go through this method to prevent others from blithely changing headingOffset
     public void setHeadingOffset(double newValue)
     {
