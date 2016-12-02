@@ -26,7 +26,7 @@ public class TeleOpTestingOpMode extends MasterTeleOp
         //the robot is placed in this location when starting the test
         drive.robotLocation = new Transform2D(1.500, 2.438, 90.0);
 
-        setHeadingOffset(90.0);
+        setRobotStartingOrientation(90.0);
 
         waitForStart();
 

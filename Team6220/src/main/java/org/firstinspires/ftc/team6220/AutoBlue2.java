@@ -16,7 +16,7 @@ public class AutoBlue2 extends MasterAutonomous
     {
         initializeAuto();
 
-        setHeadingOffset(90.0);
+        setRobotStartingOrientation(90.0);
 
         drive.robotLocation = new Transform2D(2.395, 0.210, 90.0);
 

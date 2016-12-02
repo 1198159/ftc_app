@@ -16,7 +16,7 @@ public class AutoRed2 extends MasterAutonomous
     {
         initializeAuto();
 
-        setHeadingOffset(0.0);
+        setRobotStartingOrientation(0.0);
 
         drive.robotLocation = new Transform2D(0.210, 2.395, 0.0);
 
