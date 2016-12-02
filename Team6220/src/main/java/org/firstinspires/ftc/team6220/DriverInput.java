@@ -21,6 +21,23 @@ public class DriverInput
         controller = cont;
     }
 
+
+    //CodeReview: Instead of using strings to represent the buttons, how about using an enum?
+    //            Then you wouldn't need to map strings to integer positions in the arrays.
+    //            You can define an integer value for each item in the enum:
+    //   enum Buttons {
+    //        A(0),
+    //        B(1),
+    //        public int value;
+    //        Buttons(int i) value = i }
+    //   }
+    //
+    //  ...then you can do something like this:
+    //  isButtonPressed(Buttons.A)
+    //  ...or this:
+    //  myArray[Buttons.A.value]
+
+
     //TODO replace with hashmap or something
     private int getButtonIndexFromString(String label) {
         int index = 10;

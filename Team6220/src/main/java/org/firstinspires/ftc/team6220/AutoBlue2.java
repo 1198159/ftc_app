@@ -85,12 +85,17 @@ public class AutoBlue2 extends MasterAutonomous
         */
     }
 
+    //CodeReview: This method is used in several autonomous opmodes. It should probably
+    //            move into MasterAutonomous.
     //once at a beacon, we use this function to press it
     private void ActivateBeacon(double yPosition) throws InterruptedException
     {
         int colorLeftSide = vuforiaHelper.getPixelColor(-40, 230, 30);
         int colorRightSide = vuforiaHelper.getPixelColor(40, 230, 30);
 
+        //CodeReview: the next two blocks seem identical except for the one parameter 0.110 or -0.110 in vuforiaDriveToPosition
+        //            so perhaps you could have the if statement just set a double with that number,
+        //            and then the rest of the code would not need to be copied. (no code duplication)
         if(Color.blue(colorRightSide) < Color.blue(colorLeftSide))
         {
             vuforiaDriveToPosition(3.000, yPosition + 0.110, 0.0);
