@@ -106,7 +106,7 @@ public class TeleOpTestingOpMode extends MasterTeleOp
             telemetry.addData("RightStickY: ", gamepad2.right_stick_y);
             telemetry.addData("RightBumper: ", gamepad2.right_bumper);
             telemetry.update();
-            
+
             idle();
         }
     }

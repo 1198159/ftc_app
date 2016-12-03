@@ -37,17 +37,9 @@ public class DriveSystem
     //TODO add updateRobotLocation() and getRobotLocation()
     //PID-driven navigation to a point
     //TODO add ability to use non "zig-zag" paths
-    //call once per loop
-    //assumes robot position had already been updated
+    //call once per loop; assumes robot position has already been updated
     public double[] navigateTo(Transform2D target)
     {
-        /*
-        float[] l = vuforiaHelper.getRobotLocation();
-        l[0] = l[0]/1000;
-        l[1] = l[1]/1000;
-        //update location
-        robotLocation.SetPositionFromFloatArray(l);
-        */
         //update error terms
         LocationControlFilter[0].roll(target.x - robotLocation.x);
         LocationControlFilter[1].roll(target.y - robotLocation.y);
@@ -73,7 +65,6 @@ public class DriveSystem
         {
             wRate = 0.3 * Math.signum(wRate);
         }
-
 
         moveRobot(xRate,yRate,wRate);
         return new double[]{xRate,yRate,wRate};
@@ -111,8 +102,6 @@ public class DriveSystem
             assemblies[corner].setPower(power);
             //currentOpmode.telemetry.addData( corner + ": ", power);
         }
-
-        //currentOpmode.telemetry.update();
     }
 
     //estimate the robot's last motion using encoders

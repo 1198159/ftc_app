@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team6220;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 
 
@@ -23,6 +24,8 @@ abstract public class MasterOpMode extends LinearOpMode
     public final int BACK_RIGHT  = 3;
 
     DcMotor collectorMotor;
+
+    Servo collectorGateServo = null;
 
     private int EncoderFR = 0;
     private int EncoderFL = 0;
@@ -46,23 +49,29 @@ abstract public class MasterOpMode extends LinearOpMode
 
     VuforiaHelper vuforiaHelper;
 
+    ServoToggler collectorGateServoToggler;
+
+    //currently not in use
+    /*
     MotorToggler motorToggler;
     MotorToggler motorTogglerReverse;
+    */
 
-    public void initializeHardware() {
+    public void initializeHardware()
+    {
         //create a driveAssembly array to allow for easy access to motors
         driveAssemblies = new DriveAssembly[4];
 
         //TODO adjust correction factor if necessary
-        //TODO fix all switched front and back labels on motors
         //our robot uses an omni drive, so our motors are positioned at 45 degree angles to motor positions on a normal drive.
         //mtr,                                                                                                       x,   y,  rot, gear, radius, correction factor
         driveAssemblies[BACK_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"), new Transform2D(1.0, 1.0, 135), 1.0, 0.1016, 1.0);
         driveAssemblies[BACK_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"), new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016, 1.0);
         driveAssemblies[FRONT_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"), new Transform2D(-1.0, -1.0, 315), 1.0, 0.1016, 1.0);
         driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"), new Transform2D(1.0, -1.0, 45), 1.0, 0.1016, 1.0);
-
         collectorMotor = hardwareMap.dcMotor.get("motorCollector");
+
+        collectorGateServo = hardwareMap.servo.get("servoCollectorGate");
 
         //TODO tune our own drive PID loop using DriveAssemblyPID instead of build-in P/step filter
         //TODO Must be disabled if motor encoders are not correctly reporting
@@ -70,13 +79,26 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies[FRONT_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[BACK_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[BACK_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         collectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        collectorGateServo.setPosition(Constants.COLLECTOR_GATE_SERVO_RETRACTED_POSITION);
+
+        //not currently in use
+        /*
+        //CodeReview: It seems like your MotorToggler class should handle both of these cases.
+        //            You shouldn't have to create two variables (one for forwards, one for backwards).
+        //            E.g. your MotorToggler could have setDirection(Direction.Forwards), setDirection(Direction.Backwards)
+        //            and then turnOn() would start the motor in that direction.
+        motorToggler = new MotorToggler(collectorMotor, 1.0);
+        motorTogglerReverse = new MotorToggler(collectorMotor, -1.0);
+        */
+
+        collectorGateServoToggler = new ServoToggler(collectorGateServo, Constants.COLLECTOR_GATE_SERVO_RETRACTED_POSITION, Constants.COLLECTOR_GATE_SERVO_DEPLOYED_POSITION);
 
         vuforiaHelper = new VuforiaHelper();
 
         //TODO remove "magic numbers"
-        //CodeReview: please don't use magic numbers (0.8, 1/150). Instead use named constants and
+        //CodeReview: please don't use magic numbers (0.8). Instead use named constants and
         //            put a comment next to those names explaining where the value comes from (how you derived it)
         //                                          drive assemblies  initial loc:     x    y    w
         drive = new DriveSystem(this, vuforiaHelper, driveAssemblies, new Transform2D(0.0, 0.0, 0.0),
@@ -84,13 +106,6 @@ abstract public class MasterOpMode extends LinearOpMode
                         new PIDFilter(0.8, 0.0, 0.0),    //x location control
                         new PIDFilter(0.8, 0.0, 0.0),    //y location control
                         new PIDFilter(Constants.TURNING_POWER_FACTOR, 0.0, 0.0)}); //rotation control
-
-        //CodeReview: It seems like your MotorToggler class should handle both of these cases.
-        //            You shouldn't have to create two variables (one for forwards, one for backwards).
-        //            E.g. your MotorToggler could have setDirection(Direction.Forwards), setDirection(Direction.Backwards)
-        //            and then turnOn() would start the motor in that direction.
-        motorToggler = new MotorToggler(collectorMotor, 1.0);
-        motorTogglerReverse = new MotorToggler(collectorMotor, -1.0);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;

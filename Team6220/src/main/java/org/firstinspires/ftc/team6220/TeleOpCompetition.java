@@ -20,6 +20,7 @@ public class TeleOpCompetition extends MasterTeleOp
 
     //CodeReview: Define an enum for reading/writing the elements of your lastBtn array instead of using magic numbers in your code.
     //temporary tap trigger variable
+    //not currently in use
     //                                   a      b      x      y
     boolean lastBtn[] = new boolean[]{false, false, false, false};
 
@@ -49,6 +50,12 @@ public class TeleOpCompetition extends MasterTeleOp
             else
             {
                 collectorMotor.setPower(0.0);
+            }
+
+            //deploys and retracts our servo-powered gate that stops balls before moving into the launcher
+            if (gamepad2.right_bumper)
+            {
+                collectorGateServoToggler.toggle();
             }
 
             idle();

@@ -56,63 +56,58 @@ public class AutoRed2 extends MasterAutonomous
         vuforiaDriveToPosition(1.880, 2.313, 45.0);
     }
 
+    //used to drive to and press the beacon after determining the correct side to press; used inside
+    //ActivateBeacon to shorten code
+    private void DriveToBeacon(double positionOffset, double xPosition) throws InterruptedException
+    {
+        vuforiaDriveToPosition(xPosition + positionOffset, 3.000, 90.0);
+
+        turnTo(-90.0);
+
+        drive.moveRobot(0.0, -0.2, 0.0);
+
+        pause(800);
+
+        stopAllDriveMotors();
+
+        //navigateUsingEncoders(new Transform2D(xPosition - 0.150, 3.318, -90.0 - headingOffset));
+
+        //TODO replace later
+        drive.moveRobot(0.0, 1.0, 0.0);
+
+        pause(200);
+
+        stopAllDriveMotors();
+
+        turnTo(90.0);
+
+        vuforiaDriveToPosition(xPosition, 2.600, 90.0);
+    }
+
     //once at a beacon, we use this function to press it
     private void ActivateBeacon(double xPosition) throws InterruptedException
     {
-        //TODO use hue wheel instead of colors
-        int colorLeftSide = vuforiaHelper.getPixelColor(-40, 170, 30);
-        int colorRightSide = vuforiaHelper.getPixelColor(40, 170, 30);
+        float[] leftSideColor = new float[3];
+        float[] rightSideColor = new float[3];
+        Color.colorToHSV(vuforiaHelper.getPixelColor(-40, 170, 30), leftSideColor);
+        Color.colorToHSV(vuforiaHelper.getPixelColor(40, 170, 30), rightSideColor);
 
-        if(Color.blue(colorRightSide) > Color.blue(colorLeftSide))
+        if(leftSideColor[0] < 90)
         {
-            vuforiaDriveToPosition(xPosition - 0.110, 3.000, 90.0);
+            leftSideColor[0] += 360;
+        }
+        if(rightSideColor[0] < 90)
+        {
+            rightSideColor[0] += 360;
+        }
 
-            turnTo(-90.0);
-
-            drive.moveRobot(0.0, -0.2, 0.0);
-
-            pause(800);
-
-            stopAllDriveMotors();
-
-            //navigateUsingEncoders(new Transform2D(xPosition- 0.150, 3.318, -90.0 - headingOffset));
-
-            //TODO replace later
-            drive.moveRobot(0.0, 1.0, 0.0);
-
-            pause(200);
-
-            stopAllDriveMotors();
-
-            turnTo(90.0);
-
-            vuforiaDriveToPosition(xPosition, 3.428, 90.0);
-
+        if(leftSideColor[0] - rightSideColor[0] > 0)
+        {
+            DriveToBeacon(-0.110, xPosition);
         }
         else
         {
-            vuforiaDriveToPosition(xPosition + 0.110, 3.000, 90.0);
-
-            turnTo(-90.0);
-
-            drive.moveRobot(0.0, -0.2, 0.0);
-
-            pause(800);
-
-            stopAllDriveMotors();
-
-            //navigateUsingEncoders(new Transform2D(xPosition + 0.150, 3.318, -90.0-headingOffset));
-
-            //TODO replace later
-            drive.moveRobot(0.0, 1.0, 0.0);
-
-            pause(200);
-
-            stopAllDriveMotors();
-
-            turnTo(90.0);
-
-            vuforiaDriveToPosition(xPosition, 3.428, 90.0);
+            DriveToBeacon(0.110, xPosition);
         }
 
     }

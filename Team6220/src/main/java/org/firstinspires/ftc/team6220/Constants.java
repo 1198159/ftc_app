@@ -16,4 +16,7 @@ public class Constants
     public static double X_TOLERANCE = .010;
     public static double Y_TOLERANCE = .010;
     public static double W_TOLERANCE = 3.0;
+
+    public static double COLLECTOR_GATE_SERVO_RETRACTED_POSITION = 0.0;
+    public static double COLLECTOR_GATE_SERVO_DEPLOYED_POSITION = 90.0;
 }
