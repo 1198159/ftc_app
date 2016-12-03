@@ -39,8 +39,8 @@ public class TeleOpTestingOpMode extends MasterTeleOp
             updateLocationUsingEncoders();
 
             //@TODO test; not working
-            //navigation test for y direction
-            while (gamepad2.left_stick_y > 0.1)
+            //navigation test for y direction; y stick is reversed
+            while (gamepad2.left_stick_y < -0.1)
             {
                 float[] l = vuforiaHelper.getRobotLocation();
 
@@ -83,14 +83,18 @@ public class TeleOpTestingOpMode extends MasterTeleOp
                 turnTo(0.0);
             }
 
-            if (gamepad2.x && !lastBtn[2])
+            //intake balls with collector; drivers must hold buttons to collect
+            if (gamepad2.x)
             {
-                motorToggler.toggleMotor();
+                collectorMotor.setPower(1.0);
             }
-
-            if (gamepad2.b && !lastBtn[1])
+            else if (gamepad2.b)
             {
-                motorTogglerReverse.toggleMotor();
+                collectorMotor.setPower(-1.0);
+            }
+            else
+            {
+                collectorMotor.setPower(0.0);
             }
 
             lastBtn[0] = gamepad2.a;
@@ -98,6 +102,11 @@ public class TeleOpTestingOpMode extends MasterTeleOp
             lastBtn[2] = gamepad2.x;
             lastBtn[3] = gamepad2.y;
 
+            telemetry.addData("LeftStickY: ", gamepad2.left_stick_y);
+            telemetry.addData("RightStickY: ", gamepad2.right_stick_y);
+            telemetry.addData("RightBumper: ", gamepad2.right_bumper);
+            telemetry.update();
+            
             idle();
         }
     }
