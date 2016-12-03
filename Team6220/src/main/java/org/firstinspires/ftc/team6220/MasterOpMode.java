@@ -4,8 +4,6 @@ import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import java.text.Normalizer;
-
 
 
 /*
@@ -24,7 +22,7 @@ abstract public class MasterOpMode extends LinearOpMode
     public final int BACK_LEFT   = 2;
     public final int BACK_RIGHT  = 3;
 
-    DcMotor CollectorMotor;
+    DcMotor collectorMotor;
 
     private int EncoderFR = 0;
     private int EncoderFL = 0;
@@ -59,13 +57,12 @@ abstract public class MasterOpMode extends LinearOpMode
         //TODO fix all switched front and back labels on motors
         //our robot uses an omni drive, so our motors are positioned at 45 degree angles to motor positions on a normal drive.
         //mtr,                                                                                                       x,   y,  rot, gear, radius, correction factor
-        //CodeReview: please fix the config file so "front" and "back" are consistent between drive assemblies and hardwareMap
         driveAssemblies[BACK_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"), new Transform2D(1.0, 1.0, 135), 1.0, 0.1016, 1.0);
         driveAssemblies[BACK_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"), new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016, 1.0);
         driveAssemblies[FRONT_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"), new Transform2D(-1.0, -1.0, 315), 1.0, 0.1016, 1.0);
         driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"), new Transform2D(1.0, -1.0, 45), 1.0, 0.1016, 1.0);
 
-        CollectorMotor = hardwareMap.dcMotor.get("motorCollector");
+        collectorMotor = hardwareMap.dcMotor.get("motorCollector");
 
         //TODO tune our own drive PID loop using DriveAssemblyPID instead of build-in P/step filter
         //TODO Must be disabled if motor encoders are not correctly reporting
@@ -74,7 +71,7 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies[BACK_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[BACK_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        CollectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        collectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         vuforiaHelper = new VuforiaHelper();
 
@@ -92,8 +89,8 @@ abstract public class MasterOpMode extends LinearOpMode
         //            You shouldn't have to create two variables (one for forwards, one for backwards).
         //            E.g. your MotorToggler could have setDirection(Direction.Forwards), setDirection(Direction.Backwards)
         //            and then turnOn() would start the motor in that direction.
-        motorToggler = new MotorToggler(CollectorMotor, 1.0);
-        motorTogglerReverse = new MotorToggler(CollectorMotor, -1.0);
+        motorToggler = new MotorToggler(collectorMotor, 1.0);
+        motorTogglerReverse = new MotorToggler(collectorMotor, -1.0);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;

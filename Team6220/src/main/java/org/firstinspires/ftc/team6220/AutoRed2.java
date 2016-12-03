@@ -54,42 +54,14 @@ public class AutoRed2 extends MasterAutonomous
         turnTo(45);
 
         vuforiaDriveToPosition(1.880, 2.313, 45.0);
-
-        /*
-        just in case the code above does not work
-        drive.moveRobot(0.0, 0.5, 0.0);
-        drive.moveRobot(0.0, - 0.2, 0.0);
-        drive.moveRobot(0.0, 0.2, 0.0);
-        */
-
-
-        //testing section; use later in season to push ball
-        /*
-        turnTo(-15.0 - headingOffset);
-
-        navigateUsingEncoders(new Transform2D(0.570, 3.108, 45.0 - headingOffset));
-
-        wait(100);
-
-        navigateUsingEncoders(new Transform2D(1.800, 2.658, 0.0 - headingOffset));
-
-        navigateUsingEncoders(new Transform2D(1.500, 2.658, 90.0 - headingOffset));
-
-        ActivateBeacon(1.500);
-
-        navigateUsingEncoders(new Transform2D(2.743, 2.395, 90.0 - headingOffset));
-
-        ActivateBeacon(2.743);
-
-        vuforiaDriveToPosition(2.800, 2.100, 90.0 - headingOffset);
-        */
     }
 
     //once at a beacon, we use this function to press it
     private void ActivateBeacon(double xPosition) throws InterruptedException
     {
-        int colorLeftSide = vuforiaHelper.getPixelColor(-40, 230, 30);
-        int colorRightSide = vuforiaHelper.getPixelColor(40, 230, 30);
+        //TODO use hue wheel instead of colors
+        int colorLeftSide = vuforiaHelper.getPixelColor(-40, 170, 30);
+        int colorRightSide = vuforiaHelper.getPixelColor(40, 170, 30);
 
         if(Color.blue(colorRightSide) > Color.blue(colorLeftSide))
         {

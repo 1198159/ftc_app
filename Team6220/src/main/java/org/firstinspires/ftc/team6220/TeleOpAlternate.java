@@ -54,15 +54,15 @@ public class TeleOpAlternate extends MasterTeleOp
 
             if (driver2.isButtonPressed("A"))
             {
-                CollectorMotor.setPower(1.0);
+                collectorMotor.setPower(1.0);
             }
             else if (driver2.isButtonPressed("B"))
             {
-                CollectorMotor.setPower(-1.0);
+                collectorMotor.setPower(-1.0);
             }
             else
             {
-                CollectorMotor.setPower(0.0);
+                collectorMotor.setPower(0.0);
             }
 
             driver1.roll();

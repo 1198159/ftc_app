@@ -54,35 +54,6 @@ public class AutoBlue2 extends MasterAutonomous
 
         //@TODO incorrect for blue side
         vuforiaDriveToPosition(1.880, 2.313, 45);
-
-        /*
-        just in case the code above does not work
-        drive.moveRobot(0.0, 0.5, 0.0);
-        drive.moveRobot(0.0, - 0.2, 0.0);
-        drive.moveRobot(0.0, 0.2, 0.0);
-        */
-
-
-        //testing section; use later in season to push ball
-        /*
-        turnTo(-15.0 - headingOffset);
-
-        navigateUsingEncoders(new Transform2D(0.570, 3.108, 45.0 - headingOffset));
-
-        wait(100);
-
-        navigateUsingEncoders(new Transform2D(1.800, 2.658, 0.0 - headingOffset));
-
-        navigateUsingEncoders(new Transform2D(1.500, 2.658, 90.0 - headingOffset));
-
-        ActivateBeacon(1.500);
-
-        navigateUsingEncoders(new Transform2D(2.743, 2.395, 90.0 - headingOffset));
-
-        ActivateBeacon(2.743);
-
-        vuforiaDriveToPosition(2.800, 2.100, 90.0 - headingOffset);
-        */
     }
 
     //CodeReview: This method is used in several autonomous opmodes. It should probably
@@ -90,8 +61,8 @@ public class AutoBlue2 extends MasterAutonomous
     //once at a beacon, we use this function to press it
     private void ActivateBeacon(double yPosition) throws InterruptedException
     {
-        int colorLeftSide = vuforiaHelper.getPixelColor(-40, 230, 30);
-        int colorRightSide = vuforiaHelper.getPixelColor(40, 230, 30);
+        int colorLeftSide = vuforiaHelper.getPixelColor(-40, 170, 30);
+        int colorRightSide = vuforiaHelper.getPixelColor(40, 170, 30);
 
         //CodeReview: the next two blocks seem identical except for the one parameter 0.110 or -0.110 in vuforiaDriveToPosition
         //            so perhaps you could have the if statement just set a double with that number,
@@ -120,7 +91,6 @@ public class AutoBlue2 extends MasterAutonomous
             turnTo(0.0);
 
             vuforiaDriveToPosition(2.600, yPosition, 0.0);
-
         }
         else
         {
@@ -147,6 +117,5 @@ public class AutoBlue2 extends MasterAutonomous
 
             vuforiaDriveToPosition(2.600, yPosition, 0.0);
         }
-
     }
 }
