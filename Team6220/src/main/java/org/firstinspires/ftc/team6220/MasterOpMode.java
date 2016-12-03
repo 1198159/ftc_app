@@ -83,7 +83,7 @@ abstract public class MasterOpMode extends LinearOpMode
                 new PIDFilter[]{
                         new PIDFilter(0.8, 0.0, 0.0),    //x location control
                         new PIDFilter(0.8, 0.0, 0.0),    //y location control
-                        new PIDFilter(Constants.turningPowerFactor, 0.0, 0.0)}); //rotation control
+                        new PIDFilter(Constants.TURNING_POWER_FACTOR, 0.0, 0.0)}); //rotation control
 
         //CodeReview: It seems like your MotorToggler class should handle both of these cases.
         //            You shouldn't have to create two variables (one for forwards, one for backwards).
@@ -199,7 +199,7 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         Transform2D newLocation = updateLocationUsingEncoders();
 
-        while ((Math.abs(Target.x - drive.robotLocation.x) > Constants.xTolerance) || (Math.abs(Target.y - drive.robotLocation.y) > Constants.yTolerance)|| (Math.abs(Target.rot - drive.robotLocation.rot) > Constants.wTolerance))
+        while ((Math.abs(Target.x - drive.robotLocation.x) > Constants.X_TOLERANCE) || (Math.abs(Target.y - drive.robotLocation.y) > Constants.Y_TOLERANCE)|| (Math.abs(Target.rot - drive.robotLocation.rot) > Constants.W_TOLERANCE))
         {
             drive.navigateTo(Target);
 
@@ -250,11 +250,11 @@ abstract public class MasterOpMode extends LinearOpMode
         double angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);
         double turningPower;
 
-        while(Math.abs(angleDiff) > Constants.minimumAngleDiff)
+        while(Math.abs(angleDiff) > Constants.MINIMUM_ANGLE_DIFF)
         {
             currentAngle = getAngularOrientationWithOffset();
             angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);
-            turningPower = angleDiff * Constants.turningPowerFactor;
+            turningPower = angleDiff * Constants.TURNING_POWER_FACTOR;
 
             if (Math.abs(turningPower) > 1.0)
             {
@@ -262,13 +262,13 @@ abstract public class MasterOpMode extends LinearOpMode
             }
 
             // Makes sure turn power doesn't go below minimum power
-            if(turningPower > 0 && turningPower < Constants.minimumTurningPower)
+            if(turningPower > 0 && turningPower < Constants.MINIMUM_TURNING_POWER)
             {
-                turningPower = Constants.minimumTurningPower;
+                turningPower = Constants.MINIMUM_TURNING_POWER;
             }
-            else if (turningPower < 0 && turningPower > -Constants.minimumTurningPower)
+            else if (turningPower < 0 && turningPower > -Constants.MINIMUM_TURNING_POWER)
             {
-                turningPower = -Constants.minimumTurningPower;
+                turningPower = -Constants.MINIMUM_TURNING_POWER;
             }
             else
             {

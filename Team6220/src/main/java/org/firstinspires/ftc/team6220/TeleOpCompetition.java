@@ -37,22 +37,19 @@ public class TeleOpCompetition extends MasterTeleOp
                                     gamepad1.right_stick_x/2);    //rotation power; divided by 2 to reduce our robot's
                                                                    //high rotational velocity
 
-            //intake balls with collector
-            if (gamepad2.x && !lastBtn[2])
+            //intake balls with collector; drivers must hold buttons to collect
+            if (gamepad2.x)
             {
-                motorToggler.toggleMotor();
+                collectorMotor.setPower(1.0);
             }
-
-            //spit out balls with collector
-            if (gamepad2.b && !lastBtn[1])
+            else if (gamepad2.b)
             {
-                motorTogglerReverse.toggleMotor();
+                collectorMotor.setPower(-1.0);
             }
-
-            lastBtn[0] = gamepad2.a;
-            lastBtn[1] = gamepad2.b;
-            lastBtn[2] = gamepad2.x;
-            lastBtn[3] = gamepad2.y;
+            else
+            {
+                collectorMotor.setPower(0.0);
+            }
 
             idle();
         }
