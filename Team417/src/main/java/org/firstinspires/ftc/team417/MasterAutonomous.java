@@ -232,7 +232,8 @@ public class MasterAutonomous extends MasterOpMode
         sleep(30000);
 */
 
-        alignPivotVuforia(0.5, 700, 4);
+        pivotMove(400, 400, 10, 0.5, 3);
+        sleep(5000);
 
         // go towards target
         forwards(startDist, 0, 0.85, 3);  // inches, speed, timeout
@@ -882,10 +883,11 @@ public class MasterAutonomous extends MasterOpMode
         motorBackRight.setPower(0);
     }
 
+    // angle has to be small otherwise won't work, this function moves and pivots robot
     public void pivotMove(double x, double y, double pivotAngle, double speed, double timeout)
     {
-        final float Kmove = 1/600; // speed is proportional to error
-        final float Kpivot = 1/100;
+        final float Kmove = 1.0f/600.0f; // speed is proportional to error
+        final float Kpivot = 1.0f/100.0f;
 
         final float TOL = 10;
         final float TOL_ANGLE = 1;
@@ -923,19 +925,21 @@ public class MasterAutonomous extends MasterOpMode
 
         int pivotDst;
         final double ROBOT_DIAMETER_MM = 18.0 * 25.4;
-        pivotDst = (int) Math.round( (pivotAngle / 360) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
+        pivotDst = (int) ((pivotAngle / 360) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
         newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (x * 1.414))
-                + (int) (COUNTS_PER_MM * (y)) + (int) (COUNTS_PER_MM * pivotDst);
-        newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (-x * 1.414))
-                + (int) (COUNTS_PER_MM * (y)) - (int) (COUNTS_PER_MM * pivotDst);
-        newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (-x * 1.414))
-                + (int) (COUNTS_PER_MM * (y)) + (int) (COUNTS_PER_MM * pivotDst);
+                + (int) (COUNTS_PER_MM * (y)) + pivotDst;
+        newTargetFR = motorFrontRight.getCurrentPosition() - (int) (COUNTS_PER_MM * (x * 1.414))
+                + (int) (COUNTS_PER_MM * (y)) - pivotDst;
+        newTargetBL = motorBackLeft.getCurrentPosition() - (int) (COUNTS_PER_MM * (x * 1.414))
+                + (int) (COUNTS_PER_MM * (y)) + pivotDst;
         newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (x * 1.414))
-                + (int) (COUNTS_PER_MM * (y)) - (int) (COUNTS_PER_MM * pivotDst);
+                + (int) (COUNTS_PER_MM * (y)) - pivotDst;
 
         runtime.reset(); // reset timer, which is used for loop timeout below
 
+        telemetry.log().add(String.format("pivDst %d, x %f, y %f", pivotDst, x, y));
+        telemetry.update();
         // read starting angle
         startAngle = imu.getAngularOrientation().firstAngle;
 
@@ -951,32 +955,32 @@ public class MasterAutonomous extends MasterOpMode
             // pivotSpeed is added to each motor's movement speed
 
             errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
-            speedFL = errorFL * Kmove;  // movement speed proportional to error
+            speedFL = Kmove * errorFL;  // movement speed proportional to error
             speedFL += pivotSpeed;  // combine movement and pivot speeds
             speedAbsFL = Math.abs(speedFL);
             speedAbsFL = Range.clip(speedAbsFL, 0.2, speed);  // clip abs(speed)
             speedFL = speedAbsFL * Math.signum(speedFL);  // set sign of speed
 
             errorFR = newTargetFR - motorFrontRight.getCurrentPosition();
-            speedFR = errorFR * Kmove;
+            speedFR = Kmove * errorFR;
             speedFR -= pivotSpeed;  // combine movement and pivot speeds
             speedAbsFR = Math.abs(speedFR);
             speedAbsFR = Range.clip(speedAbsFR, 0.2, speed);  // clip abs(speed)
             speedFR = speedAbsFR * Math.signum(speedFR);
 
             errorBL = newTargetBL - motorBackLeft.getCurrentPosition();
-            speedBL = errorBL * Kmove;
+            speedBL = Kmove * errorBL;
             speedBL += pivotSpeed;  // combine movement and pivot speeds
             speedAbsBL = Math.abs(speedBL);
             speedAbsBL = Range.clip(speedAbsBL, 0.2, speed);  // clip abs(speed)
-            speedBL = speedBL * Math.signum(speedBL);
+            speedBL = speedAbsBL * Math.signum(speedBL);
 
             errorBR = newTargetBR - motorBackRight.getCurrentPosition();
-            speedBR = errorBR * Kmove;
+            speedBR = Kmove * errorBR;
             speedBR -= pivotSpeed;  // combine movement and pivot speeds
             speedAbsBR = Math.abs(speedBR);
             speedAbsBR = Range.clip(speedAbsBR, 0.2, speed);
-            speedBR = speedBR * Math.signum(speedBR);
+            speedBR = speedAbsBR * Math.signum(speedBR);
 
             if (Math.abs(errorFL) < TOL)
             {
@@ -1000,6 +1004,9 @@ public class MasterAutonomous extends MasterOpMode
             motorBackLeft.setPower(speedBL);
             motorBackRight.setPower(speedBR);
 
+            telemetry.log().add(String.format("FL %f, FR %f, BL %f, BR %f", speedFL, speedFR, speedBL, speedBR));
+            telemetry.log().add(String.format("errFL %d, errFR %d, errBL %d, errBR %d", errorFL, errorFR, errorBL, errorBR));
+            telemetry.update();
             idle();
         }
         while (opModeIsActive() &&
@@ -1016,9 +1023,6 @@ public class MasterAutonomous extends MasterOpMode
 
     public void alignPivotVuforia (double speed, double distAway, double timeout)
     {
-        final float Kmove = 1/600; // speed is proportional to error
-        final float Kpivot = 1/100;
-
         final float TOL = 10;
         final float TOL_ANGLE = 1;
 
@@ -1029,7 +1033,7 @@ public class MasterAutonomous extends MasterOpMode
         double robotErrorX;
         double robotErrorY;
 
-        double curTurnAngle;
+        double curRobotAngle;
         double pivotSpeed;
         double errorAngle;
 
@@ -1046,23 +1050,20 @@ public class MasterAutonomous extends MasterOpMode
             do
             {
                 VuforiaNav.getLocation(); // update target location and angle
+                idle();
             }
             while (VuforiaNav.lastLocation == null);  //CodeReview: this will hang your robot while Vuforia can't get its location. That could be a long time.
-            idle();
 
             xPos = VuforiaNav.lastLocation.getTranslation().getData()[0];
             yPos = VuforiaNav.lastLocation.getTranslation().getData()[1];
             errorX = targetPos[0] - xPos;
             errorY = targetPos[1] - yPos;
 
-            curTurnAngle = Orientation.getOrientation(VuforiaNav.lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
-            curTurnAngle = adjustAngles(curTurnAngle);
-            errorAngle =  targetAngle - curTurnAngle;
-            pivotSpeed = speed * Math.abs(errorAngle) / 100;
-            pivotSpeed = Range.clip(pivotSpeed, 0.2, 0.7); // limit abs speed
-            pivotSpeed = pivotSpeed * Math.signum(errorAngle); // set the sign of speed
+            curRobotAngle = Orientation.getOrientation(VuforiaNav.lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
+            curRobotAngle = adjustAngles(curRobotAngle);
+            errorAngle =  targetAngle - curRobotAngle;
 
-            // transform extrinsic to robot intrinsic
+            // transform extrinsic field coordinate to robot intrinsic coordinate so robot knows where to go
             robotErrorX = errorX * Math.cos(Math.toRadians(targetAngle)) + errorY * Math.sin(Math.toRadians(targetAngle));
             robotErrorY = -errorX * Math.sin(Math.toRadians(targetAngle)) + errorY * Math.cos(Math.toRadians(targetAngle));
             // shift position back 25 inches away from target image
@@ -1071,7 +1072,7 @@ public class MasterAutonomous extends MasterOpMode
             pivotMove(robotErrorX, robotErrorY, errorAngle, 0.5, 3);
 
             runtime.reset();
-            telemetry.log().add(String.format("X pos: %f, Y Pos: %f, NewXPos: %f, loop: %d", xPos, yPos, robotErrorX, loopCount));
+            telemetry.log().add(String.format("loop: %d", loopCount));
             telemetry.update();
             loopCount++;
 
