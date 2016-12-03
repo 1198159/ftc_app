@@ -132,6 +132,13 @@ abstract class MasterAutonomous extends Master
             else if(gamepad1.start)
                 settingUp = false;
 
+            while(!buttonsAreReleased(gamepad1))
+            {
+                // Wait for all buttons to be release before continuing. Otherwise buttons are read
+                // continuously in setup, and add many objectives
+                idle();
+            }
+
             // Ensure delay isn't negative
             if(delayTime < 0)
                 delayTime = 0;
@@ -148,13 +155,6 @@ abstract class MasterAutonomous extends Master
 
             telemetry.update();
             idle();
-
-            while(!buttonsAreReleased(gamepad1))
-            {
-                // Wait for all buttons to be release before continuing. Otherwise buttons are read
-                // continuously in setup, and add many objectives
-                idle();
-            }
         }
 
         // We could clear the telemetry at this point, but the drivers may want to see it

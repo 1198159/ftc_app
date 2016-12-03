@@ -197,7 +197,7 @@ public class AutonomousCompetition extends MasterAutonomous
         // Line up with button
         driveToPoint(beaconX + buttonDistance, beaconY - observationDistance, 90, 0.3);
         // Move forward to press button
-        driveToPoint(beaconX + buttonDistance, beaconY - 40, 90, 0.3);
+        driveToPoint(beaconX + buttonDistance, beaconY - 150, 90, 0.3);
         sleep(500); // TODO: Is this needed?
         // Back away from beacon
         driveToPoint(beaconX, beaconY - observationDistance, 90, 0.3);
@@ -264,7 +264,7 @@ public class AutonomousCompetition extends MasterAutonomous
         // Line up with button
         driveToPoint(beaconX - observationDistance, beaconY + buttonDistance, 0, 0.3);
         // Move forward to press button
-        driveToPoint(beaconX - 40, beaconY + buttonDistance, 0, 0.3);
+        driveToPoint(beaconX - 115, beaconY + buttonDistance, 0, 0.3);
         sleep(500); // TODO: Is this needed?
         // Back away from beacon
         driveToPoint(beaconX - observationDistance, beaconY, 0, 0.3);
