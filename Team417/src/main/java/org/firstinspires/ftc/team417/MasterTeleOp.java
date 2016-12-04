@@ -98,13 +98,13 @@ public class MasterTeleOp extends MasterOpMode
             // Gamepads have a new state, so update things that need updating
             //if(updateGamepads())
 
-           if (gamepad1.right_bumper)
+           if (gamepad1.right_bumper) // if slow mode (when right bumper is held down
             {
-                slowMode();
+                mecanumDrive(0.7, 0.5);
             }
            else
            {
-               mecanumDrive();
+               mecanumDrive(1.0, 0.7);
            }
 
             telemetry.update();
@@ -125,7 +125,7 @@ public class MasterTeleOp extends MasterOpMode
      * Right joystick controls the forwards, backwards, left and right
      */
 
-    public void mecanumDrive()
+    public void mecanumDrive(double kDrive, double kPivot)
     {
         double frontLeftPower;
         double frontRightPower;
@@ -150,43 +150,14 @@ public class MasterTeleOp extends MasterOpMode
         turn = modJoyStickInput(lx);
         turn = Range.clip(turn, -1, 1);
 
-        motorFrontLeft.setPower(jx2 + jy2 + turn * 0.6);
-        motorFrontRight.setPower(-jx2 + jy2 - turn * 0.6);
-        motorBackLeft.setPower(-jx2 + jy2 + turn *0.6);
-        motorBackRight.setPower(jx2 + jy2 - turn * 0.6);
+        motorFrontLeft.setPower(jx2 * kDrive + jy2 * kDrive + turn * kPivot);
+        motorFrontRight.setPower(-jx2 * kDrive + jy2 * kDrive - turn * kPivot);
+        motorBackLeft.setPower(-jx2 * kDrive + jy2 * kDrive + turn * kPivot);
+        motorBackRight.setPower(jx2 * kDrive + jy2 * kDrive - turn * kPivot);
         // lx is defined as game pad input, then turn gets value from function "modJoyStickInput"
         // turn used in final equation for each motor
     }
 
-    public void slowMode()
-    {
-        final double K_SLOW_MOVE = 0.7;
-        final double K_SLOW_PIVOT = 0.5;
-        double rx;  // represents RIGHT joystick "x axis"
-        double ry;  // represents RIGHT joystick "y axis"
-        double turn; // for turning with LEFT joystick
-        double lx; // represents joystick LEFT "x axis"
-
-        rx = gamepad1.right_stick_x;
-        ry = -gamepad1.right_stick_y; // the joystick is reversed, so make this negative
-        lx = gamepad1.left_stick_x;
-        double jx2; // jx2 and jy2 are the modified variables to the quadratic function
-        double jy2;
-
-        jx2 = modJoyStickInput(rx);
-        jx2 = Range.clip(jx2, -1, 1);
-        jy2 = modJoyStickInput(ry);
-        jy2 = Range.clip(jy2, -1, 1);
-        turn = modJoyStickInput(lx);
-        turn = Range.clip(turn, -1, 1);
-
-        motorFrontLeft.setPower(jx2 * K_SLOW_MOVE + jy2 * K_SLOW_MOVE + turn * K_SLOW_PIVOT);
-        motorFrontRight.setPower(-jx2 * K_SLOW_MOVE + jy2 * K_SLOW_MOVE - turn * K_SLOW_PIVOT);
-        motorBackLeft.setPower(-jx2 * K_SLOW_MOVE + jy2 * K_SLOW_MOVE + turn * K_SLOW_PIVOT);
-        motorBackRight.setPower(jx2 * K_SLOW_MOVE + jy2 * K_SLOW_MOVE - turn * K_SLOW_PIVOT);
-        // lx is defined as game pad input, then turn gets value from function "modJoyStickInput"
-        // turn used in final equation for each motor
-    }
 
     /* TABLE:
                  FL      FR      BL      BR
