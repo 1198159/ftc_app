@@ -5,12 +5,13 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 /*
     Encapsulates gamepad for interpretation of control actions
 */
-public class DriverInput
+public class DriverInput implements ConcurrentOperation
 {
     private Gamepad controller;
     private boolean[] buttonStates = {false,false,false,false,false,false,false,false,false,false};
     private boolean[] lastButtonStates = {false,false,false,false,false,false,false,false,false,false};
     private double[] buttonHeldCounts = {0,0,0,0,0,0,0,0,0,0};
+
 
     private final String[] BUTTONS = {"A","B","X","Y",
             "Left Bumper","Right Bumper","Left Stick Press","Right Stick Press",
@@ -20,6 +21,8 @@ public class DriverInput
     {
         controller = cont;
     }
+
+    public void initialize(){}
 
 
     //CodeReview: Instead of using strings to represent the buttons, how about using an enum?
@@ -82,7 +85,7 @@ public class DriverInput
 
     public double getRightStickAngle()
     {
-        return Math.atan2(-controller.right_stick_y,controller.right_stick_x);
+        return Math.atan2(-controller.right_stick_y, controller.right_stick_x);
     }
 
     public double getLeftStickMagnitude()
@@ -95,9 +98,13 @@ public class DriverInput
         return Math.pow(Math.pow(controller.right_stick_x,2)+Math.pow(controller.right_stick_y,2),0.5);
     }
 
-    //call at start of loop
+    //call at end of loop
     public void update(double eTime)
     {
+        for(int i=0;i<10;i++)
+        {
+            lastButtonStates[i] = buttonStates[i];
+        }
         buttonStates[0] = controller.a;
         buttonStates[1] = controller.b;
         buttonStates[2] = controller.x;
@@ -119,15 +126,6 @@ public class DriverInput
             {
                 buttonHeldCounts[i] = 0;
             }
-        }
-    }
-
-    //call at end of loop
-    public void roll()
-    {
-        for(int i=0;i<10;i++)
-        {
-            lastButtonStates[i] = buttonStates[i];
         }
     }
 

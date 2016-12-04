@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 
 /*
@@ -51,6 +54,9 @@ abstract public class MasterOpMode extends LinearOpMode
 
     ServoToggler collectorGateServoToggler;
 
+    DriverInput driver1;
+
+    List<ConcurrentOperation> callback = new ArrayList<>();
     //currently not in use
     /*
     MotorToggler motorToggler;
@@ -122,6 +128,20 @@ abstract public class MasterOpMode extends LinearOpMode
         // and named "imu".
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+
+        callback.add (driver1);
+        for(ConcurrentOperation item : callback)
+        {
+            item.initialize();
+        }
+    }
+
+    public void updateCallback(double eTime)
+    {
+        for(ConcurrentOperation item : callback)
+        {
+            item.update(eTime);
+        }
     }
 
     //TODO test encoder function; likely has errors
