@@ -17,6 +17,22 @@ abstract public class MasterOpMode extends LinearOpMode
     //Java Enums cannot act as integer indices as they do in other languages
     //To maintain compatabliity with with a FOR loop, we
     //TODO find if java supports an order-independent loop for each member of an array
+    //CodeReview: How about this? Java lets you use a for statement with an array, like this:
+    /*
+    int [] numberArray = {100, 200, 300, 400, 500};
+
+    for (int num: numberArray){    //num is a local variable. this will iterate through numberArray one value at a time.
+        System.out.print( num );
+        System.out.print(",");
+    }
+
+    //You can also do this with more complicated objects.
+    for (DriveAssembly d : driveAssemblies) {
+        d.motor.setPower(0);
+    }
+
+    */
+
     //e.g. in python that would be:   for assembly in driveAssemblies:
     //                                    assembly.doStuff()
     public final int FRONT_RIGHT = 0;
@@ -76,6 +92,10 @@ abstract public class MasterOpMode extends LinearOpMode
 
         CollectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        //CodeReview: This isn't currently used in teleop, so we might want to move it
+        //            into the MasterAutonomous initializeAuto method. It might be the reason that
+        //            we occasionally get control delays in teleop. As far as I can tell, it's ok
+        //            for this to be null in the drive system in teleop.
         vuforiaHelper = new VuforiaHelper();
 
         //TODO remove "magic numbers"
