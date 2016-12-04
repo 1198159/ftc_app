@@ -30,6 +30,7 @@ public class MasterTeleOp extends MasterOpMode
     double startAngle;
     double currentAngle;
     double imuAngle;
+    final double LIFT_POWER = 0.9;
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -79,11 +80,11 @@ public class MasterTeleOp extends MasterOpMode
                     //           final double LIFT_POWER = 0.9;
                     //           Also note that the 'f' in your number is making it a float, but the method wants a double,
                     //           so you are inadvertently making this less efficient. Just use 0.9 and the compiler will do the right thing.
-                    motorLift.setPower(0.9f);
+                    motorLift.setPower(LIFT_POWER);
                 }
                 else if (gamepad2.dpad_down)
                 {
-                    motorLift.setPower(-0.9f);
+                    motorLift.setPower(-LIFT_POWER);
                 }
                 else
                 {
@@ -96,9 +97,15 @@ public class MasterTeleOp extends MasterOpMode
             }
             // Gamepads have a new state, so update things that need updating
             //if(updateGamepads())
+
+           if (gamepad1.right_bumper)
             {
-                mecanumDrive();
+                slowMode();
             }
+           else
+           {
+               mecanumDrive();
+           }
 
             telemetry.update();
             idle();
@@ -151,9 +158,37 @@ public class MasterTeleOp extends MasterOpMode
         // turn used in final equation for each motor
     }
 
+    public void slowMode()
+    {
+        final double K_SLOW_MOVE = 0.7;
+        final double K_SLOW_PIVOT = 0.5;
+        double rx;  // represents RIGHT joystick "x axis"
+        double ry;  // represents RIGHT joystick "y axis"
+        double turn; // for turning with LEFT joystick
+        double lx; // represents joystick LEFT "x axis"
+
+        rx = gamepad1.right_stick_x;
+        ry = -gamepad1.right_stick_y; // the joystick is reversed, so make this negative
+        lx = gamepad1.left_stick_x;
+        double jx2; // jx2 and jy2 are the modified variables to the quadratic function
+        double jy2;
+
+        jx2 = modJoyStickInput(rx);
+        jx2 = Range.clip(jx2, -1, 1);
+        jy2 = modJoyStickInput(ry);
+        jy2 = Range.clip(jy2, -1, 1);
+        turn = modJoyStickInput(lx);
+        turn = Range.clip(turn, -1, 1);
+
+        motorFrontLeft.setPower(jx2 * K_SLOW_MOVE + jy2 * K_SLOW_MOVE + turn * K_SLOW_PIVOT);
+        motorFrontRight.setPower(-jx2 * K_SLOW_MOVE + jy2 * K_SLOW_MOVE - turn * K_SLOW_PIVOT);
+        motorBackLeft.setPower(-jx2 * K_SLOW_MOVE + jy2 * K_SLOW_MOVE + turn * K_SLOW_PIVOT);
+        motorBackRight.setPower(jx2 * K_SLOW_MOVE + jy2 * K_SLOW_MOVE - turn * K_SLOW_PIVOT);
+        // lx is defined as game pad input, then turn gets value from function "modJoyStickInput"
+        // turn used in final equation for each motor
+    }
 
     /* TABLE:
-
                  FL      FR      BL      BR
     rotate ->    +        -      +        -
     rotate <-    -        +      -        +
@@ -163,8 +198,6 @@ public class MasterTeleOp extends MasterOpMode
     right        +        -      -        +
     d. left      0        +      +        0
     d. right     +        0      0        +
-
-
     */
 
     public double modJoyStickInput(double x) // x is the raw joystick input, refer to "modJoyStickInput"
@@ -184,7 +217,7 @@ public class MasterTeleOp extends MasterOpMode
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        //CodeReview: Do these directions ever change? If not, put this into MasterOpMode's initializeHardware
+        // reverse front and ack right motors just for TeleOp
         motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
         motorBackRight.setDirection(DcMotor.Direction.REVERSE);
 
