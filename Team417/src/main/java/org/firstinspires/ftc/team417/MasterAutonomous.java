@@ -655,7 +655,6 @@ public class MasterAutonomous extends MasterOpMode
 
         // add a new pos. Y in the future
 
-        // TODO: switch mode to run with encoders while phones charge
         // run with encoder mode
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -732,7 +731,6 @@ public class MasterAutonomous extends MasterOpMode
     }
 
 
-
     // move the robot hora. sideways to align with image target
     // look at double speed
     public void alignVuforia (double speed, double distAway, double timeout)
@@ -763,8 +761,6 @@ public class MasterAutonomous extends MasterOpMode
         double speedBL;
         double speedBR;
 
-
-        // TODO: switch mode to run with encoders while phones charge
         // run with encoder mode
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -861,7 +857,6 @@ public class MasterAutonomous extends MasterOpMode
                     (runtime.seconds() < timeout) &&
                     (Math.abs(errorFL) > TOL || Math.abs(errorFR) > TOL || Math.abs(errorBL) > TOL || Math.abs(errorBR) > TOL));
 
-
             runtime.reset();
             telemetry.log().add(String.format("X pos: %f, Y Pos: %f, NewXPos: %f, loop: %d", xPos, yPos, robotErrorX, loopCount));
             telemetry.update();
@@ -956,6 +951,7 @@ public class MasterAutonomous extends MasterOpMode
 
             errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
             speedFL = Kmove * errorFL;  // movement speed proportional to error
+            telemetry.log().add(String.format("spdFL %f", speedFL));
             speedFL += pivotSpeed;  // combine movement and pivot speeds
             speedAbsFL = Math.abs(speedFL);
             speedAbsFL = Range.clip(speedAbsFL, 0.2, speed);  // clip abs(speed)
@@ -1134,7 +1130,6 @@ public class MasterAutonomous extends MasterOpMode
         int newTargetFR;
         int newTargetBR;
 
-
         newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * (dstX + dstY));
         newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_INCH * (-dstX + dstY));
         newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * (-dstX + dstY));
@@ -1146,9 +1141,9 @@ public class MasterAutonomous extends MasterOpMode
         motorBackRight.setTargetPosition(newTargetBR);
 
         motorFrontLeft.setPower(speedX + speedY);
-        motorFrontRight.setPower(-speedX + speedY );
-        motorBackLeft.setPower(-speedX + speedY );
-        motorBackRight.setPower(speedX + speedY );
+        motorFrontRight.setPower(-speedX + speedY);
+        motorBackLeft.setPower(-speedX + speedY);
+        motorBackRight.setPower(speedX + speedY);
         runtime.reset();
 
         // wait until the motors reach the position
