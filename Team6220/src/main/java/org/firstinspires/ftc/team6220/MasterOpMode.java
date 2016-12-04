@@ -271,6 +271,7 @@ abstract public class MasterOpMode extends LinearOpMode
             angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);
             turningPower = angleDiff * Constants.TURNING_POWER_FACTOR;
 
+            //makes sure turn power doesn't go above maximum power
             if (Math.abs(turningPower) > 1.0)
             {
                 turningPower = Math.signum(turningPower);

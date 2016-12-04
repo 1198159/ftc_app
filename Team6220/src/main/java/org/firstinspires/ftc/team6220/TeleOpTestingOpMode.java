@@ -13,8 +13,8 @@ public class TeleOpTestingOpMode extends MasterTeleOp
 
     //CodeReview: Define an enum for reading/writing the elements of your lastBtn array instead of using magic numbers in your code.
     //temporary tap trigger variable
-    //                                   a      b      x      y
-    boolean lastBtn[] = new boolean[]{false, false, false, false};
+    //                                  a      b      x      y    right bumper
+    boolean lastBtn[] = new boolean[]{false, false, false, false, false};
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -101,6 +101,8 @@ public class TeleOpTestingOpMode extends MasterTeleOp
             lastBtn[1] = gamepad2.b;
             lastBtn[2] = gamepad2.x;
             lastBtn[3] = gamepad2.y;
+            lastBtn[4] = gamepad2.right_bumper;
+
 
             telemetry.addData("LeftStickY: ", gamepad2.left_stick_y);
             telemetry.addData("RightStickY: ", gamepad2.right_stick_y);
