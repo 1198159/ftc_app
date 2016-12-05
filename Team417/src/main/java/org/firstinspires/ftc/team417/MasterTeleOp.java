@@ -10,22 +10,23 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-
-//CodeReview: This starting comment regarding drivabots seems irrelevant.
-/**
- * Program not used to control Drive-A-Bots.
- * This can be a good reference for drive controls.
- */
 @TeleOp(name="TeleOp", group = "Swerve")
 // @Disabled
 
-//CodeReview: there's a typo in the next comment. But, it's a great idea to document the robot controls in comments.
-// IMPORTANT: GAMEPAD ON EIS THE DRIVER THAT MOVES THE ROBOT AROUND
+// CONTROLS:
+// left joystick controls the turn, or pivot alone
+// right joystick controls forwards, backwards, horizontal left and right
+// hold down right bumper for slow mode
+// push left bumper to reverse drive
+
 public class MasterTeleOp extends MasterOpMode
 {
-    boolean isLiftActivated = false;
-    private ElapsedTime runtime = new ElapsedTime();
     boolean isSwitchPressed = false;
+    boolean isBButtonPressed = false; // is b button causes is lift to toggle
+    boolean isLiftActivated = false;
+    boolean isLeftBumperPushed = false; // is left bumper causes is mode to toggle
+    boolean isModeReversed = false;
+    private ElapsedTime runtime = new ElapsedTime();
     Orientation angles;
     double startAngle;
     double currentAngle;
@@ -56,30 +57,18 @@ public class MasterTeleOp extends MasterOpMode
            */
 
            isSwitchPressed = liftSwitch.getState();    //  Read the input pin
-            if (gamepad2.b)
+
+           if (gamepad2.b && !isBButtonPressed)
             {
-                if (isLiftActivated == false)
-                {
-                    isLiftActivated = true;
-                    runtime.reset();
-                }
-                else if (runtime.seconds() > 1) // timeout is one second  //CodeReview: see me about this, I have questions about what you intend this to do
-                {
-                    isLiftActivated = false;
-                }
+                isBButtonPressed = true;
+                isLiftActivated = !isLiftActivated;
             }
+            isBButtonPressed = gamepad2.b;
 
             if (isLiftActivated && !isSwitchPressed) // if the switch is NOT pressed
             {
                 if (gamepad2.dpad_up)
                 {
-                    //CodeReview: put "magic numbers" like this into constants so they are easily edited
-                    //           (all constants should be defined in one place), and so they are easily
-                    //           understood when reading the code.
-                    //           Note: a "constant" in java is defined as "final" and is usually in all-caps, e.g.
-                    //           final double LIFT_POWER = 0.9;
-                    //           Also note that the 'f' in your number is making it a float, but the method wants a double,
-                    //           so you are inadvertently making this less efficient. Just use 0.9 and the compiler will do the right thing.
                     motorLift.setPower(LIFT_POWER);
                 }
                 else if (gamepad2.dpad_down)
@@ -98,7 +87,25 @@ public class MasterTeleOp extends MasterOpMode
             // Gamepads have a new state, so update things that need updating
             //if(updateGamepads())
 
-           if (gamepad1.right_bumper) // if slow mode (when right bumper is held down
+           if (gamepad1.left_bumper)
+           {
+               if (isModeReversed == false) // if already false
+               {
+                   isModeReversed = true;
+               }
+               else if (runtime.seconds() > 1) // timeout is one second  //CodeReview: see me about this, I have questions about what you intend this to do
+               {
+                   isModeReversed = false;
+               }
+           }
+           if (gamepad2.left_bumper && !isLeftBumperPushed)
+           {
+               isLeftBumperPushed = true;
+               isModeReversed = !isModeReversed;
+           }
+           isLeftBumperPushed = gamepad2.left_bumper;
+
+           if (gamepad1.right_bumper) // if slow mode (when right bumper is held down)
             {
                 mecanumDrive(0.7, 0.5);
             }
@@ -118,12 +125,6 @@ public class MasterTeleOp extends MasterOpMode
         motorBackRight.setPower(0);
         motorLift.setPower(0);
     }
-
-    /*
-     * Controls the robot with two joysticks
-     * Left joystick controls the turn / pivot
-     * Right joystick controls the forwards, backwards, left and right
-     */
 
     public void mecanumDrive(double kDrive, double kPivot)
     {
@@ -149,6 +150,13 @@ public class MasterTeleOp extends MasterOpMode
         jy2 = Range.clip(jy2, -1, 1);
         turn = modJoyStickInput(lx);
         turn = Range.clip(turn, -1, 1);
+
+        if (isModeReversed)
+        {
+            jx2 = -jx2;
+            jy2 = -jy2;
+        }
+        telemetry.addData("Reversed: ", isModeReversed);
 
         motorFrontLeft.setPower(jx2 * kDrive + jy2 * kDrive + turn * kPivot);
         motorFrontRight.setPower(-jx2 * kDrive + jy2 * kDrive - turn * kPivot);
@@ -188,7 +196,7 @@ public class MasterTeleOp extends MasterOpMode
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // reverse front and ack right motors just for TeleOp
+        // reverse front and back right motors just for TeleOp
         motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
         motorBackRight.setDirection(DcMotor.Direction.REVERSE);
 
