@@ -40,7 +40,8 @@ public class TestSemiAutomation extends MasterTeleOp
             }
             driveRobotWithJoysticks(gamepad1.left_stick_x,    //local x motion power
                                     gamepad1.left_stick_y,     //local y motion power
-                                    gamepad1.right_stick_x/2);    //rotation power
+                                    gamepad1.right_stick_x/2,
+                                    false);    //rotation power
 
             telemetry.addData("X: ", drive.robotLocation.x);
             telemetry.addData("Y: ", drive.robotLocation.y);
