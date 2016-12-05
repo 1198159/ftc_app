@@ -54,60 +54,93 @@ public class AutoRed2 extends MasterAutonomous
         turnTo(45);
 
         vuforiaDriveToPosition(1.880, 2.313, 45.0);
-    }
 
-    //used to drive to and press the beacon after determining the correct side to press; used inside
-    //ActivateBeacon to shorten code
-    private void DriveToBeacon(double positionOffset, double xPosition) throws InterruptedException
-    {
-        vuforiaDriveToPosition(xPosition + positionOffset, 3.000, 90.0);
+        /*
+        just in case the code above does not work
+        drive.moveRobot(0.0, 0.5, 0.0);
+        drive.moveRobot(0.0, - 0.2, 0.0);
+        drive.moveRobot(0.0, 0.2, 0.0);
+        */
 
-        turnTo(-90.0);
 
-        drive.moveRobot(0.0, -0.2, 0.0);
+        //testing section; use later in season to push ball
+        /*
+        turnTo(-15.0 - headingOffset);
 
-        pause(800);
+        navigateUsingEncoders(new Transform2D(0.570, 3.108, 45.0 - headingOffset));
 
-        stopAllDriveMotors();
+        wait(100);
 
-        //navigateUsingEncoders(new Transform2D(xPosition - 0.150, 3.318, -90.0 - headingOffset));
+        navigateUsingEncoders(new Transform2D(1.800, 2.658, 0.0 - headingOffset));
 
-        //TODO replace later
-        drive.moveRobot(0.0, 1.0, 0.0);
+        navigateUsingEncoders(new Transform2D(1.500, 2.658, 90.0 - headingOffset));
 
-        pause(200);
+        ActivateBeacon(1.500);
 
-        stopAllDriveMotors();
+        navigateUsingEncoders(new Transform2D(2.743, 2.395, 90.0 - headingOffset));
 
-        turnTo(90.0);
+        ActivateBeacon(2.743);
 
-        vuforiaDriveToPosition(xPosition, 2.600, 90.0);
+        vuforiaDriveToPosition(2.800, 2.100, 90.0 - headingOffset);
+        */
     }
 
     //once at a beacon, we use this function to press it
     private void ActivateBeacon(double xPosition) throws InterruptedException
     {
-        float[] leftSideColor = new float[3];
-        float[] rightSideColor = new float[3];
-        Color.colorToHSV(vuforiaHelper.getPixelColor(-40, 170, 30), leftSideColor);
-        Color.colorToHSV(vuforiaHelper.getPixelColor(40, 170, 30), rightSideColor);
+        int colorLeftSide = vuforiaHelper.getPixelColor(-40, 230, 30);
+        int colorRightSide = vuforiaHelper.getPixelColor(40, 230, 30);
 
-        if(leftSideColor[0] < 90)
+        if(Color.blue(colorRightSide) > Color.blue(colorLeftSide))
         {
-            leftSideColor[0] += 360;
-        }
-        if(rightSideColor[0] < 90)
-        {
-            rightSideColor[0] += 360;
-        }
+            vuforiaDriveToPosition(xPosition - 0.110, 3.000, 90.0);
 
-        if(leftSideColor[0] - rightSideColor[0] > 0)
-        {
-            DriveToBeacon(-0.110, xPosition);
+            turnTo(-90.0);
+
+            drive.moveRobot(0.0, -0.2, 0.0);
+
+            pause(800);
+
+            stopAllDriveMotors();
+
+            //navigateUsingEncoders(new Transform2D(xPosition- 0.150, 3.318, -90.0 - headingOffset));
+
+            //TODO replace later
+            drive.moveRobot(0.0, 1.0, 0.0);
+
+            pause(200);
+
+            stopAllDriveMotors();
+
+            turnTo(90.0);
+
+            vuforiaDriveToPosition(xPosition, 3.428, 90.0);
+
         }
         else
         {
-            DriveToBeacon(0.110, xPosition);
+            vuforiaDriveToPosition(xPosition + 0.110, 3.000, 90.0);
+
+            turnTo(-90.0);
+
+            drive.moveRobot(0.0, -0.2, 0.0);
+
+            pause(800);
+
+            stopAllDriveMotors();
+
+            //navigateUsingEncoders(new Transform2D(xPosition + 0.150, 3.318, -90.0-headingOffset));
+
+            //TODO replace later
+            drive.moveRobot(0.0, 1.0, 0.0);
+
+            pause(200);
+
+            stopAllDriveMotors();
+
+            turnTo(90.0);
+
+            vuforiaDriveToPosition(xPosition, 3.428, 90.0);
         }
 
     }

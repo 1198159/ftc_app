@@ -28,7 +28,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         currentAngle = getAngularOrientationWithOffset();
 
-        while((Math.abs(TargetX - drive.robotLocation.x) > Constants.X_TOLERANCE) || (Math.abs(TargetY - drive.robotLocation.y) > Constants.Y_TOLERANCE) || (Math.abs(TargetAngle - drive.robotLocation.rot) > Constants.W_TOLERANCE))
+        while((Math.abs(TargetX - drive.robotLocation.x) > Constants.xTolerance) || (Math.abs(TargetY - drive.robotLocation.y) > Constants.yTolerance) || (Math.abs(TargetAngle - drive.robotLocation.rot) > Constants.wTolerance))
         {
             float[] l = vuforiaHelper.getRobotLocation();
             //vuforia data comes out as an array instead of readable data, so it must be changed to a Transform2D;
@@ -79,11 +79,11 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         //sets the power of the motors to turn.  Since the turning direction of the robot is reversed from the motors,
         //negative signs are necessary.
-        while(Math.abs(angleDiff) > Constants.MINIMUM_ANGLE_DIFF)
+        while(Math.abs(angleDiff) > Constants.minimumAngleDiff)
         {
             currentAngle = getAngularOrientationWithOffset();
             angleDiff = drive.normalizeRotationTarget(w, currentAngle);
-            turningPower = angleDiff * Constants.TURNING_POWER_FACTOR;
+            turningPower = angleDiff * Constants.turningPowerFactor;
 
             if (Math.abs(turningPower) > 1.0)
             {
@@ -91,13 +91,13 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
 
             // Make sure turn power doesn't go below minimum power
-            if(turningPower > 0 && turningPower < Constants.TURNING_POWER_FACTOR)
+            if(turningPower > 0 && turningPower < Constants.turningPowerFactor)
             {
-                turningPower = Constants.TURNING_POWER_FACTOR;
+                turningPower = Constants.turningPowerFactor;
             }
-            else if (turningPower < 0 && turningPower > -Constants.TURNING_POWER_FACTOR)
+            else if (turningPower < 0 && turningPower > -Constants.turningPowerFactor)
             {
-                turningPower = -Constants.TURNING_POWER_FACTOR;
+                turningPower = -Constants.turningPowerFactor;
             }
             else
             {

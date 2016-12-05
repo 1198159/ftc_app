@@ -10,7 +10,8 @@ public class TestCapBallGrabber extends LinearOpMode
     private Servo servoLeft;
     private Servo servoRight;
 
-    private double servoPosition = 0.0;
+    private double servoLeftPosition = 0.0;
+    private double servoRightPosition = 1.0;
 
     private static final double DELTA_POSITION = 0.05;
 
@@ -22,29 +23,30 @@ public class TestCapBallGrabber extends LinearOpMode
         servoRight = hardwareMap.servo.get("servoRight");
         servoLeft = hardwareMap.servo.get("servoLeft");
 
-        servoLeft.setDirection(Servo.Direction.REVERSE);
-
         waitForStart();
 
         while(opModeIsActive())
         {
             if(gamepad1.dpad_up && !wasPressed)
             {
-                servoPosition += DELTA_POSITION;
+                servoRightPosition += DELTA_POSITION;
+                servoLeftPosition -= DELTA_POSITION;
                 wasPressed = true;
             }
             else if(gamepad1.dpad_down && !wasPressed)
             {
-                servoPosition -= DELTA_POSITION;
+                servoRightPosition -= DELTA_POSITION;
+                servoLeftPosition += DELTA_POSITION;
                 wasPressed = true;
             }
             else if(!gamepad1.dpad_down && !gamepad1.dpad_up)
                 wasPressed = false;
 
-            servoRight.setPosition(servoPosition);
-            servoLeft.setPosition(servoPosition);
+            servoRight.setPosition(servoRightPosition);
+            servoLeft.setPosition(servoLeftPosition);
 
-            telemetry.addData("Position", servoPosition);
+            telemetry.addData("Left", servoLeftPosition);
+            telemetry.addData("Right", servoRightPosition);
 
             telemetry.update();
             idle();

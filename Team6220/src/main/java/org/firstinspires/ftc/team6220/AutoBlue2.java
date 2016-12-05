@@ -54,34 +54,35 @@ public class AutoBlue2 extends MasterAutonomous
 
         //@TODO incorrect for blue side
         vuforiaDriveToPosition(1.880, 2.313, 45);
-    }
 
-    //used to drive to and press the beacon after determining the correct side to press; used inside
-    //ActivateBeacon to shorten code
-    private void DriveToBeacon(double positionOffset, double yPosition) throws InterruptedException
-    {
-        vuforiaDriveToPosition(3.000, yPosition + positionOffset, 0.0);
+        /*
+        just in case the code above does not work
+        drive.moveRobot(0.0, 0.5, 0.0);
+        drive.moveRobot(0.0, - 0.2, 0.0);
+        drive.moveRobot(0.0, 0.2, 0.0);
+        */
 
-        turnTo(-180.0);
 
-        drive.moveRobot(0.0, -0.2, 0.0);
+        //testing section; use later in season to push ball
+        /*
+        turnTo(-15.0 - headingOffset);
 
-        pause(800);
+        navigateUsingEncoders(new Transform2D(0.570, 3.108, 45.0 - headingOffset));
 
-        stopAllDriveMotors();
+        wait(100);
 
-        //navigateUsingEncoders(new Transform2D(xPosition - 0.150, 3.318, -90.0 - headingOffset));
+        navigateUsingEncoders(new Transform2D(1.800, 2.658, 0.0 - headingOffset));
 
-        //TODO replace later
-        drive.moveRobot(0.0, 1.0, 0.0);
+        navigateUsingEncoders(new Transform2D(1.500, 2.658, 90.0 - headingOffset));
 
-        pause(200);
+        ActivateBeacon(1.500);
 
-        stopAllDriveMotors();
+        navigateUsingEncoders(new Transform2D(2.743, 2.395, 90.0 - headingOffset));
 
-        turnTo(0.0);
+        ActivateBeacon(2.743);
 
-        vuforiaDriveToPosition(2.600, yPosition, 0.0);
+        vuforiaDriveToPosition(2.800, 2.100, 90.0 - headingOffset);
+        */
     }
 
     //CodeReview: This method is used in several autonomous opmodes. It should probably
@@ -89,18 +90,63 @@ public class AutoBlue2 extends MasterAutonomous
     //once at a beacon, we use this function to press it
     private void ActivateBeacon(double yPosition) throws InterruptedException
     {
-        float[] leftSideColor = new float[3];
-        float[] rightSideColor = new float[3];
-        Color.colorToHSV(vuforiaHelper.getPixelColor(-40, 170, 30), leftSideColor);
-        Color.colorToHSV(vuforiaHelper.getPixelColor(40, 170, 30), rightSideColor);
+        int colorLeftSide = vuforiaHelper.getPixelColor(-40, 230, 30);
+        int colorRightSide = vuforiaHelper.getPixelColor(40, 230, 30);
 
-        if(leftSideColor[0] - rightSideColor[0] > 0)
+        //CodeReview: the next two blocks seem identical except for the one parameter 0.110 or -0.110 in vuforiaDriveToPosition
+        //            so perhaps you could have the if statement just set a double with that number,
+        //            and then the rest of the code would not need to be copied. (no code duplication)
+        if(Color.blue(colorRightSide) < Color.blue(colorLeftSide))
         {
-            DriveToBeacon(0.110, yPosition);
+            vuforiaDriveToPosition(3.000, yPosition + 0.110, 0.0);
+
+            turnTo(-180.0);
+
+            drive.moveRobot(0.0, -0.2, 0.0);
+
+            pause(800);
+
+            stopAllDriveMotors();
+
+            //navigateUsingEncoders(new Transform2D(xPosition- 0.150, 3.318, -90.0 - headingOffset));
+
+            //TODO replace later
+            drive.moveRobot(0.0, 1.0, 0.0);
+
+            pause(200);
+
+            stopAllDriveMotors();
+
+            turnTo(0.0);
+
+            vuforiaDriveToPosition(2.600, yPosition, 0.0);
+
         }
         else
         {
-            DriveToBeacon(-0.110, yPosition);
+            vuforiaDriveToPosition(3.000, yPosition - 0.110, 0.0);
+
+            turnTo(-180.0);
+
+            drive.moveRobot(0.0, -0.2, 0.0);
+
+            pause(800);
+
+            stopAllDriveMotors();
+
+            //navigateUsingEncoders(new Transform2D(xPosition + 0.150, 3.318, -90.0-headingOffset));
+
+            //TODO replace later
+            drive.moveRobot(0.0, 1.0, 0.0);
+
+            pause(200);
+
+            stopAllDriveMotors();
+
+            turnTo(0.0);
+
+            vuforiaDriveToPosition(2.600, yPosition, 0.0);
         }
+
     }
 }
