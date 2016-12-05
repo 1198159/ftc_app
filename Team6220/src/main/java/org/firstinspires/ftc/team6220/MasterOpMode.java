@@ -29,8 +29,6 @@ abstract public class MasterOpMode extends LinearOpMode
 
     DcMotor collectorMotor;
 
-    Servo collectorGateServo = null;
-
     private int EncoderFR = 0;
     private int EncoderFL = 0;
     private int EncoderBL = 0;
@@ -84,8 +82,6 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"), new Transform2D(1.0, -1.0, 45), 1.0, 0.1016, 1.0);
         collectorMotor = hardwareMap.dcMotor.get("motorCollector");
 
-        collectorGateServo = hardwareMap.servo.get("servoCollectorGate");
-
         //TODO tune our own drive PID loop using DriveAssemblyPID instead of build-in P/step filter
         //TODO Must be disabled if motor encoders are not correctly reporting
         driveAssemblies[FRONT_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -94,7 +90,6 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies[BACK_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         collectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        collectorGateServo.setPosition(Constants.COLLECTOR_GATE_SERVO_RETRACTED_POSITION);
 
         //not currently in use
         /*
@@ -106,9 +101,6 @@ abstract public class MasterOpMode extends LinearOpMode
         motorTogglerReverse = new MotorToggler(collectorMotor, -1.0);
         */
 
-        collectorGateServoToggler = new ServoToggler(collectorGateServo, Constants.COLLECTOR_GATE_SERVO_RETRACTED_POSITION, Constants.COLLECTOR_GATE_SERVO_DEPLOYED_POSITION);
-
-        vuforiaHelper = new VuforiaHelper();
 
         //TODO remove "magic numbers"
         //CodeReview: please don't use magic numbers (0.8). Instead use named constants and

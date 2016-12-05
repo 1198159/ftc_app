@@ -1,15 +1,15 @@
 package org.firstinspires.ftc.team6220;
 
-/**
- * Created by Colew on 9/18/2016.
- */
+/*
+    []
+*/
 abstract public class MasterAutonomous extends MasterOpMode
 {
     //used for initializations only necessary in autonomous
     public void initializeAuto()
     {
         initializeHardware();
-
+        vuforiaHelper = new VuforiaHelper();
         vuforiaHelper.setupVuforia();
     }
 

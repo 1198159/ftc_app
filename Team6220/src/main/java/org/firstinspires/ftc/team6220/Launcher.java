@@ -27,7 +27,7 @@ public class Launcher implements ConcurrentOperation
     {
         //pullBackMotor = hMap.dcMotor.get(motorDevice);
         gateServo = hMap.servo.get(servoDevice);
-        gateServo.setPosition(-0.5);
+        gateServo.setPosition(Constants.COLLECTOR_GATE_SERVO_DEPLOYED_POSITION);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class Launcher implements ConcurrentOperation
     {
         if (isReleasing)
         {
-            gateServo.setPosition(0);
+            gateServo.setPosition(Constants.COLLECTOR_GATE_SERVO_RETRACTED_POSITION);
             servoWaitTime += eTime;
             if(servoWaitTime > 1.0)
             {
@@ -44,7 +44,7 @@ public class Launcher implements ConcurrentOperation
         }
         else
         {
-            gateServo.setPosition(0.5);
+            gateServo.setPosition(Constants.COLLECTOR_GATE_SERVO_DEPLOYED_POSITION);
         }
 
     }
