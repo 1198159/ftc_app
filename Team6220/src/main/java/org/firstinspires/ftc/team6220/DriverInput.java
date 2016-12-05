@@ -1,12 +1,19 @@
 package org.firstinspires.ftc.team6220;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /*
     Encapsulates gamepad for interpretation of control actions
 */
 public class DriverInput implements ConcurrentOperation
 {
+    public enum Button
+    {
+        A, B, X, Y,
+        LEFT_BUMPER, RIGHT_BUMPER, LEFT_STICK_PRESS, RIGHT_STICK_PRESS,
+        SELECT, START
+    }
     private Gamepad controller;
     private boolean[] buttonStates = {false,false,false,false,false,false,false,false,false,false};
     private boolean[] lastButtonStates = {false,false,false,false,false,false,false,false,false,false};
@@ -22,7 +29,7 @@ public class DriverInput implements ConcurrentOperation
         controller = cont;
     }
 
-    public void initialize(){}
+    public void initialize(HardwareMap hMap){}
 
 
     //CodeReview: Instead of using strings to represent the buttons, how about using an enum?

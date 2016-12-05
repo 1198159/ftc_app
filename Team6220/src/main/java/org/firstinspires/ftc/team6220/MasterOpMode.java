@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team6220;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.ArrayList;
@@ -54,7 +55,11 @@ abstract public class MasterOpMode extends LinearOpMode
 
     ServoToggler collectorGateServoToggler;
 
+    double lTime = 0;
+
     DriverInput driver1;
+    DriverInput driver2;
+    Launcher launcher = new Launcher();
 
     List<ConcurrentOperation> callback = new ArrayList<>();
     //currently not in use
@@ -65,6 +70,8 @@ abstract public class MasterOpMode extends LinearOpMode
 
     public void initializeHardware()
     {
+        driver1 = new DriverInput(gamepad1);
+        driver2 = new DriverInput(gamepad2);
         //create a driveAssembly array to allow for easy access to motors
         driveAssemblies = new DriveAssembly[4];
 
@@ -129,10 +136,12 @@ abstract public class MasterOpMode extends LinearOpMode
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
-        callback.add (driver1);
+        callback.add(driver1);
+        callback.add(driver2);
+        callback.add(launcher);
         for(ConcurrentOperation item : callback)
         {
-            item.initialize();
+            item.initialize(hardwareMap);
         }
     }
 

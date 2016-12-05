@@ -14,10 +14,15 @@ abstract public class MasterTeleOp extends MasterOpMode
     //                                                   y = 1/2x^3 + 0x^2 + 1/2x + 0
     Polynomial pilotInputCurve = new Polynomial(new double[]{ 0.0, 0.5, 0.0, 0.5 });
 
-    void driveRobotWithJoysticks(double xMotionAxis, double yMotionAxis, double rotationAxis)
+    void driveRobotWithJoysticks(double xMotionAxis, double yMotionAxis, double rotationAxis, boolean slow)
     {
-        drive.moveRobot(pilotInputCurve.getOuput(xMotionAxis),
-                        pilotInputCurve.getOuput(yMotionAxis),
-                        pilotInputCurve.getOuput(rotationAxis));
+        double factor = 1.0;
+        if(slow)
+        {
+            factor = 0.4;
+        }
+        drive.moveRobot(pilotInputCurve.getOuput(xMotionAxis)*factor,
+                        pilotInputCurve.getOuput(yMotionAxis)*factor,
+                        pilotInputCurve.getOuput(rotationAxis)*factor);
     }
 }
