@@ -18,17 +18,20 @@ public class TeleOpCompetition extends MasterTeleOp
 {
     ElapsedTime timer = new ElapsedTime();
 
+
     @Override
     public void runOpMode() throws InterruptedException
     {
-        double eTime = timer.time() - lTime;
-        lTime = timer.time();
         initializeHardware();
 
         waitForStart();
 
         while (opModeIsActive())
         {
+            double eTime = timer.seconds() - lTime;
+            lTime = timer.seconds();
+
+
             driveRobotWithJoysticks(gamepad1.left_stick_x,    //local x motion power
                                     gamepad1.left_stick_y,     //local y motion power
                                     gamepad1.right_stick_x/2, //rotation power; divided by 2 to reduce our robot'shigh rotational velocity
@@ -54,7 +57,9 @@ public class TeleOpCompetition extends MasterTeleOp
                 launcher.releaseParticle();
             }
 
+            telemetry.addData("eTime:", eTime);
             updateCallback(eTime);
+            telemetry.update();
             idle();
         }
     }

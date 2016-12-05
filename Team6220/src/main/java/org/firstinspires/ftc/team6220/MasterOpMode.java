@@ -57,7 +57,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     DriverInput driver1;
     DriverInput driver2;
-    Launcher launcher = new Launcher();
+    Launcher launcher = new Launcher(this);
 
     List<ConcurrentOperation> callback = new ArrayList<>();
     //currently not in use

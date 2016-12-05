@@ -16,13 +16,15 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     void driveRobotWithJoysticks(double xMotionAxis, double yMotionAxis, double rotationAxis, boolean slow)
     {
-        double factor = 1.0;
+        double tFactor = 1.0;
+        double rFactor = 1.0;
         if(slow)
         {
-            factor = 0.4;
+            tFactor = 0.2;
+            rFactor = 0.4;
         }
-        drive.moveRobot(pilotInputCurve.getOuput(xMotionAxis)*factor,
-                        pilotInputCurve.getOuput(yMotionAxis)*factor,
-                        pilotInputCurve.getOuput(rotationAxis)*factor);
+        drive.moveRobot(pilotInputCurve.getOuput(xMotionAxis)*tFactor,
+                        pilotInputCurve.getOuput(yMotionAxis)*tFactor,
+                        pilotInputCurve.getOuput(rotationAxis)*rFactor);
     }
 }
