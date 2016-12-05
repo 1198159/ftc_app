@@ -8,21 +8,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 */
 public class DriverInput implements ConcurrentOperation
 {
-    public enum Button
-    {
-        A, B, X, Y,
-        LEFT_BUMPER, RIGHT_BUMPER, LEFT_STICK_PRESS, RIGHT_STICK_PRESS,
-        SELECT, START
-    }
     private Gamepad controller;
     private boolean[] buttonStates = {false,false,false,false,false,false,false,false,false,false};
     private boolean[] lastButtonStates = {false,false,false,false,false,false,false,false,false,false};
     private double[] buttonHeldCounts = {0,0,0,0,0,0,0,0,0,0};
 
-
-    private final String[] BUTTONS = {"A","B","X","Y",
-            "Left Bumper","Right Bumper","Left Stick Press","Right Stick Press",
-            "Select","Start"};
 
     public DriverInput(Gamepad cont)
     {
@@ -31,57 +21,24 @@ public class DriverInput implements ConcurrentOperation
 
     public void initialize(HardwareMap hMap){}
 
-
-    //CodeReview: Instead of using strings to represent the buttons, how about using an enum?
-    //            Then you wouldn't need to map strings to integer positions in the arrays.
-    //            You can define an integer value for each item in the enum:
-    //   enum Buttons {
-    //        A(0),
-    //        B(1);
-    //        public int value;
-    //        Buttons(int i) value = i }
-    //   }
-    //
-    //  ...then you can do something like this:
-    //  isButtonPressed(Buttons.A)
-    //  ...or this:
-    //  myArray[Buttons.A.value]
-
-
-    //TODO replace with hashmap or something
-    private int getButtonIndexFromString(String label) {
-        int index = 10;
-        for (int i=0;i<10;i++)
-        {
-            if (BUTTONS[i] == label)
-            {
-                index = i;
-            }
-        }
-
-        return index;
+    public boolean isButtonPressed(Button label)
+    {
+        return buttonStates[label.ordinal()];
     }
 
-    public boolean isButtonPressed(String label)
+    public boolean isButtonJustPressed(Button label)
     {
-        return buttonStates[getButtonIndexFromString(label)];
+        return buttonStates[label.ordinal()] && !lastButtonStates[label.ordinal()];
     }
 
-    public boolean isButtonJustPressed(String label)
+    public boolean isButtonJustReleased(Button label)
     {
-        int index = getButtonIndexFromString(label);
-        return buttonStates[index] && !lastButtonStates[index];
+        return !buttonStates[label.ordinal()] && lastButtonStates[label.ordinal()];
     }
 
-    public boolean isButtonJustReleased(String label)
+    public double getButtonHoldTime(Button label)
     {
-        int index = getButtonIndexFromString(label);
-        return !buttonStates[index] && lastButtonStates[index];
-    }
-
-    public double getButtonHoldTime(String label)
-    {
-        return buttonHeldCounts[getButtonIndexFromString(label)];
+        return buttonHeldCounts[label.ordinal()];
     }
 
     //TODO check if y axes are actually flipped

@@ -32,14 +32,14 @@ public class TeleOpCompetition extends MasterTeleOp
             driveRobotWithJoysticks(gamepad1.left_stick_x,    //local x motion power
                                     gamepad1.left_stick_y,     //local y motion power
                                     gamepad1.right_stick_x/2, //rotation power; divided by 2 to reduce our robot'shigh rotational velocity
-                                    driver1.isButtonPressed("Right Bumper")    );
+                                    driver1.isButtonPressed(Button.RIGHT_BUMPER)    );
 
             //intake balls with collector; drivers must hold buttons to collect
-            if (driver2.isButtonPressed("X"))
+            if (driver2.isButtonPressed(Button.X))
             {
                 collectorMotor.setPower(1.0);
             }
-            else if (driver2.isButtonPressed("B"))
+            else if (driver2.isButtonPressed(Button.B))
             {
                 collectorMotor.setPower(-1.0);
             }
@@ -49,7 +49,7 @@ public class TeleOpCompetition extends MasterTeleOp
             }
 
 
-            if(driver2.isButtonPressed("Right Bumper"))
+            if(driver2.isButtonPressed(Button.RIGHT_BUMPER))
             {
                 launcher.releaseParticle();
             }
