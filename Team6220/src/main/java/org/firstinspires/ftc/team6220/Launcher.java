@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 /*
     Handles control of the gate that loads the launcher.
     Usage:
-    releaseParticle() starts a concurrent operation which will raise the gate and then close it after some time.
+    loadParticle() starts a concurrent operation which will raise the gate and then close it after some time.
     calling this repeatedly will hold the servo open.
 */
 public class Launcher implements ConcurrentOperation
@@ -30,14 +30,36 @@ public class Launcher implements ConcurrentOperation
         WAIT,
         CLOSE
     }
+    //launching states
+    private enum LaunchState
+    {
+        PULLBACK,
+        WAIT,
+        LAUNCH,
+        IDLE
+    }
     private GateState gateState = GateState.OPEN;
+    private LaunchState launchState = LaunchState.IDLE;
+
     //keeps track of how long servo has waited before closing
     private double servoWaitTime = 0;
+    private double motorWaitTime = 0;
 
     private OpMode mode;
-    public void releaseParticle()
+
+    public void loadParticle()
     {
         gateState = GateState.OPEN; //start the state machine running
+    }
+
+    //launches particle. Caling before pullback() will make it pullback, load, and launch immediately.
+    public void launchParticle()
+    {
+
+    }
+    public void pullback()
+    {
+
     }
 
     public void initialize(HardwareMap hMap)
@@ -56,6 +78,8 @@ public class Launcher implements ConcurrentOperation
     @Override
     public void update(double eTime)
     {
+
+        //loading state machine
         if (gateState == GateState.OPEN) {
             //raise gate and reset
             servoWaitTime = 0;
@@ -74,6 +98,8 @@ public class Launcher implements ConcurrentOperation
                 gateServo.setPosition(Constants.GATE_SERVO_DEPLOYED_POSITION);
             }
         }
+
+        //launching state machine
 
     }
 }

@@ -54,7 +54,7 @@ public class TeleOpCompetition extends MasterTeleOp
 
             if(driver2.isButtonPressed(Button.RIGHT_BUMPER))
             {
-                launcher.releaseParticle();
+                launcher.loadParticle();
             }
 
             telemetry.addData("eTime:", eTime);
