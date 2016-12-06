@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name="TeleOpCompetition", group="6220")
 public class TeleOpCompetition extends MasterTeleOp
 {
-    ElapsedTime timer = new ElapsedTime();
+
 
 
     @Override
