@@ -19,11 +19,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 
-//CodeReview: this first comment doesn't seem relevant to this file.
-/**
- * Program used to control Drive-A-Bots.
- * This can be a good reference for drive controls.
- */
 //CodeReview: you shouldn't register the master autonomous. You should create one or more subclasses of MasterAutonomous and register those.
 //            That's useful in case you are experimenting with different autonomous programs: they can all use the methods you have in here.
 @Autonomous(name="Master Autonomous", group = "Swerve")
@@ -31,32 +26,26 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 
 public class MasterAutonomous extends MasterOpMode
 {
-    // HardwarePushbot robot = new HardwarePushbot();   // Use a Pushbot's hardware
-    //CodeReview: runtime is also declared in MasterOpMode. You don't need to declare this here. It's duplicating/overriding that variable.
     private ElapsedTime runtime = new ElapsedTime();
 
-    //CodeReview: the following three variables have values that never change (in other words, they are constants).
-    //            Mark them as such by using the keyword "final".
-    //            This prevents someone from accidentally modifying the values later and makes it clearer that these are constants.
-    //            I've fixed the first one as an example.
     final float mmPerInch = 25.4f;
-    float mmBotWidth = 18 * mmPerInch;            // ... or whatever is right for your robot
-    float mmFTCFieldWidth = (12 * 12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
+    final float mmBotWidth = 18 * mmPerInch; // the robot width
+    final float mmFTCFieldWidth = (12 * 12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
 
     // declare "what team we're on" variables
-    boolean isRedTeam; //CodeReview: add comments describing what each variables is for. Some of the following variables don't have explanations
-    boolean isPosOne;  //CodeReview: the name of this variable could be clearer. E.g., isStartingPositionOne
+    boolean isRedTeam; // are you on red team? (if not, you're blue)
+    boolean isStartingPosOne;  // are you on starting position one? (if not, you're on position two
     double startDist; // the distance traveled depending on pos one or two
-    int startDelay;
+    int startDelay; // the time to delay the start if another team needs us to delay
     int targetIndex; // specify what image target it is
-    int targetDimX;      // specify x or y dim to use for alignment; red :x:0, blue :y:1
+    int targetDimX;  // specify x or y dim to use for alignment; red :x:0, blue :y:1
     int targetDimY;
 
-    //double teamAngle; // will be 60, -60
-    double pivotAngle;
-    double targetAngle;
+    //double teamAngle;
+    double pivotAngle; // will be 60, -60 depending on what team you're on
+    double targetAngle; // the Vuforia angle to align to depending on what team you're on
 
-    float[] targetPos = {1524, mmFTCFieldWidth};
+    float[] targetPos = {1524, mmFTCFieldWidth}; // target position x and y with an origin right between the driver stations
     VuforiaNavigation VuforiaNav = new VuforiaNavigation();
 
 
@@ -73,10 +62,6 @@ public class MasterAutonomous extends MasterOpMode
 
         VuforiaNav.initVuforia();
         telemetry.addData("Path", "Select Team and Pos...");
-        /*
-         * Initialize the drive system variables.
-         * The init() method of the hardware class does all the work here
-         */
 
         // Wait until we're told to go
         while (!isStarted())
@@ -95,16 +80,16 @@ public class MasterAutonomous extends MasterOpMode
             // select position one or two, one is closer to the origin
             if (gamepad1.y)
             {
-                isPosOne = true;
+                isStartingPosOne = true;
             }
             if (gamepad1.a)
             {
-                isPosOne = false;
+                isStartingPosOne = false;
             }
 
             if (isRedTeam)
             {
-                if (isPosOne)
+                if (isStartingPosOne)
                 {
                     telemetry.addData("Team: ", "Red 1");
                 }
@@ -115,7 +100,7 @@ public class MasterAutonomous extends MasterOpMode
             }
             else
             {
-                if (isPosOne)
+                if (isStartingPosOne)
                 {
                     telemetry.addData("Team: ", "Blue 1");
                 }
@@ -124,7 +109,6 @@ public class MasterAutonomous extends MasterOpMode
                     telemetry.addData("Team: ", "Blue 2");
                 }
             }
-
             telemetry.update();
             idle();
         }
@@ -132,7 +116,7 @@ public class MasterAutonomous extends MasterOpMode
 
         if (isRedTeam) // if team RED
         {
-            if (isPosOne)
+            if (isStartingPosOne)
             {
                 // OPTION RED ONE (TOOLS)
                 startDelay = 2000;
@@ -159,11 +143,10 @@ public class MasterAutonomous extends MasterOpMode
             targetDimY = 0; // x
             targetDimY = 1;
             telemetry.update();
-
         }
         else // if team BLUE
         {
-            if (isPosOne)
+            if (isStartingPosOne)
             {
                 // OPTION BLUE ONE (LEGOS)
                 startDelay = 2000;
@@ -195,7 +178,7 @@ public class MasterAutonomous extends MasterOpMode
         waitForStart();
 
         VuforiaNav.startTracking();
-   //     sleep(startDelay);
+        //     sleep(startDelay);
         VuforiaNav.getLocation();
 
         /*
@@ -213,27 +196,16 @@ public class MasterAutonomous extends MasterOpMode
         }
         */
 
-        // START OF AUTONOMOUS
-// TODO: test new functions!!
-        /*
-        alignVuforiaTest(0.5, 700, 4);
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        sleep(30000);
-        */
-/*
-        forwards(12, 0, 0.5, 3);
-        sleep(3000);
-        forwards(0, 12, 0.5, 3);
-        sleep(3000);
-        forwards(-12, 0, 0.5, 3);
-        sleep(3000);
-        forwards(0, -12, 0.5, 3);
-        sleep(30000);
-*/
+
+// TESTS
 
         pivotMove(400, 400, 10, 0.5, 3);
         sleep(5000);
+
+
+
+// START OF AUTONOMOUS
+
 
         // go towards target
         forwards(startDist, 0, 0.85, 3);  // inches, speed, timeout
@@ -244,12 +216,6 @@ public class MasterAutonomous extends MasterOpMode
         sleep(100);
 
         // align sideways with image
-        /*
-        pivotVuforia(targetAngle, 0.5);
-        sleep(100);
-        alignVuforia(0.5, 800, 3);   // speed, timeout
-        sleep(100);
-        */
         pivotVuforia(targetAngle, 0.5);
         sleep(100);
         alignVuforia(0.6, 700, 3);   // speed, timeout
@@ -262,7 +228,7 @@ public class MasterAutonomous extends MasterOpMode
         }
         while (VuforiaNav.lastLocation == null);
 
-        // detect beacon color of left side: 0 is blue, 1 is red
+// detect beacon color of left side: 0 is blue, 1 is red
         int beaconColor = VuforiaNav.GetBeaconColor();
         telemetry.log().add(String.format("LeftSide: %f, RightSide: %f", VuforiaNav.leftColorHSV[0], VuforiaNav.rightColorHSV[0]));
         telemetry.log().add(String.format("Returned Color: %d", beaconColor));
@@ -275,13 +241,8 @@ public class MasterAutonomous extends MasterOpMode
             telemetry.log().add(String.format("team blue"));
         }
         telemetry.update();
-        //sleep(10000);
 
-        //
-        // if left blue and blue team, then slide left else slide right
-        //   move forwards to press button
-
-        // shift left or right before pushing button
+// shift left or right before pushing button
         if (beaconColor == 0)   // if left side beacon is blue
         {
             if (isRedTeam)     // red team
@@ -305,7 +266,7 @@ public class MasterAutonomous extends MasterOpMode
                 sleep(100);
             }
         }
-        else //CodeReview: would be good to comment that this code runs when the color is unknown
+        else // when the color is unknown
         {
             forwards(-5, 0, 0.5, 3);
         }
@@ -320,9 +281,7 @@ public class MasterAutonomous extends MasterOpMode
         forwards(-10, 0, 0.3, 3);
         pivotVuforia(targetAngle, 0.3);
 
-
-
-        // determine next beacon target
+// determine next beacon target
         if (isRedTeam) // if team RED
         {
             // OPTION RED ONE (TOOLS)
@@ -340,10 +299,7 @@ public class MasterAutonomous extends MasterOpMode
             //telemetry.addData("Team: ", "Blue 1");
         }
 
-
-
-
-        // shift to new target!!
+// shift to new target!!
         if (beaconColor == 0) // if left side blue
         {
             if (isRedTeam) // move shorter
@@ -379,7 +335,7 @@ public class MasterAutonomous extends MasterOpMode
         }
         while (VuforiaNav.lastLocation == null);
 
-        // align on new target
+// align on new target
         pivotVuforia(targetAngle, 0.5);
         alignVuforia(0.4, 700, 2);
         pivotVuforia(targetAngle, 0.5);
@@ -421,12 +377,6 @@ public class MasterAutonomous extends MasterOpMode
         sleep(100);
         forwards(-10, 0, 0.5, 3);
 
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        // encoderDrive(DRIVE_SPEED, 30, 30, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        // encoderDrive(TURN_SPEED, 12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        // encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
-
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(10000);
@@ -442,12 +392,11 @@ public class MasterAutonomous extends MasterOpMode
         motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        // run to position mode
-        motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // run with encoder mode
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // treat back side (camera) as front
         // reverse left side motors instead of right side motors
@@ -462,8 +411,6 @@ public class MasterAutonomous extends MasterOpMode
         motorBackLeft.setMaxSpeed(2700);   // try this setting from 8923
         motorBackRight.setMaxSpeed(2700);   // try this setting from 8923
 
-        motorLift.setPower(0); //CodeReview: this is duplicated in MasterOpMode's initializeHardware method; you don't need it here.
-
         //Set up telemetry data
         // We show the log in oldest-to-newest order, as that's better for poetry
         telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.OLDEST_FIRST);
@@ -472,14 +419,12 @@ public class MasterAutonomous extends MasterOpMode
         //configureDashboard();
     }
 
-    // drive forwards/backwards function
+    // drive forwards/backwards/horizontal left and right function
+    // forwardsInches: how many inches forward
+    // horiInches: how many x axis inches you want to go
+    // speed: the max speed
     public void forwards(double forwardInches, double horiInches, double speed, double timeout) throws InterruptedException
     {
-        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         int newTargetFL;
         int newTargetBL;
         int newTargetFR;
@@ -495,23 +440,12 @@ public class MasterAutonomous extends MasterOpMode
         double speedBL;
         double speedBR;
 
+        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_INCH * forwardInches) + (int) Math.round(COUNTS_PER_INCH * horiInches * 1.414);
+        newTargetFR = motorFrontRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_INCH * forwardInches) - (int) Math.round(COUNTS_PER_INCH * horiInches * 1.414);
+        newTargetBL = motorBackLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_INCH * forwardInches) - (int) Math.round(COUNTS_PER_INCH * horiInches * 1.414);
+        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_INCH * forwardInches) + (int) Math.round(COUNTS_PER_INCH * horiInches * 1.414);
 
-        //CodeReview: when multiplying (COUNTS_PER_INCH * forwardInches), you are casting it to an (int) which will truncate its fractional value.
-        //            There is a potential slight accuracy improvement by rounding this number instead of truncating it.
-        //            The way to do that is to use (int) Math.round(COUNTS_PER_INCH * forwardInches);
-        //            Note that the (int) cast is still needed because Math.round returns a long, but you're safe to do this because
-        //            you won't be using bigger numbers than an int can hold.
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) + (int) (COUNTS_PER_INCH * horiInches * 1.414);
-        newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) - (int) (COUNTS_PER_INCH * horiInches * 1.414);
-        newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) - (int) (COUNTS_PER_INCH * horiInches * 1.414);
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_INCH * forwardInches) + (int) (COUNTS_PER_INCH * horiInches * 1.414);
-
-        motorFrontLeft.setTargetPosition(newTargetFL);
-        motorFrontRight.setTargetPosition(newTargetFR);
-        motorBackLeft.setTargetPosition(newTargetBL);
-        motorBackRight.setTargetPosition(newTargetBR);
-
-        runtime.reset(); //CodeReview: add a comment to this line because it's not self-evident what this call is doing for you.
+        runtime.reset(); // used for timeout
 
 
         // wait until the motors reach the position
@@ -572,6 +506,7 @@ public class MasterAutonomous extends MasterOpMode
         motorBackRight.setPower(0);
     }
 
+    // aligns angularly with the image target
     public void pivotVuforia (double targetAngle, double speed)
     {
         double error;
@@ -637,6 +572,7 @@ public class MasterAutonomous extends MasterOpMode
         motorBackRight.setPower(0);
     }
 
+
     // move the robot hora. sideways to align with image target
     // look at double speed
     public void alignVuforiaTest (double speed, double distAway, double timeout)
@@ -667,6 +603,7 @@ public class MasterAutonomous extends MasterOpMode
             do
             {
                 VuforiaNav.getLocation(); // update target location and angle
+                idle();
             }
             while (VuforiaNav.lastLocation == null);  //CodeReview: this will hang your robot while Vuforia can't get its location. That could be a long time.
 
@@ -728,11 +665,15 @@ public class MasterAutonomous extends MasterOpMode
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
+
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 
     // move the robot hora. sideways to align with image target
-    // look at double speed
     public void alignVuforia (double speed, double distAway, double timeout)
     {
         final float Kp = 1/600; // speed is proportional to error
@@ -774,6 +715,7 @@ public class MasterAutonomous extends MasterOpMode
             do
             {
                 VuforiaNav.getLocation(); // update target location and angle
+                idle();
             }
             while (VuforiaNav.lastLocation == null);  //CodeReview: this will hang your robot while Vuforia can't get its location. That could be a long time.
             idle();
@@ -878,6 +820,7 @@ public class MasterAutonomous extends MasterOpMode
         motorBackRight.setPower(0);
     }
 
+    // a combination of both the align and pivot function (WITHOUT VUFORIA)
     // angle has to be small otherwise won't work, this function moves and pivots robot
     public void pivotMove(double x, double y, double pivotAngle, double speed, double timeout)
     {
@@ -887,12 +830,6 @@ public class MasterAutonomous extends MasterOpMode
         final float TOL = 10;
         final float TOL_ANGLE = 1;
 
-        float xPos;
-        float yPos;
-        float errorX;
-        float errorY;
-        double robotErrorX;
-        double robotErrorY;
         int newTargetFL;
         int newTargetBL;
         int newTargetFR;
@@ -1017,6 +954,8 @@ public class MasterAutonomous extends MasterOpMode
         motorBackRight.setPower(0);
     }
 
+
+    // a combination of both the align and pivot function (WITH VUFORIA) using pivot move
     public void alignPivotVuforia (double speed, double distAway, double timeout)
     {
         final float TOL = 10;
@@ -1048,7 +987,7 @@ public class MasterAutonomous extends MasterOpMode
                 VuforiaNav.getLocation(); // update target location and angle
                 idle();
             }
-            while (VuforiaNav.lastLocation == null);  //CodeReview: this will hang your robot while Vuforia can't get its location. That could be a long time.
+            while (VuforiaNav.lastLocation == null);
 
             xPos = VuforiaNav.lastLocation.getTranslation().getData()[0];
             yPos = VuforiaNav.lastLocation.getTranslation().getData()[1];
@@ -1064,7 +1003,7 @@ public class MasterAutonomous extends MasterOpMode
             robotErrorY = -errorX * Math.sin(Math.toRadians(targetAngle)) + errorY * Math.cos(Math.toRadians(targetAngle));
             // shift position back 25 inches away from target image
             robotErrorY -= distAway;
-// call pivot move function
+// calls pivot move function here
             pivotMove(robotErrorX, robotErrorY, errorAngle, 0.5, 3);
 
             runtime.reset();
@@ -1092,14 +1031,6 @@ public class MasterAutonomous extends MasterOpMode
     // drive at an angle function
     public void moveAngle(double forwardInches, double angle, double speed, double timeout) throws InterruptedException
     {
-        double speedFL;
-        double speedBL;
-        double speedFR;
-        double speedBR;
-
-        double startAngle;
-        double curTurnAngle;
-
         double x;
         double y;
 
@@ -1109,7 +1040,7 @@ public class MasterAutonomous extends MasterOpMode
         double dstX;
         double dstY;
 
-                // run to position mode
+        // run to position mode
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -1159,6 +1090,11 @@ public class MasterAutonomous extends MasterOpMode
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
+
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 
@@ -1182,8 +1118,7 @@ public class MasterAutonomous extends MasterOpMode
         // read angle, record in starting angle variable
         // run motor
         // loop, current angle - start angle = error
-        // if error is close to 0, then stop motors
-
+        // if error is close to 0, stop motors
 
         double error = 100;
         double errorP1 = 100;
@@ -1201,7 +1136,6 @@ public class MasterAutonomous extends MasterOpMode
             pivotSpeed = speed * Math.abs(error) / 100;
             pivotSpeed = Range.clip(pivotSpeed, 0.2, 0.7); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
-
 
             // positive angle means CCW rotation
             motorFrontLeft.setPower(pivotSpeed);
@@ -1233,95 +1167,8 @@ public class MasterAutonomous extends MasterOpMode
         motorBackRight.setPower(0);
     }
 
-    // pivot using IMU and motors are set to run to position
-    public void pivotDst(double turnAngle, double speed) // should add timeout later
-    {
-        double pivotSpeed;
-        double startAngle;
-        double curTurnAngle;
 
-        int newTargetFL;
-        int newTargetBL;
-        int newTargetFR;
-        int newTargetBR;
-        double timeout = 3.0;
-
-        // run to position mode
-        motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        //       angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-        //       startAngle = adjustAngles(angles.firstAngle);
-        startAngle = imu.getAngularOrientation().firstAngle;
-
-        // read angle, record in starting angle variable
-        // run motor
-        // loop, current angle - start angle = error
-        // if error is close to 0, then stop motors
-
-
-        double error = 100;
-        double errorP1 = 100;
-        double errorP2 = 100;
-        double incDst;
-        double motSpeed;
-
-        do
-        {
-            errorP2 = errorP1;
-            errorP1 = error;
-//            angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-//            curTurnAngle = adjustAngles(angles.firstAngle) - startAngle;
-            curTurnAngle = imu.getAngularOrientation().firstAngle - startAngle;
-            curTurnAngle = adjustAngles(curTurnAngle);
-            error =  turnAngle - curTurnAngle;
-
-            motSpeed = Math.abs(error)/100;
-            motSpeed =  Range.clip(motSpeed, 0.35, 0.7); // limit abs speed
-            incDst = Math.abs(error) / 20;
-            incDst = Range.clip(incDst, 0.18, 5); // limit incDst
-            incDst = incDst * Math.signum(error);
-
-            // ccw rotation for pos pivot angle
-            newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * incDst);
-            newTargetFR = motorFrontRight.getCurrentPosition() - (int) (COUNTS_PER_INCH * incDst);
-            newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_INCH * incDst);
-            newTargetBR = motorBackRight.getCurrentPosition() - (int) (COUNTS_PER_INCH * incDst);
-
-            motorFrontLeft.setTargetPosition(newTargetFL);
-            motorFrontRight.setTargetPosition(newTargetFR);
-            motorBackLeft.setTargetPosition(newTargetBL);
-            motorBackRight.setTargetPosition(newTargetBR);
-
-            runtime.reset();
-            motorFrontLeft.setPower(Math.abs(speed));
-            motorFrontRight.setPower(Math.abs(speed));
-            motorBackLeft.setPower(Math.abs(speed));
-            motorBackRight.setPower(Math.abs(speed));
-
-            // wait until the motors reach the position
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeout) &&
-                    (motorFrontLeft.isBusy() && motorFrontRight.isBusy() && motorBackLeft.isBusy() && motorBackRight.isBusy()));
-
-            if (Math.abs(error) < 3) {
-                sleep(60);
-            }
-
-            telemetry.log().add(String.format("StartAngle: %f, CurAngle: %f, error: %f", startAngle, curTurnAngle, error));
-
-        } while (opModeIsActive() && (Math.abs(error) > 0.5 || Math.abs(errorP1) > 0.5 || Math.abs(errorP2) > 0.5) );
-//        } while (opModeIsActive() && (Math.abs(incDst) > 0.2 ) );
-
-        // stop motors
-        motorFrontLeft.setPower(0);
-        motorFrontRight.setPower(0);
-        motorBackLeft.setPower(0);
-        motorBackRight.setPower(0);
-    }
-
+    // pushes the cap ball and parks on the center vortex
     public void PushCapBall() throws InterruptedException
     {
         forwards(45, 0, 0.7, 3);
@@ -1329,16 +1176,18 @@ public class MasterAutonomous extends MasterOpMode
         forwards(5, 0, 0.7, 3);
     }
 
+
+    // parks parks on corner vortex
     public void parkCornerVortex() throws InterruptedException
     {
         forwards(30, 0, 0.7, 3);
         if (isRedTeam)
         {
-            moveAngle(20, -90, 0.8, 3); // horizontal left (20 inches)
+            forwards(0, -20, 0.8, 3); // horizontal left (20 inches)
         }
         else
         {
-            moveAngle(20, 90, 0.8, 3); // horizontal right
+            forwards(0, 20, 0.8, 3); // horizontal right
         }
     }
 
@@ -1366,16 +1215,13 @@ public class MasterAutonomous extends MasterOpMode
                         return formatNumber(motorBackRight.getPower());
                     }
                 });
-
-
-
     }
+
 
     public String formatNumber(double d)
     {
         return String.format("%.2f", d);
     }
-
 
     String format(OpenGLMatrix transformationMatrix) {
         return transformationMatrix.formatAsTransform();
@@ -1385,13 +1231,10 @@ public class MasterAutonomous extends MasterOpMode
 
 
 /* TABLE:
-
                  FL      FR      BL      BR
     rotate CCW   +        -      +        -
     forward      +        +      +        +
     right        +        -      -        +
     d. left      0        +      +        0
     d. right     +        0      0        +
-
-
     */

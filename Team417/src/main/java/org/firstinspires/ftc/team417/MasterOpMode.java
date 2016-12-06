@@ -32,8 +32,6 @@ abstract public class MasterOpMode extends LinearOpMode
     DeviceInterfaceModule dim;                  // Device Object
     DigitalChannel liftSwitch;                // Device Object
 
-
-
     private ElapsedTime runtime = new ElapsedTime();
 
     // Declare constants
@@ -46,6 +44,7 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4;
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
+    static final int MAX_SPEED = 2700;
 
 
     public void initializeHardware()
@@ -62,6 +61,11 @@ abstract public class MasterOpMode extends LinearOpMode
         liftSwitch  = hardwareMap.get(DigitalChannel.class, "liftSwitch");     //  Use generic form of device mapping
         liftSwitch.setMode(DigitalChannelController.Mode.INPUT);          // Set the direction of each channel
 
+        motorFrontLeft.setMaxSpeed(MAX_SPEED);
+        motorFrontRight.setMaxSpeed(MAX_SPEED);
+        motorBackLeft.setMaxSpeed(MAX_SPEED);
+        motorBackRight.setMaxSpeed(MAX_SPEED);
+
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
@@ -71,7 +75,6 @@ abstract public class MasterOpMode extends LinearOpMode
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
         // provide positional information.
-
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -100,8 +103,8 @@ abstract public class MasterOpMode extends LinearOpMode
 
     }
 
-    //CodeReview: it's good to provide a comment explaining each method. In this case, you're normalizing the angle to be
-    //            between -180..180, which is good to document. Hmm, might be better to rename this method "normalizeAngle".
+
+    // normalizing the angle to be between -180 to 180
     public double adjustAngles(double angle)
     {
         while(angle > 180)
@@ -111,10 +114,6 @@ abstract public class MasterOpMode extends LinearOpMode
         return angle;
     }
 
-
-    //----------------------------------------------------------------------------------------------
-    // Formatting
-    //----------------------------------------------------------------------------------------------
 
     String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
