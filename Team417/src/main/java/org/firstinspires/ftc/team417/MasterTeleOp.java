@@ -22,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class MasterTeleOp extends MasterOpMode
 {
     boolean isSwitchPressed = false;
-    boolean isBButtonPressed = false; // is b button causes is lift to toggle
+    boolean isBButtonPressed = false; // isBbuttonPressed causes is lift to toggle
     boolean isLiftActivated = false;
     boolean isLeftBumperPushed = false; // is left bumper causes is mode to toggle
     boolean isModeReversed = false;
@@ -87,23 +87,13 @@ public class MasterTeleOp extends MasterOpMode
             // Gamepads have a new state, so update things that need updating
             //if(updateGamepads())
 
-           if (gamepad1.left_bumper)
-           {
-               if (isModeReversed == false) // if already false
-               {
-                   isModeReversed = true;
-               }
-               else if (runtime.seconds() > 1) // timeout is one second  //CodeReview: see me about this, I have questions about what you intend this to do
-               {
-                   isModeReversed = false;
-               }
-           }
-           if (gamepad2.left_bumper && !isLeftBumperPushed)
+           // if just pressed and previous time wasn't pressed
+           if (gamepad1.left_bumper && !isLeftBumperPushed)
            {
                isLeftBumperPushed = true;
                isModeReversed = !isModeReversed;
            }
-           isLeftBumperPushed = gamepad2.left_bumper;
+           isLeftBumperPushed = gamepad1.left_bumper;
 
            if (gamepad1.right_bumper) // if slow mode (when right bumper is held down)
             {
@@ -128,11 +118,6 @@ public class MasterTeleOp extends MasterOpMode
 
     public void mecanumDrive(double kDrive, double kPivot)
     {
-        double frontLeftPower;
-        double frontRightPower;
-        double backLeftPower;
-        double backRightPower;
-
         double rx;  // represents RIGHT joystick "x axis"
         double ry;  // represents RIGHT joystick "y axis"
         double turn; // for turning with LEFT joystick
@@ -205,12 +190,6 @@ public class MasterTeleOp extends MasterOpMode
 
         motorLift.setDirection(DcMotor.Direction.REVERSE);
 
-        //CodeReview: Put this into MasterOpMode's initializeHardware
-        //CodeReview: Define magic numbers as constants
-        motorFrontLeft.setMaxSpeed(2700);   // try this setting from 8923
-        motorFrontRight.setMaxSpeed(2700);   // try this setting from 8923
-        motorBackLeft.setMaxSpeed(2700);   // try this setting from 8923
-        motorBackRight.setMaxSpeed(2700);   // try this setting from 8923
         // Set up telemetry data
         configureDashboard();
     }
