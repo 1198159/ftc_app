@@ -6,10 +6,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /*
     Competition configuration for driving robot.
     Pilot controls:
-
+     - Right Bumper: Slow mode
 
     Co-pilot controls:
-
+     - X: Collect
+     - B: Reverse Collect
+     - Right Bumper: Load particle
 
 
 */

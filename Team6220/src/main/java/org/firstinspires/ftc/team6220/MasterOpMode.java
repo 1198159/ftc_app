@@ -216,9 +216,10 @@ abstract public class MasterOpMode extends LinearOpMode
     //uses solely encoders to move the robot to a desired location
     public void navigateUsingEncoders(Transform2D Target, ElapsedTime timer)
     {
-
-        while ((Math.abs(Target.x - drive.robotLocation.x) > Constants.X_TOLERANCE) || (Math.abs(Target.y - drive.robotLocation.y) > Constants.Y_TOLERANCE)|| (Math.abs(Target.rot - drive.robotLocation.rot) > Constants.W_TOLERANCE))
+        double positionOffsetMagnitude = Math.sqrt(Math.pow(Target.x - drive.robotLocation.x,2)+Math.pow(Target.y - drive.robotLocation.y,2));
+        while ((positionOffsetMagnitude > Constants.POSITION_TOLERANCE) || (Math.abs(Target.rot - drive.robotLocation.rot) > Constants.ANGLE_TOLERANCE))
         {
+            positionOffsetMagnitude = Math.sqrt(Math.pow(Target.x - drive.robotLocation.x,2)+Math.pow(Target.y - drive.robotLocation.y,2));
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
@@ -271,7 +272,7 @@ abstract public class MasterOpMode extends LinearOpMode
         double angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);
         double turningPower;
 
-        while(Math.abs(angleDiff) > Constants.MINIMUM_ANGLE_DIFF)
+        while(Math.abs(angleDiff) > Constants.ANGLE_TOLERANCE)
         {
             currentAngle = getAngularOrientationWithOffset();
             angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);

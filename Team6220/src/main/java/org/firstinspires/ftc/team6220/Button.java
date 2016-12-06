@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team6220;
-
+/*
+    Identifiers for boolean controls on controller
+ */
 public enum Button
 {
     A, B, X, Y,
