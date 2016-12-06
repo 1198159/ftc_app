@@ -16,6 +16,16 @@ public abstract class SequenceUtilities {
         return total;
     }
 
+    public static double[] scalarMultiply(double[] list, double factor)
+    {
+        double[] newList = list;
+        for (int i=0; i<list.length; i++ ){
+            newList[i] *= factor;
+        }
+        return newList;
+    }
+
+
     //return the mean values of a list
     public static double average(double[] array)
     {

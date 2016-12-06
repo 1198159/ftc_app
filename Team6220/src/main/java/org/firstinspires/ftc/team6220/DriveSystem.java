@@ -34,6 +34,7 @@ public class DriveSystem
         this.RotationControlFilter = filter[2];
     }
 
+
     //TODO add updateRobotLocation() and getRobotLocation()
     //PID-driven navigation to a point
     //TODO add ability to use non "zig-zag" paths
@@ -75,14 +76,14 @@ public class DriveSystem
         }
 
 
-        moveRobot(xRate,yRate,wRate);
+        writeToMotors(getMotorPowersFromMotion(new Transform2D(xRate, yRate, wRate)));
         return new double[]{xRate,yRate,wRate};
     }
 
-    //TODO make this more configurable
     //TODO make assemblies.location represent their actual values
-    //                   horizontal vertical  rotation
-    public void moveRobot(double x, double y, double w)
+    //return an array with the motor powers for the requested motion
+    //                           horizontal vertical  rotation
+    public double[] getMotorPowersFromMotion(Transform2D requestedMotion)
     {
         double[] rawPowers = new double[]{0.0,0.0,0.0,0.0};
 
@@ -91,9 +92,9 @@ public class DriveSystem
         for (int corner = 0; corner < 4; corner++)
         {
             rawPowers[corner] =
-                    w
-                    + assemblies[corner].location.y * x         //assemblies[corner].location.y works as sine of the angle of each motor
-                    + assemblies[corner].location.x * y         //assemblies[corner].location.x works as cosine of the angle of each motor
+                    requestedMotion.rot
+                    + Math.signum(assemblies[corner].location.y) * requestedMotion.x         //assemblies[corner].location.y works as sine of the angle of each motor
+                    + Math.signum(assemblies[corner].location.x) * requestedMotion.y         //assemblies[corner].location.x works as cosine of the angle of each motor
                     ;
         }
         //scales values so that they will remain in proportion in the case that they would "overflow"; e.g. [0.4,0.6,1.0,2.0] becomes [0.2,0.3,0.5,1.0]
@@ -104,15 +105,26 @@ public class DriveSystem
             scalingFactor = largest;
         }
 
+        return SequenceUtilities.scalarMultiply(rawPowers,1/scalingFactor);
+
+    }
+
+    //give the drive a command
+    public void writeToMotors(double[] powers)
+    {
         //write motor powers
         for (int corner = 0; corner < 4; corner++)
         {
-            double power = rawPowers[corner]/scalingFactor;
+            double power = powers[corner];
             assemblies[corner].setPower(power);
             //currentOpmode.telemetry.addData( corner + ": ", power);
         }
+    }
 
-        //currentOpmode.telemetry.update();
+    //generate motor powers and write
+    public void moveRobot(double x, double y, double w)
+    {
+        writeToMotors(getMotorPowersFromMotion(new Transform2D(x,y,w)));
     }
 
     //estimate the robot's last motion using encoders
@@ -140,15 +152,10 @@ public class DriveSystem
     {
         double diff = finalAngle - initialAngle;
 
-        if (diff >= 180) //CodeReview: make this "while" to cover larger numbers, though they aren't expected.
+        while (Math.abs(diff) >= 180)
         {
-            diff -= 360;
+            diff -= Math.signum(diff)*360;
         }
-        else if (diff < -180) //CodeReview: make this "while" to cover larger numbers, though they aren't expected.
-        {
-            diff += 360;
-        }
-
 
         return diff;
     }
