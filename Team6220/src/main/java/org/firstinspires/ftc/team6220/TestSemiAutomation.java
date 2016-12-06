@@ -25,11 +25,12 @@ public class TestSemiAutomation extends MasterTeleOp
 
         while (opModeIsActive())
         {
+            double eTime = timer.seconds() - lTime;
+            lTime = timer.seconds();
+
             //update robot location using encoders and imu
             drive.robotLocation.rot = getAngularOrientationWithOffset();
-            Transform2D motion = drive.getRobotMotionFromEncoders();
-            double iTime = System.nanoTime() / 1000 / 1000 / 1000;
-            double eTime = iTime - lTime;
+            Transform2D motion = drive.getRobotMotionFromEncoders(eTime);
             drive.robotLocation.x += eTime*( motion.x * Math.cos(drive.robotLocation.rot * Constants.DEGREE_TO_RADIAN) - motion.y * Math.sin(drive.robotLocation.rot * Constants.DEGREE_TO_RADIAN) );
             drive.robotLocation.y += eTime*( motion.x * Math.sin(drive.robotLocation.rot * Constants.DEGREE_TO_RADIAN) + motion.y * Math.cos(drive.robotLocation.rot * Constants.DEGREE_TO_RADIAN) );
 
@@ -45,7 +46,6 @@ public class TestSemiAutomation extends MasterTeleOp
 
             telemetry.addData("X: ", drive.robotLocation.x);
             telemetry.addData("Y: ", drive.robotLocation.y);
-            lTime = iTime;
             idle();
         }
     }

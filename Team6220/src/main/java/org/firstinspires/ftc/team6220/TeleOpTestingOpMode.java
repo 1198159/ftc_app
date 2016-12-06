@@ -35,8 +35,11 @@ public class TeleOpTestingOpMode extends MasterTeleOp
 
         while (opModeIsActive())
         {
+            double eTime = timer.seconds() - lTime;
+            lTime = timer.seconds();
+
             //values are displayed for testing purposes
-            updateLocationUsingEncoders();
+            updateLocationUsingEncoders(eTime);
 
             //@TODO test; not working
             //navigation test for y direction
