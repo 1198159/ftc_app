@@ -74,7 +74,7 @@ public class TeleOpTestingOpMode extends MasterTeleOp
                 idle();
             }
 
-            //navigation test for rotation
+            /*//navigation test for rotation
             //TODO test; not working
             if(gamepad2.right_bumper)
             {
@@ -91,7 +91,7 @@ public class TeleOpTestingOpMode extends MasterTeleOp
             if (gamepad2.b && !lastBtn[1])
             {
                 motorTogglerReverse.toggleMotor();
-            }
+            }*/
 
             lastBtn[0] = gamepad2.a;
             lastBtn[1] = gamepad2.b;
