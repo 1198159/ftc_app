@@ -6,7 +6,7 @@ package org.firstinspires.ftc.team6220;
 
 public class Constants
 {
-    public static final double degToRadConversionFactor = Math.PI / 180;
+    public static final double DEGREE_TO_RADIAN = Math.PI / 180;
 
     //used for PID loops involving rotation and turning power adjustments
     public static final double TURNING_POWER_FACTOR = 1 / 350;

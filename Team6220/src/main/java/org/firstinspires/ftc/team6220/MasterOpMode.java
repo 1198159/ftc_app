@@ -3,8 +3,6 @@ package org.firstinspires.ftc.team6220;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
@@ -75,13 +73,12 @@ abstract public class MasterOpMode extends LinearOpMode
         //create a driveAssembly array to allow for easy access to motors
         driveAssemblies = new DriveAssembly[4];
 
-        //TODO adjust correction factor if necessary
         //our robot uses an omni drive, so our motors are positioned at 45 degree angles to motor positions on a normal drive.
-        //mtr,                                                                                                       x,   y,  rot, gear, radius, correction factor
-        driveAssemblies[BACK_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"), new Transform2D(1.0, 1.0, 135), 1.0, 0.1016, 1.0);
-        driveAssemblies[BACK_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"), new Transform2D(-1.0, 1.0, 225), 1.0, 0.1016, 1.0);
-        driveAssemblies[FRONT_LEFT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"), new Transform2D(-1.0, -1.0, 315), 1.0, 0.1016, 1.0);
-        driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"), new Transform2D(1.0, -1.0, 45), 1.0, 0.1016, 1.0);
+        //                                                                                  mtr,                            x,   y,    rot, gear, radius, correction factor
+        driveAssemblies[BACK_RIGHT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"),  new Transform2D(1.0,  1.0, 135), 1.0, 0.1016, 1.0);
+        driveAssemblies[BACK_LEFT]   = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"),   new Transform2D(-1.0,  1.0, 225), 1.0, 0.1016, 1.0);
+        driveAssemblies[FRONT_LEFT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"),  new Transform2D(-1.0, -1.0, 315), 1.0, 0.1016, 1.0);
+        driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"), new Transform2D(1.0,  -1.0,  45), 1.0, 0.1016, 1.0);
         collectorMotor = hardwareMap.dcMotor.get("motorCollector");
 
         //TODO tune our own drive PID loop using DriveAssemblyPID instead of build-in P/step filter
@@ -149,22 +146,8 @@ abstract public class MasterOpMode extends LinearOpMode
 
     //TODO test encoder function; likely has errors
     //keeps track of the robot's location on the field based on Encoders and IMU; make sure to call once each loop
-    public Transform2D updateLocationUsingEncoders()
+    public Transform2D updateLocationUsingEncoders(double eTime)
     {
-
-        //CodeReview: since you intend this to be called every loop, you should eliminate things
-        //            that you aren't using (e.g. the elapsed time stuff?), because they will slow
-        //            down your main loop and thus slow the responsiveness of your bot.
-        //            You can comment them out for now so you have them for later, if you do intend to use them eventually.
-
-        //stands for elapsed time
-        double eTime;
-
-        //get time when loop starts
-        double startTime = System.nanoTime() / 1000 / 1000 / 1000;
-        double finalTime = 0;
-
-        eTime = finalTime - startTime; //CodeReview: Can it be correct that this starts as a negative number?
 
         //x and y positions not considering robot rotation
         double xRawPosition = 0.0;
@@ -197,13 +180,13 @@ abstract public class MasterOpMode extends LinearOpMode
         //robotYPos = Math.sin(currentAngle) * (EncoderFL - EncoderFR) * 2 * Math.PI * 0.1016 / (1120 * Math.pow(2, 0.5));
 
         //not currently in use
-        Transform2D motion = drive.getRobotMotionFromEncoders();
+        Transform2D motion = drive.getRobotMotionFromEncoders(eTime);
 
         //these are shorthand for the encoder derivative for each motor and will be plugged into our encoder function
-        double FLencDerivative = driveAssemblies[BACK_RIGHT].getLinearEncoderDerivative();
-        double FRencDerivative = driveAssemblies[BACK_RIGHT].getLinearEncoderDerivative();
-        double BLencDerivative = driveAssemblies[BACK_RIGHT].getLinearEncoderDerivative();
-        double BRencDerivative = driveAssemblies[BACK_RIGHT].getLinearEncoderDerivative();
+        double FLencDerivative = driveAssemblies[BACK_RIGHT].getEncoderLinearDerivative(eTime);
+        double FRencDerivative = driveAssemblies[BACK_RIGHT].getEncoderLinearDerivative(eTime);
+        double BLencDerivative = driveAssemblies[BACK_RIGHT].getEncoderLinearDerivative(eTime);
+        double BRencDerivative = driveAssemblies[BACK_RIGHT].getEncoderLinearDerivative(eTime);
 
 
         yAngle = Math.PI / 2 + currentAngle;
@@ -224,8 +207,6 @@ abstract public class MasterOpMode extends LinearOpMode
         telemetry.addData("W:", currentAngleDegrees);
         telemetry.update();
 
-        //get time at end of loop
-        finalTime = System.nanoTime()/1000/1000/1000;
 
         //CodeReview: do you need this return value? (does any caller need it?)
         //            Seems like all that's needed is to update location in this method.
@@ -233,15 +214,17 @@ abstract public class MasterOpMode extends LinearOpMode
     }
 
     //uses solely encoders to move the robot to a desired location
-    public void navigateUsingEncoders(Transform2D Target)
+    public void navigateUsingEncoders(Transform2D Target, ElapsedTime timer)
     {
-        Transform2D newLocation = updateLocationUsingEncoders();
 
         while ((Math.abs(Target.x - drive.robotLocation.x) > Constants.X_TOLERANCE) || (Math.abs(Target.y - drive.robotLocation.y) > Constants.Y_TOLERANCE)|| (Math.abs(Target.rot - drive.robotLocation.rot) > Constants.W_TOLERANCE))
         {
+            double eTime = timer.seconds() - lTime;
+            lTime = timer.seconds();
+
             drive.navigateTo(Target);
 
-            newLocation = updateLocationUsingEncoders();
+            drive.robotLocation = updateLocationUsingEncoders(eTime);
 
             idle();
         }

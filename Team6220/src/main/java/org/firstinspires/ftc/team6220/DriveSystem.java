@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team6220;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /*
     Contains the robot's drive assemblies, and gives them power or velocity targets based upon robot velocity, power, or position targets.
@@ -13,7 +14,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
     OUTPUTS:
       -Estimated robot location using combined sensor inputs
 */
-public class DriveSystem
+
+public class DriveSystem implements ConcurrentOperation
 {
     private DriveAssembly[] assemblies;
     private PIDFilter[] LocationControlFilter = new PIDFilter[2];
@@ -32,6 +34,18 @@ public class DriveSystem
         this.LocationControlFilter[0] = filter[0];
         this.LocationControlFilter[1] = filter[1];
         this.RotationControlFilter = filter[2];
+    }
+
+    @Override
+    public void initialize(HardwareMap hMap)
+    {
+
+    }
+
+    @Override
+    public void update(double eTime)
+    {
+
     }
 
 
@@ -130,17 +144,17 @@ public class DriveSystem
     //estimate the robot's last motion using encoders
     //returns an average, so more frequent calls will be noisier but will miss some events
     //note that this is a rate of change in deg/s and m/s, not a position and orientation difference
-    public Transform2D getRobotMotionFromEncoders()
+    public Transform2D getRobotMotionFromEncoders(double eTime)
     {
         Transform2D diff = new Transform2D(0,0,0);
         double[] motion = new double[]{0,0};
         for (int corner = 0; corner < 4; corner++)
         {
-            diff.rot += assemblies[corner].getRotationEncoderDifferential();
+            diff.rot += assemblies[corner].getEncoderRadialDifferential(eTime);
         }
         for(int corner = 0; corner < 4; corner++)
         {
-            motion = SequenceUtilities.vectorAdd(motion,assemblies[corner].getVectorEncoderDifferential());
+            motion = SequenceUtilities.vectorAdd(motion,assemblies[corner].getEncoderVectorDerivative(eTime));
         }
         diff.x = motion[0];
         diff.y = motion[1];

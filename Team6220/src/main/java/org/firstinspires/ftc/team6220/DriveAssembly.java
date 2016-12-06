@@ -8,7 +8,6 @@ import org.firstinspires.ftc.robotcore.external.matrices.*;
     Controls a drive assembly with PID-controlled speed instead of power.
 */
 
-//TODO make use of PID Enforcement modes and remove DriveAssembly PID
 public class DriveAssembly
 {
     public DcMotor motor;
@@ -54,32 +53,29 @@ public class DriveAssembly
 
 
     //get the average rate of motion for this drive along its tangent in m/s
-    public double getLinearEncoderDerivative()
+    public double getEncoderLinearDerivative(double eTime)
     {
-        double currentTime = System.nanoTime()/1000/1000/1000;
-        double timeDiff = currentTime - lastReadTime;
         int pos  = (int)(motor.getCurrentPosition() * encoderCorrectionFactor);
         int diff = pos - lastEncoderValue;
         lastEncoderValue = pos;
-        lastReadTime = currentTime;
 
-        return pos * gearRatio * wheelRadius * 2 * Math.PI / encoderTicks / timeDiff;
+        return pos * gearRatio * wheelRadius * 2 * Math.PI / encoderTicks / eTime;
     }
 
     //return a vector representing the last motion made by the drive
-    public double[] getVectorEncoderDifferential()
+    public double[] getEncoderVectorDerivative(double eTime)
     {
-        double length = getLinearEncoderDerivative();
-        double[] v = new double[]{ length * Math.cos(location.rot),
-                                   length * Math.sin(location.rot)  };
+        double length = getEncoderLinearDerivative(eTime);
+        double[] v = new double[]{ length * Math.cos(location.rot*Constants.DEGREE_TO_RADIAN),
+                                     length * Math.sin(location.rot*Constants.DEGREE_TO_RADIAN)  };
 
         return v;
     }
 
     //return the angle the robot has turned due to this drive
-    public double getRotationEncoderDifferential()
+    public double getEncoderRadialDifferential(double eTime)
     {
-        double length = getLinearEncoderDerivative();
+        double length = getEncoderLinearDerivative(eTime);
         double radius = location.getPositionVector().magnitude();
         return length/radius/Math.PI*180;
     }

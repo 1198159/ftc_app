@@ -30,8 +30,8 @@ public class TestSemiAutomation extends MasterTeleOp
             Transform2D motion = drive.getRobotMotionFromEncoders();
             double iTime = System.nanoTime() / 1000 / 1000 / 1000;
             double eTime = iTime - lTime;
-            drive.robotLocation.x += eTime*( motion.x * Math.cos(drive.robotLocation.rot * Constants.degToRadConversionFactor) - motion.y * Math.sin(drive.robotLocation.rot * Constants.degToRadConversionFactor) );
-            drive.robotLocation.y += eTime*( motion.x * Math.sin(drive.robotLocation.rot * Constants.degToRadConversionFactor) + motion.y * Math.cos(drive.robotLocation.rot * Constants.degToRadConversionFactor) );
+            drive.robotLocation.x += eTime*( motion.x * Math.cos(drive.robotLocation.rot * Constants.DEGREE_TO_RADIAN) - motion.y * Math.sin(drive.robotLocation.rot * Constants.DEGREE_TO_RADIAN) );
+            drive.robotLocation.y += eTime*( motion.x * Math.sin(drive.robotLocation.rot * Constants.DEGREE_TO_RADIAN) + motion.y * Math.cos(drive.robotLocation.rot * Constants.DEGREE_TO_RADIAN) );
 
             if(gamepad1.right_bumper)
             {
