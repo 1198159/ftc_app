@@ -74,7 +74,7 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies = new DriveAssembly[4];
 
         //our robot uses an omni drive, so our motors are positioned at 45 degree angles to motor positions on a normal drive.
-        //                                                                                  mtr,                            x,   y,    rot, gear, radius, correction factor
+        //                                                                             mtr,                          x,    y,  rot,  gear, radius, correction factor
         driveAssemblies[BACK_RIGHT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"),  new Transform2D(1.0,  1.0, 135), 1.0, 0.1016, 1.0);
         driveAssemblies[BACK_LEFT]   = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"),   new Transform2D(-1.0,  1.0, 225), 1.0, 0.1016, 1.0);
         driveAssemblies[FRONT_LEFT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"),  new Transform2D(-1.0, -1.0, 315), 1.0, 0.1016, 1.0);
@@ -217,7 +217,7 @@ abstract public class MasterOpMode extends LinearOpMode
     public void navigateUsingEncoders(Transform2D Target, ElapsedTime timer)
     {
         double positionOffsetMagnitude = Math.sqrt(Math.pow(Target.x - drive.robotLocation.x,2)+Math.pow(Target.y - drive.robotLocation.y,2));
-        while ((positionOffsetMagnitude > Constants.POSITION_TOLERANCE) || (Math.abs(Target.rot - drive.robotLocation.rot) > Constants.ANGLE_TOLERANCE))
+        while (((positionOffsetMagnitude > Constants.POSITION_TOLERANCE) || (Math.abs(Target.rot - drive.robotLocation.rot) > Constants.ANGLE_TOLERANCE)) && opModeIsActive())
         {
             positionOffsetMagnitude = Math.sqrt(Math.pow(Target.x - drive.robotLocation.x,2)+Math.pow(Target.y - drive.robotLocation.y,2));
             double eTime = timer.seconds() - lTime;
@@ -238,10 +238,34 @@ abstract public class MasterOpMode extends LinearOpMode
         headingOffset = newValue;
     }
 
+    //prevents angle differences from being out of range
+    public double normalizeRotationTarget(double finalAngle, double initialAngle)
+    {
+        double diff = finalAngle - initialAngle;
+
+        while (Math.abs(diff) > 180)
+        {
+            diff -= Math.signum(diff) * 360;
+        }
+
+        return diff;
+    }
+
+    //prevents a single angle from being outside the range -180 to 180 degrees
+    public double normalizeAngle(double rawAngle)
+    {
+        while (Math.abs(rawAngle) > 180)
+        {
+            rawAngle -= Math.signum(rawAngle) * 360;
+        }
+
+        return rawAngle;
+    }
+
     //takes into account headingOffset to utilize global orientation
     public double getAngularOrientationWithOffset()
     {
-        double correctedHeading = imu.getAngularOrientation().firstAngle + headingOffset;
+        double correctedHeading = normalizeAngle(imu.getAngularOrientation().firstAngle + headingOffset);
 
         return correctedHeading;
     }
@@ -269,13 +293,13 @@ abstract public class MasterOpMode extends LinearOpMode
     public void turnTo(double targetAngle)
     {
         double currentAngle = getAngularOrientationWithOffset();
-        double angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);
+        double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
         double turningPower;
 
-        while(Math.abs(angleDiff) > Constants.ANGLE_TOLERANCE)
+        while((Math.abs(angleDiff) > Constants.ANGLE_TOLERANCE) && opModeIsActive())
         {
             currentAngle = getAngularOrientationWithOffset();
-            angleDiff = drive.normalizeRotationTarget(targetAngle, currentAngle);
+            angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
             turningPower = angleDiff * Constants.TURNING_POWER_FACTOR;
 
             //makes sure turn power doesn't go above maximum power

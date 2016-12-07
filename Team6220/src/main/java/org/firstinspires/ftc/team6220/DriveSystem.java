@@ -21,11 +21,11 @@ public class DriveSystem implements ConcurrentOperation
     private PIDFilter[] LocationControlFilter = new PIDFilter[2];
     private PIDFilter RotationControlFilter;
     public Transform2D robotLocation;
-    OpMode currentOpmode; //provide access to current opmode so we can use telemetry commands
+    MasterOpMode currentOpmode; //provide access to current opmode so we can use telemetry commands
     VuforiaHelper vuforiaHelper;
     //TODO add Kalman filter for position estimation
 
-    public DriveSystem(OpMode opmode, VuforiaHelper vuforia, DriveAssembly[] driveAssemblyArray, Transform2D initialLocation, PIDFilter[] filter)
+    public DriveSystem(MasterOpMode opmode, VuforiaHelper vuforia, DriveAssembly[] driveAssemblyArray, Transform2D initialLocation, PIDFilter[] filter)
     {
         this.currentOpmode = opmode;
         this.vuforiaHelper = vuforia;
@@ -66,7 +66,7 @@ public class DriveSystem implements ConcurrentOperation
         //update error terms
         LocationControlFilter[0].roll(target.x - robotLocation.x);
         LocationControlFilter[1].roll(target.y - robotLocation.y);
-        RotationControlFilter.roll(normalizeRotationTarget(target.rot, robotLocation.rot));
+        RotationControlFilter.roll(currentOpmode.normalizeRotationTarget(target.rot, robotLocation.rot));
         double xRate = LocationControlFilter[0].getFilteredValue();
         double yRate = LocationControlFilter[1].getFilteredValue();
         double wRate = target.rot - robotLocation.rot;       //RotationControlFilter.getFilteredValue();
@@ -158,19 +158,6 @@ public class DriveSystem implements ConcurrentOperation
         }
         diff.x = motion[0];
         diff.y = motion[1];
-        return diff;
-    }
-
-    //prevent angle differences from being out of range
-    double normalizeRotationTarget(double finalAngle, double initialAngle)
-    {
-        double diff = finalAngle - initialAngle;
-
-        while (Math.abs(diff) >= 180)
-        {
-            diff -= Math.signum(diff)*360;
-        }
-
         return diff;
     }
 

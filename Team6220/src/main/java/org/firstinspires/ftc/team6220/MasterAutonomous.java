@@ -29,7 +29,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         currentAngle = getAngularOrientationWithOffset();
 
         double positionOffsetMagnitude = Math.sqrt(Math.pow(TargetX - drive.robotLocation.x,2)+Math.pow(TargetY - drive.robotLocation.y,2));
-        while ((positionOffsetMagnitude > Constants.POSITION_TOLERANCE) || (Math.abs(TargetAngle - drive.robotLocation.rot) > Constants.ANGLE_TOLERANCE))
+        while (((positionOffsetMagnitude > Constants.POSITION_TOLERANCE) || (Math.abs(TargetAngle - drive.robotLocation.rot) > Constants.ANGLE_TOLERANCE)) && opModeIsActive())
         {
             positionOffsetMagnitude = Math.sqrt(Math.pow(TargetX - drive.robotLocation.x,2)+Math.pow(TargetY - drive.robotLocation.y,2));
             float[] l = vuforiaHelper.getRobotLocation();
@@ -81,10 +81,10 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         //sets the power of the motors to turn.  Since the turning direction of the robot is reversed from the motors,
         //negative signs are necessary.
-        while(Math.abs(angleDiff) > Constants.ANGLE_TOLERANCE)
+        while((Math.abs(angleDiff) > Constants.ANGLE_TOLERANCE) && opModeIsActive())
         {
             currentAngle = getAngularOrientationWithOffset();
-            angleDiff = drive.normalizeRotationTarget(w, currentAngle);
+            angleDiff = normalizeRotationTarget(w, currentAngle);
             turningPower = angleDiff * Constants.TURNING_POWER_FACTOR;
 
             if (Math.abs(turningPower) > 1.0)

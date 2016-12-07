@@ -21,6 +21,7 @@ public class TeleOpTestingOpMode extends MasterTeleOp
     {
         initializeHardware();
 
+        vuforiaHelper = new VuforiaHelper();
         vuforiaHelper.setupVuforia();
 
         //the robot is placed in this location when starting the test
@@ -43,7 +44,7 @@ public class TeleOpTestingOpMode extends MasterTeleOp
 
             //@TODO test; not working
             //navigation test for y direction
-            while (gamepad2.left_stick_y > 0.1)
+            while ((gamepad2.left_stick_y > 0.1) && opModeIsActive())
             {
                 float[] l = vuforiaHelper.getRobotLocation();
 
@@ -61,7 +62,7 @@ public class TeleOpTestingOpMode extends MasterTeleOp
 
             //@TODO test; not working
             //navigation test for x direction
-            while (gamepad2.left_stick_x > 0.1)
+            while ((gamepad2.left_stick_x > 0.1) && opModeIsActive())
             {
                 float[] l = vuforiaHelper.getRobotLocation();
 
