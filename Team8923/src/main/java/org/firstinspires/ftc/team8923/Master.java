@@ -18,8 +18,10 @@ abstract class Master extends LinearOpMode
     DcMotor motorBL = null;
     DcMotor motorBR = null;
     DcMotor motorLift = null;
+    DcMotor motorCollector = null;
 
-    Servo servoGrabber = null;
+    Servo servoGrabberLeft = null;
+    Servo servoGrabberRight = null;
 
     BNO055IMU imu;
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -38,8 +40,10 @@ abstract class Master extends LinearOpMode
 
     enum ServoPositions
     {
-        GRABBER_STOW(0.4),
-        GRABBER_RELEASE(0.7);
+        GRABBER_RIGHT_STOW(0.0),
+        GRABBER_RIGHT_RELEASE(1.0),
+        GRABBER_LEFT_STOW(1.0),
+        GRABBER_LEFT_RELEASE(0.0);
 
         public double pos;
         ServoPositions(double i)
@@ -56,6 +60,7 @@ abstract class Master extends LinearOpMode
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorLift = hardwareMap.dcMotor.get("motorLift");
+        motorCollector = hardwareMap.dcMotor.get("motorCollector");
 
         motorFR.setDirection(DcMotor.Direction.REVERSE);
         motorBR.setDirection(DcMotor.Direction.REVERSE);
@@ -71,9 +76,11 @@ abstract class Master extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        servoGrabber = hardwareMap.servo.get("servoGrabber");
+        servoGrabberRight = hardwareMap.servo.get("servoGrabberRight");
+        servoGrabberLeft = hardwareMap.servo.get("servoGrabberLeft");
 
-        servoGrabber.setPosition(ServoPositions.GRABBER_STOW.pos);
+        servoGrabberRight.setPosition(ServoPositions.GRABBER_RIGHT_STOW.pos);
+        servoGrabberLeft.setPosition(ServoPositions.GRABBER_LEFT_STOW.pos);
 
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;

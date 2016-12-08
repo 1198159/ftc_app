@@ -35,8 +35,26 @@ abstract class MasterTeleOp extends Master
     void grabCapBall()
     {
         if(gamepad2.a)
-            servoGrabber.setPosition(ServoPositions.GRABBER_RELEASE.pos);
+        {
+            servoGrabberRight.setPosition(ServoPositions.GRABBER_RIGHT_RELEASE.pos);
+            servoGrabberLeft.setPosition(ServoPositions.GRABBER_LEFT_RELEASE.pos);
+        }
         if(gamepad2.x)
-            servoGrabber.setPosition(ServoPositions.GRABBER_STOW.pos);
+        {
+            servoGrabberRight.setPosition(ServoPositions.GRABBER_RIGHT_STOW.pos);
+            servoGrabberLeft.setPosition(ServoPositions.GRABBER_LEFT_STOW.pos);
+        }
+    }
+
+    void runCollector()
+    {
+        if(gamepad2.right_trigger != 0)
+        {
+            motorCollector.setPower(1.0);
+        }
+        if(gamepad2.left_trigger != 0)
+        {
+            motorCollector.setPower(-1.0);
+        }
     }
 }
