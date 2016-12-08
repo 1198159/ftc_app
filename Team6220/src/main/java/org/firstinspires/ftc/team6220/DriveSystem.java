@@ -71,7 +71,6 @@ public class DriveSystem implements ConcurrentOperation
         double yRate = LocationControlFilter[1].getFilteredValue();
         double wRate = RotationControlFilter.getFilteredValue();    // double wRate = target.rot - robotLocation.rot
 
-        //makes sure that the robot does not move too slowly when nearing its target
         if(Math.abs(xRate) > 1)
         {
             xRate = Math.signum(xRate);
@@ -82,6 +81,7 @@ public class DriveSystem implements ConcurrentOperation
             yRate = Math.signum(yRate);
         }
 
+        //makes sure that wRate is in the acceptable range
         if(Math.abs(wRate) > 1)
         {
             wRate = Math.signum(wRate);
@@ -90,7 +90,6 @@ public class DriveSystem implements ConcurrentOperation
         {
             wRate = 0.3 * Math.signum(wRate);
         }
-
 
         writeToMotors(getMotorPowersFromMotion(new Transform2D(xRate, yRate, wRate)));
         return new double[]{xRate,yRate,wRate};
@@ -121,7 +120,53 @@ public class DriveSystem implements ConcurrentOperation
             scalingFactor = largest;
         }
 
-        return SequenceUtilities.scalarMultiply(rawPowers,1/scalingFactor);
+        return SequenceUtilities.scalarMultiply(rawPowers, 1/scalingFactor);
+
+    }
+
+    //@TODO code duplicate; incorporate both getMotorPowers into a single function accounting for heading
+    //ensures robot will drive straight while moving
+    public double[] getMotorPowersAccountingForHeading(Transform2D requestedMotion, double idealHeading)
+    {
+        double[] rawPowers = new double[]{0.0,0.0,0.0,0.0};
+
+        double currentAngle = currentOpMode.getAngularOrientationWithOffset();
+
+        //if the requested rotation is minimal, the robot will keep itself in a straight line
+        if (Math.abs(requestedMotion.rot) < 0.08)
+        {
+            RotationControlFilter.roll(currentOpMode.normalizeRotationTarget(idealHeading, currentAngle));
+            requestedMotion.rot = RotationControlFilter.getFilteredValue();
+
+            if (Math.abs(requestedMotion.rot) > 1.0)
+            {
+                requestedMotion.rot = Math.signum(requestedMotion.rot);
+            }
+            else if (Math.abs(requestedMotion.rot) < 0.08)
+            {
+                requestedMotion.rot = 0.08 * Math.signum(requestedMotion.rot);
+            }
+        }
+
+        //TODO see beginning of MasterOpMode
+        //calculate motor powers proportionally
+        for (int corner = 0; corner < 4; corner++)
+        {
+            rawPowers[corner] =
+                    requestedMotion.rot
+                            + Math.signum(assemblies[corner].location.y) * requestedMotion.x         //assemblies[corner].location.y works as sine of the angle of each motor
+                            + Math.signum(assemblies[corner].location.x) * requestedMotion.y         //assemblies[corner].location.x works as cosine of the angle of each motor
+            ;
+        }
+        //scales values so that they will remain in proportion in the case that they would "overflow"; e.g. [0.4,0.6,1.0,2.0] becomes [0.2,0.3,0.5,1.0]
+        double scalingFactor = 1.0;
+        double largest = SequenceUtilities.getLargestMagnitude(rawPowers);
+        if (largest > 1.0)
+        {
+            scalingFactor = largest;
+        }
+
+        return SequenceUtilities.scalarMultiply(rawPowers, 1/scalingFactor);
 
     }
 
@@ -137,11 +182,19 @@ public class DriveSystem implements ConcurrentOperation
         }
     }
 
-    //generate motor powers and write
+    //generate motor powers and write values to them
     public void moveRobot(double x, double y, double w)
     {
-        writeToMotors(getMotorPowersFromMotion(new Transform2D(x,y,w)));
+        writeToMotors(getMotorPowersFromMotion(new Transform2D(x, y, w)));
     }
+
+    //TODO see above
+    //generate motor powers and write values to them; drives at an ideal angle
+    public void moveRobotAtConstantHeading(double x, double y, double w, double targetAngle)
+    {
+        writeToMotors(getMotorPowersAccountingForHeading(new Transform2D(x, y, w), targetAngle));
+    }
+
 
     //estimate the robot's last motion using encoders
     //returns an average, so more frequent calls will be noisier but will miss some events

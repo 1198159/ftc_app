@@ -28,8 +28,10 @@ abstract public class MasterTeleOp extends MasterOpMode
             rFactor = 0.4;
         }
 
-        drive.moveRobot(pilotInputCurve.getOuput(xMotionAxis) * tFactor,
+        //TODO make sure driving at constant heading works; has code duplicates
+        drive.moveRobotAtConstantHeading(pilotInputCurve.getOuput(xMotionAxis) * tFactor,
                         pilotInputCurve.getOuput(yMotionAxis) * tFactor,
-                        pilotInputCurve.getOuput(rotationAxis) * rFactor);
+                        pilotInputCurve.getOuput(rotationAxis) * rFactor,
+                        getAngularOrientationWithOffset());
     }
 }
