@@ -37,6 +37,7 @@ public class MasterAutonomous extends MasterOpMode
     boolean isStartingPosOne;  // are you on starting position one? (if not, you're on position two
     double startDist; // the distance traveled depending on pos one or two
     int startDelay; // the time to delay the start if another team needs us to delay
+int delay = 0;
     int targetIndex; // specify what image target it is
     int targetDimX;  // specify x or y dim to use for alignment; red :x:0, blue :y:1
     int targetDimY;
@@ -181,6 +182,8 @@ public class MasterAutonomous extends MasterOpMode
         //     sleep(startDelay);
         VuforiaNav.getLocation();
 
+        sleep(delay);
+
         /*
         while (opModeIsActive()) {
 
@@ -320,6 +323,18 @@ public class MasterAutonomous extends MasterOpMode
             else // move shorter
             {
                 forwards(0, -34, 0.6, 4);
+            }
+        }
+
+        else // if color is unknown
+        {
+            if (isRedTeam) // move positive
+            {
+                forwards(0, 35, 0.6, 4);
+            }
+            else // move shorter
+            {
+                forwards(0, -35, 0.6, 4);
             }
         }
         //CodeReview: you didn't handle the case where the beaconColor was unknown.
