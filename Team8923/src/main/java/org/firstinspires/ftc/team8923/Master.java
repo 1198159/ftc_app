@@ -19,6 +19,7 @@ abstract class Master extends LinearOpMode
     DcMotor motorBR = null;
     DcMotor motorLift = null;
     DcMotor motorCollector = null;
+    DcMotor motorLauncher = null;
 
     Servo servoGrabberLeft = null;
     Servo servoGrabberRight = null;
@@ -61,6 +62,7 @@ abstract class Master extends LinearOpMode
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorLift = hardwareMap.dcMotor.get("motorLift");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
+        motorLauncher = hardwareMap.dcMotor.get("motorLauncher");
 
         motorFR.setDirection(DcMotor.Direction.REVERSE);
         motorBR.setDirection(DcMotor.Direction.REVERSE);

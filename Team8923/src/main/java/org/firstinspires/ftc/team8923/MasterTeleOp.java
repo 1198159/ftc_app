@@ -48,13 +48,18 @@ abstract class MasterTeleOp extends Master
 
     void runCollector()
     {
-        if(gamepad2.right_trigger != 0)
+        motorCollector.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+    }
+
+    void runLauncher()
+    {
+        if(gamepad2.b)
         {
-            motorCollector.setPower(1.0);
+            motorLauncher.setPower(1.0);
         }
-        if(gamepad2.left_trigger != 0)
+        if(gamepad2.y)
         {
-            motorCollector.setPower(-1.0);
+            motorLauncher.setPower(0.0);
         }
     }
 }
