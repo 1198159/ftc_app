@@ -62,4 +62,18 @@ abstract class MasterTeleOp extends Master
             motorLauncher.setPower(0.0);
         }
     }
+
+    void activateFinger()
+    {
+        if(gamepad2.dpad_left)
+        {
+            servoFinger.setPosition(ServoPositions.FINGER_FIRING.pos);
+            servoFinger.setPosition(ServoPositions.FINGER_IDLE.pos);
+        }
+    }
+
+    void actuateLauncher()
+    {
+
+    }
 }

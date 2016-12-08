@@ -23,6 +23,8 @@ abstract class Master extends LinearOpMode
 
     Servo servoGrabberLeft = null;
     Servo servoGrabberRight = null;
+    Servo servoFinger = null;
+    Servo servoLauncher = null;
 
     BNO055IMU imu;
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -41,6 +43,9 @@ abstract class Master extends LinearOpMode
 
     enum ServoPositions
     {
+        LAUNCHER_IDLE(0.0),
+        FINGER_IDLE(0.0),
+        FINGER_FIRING(1.0),
         GRABBER_RIGHT_STOW(0.0),
         GRABBER_RIGHT_RELEASE(1.0),
         GRABBER_LEFT_STOW(1.0),
@@ -80,9 +85,13 @@ abstract class Master extends LinearOpMode
 
         servoGrabberRight = hardwareMap.servo.get("servoGrabberRight");
         servoGrabberLeft = hardwareMap.servo.get("servoGrabberLeft");
+        servoFinger = hardwareMap.servo.get("servoFinger");
+        servoLauncher = hardwareMap.servo.get("servoLauncher");
 
         servoGrabberRight.setPosition(ServoPositions.GRABBER_RIGHT_STOW.pos);
         servoGrabberLeft.setPosition(ServoPositions.GRABBER_LEFT_STOW.pos);
+        servoFinger.setPosition(ServoPositions.FINGER_IDLE.pos);
+        servoLauncher.setPosition(ServoPositions.LAUNCHER_IDLE.pos);
 
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
