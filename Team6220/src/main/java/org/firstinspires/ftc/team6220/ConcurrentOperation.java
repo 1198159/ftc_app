@@ -4,8 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /*
     Represents an object that acts concurrently to other functions over multiple cycles.
-    Objects from this interface are added to an array that will call them apropriately.
-
+    Objects from this interface are added to an array that will call them appropriately.
 */
 public interface ConcurrentOperation
 {

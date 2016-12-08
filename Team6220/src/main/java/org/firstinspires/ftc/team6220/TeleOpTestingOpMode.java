@@ -21,6 +21,7 @@ public class TeleOpTestingOpMode extends MasterTeleOp
     {
         initializeHardware();
 
+        //initialize vuforia
         vuforiaHelper = new VuforiaHelper();
         vuforiaHelper.setupVuforia();
 

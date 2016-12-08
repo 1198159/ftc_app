@@ -27,6 +27,7 @@ abstract public class MasterOpMode extends LinearOpMode
     public final int BACK_RIGHT  = 3;
 
     DcMotor collectorMotor;
+    DcMotor launcherMotor;
 
     private int EncoderFR = 0;
     private int EncoderFL = 0;
@@ -49,8 +50,6 @@ abstract public class MasterOpMode extends LinearOpMode
     DriveSystem drive;
 
     VuforiaHelper vuforiaHelper;
-
-    ServoToggler collectorGateServoToggler;
 
     ElapsedTime timer = new ElapsedTime();
     double lTime = 0;
@@ -79,6 +78,8 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies[BACK_LEFT]   = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"),   new Transform2D(-1.0,  1.0, 225), 1.0, 0.1016, 1.0);
         driveAssemblies[FRONT_LEFT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"),  new Transform2D(-1.0, -1.0, 315), 1.0, 0.1016, 1.0);
         driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"), new Transform2D(1.0,  -1.0,  45), 1.0, 0.1016, 1.0);
+
+        //motors associated with our collection system
         collectorMotor = hardwareMap.dcMotor.get("motorCollector");
 
         //TODO tune our own drive PID loop using DriveAssemblyPID instead of build-in P/step filter
@@ -88,7 +89,6 @@ abstract public class MasterOpMode extends LinearOpMode
         driveAssemblies[BACK_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[BACK_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         collectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
 
         //not currently in use
         /*
@@ -231,7 +231,6 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
-    //CodeReview: Might be a little clearer to rename this method "setRobotStartingOrientation" since that is what it means in your opmodes
     //other opmodes must go through this method to prevent others from blithely changing headingOffset
     public void setRobotStartingOrientation(double newValue)
     {

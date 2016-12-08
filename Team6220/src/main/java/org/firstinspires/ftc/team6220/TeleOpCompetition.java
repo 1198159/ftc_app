@@ -12,8 +12,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
      - X: Collect
      - B: Reverse Collect
      - Right Bumper: Load particle
-
-
 */
 @TeleOp(name="TeleOpCompetition", group="6220")
 public class TeleOpCompetition extends MasterTeleOp
@@ -37,7 +35,7 @@ public class TeleOpCompetition extends MasterTeleOp
             driveRobotWithJoysticks(gamepad1.left_stick_x,    //local x motion power
                                     gamepad1.left_stick_y,     //local y motion power
                                     gamepad1.right_stick_x/2, //rotation power; divided by 2 to reduce our robot'shigh rotational velocity
-                                    driver1.isButtonPressed(Button.RIGHT_BUMPER)    );
+                                    driver1.isButtonPressed(Button.RIGHT_BUMPER));  //slow mode functionality on right bumper
 
             //intake balls with collector; drivers must hold buttons to collect
             if (driver2.isButtonPressed(Button.X))
@@ -53,10 +51,22 @@ public class TeleOpCompetition extends MasterTeleOp
                 collectorMotor.setPower(0.0);
             }
 
+            //pulls back launcher
+            if (driver2.isButtonPressed(Button.DPAD_DOWN))
+            {
+                launcher.pullback();
+            }
 
+            //puts a particle into the launcher
             if(driver2.isButtonPressed(Button.RIGHT_BUMPER))
             {
                 launcher.loadParticle();
+            }
+
+            //shoots a particle
+            if (driver2.isButtonPressed(Button.DPAD_UP))
+            {
+                launcher.launchParticle();
             }
 
             telemetry.addData("eTime:", eTime);

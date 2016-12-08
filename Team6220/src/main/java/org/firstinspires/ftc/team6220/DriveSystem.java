@@ -21,13 +21,13 @@ public class DriveSystem implements ConcurrentOperation
     private PIDFilter[] LocationControlFilter = new PIDFilter[2];
     private PIDFilter RotationControlFilter;
     public Transform2D robotLocation;
-    MasterOpMode currentOpmode; //provide access to current opmode so we can use telemetry commands
+    MasterOpMode currentOpMode; //provide access to current opmode so we can use telemetry commands
     VuforiaHelper vuforiaHelper;
     //TODO add Kalman filter for position estimation
 
     public DriveSystem(MasterOpMode opmode, VuforiaHelper vuforia, DriveAssembly[] driveAssemblyArray, Transform2D initialLocation, PIDFilter[] filter)
     {
-        this.currentOpmode = opmode;
+        this.currentOpMode = opmode;
         this.vuforiaHelper = vuforia;
         this.assemblies = driveAssemblyArray;
         this.robotLocation = initialLocation;
@@ -66,20 +66,22 @@ public class DriveSystem implements ConcurrentOperation
         //update error terms
         LocationControlFilter[0].roll(target.x - robotLocation.x);
         LocationControlFilter[1].roll(target.y - robotLocation.y);
-        RotationControlFilter.roll(currentOpmode.normalizeRotationTarget(target.rot, robotLocation.rot));
+        RotationControlFilter.roll(currentOpMode.normalizeRotationTarget(target.rot, robotLocation.rot));
         double xRate = LocationControlFilter[0].getFilteredValue();
         double yRate = LocationControlFilter[1].getFilteredValue();
-        double wRate = target.rot - robotLocation.rot;       //RotationControlFilter.getFilteredValue();
+        double wRate = RotationControlFilter.getFilteredValue();    // double wRate = target.rot - robotLocation.rot
 
         //makes sure that the robot does not move too slowly when nearing its target
         if(Math.abs(xRate) > 1)
         {
             xRate = Math.signum(xRate);
         }
+
         if(Math.abs(yRate) > 1)
         {
             yRate = Math.signum(yRate);
         }
+
         if(Math.abs(wRate) > 1)
         {
             wRate = Math.signum(wRate);

@@ -8,10 +8,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 */
 public class DriverInput implements ConcurrentOperation
 {
-    private Gamepad controller;
-    private boolean[] buttonStates = {false,false,false,false,false,false,false,false,false,false};
-    private boolean[] lastButtonStates = {false,false,false,false,false,false,false,false,false,false};
-    private double[] buttonHeldCounts = {0,0,0,0,0,0,0,0,0,0};
+    private Gamepad controller;     //one state for each button; there are 13 buttons available
+    private boolean[] buttonStates = {false,false,false,false,false,false,false,false,false,false,false,false,false,false};
+    private boolean[] lastButtonStates = {false,false,false,false,false,false,false,false,false,false,false,false,false,false};
+    private double[] buttonHeldCounts = {0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 
     public DriverInput(Gamepad cont)
@@ -65,7 +65,7 @@ public class DriverInput implements ConcurrentOperation
     //call at end of loop
     public void update(double eTime)
     {
-        for(int i=0;i<10;i++)
+        for(int i=0; i < 14; i++)
         {
             lastButtonStates[i] = buttonStates[i];
         }
@@ -79,8 +79,12 @@ public class DriverInput implements ConcurrentOperation
         buttonStates[7] = controller.right_stick_button;
         buttonStates[8] = controller.back;
         buttonStates[9] = controller.start;
+        buttonStates[10] = controller.dpad_up;
+        buttonStates[11] = controller.dpad_down;
+        buttonStates[12] = controller.dpad_left;
+        buttonStates[13] = controller.dpad_right;
 
-        for (int i = 0; i<10;i++)
+        for (int i = 0; i < 14; i++)
         {
             if(buttonStates[i])
             {
