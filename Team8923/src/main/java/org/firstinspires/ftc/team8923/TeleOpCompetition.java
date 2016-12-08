@@ -22,7 +22,7 @@ public class TeleOpCompetition extends MasterTeleOp
             grabCapBall();
             runCollector();
             runLauncher();
-            activateFinger();
+            shootBall();
 
             sendTelemetry();
             idle();

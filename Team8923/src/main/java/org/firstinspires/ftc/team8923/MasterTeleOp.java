@@ -1,10 +1,17 @@
 package org.firstinspires.ftc.team8923;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
 /**
  * This class contains all objects and methods that should be accessible by all TeleOpModes for the CapBot
  */
 abstract class MasterTeleOp extends Master
 {
+    // TODO: Add comments
+    private ElapsedTime fingerTimer = new ElapsedTime();
+    private double flywheelPower = 0.0;
+
     void driveMecanumTeleOp()
     {
         if(gamepad1.dpad_down)
@@ -55,7 +62,7 @@ abstract class MasterTeleOp extends Master
     {
         if(gamepad2.b)
         {
-            motorFlywheel.setPower(1.0);
+            motorFlywheel.setPower(flywheelPower);
         }
         if(gamepad2.y)
         {
@@ -63,13 +70,15 @@ abstract class MasterTeleOp extends Master
         }
     }
 
-    void activateFinger()
+    void shootBall()
     {
         if(gamepad2.dpad_left)
         {
             servoFinger.setPosition(ServoPositions.FINGER_EXTEND.pos);
-            servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
+            fingerTimer.reset();
         }
+        if(fingerTimer.milliseconds() > 250)
+            servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
     }
 
     void actuateLauncher()
