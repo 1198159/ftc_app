@@ -34,15 +34,15 @@ abstract class MasterTeleOp extends Master
 
     void grabCapBall()
     {
-        if(gamepad2.a)
+        if(gamepad2.right_bumper)
         {
-            servoGrabberRight.setPosition(ServoPositions.GRABBER_RIGHT_RELEASE.pos);
-            servoGrabberLeft.setPosition(ServoPositions.GRABBER_LEFT_RELEASE.pos);
+            servoGrabberRight.setPosition(ServoPositions.GRABBER_GRAB.pos);
+            servoGrabberLeft.setPosition(ServoPositions.GRABBER_GRAB.pos);
         }
-        if(gamepad2.x)
+        if(gamepad2.left_bumper)
         {
-            servoGrabberRight.setPosition(ServoPositions.GRABBER_RIGHT_STOW.pos);
-            servoGrabberLeft.setPosition(ServoPositions.GRABBER_LEFT_STOW.pos);
+            servoGrabberRight.setPosition(ServoPositions.GRABBER_RELEASE.pos);
+            servoGrabberLeft.setPosition(ServoPositions.GRABBER_RELEASE.pos);
         }
     }
 
@@ -55,11 +55,11 @@ abstract class MasterTeleOp extends Master
     {
         if(gamepad2.b)
         {
-            motorLauncher.setPower(1.0);
+            motorFlywheel.setPower(1.0);
         }
         if(gamepad2.y)
         {
-            motorLauncher.setPower(0.0);
+            motorFlywheel.setPower(0.0);
         }
     }
 
@@ -67,8 +67,8 @@ abstract class MasterTeleOp extends Master
     {
         if(gamepad2.dpad_left)
         {
-            servoFinger.setPosition(ServoPositions.FINGER_FIRING.pos);
-            servoFinger.setPosition(ServoPositions.FINGER_IDLE.pos);
+            servoFinger.setPosition(ServoPositions.FINGER_EXTEND.pos);
+            servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
         }
     }
 

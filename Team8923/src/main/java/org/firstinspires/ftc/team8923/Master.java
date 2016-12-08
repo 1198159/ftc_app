@@ -19,12 +19,12 @@ abstract class Master extends LinearOpMode
     DcMotor motorBR = null;
     DcMotor motorLift = null;
     DcMotor motorCollector = null;
-    DcMotor motorLauncher = null;
+    DcMotor motorFlywheel = null;
 
     Servo servoGrabberLeft = null;
     Servo servoGrabberRight = null;
     Servo servoFinger = null;
-    Servo servoLauncher = null;
+    Servo servoFlywheelAngle = null;
 
     BNO055IMU imu;
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -43,13 +43,12 @@ abstract class Master extends LinearOpMode
 
     enum ServoPositions
     {
-        LAUNCHER_IDLE(0.0),
-        FINGER_IDLE(0.0),
-        FINGER_FIRING(1.0),
-        GRABBER_RIGHT_STOW(0.0),
-        GRABBER_RIGHT_RELEASE(1.0),
-        GRABBER_LEFT_STOW(1.0),
-        GRABBER_LEFT_RELEASE(0.0);
+        FLYWHEEL_STOW(0.0),
+        FINGER_RETRACT(0.0),
+        FINGER_EXTEND(1.0),
+        GRABBER_STOW(1.0),
+        GRABBER_GRAB(0.55),
+        GRABBER_RELEASE(0.0);
 
         public double pos;
         ServoPositions(double i)
@@ -67,31 +66,38 @@ abstract class Master extends LinearOpMode
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorLift = hardwareMap.dcMotor.get("motorLift");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
-        motorLauncher = hardwareMap.dcMotor.get("motorLauncher");
+        motorFlywheel = hardwareMap.dcMotor.get("motorFlywheel");
 
         motorFR.setDirection(DcMotor.Direction.REVERSE);
-        motorBR.setDirection(DcMotor.Direction.REVERSE);
+        // Should reverse the BR, but there is a wiring issue. Hardware people...
+        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        // Some hardware person got the wiring backwards...
+        motorLift.setDirection(DcMotor.Direction.REVERSE);
 
         // Our drive motors seem to run at this speed
         motorFL.setMaxSpeed(2700);
         motorFR.setMaxSpeed(2700);
         motorBL.setMaxSpeed(2700);
         motorBR.setMaxSpeed(2700);
+        motorFlywheel.setMaxSpeed(2700);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         servoGrabberRight = hardwareMap.servo.get("servoGrabberRight");
         servoGrabberLeft = hardwareMap.servo.get("servoGrabberLeft");
         servoFinger = hardwareMap.servo.get("servoFinger");
-        servoLauncher = hardwareMap.servo.get("servoLauncher");
+        servoFlywheelAngle = hardwareMap.servo.get("servoFlywheelAngle");
 
-        servoGrabberRight.setPosition(ServoPositions.GRABBER_RIGHT_STOW.pos);
-        servoGrabberLeft.setPosition(ServoPositions.GRABBER_LEFT_STOW.pos);
-        servoFinger.setPosition(ServoPositions.FINGER_IDLE.pos);
-        servoLauncher.setPosition(ServoPositions.LAUNCHER_IDLE.pos);
+        servoGrabberLeft.setDirection(Servo.Direction.REVERSE);
+
+        servoGrabberRight.setPosition(ServoPositions.GRABBER_STOW.pos);
+        servoGrabberLeft.setPosition(ServoPositions.GRABBER_STOW.pos);
+        servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
+        servoFlywheelAngle.setPosition(ServoPositions.FLYWHEEL_STOW.pos);
 
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;

@@ -20,8 +20,8 @@ public class TestCapBallGrabber extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        servoRight = hardwareMap.servo.get("servoRight");
-        servoLeft = hardwareMap.servo.get("servoLeft");
+        servoRight = hardwareMap.servo.get("servoGrabberRight");
+        servoLeft = hardwareMap.servo.get("servoGrabberLeft");
 
         waitForStart();
 
