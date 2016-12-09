@@ -46,9 +46,7 @@ public class Launcher implements ConcurrentOperation
     private double servoWaitTime = 0;
     private double motorWaitTime = 0;
 
-    private OpMode mode;
-
-    MasterOpMode masterOpMode;
+    private MasterOpMode masterOpMode;
 
     //used to initialize objects that are part of the launcher
     public void initialize(HardwareMap hMap)
@@ -66,34 +64,64 @@ public class Launcher implements ConcurrentOperation
 
     public void pullback()
     {
-        pullBackMotor.setTargetPosition(Constants.TETRIX_TICKS_PER_ROTATION / 2);
-        pullBackMotor.setPower(1.0);
+        pullBackMotor.setTargetPosition(Constants.LAUNCHER_PULLBACK_POSITION);
+        pullBackMotor.setPower(Constants.LAUNCHER_SHOOT_POWER);
+
+        //ensures that the previous motor action is completed before starting the next one
+        while (pullBackMotor.isBusy() && masterOpMode.opModeIsActive())
+        {
+            masterOpMode.telemetry.addData("launcherEncoderVal: ", pullBackMotor.getCurrentPosition());
+            masterOpMode.telemetry.update();
+
+            masterOpMode.idle();
+        }
+
         launchState = LaunchState.WAIT;
     }
 
     //launches particle. Calling before pullback() will make it pullback, load, and launch immediately.
     public void launchParticle() throws InterruptedException
     {
-        if (launchState == LaunchState.WAIT)
+      /*  if (launchState == LaunchState.WAIT)
         {
-            pullBackMotor.setTargetPosition(Constants.TETRIX_TICKS_PER_ROTATION);
-            pullBackMotor.setPower(1.0);
+            pullBackMotor.setTargetPosition(Constants.LAUNCHER_FIRING_POSITION);
+            pullBackMotor.setPower(Constants.LAUNCHER_SHOOT_POWER);
+
+            //ensures that the previous motor action is completed before starting the next one
+            while (pullBackMotor.isBusy() && masterOpMode.opModeIsActive())
+            {
+                masterOpMode.telemetry.addData("launcherEncoderVal: ", pullBackMotor.getCurrentPosition());
+                masterOpMode.telemetry.update();
+
+                masterOpMode.idle();
+            }
+
             //resets the encoder each loop so it will display the correct values every time
             pullBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
-        else
+        else */
         {
             pullback();
 
             //load a particle
             gateServo.setPosition(Constants.GATE_SERVO_DEPLOYED_POSITION);
-            //masterOpMode.pause(400);
+            masterOpMode.pause(400);
             gateServo.setPosition(Constants.GATE_SERVO_RETRACTED_POSITION);
 
             //launch a particle
-            pullBackMotor.setTargetPosition(Constants.TETRIX_TICKS_PER_ROTATION);
-            pullBackMotor.setPower(1.0);
+            pullBackMotor.setTargetPosition(Constants.LAUNCHER_FIRING_POSITION);
+            pullBackMotor.setPower(Constants.LAUNCHER_SHOOT_POWER);
+
+            //ensures that the previous motor action is completed before starting the next one
+            while (pullBackMotor.isBusy() && masterOpMode.opModeIsActive())
+            {
+                masterOpMode.telemetry.addData("launcherEncoderVal: ", pullBackMotor.getCurrentPosition());
+                masterOpMode.telemetry.update();
+
+                masterOpMode.idle();
+            }
+
             //resets the encoder every loop so it will display the correct values each time
             pullBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -102,16 +130,59 @@ public class Launcher implements ConcurrentOperation
         launchState = LaunchState.IDLE;
     }
 
-    //we pass the opmode so that this class can generate telemetry
-    public Launcher(OpMode mode)
+    public void trimForward()
     {
-        this.mode = mode;
+        pullBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        pullBackMotor.setTargetPosition(Constants.LAUNCHER_TRIM_INTERVAL);
+        pullBackMotor.setPower(Constants.LAUNCHER_TRIM_POWER);
+
+        while(pullBackMotor.isBusy() && masterOpMode.opModeIsActive())
+        {
+            masterOpMode.telemetry.addData("launcherEncoderVal: ", pullBackMotor.getCurrentPosition());
+            masterOpMode.telemetry.update();
+
+            masterOpMode.idle();
+        }
+
+        pullBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void trimBackward()
+    {
+        pullBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        pullBackMotor.setTargetPosition(-Constants.LAUNCHER_TRIM_INTERVAL);
+        pullBackMotor.setPower(-Constants.LAUNCHER_TRIM_POWER);
+
+        while(pullBackMotor.isBusy() && masterOpMode.opModeIsActive())
+        {
+            masterOpMode.telemetry.addData("launcherEncoderVal: ", pullBackMotor.getCurrentPosition());
+            masterOpMode.telemetry.update();
+
+            masterOpMode.idle();
+        }
+
+        pullBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    //we pass the opmode so that this class can generate telemetry
+    public Launcher(MasterOpMode mode)
+    {
+        this.masterOpMode = mode;
     }
 
     //sets the gate servo to the correct position at the end of each loop
     @Override
     public void update(double eTime)
     {
+
+        masterOpMode.telemetry.addData("pullBackMotorEncVal: ", pullBackMotor.getCurrentPosition());
+
         //loading state machine
         if (gateState == GateState.OPEN)
         {
@@ -136,5 +207,6 @@ public class Launcher implements ConcurrentOperation
 
         //launching state machine
 
+        masterOpMode.telemetry.update();
     }
 }

@@ -27,7 +27,6 @@ abstract public class MasterOpMode extends LinearOpMode
     public final int BACK_RIGHT  = 3;
 
     DcMotor collectorMotor;
-    DcMotor launcherMotor;
 
     private int EncoderFR = 0;
     private int EncoderFL = 0;

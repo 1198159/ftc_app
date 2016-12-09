@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team6220;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -68,6 +69,18 @@ public class TeleOpCompetition extends MasterTeleOp
             {
                 launcher.launchParticle();
             }
+
+            if (driver2.isButtonPressed(Button.Y))
+            {
+                launcher.trimForward();
+            }
+
+
+            if (driver2.isButtonPressed(Button.A))
+            {
+                launcher.trimBackward();
+            }
+
 
             telemetry.addData("eTime:", eTime);
             updateCallback(eTime);
