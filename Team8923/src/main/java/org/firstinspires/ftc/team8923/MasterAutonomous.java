@@ -356,8 +356,10 @@ abstract class MasterAutonomous extends Master
             int deltaBL = motorBL.getCurrentPosition() - lastEncoderBL;
             int deltaBR = motorBR.getCurrentPosition() - lastEncoderBR;
 
-            // Take average of encoders ticks, and convert to mm. Some are negative because of 45 degree roller angle
-            double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4 * MM_PER_TICK;
+            // Take average of encoders ticks, and convert to mm. Some are negative because of 45
+            // degree roller angle X value is divided by root 2, because the rollers spin when
+            // going sideways. The rollers are stagnant when going forwards, so root 2 doesn't apply
+            double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4 * MM_PER_TICK / Math.sqrt(2);
             double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4 * MM_PER_TICK;
 
             // Delta x and y are intrinsic to robot, so make extrinsic and update robot location
