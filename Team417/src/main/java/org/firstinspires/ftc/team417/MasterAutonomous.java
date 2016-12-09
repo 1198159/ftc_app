@@ -201,21 +201,44 @@ int delay = 0;
 
 
 // TESTS
+        telemetry.addData("Path", "diagonal");
+        telemetry.update();
+        pivotMove(200, 200, 0, 0.8, 3);
+        sleep(2000);
 
-        pivotMove(400, 400, 10, 0.5, 3);
-        sleep(5000);
+        telemetry.addData("Path", "right");
+        telemetry.update();
+        pivotMove(200, 0, 0, 0.8, 3);
+        sleep(3000);
 
+        telemetry.addData("Path", "left");
+        telemetry.update();
+        pivotMove(-200, 0, 0, 0.8, 3);
+
+        telemetry.addData("Path", "pivot left");
+        telemetry.update();
+        pivotMove(0, 0, 15, 0.8, 3);
+
+        telemetry.addData("Path", "pivot right");
+        telemetry.update();
+        pivotMove(0, 0, -15, 0.8, 3);
+
+        telemetry.addData("Path", "Done");
+        telemetry.update();
+        sleep(30000);
 
 
 // START OF AUTONOMOUS
 
 
+        telemetry.addData("Path", "start forwards");
+        telemetry.update();
         // go towards target
         forwards(startDist, 0, 0.85, 3);  // inches, speed, timeout
         sleep(100);
 
         // pivot to face target
-        pivot(pivotAngle, 0.7);
+        pivot(pivotAngle, 0.7); // make sure IMU is on
         sleep(100);
 
         // align sideways with image
@@ -512,7 +535,7 @@ int delay = 0;
         }
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
-                (Math.abs(errorFL) > 10 && Math.abs(errorFR) > 10 && Math.abs(errorBL) > 10 && Math.abs(errorBR) > 10));
+                (Math.abs(errorFL) > 10 || Math.abs(errorFR) > 10 || Math.abs(errorBL) > 10 || Math.abs(errorBR) > 10));
 
         // stop the motors
         motorFrontLeft.setPower(0);
@@ -835,15 +858,23 @@ int delay = 0;
         motorBackRight.setPower(0);
     }
 
+
+    // TODO: fix timeout
     // a combination of both the align and pivot function (WITHOUT VUFORIA)
     // angle has to be small otherwise won't work, this function moves and pivots robot
     public void pivotMove(double x, double y, double pivotAngle, double speed, double timeout)
     {
-        final float Kmove = 1.0f/600.0f; // speed is proportional to error
-        final float Kpivot = 1.0f/100.0f;
+        // run with encoder mode
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        final float TOL = 10;
-        final float TOL_ANGLE = 1;
+        final double Kmove = 1.0f/600.0f; // speed is proportional to error
+        final double Kpivot = 1.0f/100.0f;
+
+        final double TOL = 100;
+        final double TOL_ANGLE = 1;
 
         int newTargetFL;
         int newTargetBL;
@@ -874,14 +905,14 @@ int delay = 0;
         final double ROBOT_DIAMETER_MM = 18.0 * 25.4;
         pivotDst = (int) ((pivotAngle / 360) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (x * 1.414))
-                + (int) (COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetFR = motorFrontRight.getCurrentPosition() - (int) (COUNTS_PER_MM * (x * 1.414))
-                + (int) (COUNTS_PER_MM * (y)) - pivotDst;
-        newTargetBL = motorBackLeft.getCurrentPosition() - (int) (COUNTS_PER_MM * (x * 1.414))
-                + (int) (COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (x * 1.414))
-                + (int) (COUNTS_PER_MM * (y)) - pivotDst;
+        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
+                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
+        newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.414))
+                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
+        newTargetBL = motorBackLeft.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.414))
+                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
+        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
+                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
 
         runtime.reset(); // reset timer, which is used for loop timeout below
 
@@ -930,37 +961,39 @@ int delay = 0;
             speedAbsBR = Range.clip(speedAbsBR, 0.2, speed);
             speedBR = speedAbsBR * Math.signum(speedBR);
 
-            if (Math.abs(errorFL) < TOL)
+/*
+            if (Math.abs(errorFL) < (TOL - 3) )
             {
                 speedFL = 0;
             }
-            if (Math.abs(errorFR) < TOL)
+            if (Math.abs(errorFR) < (TOL - 3) )
             {
                 speedFR = 0;
             }
-            if (Math.abs(errorBL) < TOL)
+            if (Math.abs(errorBL) < (TOL - 3) )
             {
                 speedBL = 0;
             }
-            if (Math.abs(errorBR) < TOL)
+            if (Math.abs(errorBR) < (TOL - 3) )
             {
                 speedBR = 0;
             }
+*/
 
             motorFrontLeft.setPower(speedFL);
             motorFrontRight.setPower(speedFR);
             motorBackLeft.setPower(speedBL);
             motorBackRight.setPower(speedBR);
 
-            telemetry.log().add(String.format("FL %f, FR %f, BL %f, BR %f", speedFL, speedFR, speedBL, speedBR));
+            telemetry.log().add(String.format("spFL %f, spFR %f, spBL %f, spBR %f", speedFL, speedFR, speedBL, speedBR));
             telemetry.log().add(String.format("errFL %d, errFR %d, errBL %d, errBR %d", errorFL, errorFR, errorBL, errorBR));
             telemetry.update();
             idle();
         }
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
-                (Math.abs(errorFL) > TOL && Math.abs(errorFR) > TOL && Math.abs(errorBL) > TOL && Math.abs(errorBR) > TOL) &&
-                (Math.abs(errorAngle) > TOL_ANGLE) );
+                (Math.abs(errorFL) > TOL || Math.abs(errorFR) > TOL || Math.abs(errorBL) > TOL || Math.abs(errorBR) > TOL) ||
+                (Math.abs(errorAngle) > TOL_ANGLE));
 
         // stop the motors
         motorFrontLeft.setPower(0);
@@ -1019,7 +1052,7 @@ int delay = 0;
             // shift position back 25 inches away from target image
             robotErrorY -= distAway;
 // calls pivot move function here
-            pivotMove(robotErrorX, robotErrorY, errorAngle, 0.5, 3);
+            pivotMove(robotErrorX, robotErrorY, errorAngle, 0.5, 3); // 0.5 speed, 3 second timeout
 
             runtime.reset();
             telemetry.log().add(String.format("loop: %d", loopCount));
