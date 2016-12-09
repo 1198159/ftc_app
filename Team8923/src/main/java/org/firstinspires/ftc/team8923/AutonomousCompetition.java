@@ -43,6 +43,9 @@ public class AutonomousCompetition extends MasterAutonomous
                 case PARK_CENTER:
                     parkOnObjective(Objectives.PARK_CENTER);
                     break;
+                case SHOOT_CENTER:
+                    shootInCenter();
+                    break;
             }
         }
 
@@ -136,6 +139,7 @@ public class AutonomousCompetition extends MasterAutonomous
         }
     }
 
+    // TODO: Find a way to combine the red and blue methods
     // This is separate from pressBeaconBlue, because combining them is difficult
     private void pressBeaconRed(double beaconX, double beaconY) throws InterruptedException
     {
@@ -268,5 +272,43 @@ public class AutonomousCompetition extends MasterAutonomous
         sleep(500); // TODO: Is this needed?
         // Back away from beacon
         driveToPoint(beaconX - observationDistance, beaconY, 0, 0.3);
+    }
+
+    // TODO: Test me
+    // Shoots balls into the center vortex. Should only be used as the first objective, because
+    // robot will be placed correctly at start. Robot's position won't be as accurate later on
+    private void shootInCenter()
+    {
+        double goalX;
+        double goalY;
+
+        // Choose goal based on alliance color
+        switch(alliance)
+        {
+            case RED:
+                goalX = 5 * 12 * 25.4;
+                goalY = 7 * 12 * 25.4;
+                break;
+            case BLUE:
+                goalX = 7 * 12 * 25.4;
+                goalY = 5 * 12 * 25.4;
+                break;
+            // Something is a bogus value, so run away
+            default: return;
+        }
+
+        setFlywheelPowerAndAngle(calculateDistance(goalX - robotX, goalY - robotY));
+
+        // Shoot twice
+        for(int i = 0; i < 2; i++)
+        {
+            servoFinger.setPosition(ServoPositions.FINGER_EXTEND.pos);
+            sleep(500); // Give servo time to move
+            servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
+            sleep(500); // Give servo time to move
+        }
+
+        // Stop flywheel
+        motorFlywheel.setPower(0.0);
     }
 }

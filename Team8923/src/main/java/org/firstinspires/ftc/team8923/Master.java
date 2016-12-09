@@ -44,9 +44,9 @@ abstract class Master extends LinearOpMode
     enum ServoPositions
     {
         FLYWHEEL_STOW(0.0),
-        FINGER_RETRACT(0.0),
-        FINGER_EXTEND(1.0),
-        GRABBER_STOW(1.0),
+        FINGER_RETRACT(0.65),
+        FINGER_EXTEND(0.35),
+        GRABBER_STOW(0.7),
         GRABBER_GRAB(0.55),
         GRABBER_RELEASE(0.0);
 

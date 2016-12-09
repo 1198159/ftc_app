@@ -59,7 +59,8 @@ abstract class MasterAutonomous extends Master
         BEACON_LEFT,
         BEACON_RIGHT,
         PARK_RAMP,
-        PARK_CENTER
+        PARK_CENTER,
+        SHOOT_CENTER
     }
 
     // Information on robot's location. Units are millimeters and degrees
@@ -122,6 +123,8 @@ abstract class MasterAutonomous extends Master
                 routine.add(Objectives.PARK_RAMP);
             else if(gamepad1.a)
                 routine.add(Objectives.PARK_CENTER);
+            else if(gamepad1.guide)
+                routine.add(Objectives.SHOOT_CENTER);
 
             // Clear objectives if a mistake was made
             else if(gamepad1.back)
