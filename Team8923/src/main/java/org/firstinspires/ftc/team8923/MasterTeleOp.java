@@ -55,65 +55,32 @@ abstract class MasterTeleOp extends Master
 
     void runCollector()
     {
-        motorCollector.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+        motorCollector.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
     }
 
-    void runLauncher()
+    // We want to be able to shoot from various distances, so this sets the motor power and servo
+    // position based on the desired distance
+    void controlFlywheel()
     {
-        if(gamepad2.b)
-        {
-            motorFlywheel.setPower(flywheelPower);
-        }
-        if(gamepad2.y)
-        {
+        // Set motor power and servo position based on various distances
+        if(gamepad2.x)
+            setFlywheelPowerAndAngle(400);
+        else if(gamepad2.y)
+            setFlywheelPowerAndAngle(800);
+        else if(gamepad2.b)
+            setFlywheelPowerAndAngle(1200);
+        // Stop flywheel
+        else if(gamepad2.a)
             motorFlywheel.setPower(0.0);
-        }
-    }
 
-    void shootBall()
-    {
-        if(gamepad2.dpad_left)
+        // Shoot ball
+        if(gamepad2.start)
         {
             servoFinger.setPosition(ServoPositions.FINGER_EXTEND.pos);
             fingerTimer.reset();
         }
+        // Retract finger after 250 milliseconds
         if(fingerTimer.milliseconds() > 250)
             servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
-    }
-
-    void setFlywheelAngleAndSpeed()
-    {
-        double distanceToGoal;
-
-        // If one of the desired buttons is pressed, set the distance. Otherwise return and do nothing
-        if(gamepad1.x)
-            distanceToGoal = 0.4;
-        else if(gamepad1.y)
-            distanceToGoal = 0.8;
-        else if(gamepad1.b)
-            distanceToGoal = 1.2;
-        else
-            return;
-
-        // Acceleration due to gravity
-        double g = 9.8;
-        // Calculate vertical velocity using energy: vY = sqrt(2gh) where h is 2 meters
-        double vY = Math.sqrt(2 * g * 2);
-        // Calculate the time taken to reach the top of the arc using: a = v / t
-        double flyTime = vY / g;
-        // Calculate horizontal velocity needed to reach goal: vX = x / t
-        double vX= distanceToGoal / flyTime;
-        // vTotal = sqrt(vX ^ 2 + vY ^ 2)
-        double velocity = Math.sqrt(Math.pow(vX, 2) + Math.pow(vY, 2));
-        // Calculate angle required to shoot into goal. vX and vY are flipped to get angle from vertical
-        double angle = Math.atan2(vX, vY);
-
-        // Calculate motor power and servo position based on velocity and angle required
-        double power = Range.scale(velocity, 0, 15, 0, 1); // 15 m/s is max launching speed of flywheel
-        double position = Range.scale(angle, 0, 60, 0, 1); // Servo has a 3:1 gear ratio, so adjust angle
-
-        // Set motor power and servo position
-        flywheelPower = power;
-        servoFlywheelAngle.setPosition(position);
     }
 }

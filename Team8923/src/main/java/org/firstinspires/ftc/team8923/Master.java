@@ -183,6 +183,39 @@ abstract class Master extends LinearOpMode
         motorBR.setPower(0.0);
     }
 
+    void setFlywheelPowerAndAngle(double distanceToGoal)
+    {
+        // Convert from mm to meters for math
+        distanceToGoal /= 1000;
+        // Acceleration due to gravity
+        double g = 9.8;
+        // Calculate vertical velocity using energy: vY = sqrt(2gh) where h is 2 meters
+        double vY = Math.sqrt(2 * g * 2);
+        // Calculate the time taken to reach the top of the arc using: a = v / t
+        double flyTime = vY / g;
+        // Calculate horizontal velocity needed to reach goal: vX = x / t
+        double vX= distanceToGoal / flyTime;
+        // vTotal = sqrt(vX ^ 2 + vY ^ 2)
+        double velocity = Math.sqrt(Math.pow(vX, 2) + Math.pow(vY, 2));
+        // Calculate angle required to shoot into goal. vX and vY are flipped to get angle from vertical
+        double angle = Math.toDegrees(Math.atan2(vX, vY));
+
+        // Calculate motor power and servo position based on velocity and angle required
+        double power = Range.scale(velocity, 0, 15, 0, 1); // 15 m/s is max launching speed of flywheel
+        double position = Range.scale(angle, 0, 60, 0, 1); // Servo has a 3:1 gear ratio, so adjust angle
+
+        telemetry.log().add("Power" + power);
+        telemetry.log().add("PositionZ" + position);
+
+        // Set motor power and servo position
+        motorFlywheel.setPower(power);
+        servoFlywheelAngle.setPosition(position);
+
+        // TODO: This will prevent anything else from running for this time. Is that a problem for us?
+        // Give servo time to move and flywheel time to speed up
+        sleep(500);
+    }
+
     // Truncates numbers to fit displays better. Not recommended for numbers that span many
     // magnitudes. Also consider the decimal point character.
     private String formatNumber(double number)
