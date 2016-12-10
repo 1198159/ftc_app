@@ -81,7 +81,6 @@ public class TeleOpCompetition extends MasterTeleOp
                 launcher.trimBackward();
             }
 
-
             telemetry.addData("eTime:", eTime);
             updateCallback(eTime);
             telemetry.update();

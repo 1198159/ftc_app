@@ -64,9 +64,11 @@ public class DriveSystem implements ConcurrentOperation
         robotLocation.SetPositionFromFloatArray(l);
         */
         //update error terms
+        double angleDiff = currentOpMode.normalizeRotationTarget(target.rot, robotLocation.rot);
         LocationControlFilter[0].roll(target.x - robotLocation.x);
         LocationControlFilter[1].roll(target.y - robotLocation.y);
-        RotationControlFilter.roll(currentOpMode.normalizeRotationTarget(target.rot, robotLocation.rot));
+        RotationControlFilter.roll(angleDiff);
+        currentOpMode.telemetry.addData("Angle diff:",angleDiff);
         double xRate = LocationControlFilter[0].getFilteredValue();
         double yRate = LocationControlFilter[1].getFilteredValue();
         double wRate = RotationControlFilter.getFilteredValue();    // double wRate = target.rot - robotLocation.rot
