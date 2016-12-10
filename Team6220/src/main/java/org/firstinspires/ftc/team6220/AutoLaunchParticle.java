@@ -11,15 +11,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name="Launch Two Particles to Center", group="6220")
 public class AutoLaunchParticle extends MasterTeleOp
 {
-
-    double[][] tasks = new double[][]
-            {
-                    //angle to drive  , speed , duration(sec)
-                    {   Math.PI      ,  0.7  ,     1.2      },
-
-            };
-    int currentTask = 0;
-    int numTasks = tasks.length;
     double taskElapsedTime = 0;
     @Override
     public void runOpMode() throws InterruptedException
@@ -28,30 +19,30 @@ public class AutoLaunchParticle extends MasterTeleOp
 
         waitForStart();
 
-        while (opModeIsActive())
+        pauseWhileUpdating(1.0);
+        drive.moveRobot(-0.5, 0.0, 0.0);
+        pauseWhileUpdating(1.0);
+        drive.writeToMotors(new double[]{0.0, 0.0, 0.0, 0.0});
+        pauseWhileUpdating(0.5);
+        launcher.pullback();
+        pauseWhileUpdating(3.0);
+        launcher.launchParticle();
+        pauseWhileUpdating(5.0);
+
+    }
+    void pauseWhileUpdating(double time)
+    {
+        while(opModeIsActive() && time > 0)
         {
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
+            time -= eTime;
 
-            if(currentTask != numTasks)
-            {
-                taskElapsedTime += eTime;
-                double[] command = SequenceUtilities.scalarMultiply(
-                        Utility.normalizedComponentsFromAngle(tasks[currentTask][0]),
-                        tasks[currentTask][1]);
-                double[] powers = drive.getMotorPowersFromMotion(new Transform2D(command[0],command[1],0));
-                drive.writeToMotors(powers);
-                if (taskElapsedTime > tasks[currentTask][2])
-                {
-                    currentTask += 1;
-                    taskElapsedTime = 0;
-                }
-            }
-
-            telemetry.addData("eTime:", eTime);
+            telemetry.addData("Time Remaining:", time);
             updateCallback(eTime);
             telemetry.update();
             idle();
         }
+
     }
 }

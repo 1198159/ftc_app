@@ -16,7 +16,7 @@ import static org.firstinspires.ftc.team6220.Utility.*;
 public class Launcher implements ConcurrentOperation
 {
     //TODO update servo and motor handlers to implement ConcurrentOperation and use this here
-    private DcMotor pullBackMotor;
+    public DcMotor pullBackMotor;
     private Servo gateServo;
 
     private String motorDevice = "motorLauncher";
@@ -24,7 +24,10 @@ public class Launcher implements ConcurrentOperation
 
     private boolean isLaunching = false;
 
-    private int loopcounter=0;
+    //private int loopcounter=0;
+
+    private int launchCount = 0;
+    private int currentLaunchTargetStart = 0;
 
     //servo gate states
     private enum GateState
@@ -81,6 +84,7 @@ public class Launcher implements ConcurrentOperation
 
     }
 
+    @Deprecated
     public void pullbackBNotUsed()
     {
         pullBackMotor.setTargetPosition(Constants.LAUNCHER_PULLBACK_POSITION);
@@ -160,7 +164,9 @@ public class Launcher implements ConcurrentOperation
     public void update(double eTime)
     {
 
-        masterOpMode.telemetry.addData("pullBackMotorEncVal: ", pullBackMotor.getCurrentPosition());
+        int pullMotorPosition = pullBackMotor.getCurrentPosition();
+        masterOpMode.telemetry.addData("pullBackMotorEncVal: ", pullMotorPosition);
+
 
         //loading state machine
         if (gateState == GateState.OPEN)
@@ -190,44 +196,44 @@ public class Launcher implements ConcurrentOperation
         if(launchState == LaunchState.PULLBACK)
         {
             pullBackMotor.setPower(Constants.LAUNCHER_SHOOT_POWER);
-            pullBackMotor.setTargetPosition(Constants.LAUNCHER_PULLBACK_POSITION);
-            masterOpMode.telemetry.addLine("Pulling back." + loopcounter++);
+            setMotorTargetOffset(pullBackMotor, Constants.LAUNCHER_PULLBACK_POSITION);
+            currentLaunchTargetStart = pullMotorPosition;
             launchState = LaunchState.WAIT_WHILE_PULLBACK;
         }
 
         if (launchState == LaunchState.WAIT_WHILE_PULLBACK)
         {
-            masterOpMode.telemetry.addLine("Waiting: Pulling back." + loopcounter++);
-            if(isWithinTolerance(pullBackMotor.getCurrentPosition(), Constants.LAUNCHER_PULLBACK_POSITION, 20))
-            //if (!pullBackMotor.isBusy())
+            //masterOpMode.telemetry.addLine("Waiting: Pulling back." + loopcounter++);
+            if(isWithinTolerance(pullMotorPosition, currentLaunchTargetStart + Constants.LAUNCHER_PULLBACK_POSITION, 20))
             {
                 //now, wait for a launch
                 launchState = LaunchState.WAIT_FOR_LAUNCH;
-                masterOpMode.telemetry.addLine("Waiting to launch." + loopcounter++);
+                //masterOpMode.telemetry.addLine("Waiting to launch." + loopcounter++);
             }
         }
         //if launch requested and already pulled back
         if(launchState == LaunchState.LAUNCH) {
             pullBackMotor.setPower(Constants.LAUNCHER_SHOOT_POWER);
-            pullBackMotor.setTargetPosition(Constants.LAUNCHER_FIRING_POSITION);
-            masterOpMode.telemetry.addLine("Launching." + loopcounter++);
+            setMotorTargetOffset(pullBackMotor,Constants.LAUNCHER_FIRING_POSITION);
+            currentLaunchTargetStart = pullMotorPosition;
+            launchCount++;
             launchState = LaunchState.WAIT_WHILE_LAUNCHING;
         }
 
         if (launchState == LaunchState.WAIT_WHILE_LAUNCHING)
         {
-            masterOpMode.telemetry.addLine("Waiting: Launching." + loopcounter++);
-            //if (!pullBackMotor.isBusy())
-            if(isWithinTolerance(pullBackMotor.getCurrentPosition(),Constants.LAUNCHER_FIRING_POSITION,20))
+            //masterOpMode.telemetry.addLine("Waiting: Launching." + loopcounter++);
+            if(isWithinTolerance(pullMotorPosition,currentLaunchTargetStart+Constants.LAUNCHER_FIRING_POSITION,20))
             {
                 //launch is finished. do nothing
                 masterOpMode.telemetry.addLine("Launcher idling.");
                 launchState = LaunchState.IDLE;
-                pullBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                pullBackMotor.setTargetPosition(0);
+                //pullBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                //pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                //pullBackMotor.setTargetPosition(0);
             }
         }
 
     }
+
 }

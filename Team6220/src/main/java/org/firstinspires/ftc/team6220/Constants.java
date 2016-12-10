@@ -9,8 +9,8 @@ public class Constants
     public static final int  ANDYMARK_TICKS_PER_ROTATION = 1140;
     public static final int TETRIX_TICKS_PER_ROTATION = 1440;
 
-    public static final int LAUNCHER_PULLBACK_POSITION = -1300;
-    public static final int LAUNCHER_FIRING_POSITION = -1350;
+    public static final int LAUNCHER_PULLBACK_POSITION = -720;
+    public static final int LAUNCHER_FIRING_POSITION = -335;
 
     public static final int LAUNCHER_TRIM_INTERVAL = -50;
     public static final double LAUNCHER_TRIM_POWER = 0.1;

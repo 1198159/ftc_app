@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name="TeleOpCompetition", group="6220")
 public class TeleOpCompetition extends MasterTeleOp
 {
-
+    boolean launcherManualControl = false;
 
 
     @Override
@@ -80,6 +80,34 @@ public class TeleOpCompetition extends MasterTeleOp
             {
                 launcher.trimBackward();
             }
+
+            if(launcherManualControl)
+            {
+                if(driver2.isButtonPressed(Button.DPAD_LEFT))
+                {
+                    launcher.pullBackMotor.setPower(-0.1);
+                }
+                else if (driver2.isButtonPressed(Button.DPAD_RIGHT))
+                {
+                    launcher.pullBackMotor.setPower(0.1);
+                }
+                else
+                {
+                    launcher.pullBackMotor.setPower(0.0);
+                }
+            }
+            if(driver2.isButtonJustPressed(Button.DPAD_RIGHT) || driver2.isButtonJustPressed(Button.DPAD_LEFT))
+            {
+                launcher.pullBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                launcherManualControl = true;
+            }
+            else if (driver2.isButtonJustReleased(Button.DPAD_RIGHT) || driver2.isButtonJustReleased(Button.DPAD_LEFT))
+            {
+                launcherManualControl = false;
+                launcher.pullBackMotor.setPower(0.0);
+                launcher.pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
 
             telemetry.addData("eTime:", eTime);
             updateCallback(eTime);
