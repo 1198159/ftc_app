@@ -1311,6 +1311,29 @@ public class MasterAutonomous extends MasterOpMode
     }
 
 
+    public void CornerVortexOption() throws InterruptedException
+    {
+        // CORNER VORTEX OPTION
+        if (isRedTeam) pivot(-100, 0.6); // if red team, pivot left
+        else pivot(100, 0.6);
+
+        motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        forwards(-30, 0, 0.5, 3);
+    }
+
+
+    public void CenterVOrtextOption() throws InterruptedException
+    {
+        // CENTER VORTEX OPTION
+        if (isRedTeam) pivot(50, 0.6);
+        else pivot(-50, 0.6);
+        forwards(-30, 0, 0.6, 3);
+    }
+
     // pushes the cap ball and parks on the center vortex
     public void PushCapBall() throws InterruptedException
     {
