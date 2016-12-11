@@ -68,7 +68,8 @@ abstract class MasterTeleOp extends Master
 
     void runCollector()
     {
-        motorCollector.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+        double speedFactor = 0.6;
+        motorCollector.setPower((gamepad2.right_trigger - gamepad2.left_trigger) * speedFactor);
     }
 
     // We want to be able to shoot from various distances, so this sets the motor power and servo
@@ -93,7 +94,7 @@ abstract class MasterTeleOp extends Master
             fingerTimer.reset();
         }
         // Retract finger after 250 milliseconds
-        if(fingerTimer.milliseconds() > 250)
+        if(fingerTimer.milliseconds() > 500)
             servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
     }
 }

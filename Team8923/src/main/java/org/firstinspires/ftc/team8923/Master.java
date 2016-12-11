@@ -42,7 +42,7 @@ abstract class Master extends LinearOpMode
     enum ServoPositions
     {
         FLYWHEEL_STOW(0.0),
-        FINGER_RETRACT(0.65),
+        FINGER_RETRACT(0.7),
         FINGER_EXTEND(0.35),
         BEACON_RETRACT(0.98),
         BEACON_EXTEND(0.32),
@@ -77,13 +77,15 @@ abstract class Master extends LinearOpMode
         motorFR.setMaxSpeed(2700);
         motorBL.setMaxSpeed(2700);
         motorBR.setMaxSpeed(2700);
-        motorFlywheel.setMaxSpeed(2700);
+        motorFlywheel.setMaxSpeed(1000);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        motorFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         servoGrabberRight = hardwareMap.servo.get("servoGrabberRight");
         servoGrabberLeft = hardwareMap.servo.get("servoGrabberLeft");
@@ -231,7 +233,7 @@ abstract class Master extends LinearOpMode
         double angle = Math.toDegrees(Math.atan2(vX, vY));
 
         // Calculate motor power and servo position based on velocity and angle required
-        double power = Range.scale(velocity, 0, 15, 0, 1); // 15 m/s is max launching speed of flywheel
+        double power = Range.scale(velocity, 0, 6.3, 0, 1); // 15 m/s is max launching speed of flywheel
         double position = Range.scale(angle, 0, 60, 0, 1); // Servo has a 3:1 gear ratio, so adjust angle
 
         telemetry.log().add("Power" + power);
