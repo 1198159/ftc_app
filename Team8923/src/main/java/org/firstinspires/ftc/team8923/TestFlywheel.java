@@ -14,11 +14,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class TestFlywheel extends LinearOpMode
 {
     private DcMotor motorFlywheel;
-    private Servo servoFlywheelAngler;
-    private Servo servoBallPopper;
+    private Servo servoFlywheelAngle;
+    private Servo servoFinger;
 
     private double power = 0.0;
-    private double flywheelAngle = 0.5;
+    private double flywheelAngle = 0.0;
     private double popperAngle = 0.5;
 
     private static final double DELTA = 0.05;
@@ -34,12 +34,12 @@ public class TestFlywheel extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         motorFlywheel = hardwareMap.dcMotor.get("motorFlywheel");
-        motorFlywheel.setMaxSpeed(2700);
+        motorFlywheel.setMaxSpeed(1150);
         motorFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        servoFlywheelAngler = hardwareMap.servo.get("servoFlywheelAngler");
-        servoBallPopper = hardwareMap.servo.get("servoBallPopper");
+        servoFlywheelAngle = hardwareMap.servo.get("servoFlywheelAngle");
+        servoFinger = hardwareMap.servo.get("servoFinger");
 
         waitForStart();
 
@@ -65,19 +65,19 @@ public class TestFlywheel extends LinearOpMode
                     buttonWasPressed = true;
                 }
             }
-            else if(gamepad1.dpad_right)
+            else if(gamepad1.right_bumper)
             {
                 if(!buttonWasPressed)
                 {
-                    popperAngle += DELTA;
+                    popperAngle = 0.35;
                     buttonWasPressed = true;
                 }
             }
-            else if(gamepad1.dpad_left)
+            else if(gamepad1.left_bumper)
             {
                 if(!buttonWasPressed)
                 {
-                    popperAngle -= DELTA;
+                    popperAngle = 0.65;
                     buttonWasPressed = true;
                 }
             }
@@ -101,8 +101,8 @@ public class TestFlywheel extends LinearOpMode
                 buttonWasPressed = false;
 
             motorFlywheel.setPower(power);
-            servoFlywheelAngler.setPosition(flywheelAngle);
-            servoBallPopper.setPosition(popperAngle);
+            servoFlywheelAngle.setPosition(flywheelAngle);
+            servoFinger.setPosition(popperAngle);
 
             int currentEncoder = motorFlywheel.getCurrentPosition();
             if(currentEncoder - lastEncoder != 0)
