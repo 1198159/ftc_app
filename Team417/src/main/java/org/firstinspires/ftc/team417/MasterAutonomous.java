@@ -19,8 +19,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 
-//CodeReview: you shouldn't register the master autonomous. You should create one or more subclasses of MasterAutonomous and register those.
-//            That's useful in case you are experimenting with different autonomous programs: they can all use the methods you have in here.
+// there are no subclasses; this is the only one
+
 @Autonomous(name="Master Autonomous", group = "Swerve")
 // @Disabled
 
@@ -37,7 +37,7 @@ public class MasterAutonomous extends MasterOpMode
     boolean isStartingPosOne;  // are you on starting position one? (if not, you're on position two
     double startDist; // the distance traveled depending on pos one or two
     int startDelay; // the time to delay the start if another team needs us to delay
-int delay = 0;
+    int delay = 0;
     int targetIndex; // specify what image target it is
     int targetDimX;  // specify x or y dim to use for alignment; red :x:0, blue :y:1
     int targetDimY;
@@ -49,6 +49,11 @@ int delay = 0;
     float[] targetPos = {1524, mmFTCFieldWidth}; // target position x and y with an origin right between the driver stations
     VuforiaNavigation VuforiaNav = new VuforiaNavigation();
 
+    double Kmove = 1.0f/600.0f; // speed is proportional to error
+    double Kpivot = 1.0f/150.0f;
+
+    double TOL = 100;
+    double TOL_ANGLE = 5;
 
     //CodeReview: add a comment before every method describing what the method does. It can be a single sentence.
     //CodeReview: If the method has input parameters, describe what they are.
@@ -121,7 +126,7 @@ int delay = 0;
             {
                 // OPTION RED ONE (TOOLS)
                 startDelay = 2000;
-                pivotAngle = 60; // pivot this amount before acquiring target
+                pivotAngle = 55; // pivot this amount before acquiring target
                 targetAngle = 0; // Vuforia angle
                 startDist = 90;
                 targetIndex = 1;
@@ -133,7 +138,7 @@ int delay = 0;
             {
                 // OPTION RED TWO (GEARS)
                 startDelay = 0;
-                pivotAngle = 60; // pivot this amount before acquiring target
+                pivotAngle = 55; // pivot this amount before acquiring target
                 targetAngle = 0; // Vuforia angle
                 startDist = 50;
                 targetIndex = 3;
@@ -151,7 +156,7 @@ int delay = 0;
             {
                 // OPTION BLUE ONE (LEGOS)
                 startDelay = 2000;
-                pivotAngle = -60; // recalc pivot?? also for red one??
+                pivotAngle = -55; // recalc pivot?? also for red one??
                 targetAngle = -90;
                 startDist = 90;
                 targetIndex = 2;
@@ -163,7 +168,7 @@ int delay = 0;
             {
                 // OPTION BLUE TWO (WHEELS)
                 startDelay = 0;
-                pivotAngle = -60;
+                pivotAngle = -55;
                 targetAngle = -90;
                 startDist = 50;
                 targetIndex = 0;
@@ -179,10 +184,10 @@ int delay = 0;
         waitForStart();
 
         VuforiaNav.startTracking();
-        //     sleep(startDelay);
+        //     pause(startDelay);
         VuforiaNav.getLocation();
 
-        sleep(delay);
+        pause(delay);
 
         /*
         while (opModeIsActive()) {
@@ -195,58 +200,78 @@ int delay = 0;
             }
 
             telemetry.update();
-            //sleep(500);
+            //pause(500);
         }
         */
 
 
 // TESTS
+
+        TOL = 30;
+        TOL_ANGLE = 1;
+        Kmove = 1.0/800.0;
+        Kpivot = 1.0/150.0;
+
+/*
         telemetry.addData("Path", "diagonal");
         telemetry.update();
-        pivotMove(200, 200, 0, 0.8, 3);
-        sleep(2000);
+        pivotMove(200, 200, 0, 0.8, 6);
+        telemetry.addData("Path", "DONE");
+        telemetry.update();
+        pause(2000);
 
         telemetry.addData("Path", "right");
         telemetry.update();
         pivotMove(200, 0, 0, 0.8, 3);
-        sleep(3000);
+        pause(3000);
 
         telemetry.addData("Path", "left");
         telemetry.update();
         pivotMove(-200, 0, 0, 0.8, 3);
+        pause(3000);
 
         telemetry.addData("Path", "pivot left");
         telemetry.update();
         pivotMove(0, 0, 15, 0.8, 3);
+        pause(3000);
 
         telemetry.addData("Path", "pivot right");
         telemetry.update();
         pivotMove(0, 0, -15, 0.8, 3);
 
-        telemetry.addData("Path", "Done");
+        telemetry.addData("Path", "Done (end it!)");
         telemetry.update();
-        sleep(30000);
+        pause(30000);
 
+*/
+        //alignPivotVuforia(targetAngle, 700, 4);
 
 // START OF AUTONOMOUS
-
 
         telemetry.addData("Path", "start forwards");
         telemetry.update();
         // go towards target
-        forwards(startDist, 0, 0.85, 3);  // inches, speed, timeout
-        sleep(100);
+        forwards(startDist, 0, 0.7, 3);  // inches, speed, timeout
+        pause(100);
 
+        telemetry.addData("Path", "pivot 60");
+        telemetry.update();
         // pivot to face target
         pivot(pivotAngle, 0.7); // make sure IMU is on
-        sleep(100);
+        pause(100);
 
+        telemetry.addData("Path", "align pivot vuf");
+        telemetry.update();
         // align sideways with image
+        alignPivotVuforia(0.7, 700, 3);
+        pause(100);
+        /*
         pivotVuforia(targetAngle, 0.5);
-        sleep(100);
+        pause(100);
         alignVuforia(0.6, 700, 3);   // speed, timeout
-        sleep(100);
+        pause(100);
         pivotVuforia(targetAngle, 0.5);
+        */
 
         do
         {
@@ -273,39 +298,77 @@ int delay = 0;
         {
             if (isRedTeam)     // red team
             {
-                forwards(0, 3.5, 0.25, 3);   // shift right
+                telemetry.addData("Path", "shift right");
+                telemetry.update();
+                forwards(0, 2.5, 0.25, 3);   // shift right
             }
             else    // blue team
             {
-                forwards(0, -2, 0.25, 4);   // shift left
+                telemetry.addData("Path", "shift left");
+                telemetry.update();
+                forwards(0, -2.5, 0.25, 4);   // shift left
             }
         }
         else if (beaconColor == 1)  // if left side beacon is red
         {
             if (isRedTeam)     // red team
             {
-                forwards(0, -2, 0.25, 4);   // shift left
+                telemetry.addData("Path", "shift left");
+                telemetry.update();
+                forwards(0, -2.5, 0.25, 4);   // shift left
             }
             else    // blue team
             {
-                forwards(0, 3.5, 0.25, 3);   // shift right
-                sleep(100);
+                telemetry.addData("Path", "shift right");
+                telemetry.update();
+                forwards(0, 2.5, 0.25, 3);   // shift right
+                pause(100);
             }
         }
         else // when the color is unknown
         {
+            telemetry.addData("Path", "unknown color, going back");
+            telemetry.update();
             forwards(-5, 0, 0.5, 3);
         }
 
         //CodeReview: do you still try to push the button if the color is unknown?
         //            Or is this wasted movement because you backed up a moment ago?
-        forwards(18, 0, 0.25, 3); // push the button (first target)!!
+
+        telemetry.addData("Path", "pushing button");
+        telemetry.update();
+        forwards(17, 0, 0.25, 3); // push the button (first target)!!
         telemetry.log().add(String.format("pushed first button"));
-        sleep(100);
+        pause(100);
 
         // back up and align once again
-        forwards(-10, 0, 0.3, 3);
+        telemetry.addData("Path", "back up and align");
+        telemetry.update();
+        forwards(-20, 0, 0.3, 3);
         pivotVuforia(targetAngle, 0.3);
+
+// CORNER VORTEX OPTION
+        if (isRedTeam) pivot(-100, 0.6); // if red team, pivot left
+        else pivot(100, 0.6);
+
+        motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        forwards(-30, 0, 0.5, 3);
+
+        // lock motors
+
+// CENTER VORTEX OPTION
+/*        if (isRedTeam) pivot(50, 0.6);
+        else pivot(-50, 0.6);
+        forwards(-30, 0, 0.6, 3);
+        //test
+        //test2
+        //test3
+*/
+/*
 
 // determine next beacon target
         if (isRedTeam) // if team RED
@@ -326,26 +389,28 @@ int delay = 0;
         }
 
 // shift to new target!!
+        telemetry.addData("Path", "shift to new target");
+        telemetry.update();
         if (beaconColor == 0) // if left side blue
         {
             if (isRedTeam) // move shorter
             {
-                forwards(0, 34, 0.6, 4);
+                forwards(0, 36, 0.6, 4);
             }
             else // move longer
             {
-                forwards(0, -36, 0.6, 4);
+                forwards(0, -38, 0.6, 4);
             }
         }
         else if (beaconColor == 1) // if left side red
         {
             if (isRedTeam) // move longer
             {
-                forwards(0, 36, 0.6, 4);
+                forwards(0, 38, 0.6, 4);
             }
             else // move shorter
             {
-                forwards(0, -34, 0.6, 4);
+                forwards(0, -36, 0.6, 4);
             }
         }
 
@@ -360,9 +425,13 @@ int delay = 0;
                 forwards(0, -35, 0.6, 4);
             }
         }
+        pause(1000);
+
         //CodeReview: you didn't handle the case where the beaconColor was unknown.
         //            Don't you still want to move to the next beacon?
 
+        telemetry.addData("Path", "back up");
+        telemetry.update();
         forwards(-4, 0, 0.4, 2);
 
         VuforiaNav.lastLocation = null;
@@ -374,10 +443,17 @@ int delay = 0;
         while (VuforiaNav.lastLocation == null);
 
 // align on new target
+        telemetry.addData("Path", "align on new target");
+        telemetry.update();
+        alignPivotVuforia(0.7, 700, 3);
+        */
+        /*
         pivotVuforia(targetAngle, 0.5);
         alignVuforia(0.4, 700, 2);
         pivotVuforia(targetAngle, 0.5);
+        */
 
+        /*
         // detect beacon color of left side: 0 is blue, 1 is red
         beaconColor = VuforiaNav.GetBeaconColor();
 
@@ -385,10 +461,14 @@ int delay = 0;
         {
             if (isRedTeam)     // red team
             {
+                telemetry.addData("Path", "shift right");
+                telemetry.update();
                 forwards(0, 2.5, 0.25, 3);   // shift right
             }
             else    // blue team
             {
+                telemetry.addData("Path", "shift left");
+                telemetry.update();
                 forwards(0, -2, 0.25, 4);   // shift left
             }
         }
@@ -396,28 +476,37 @@ int delay = 0;
         {
             if (isRedTeam)     // red team
             {
+                telemetry.addData("Path", "shift left");
+                telemetry.update();
                 forwards(0, -2, 0.25, 4);   // shift left
             }
             else    // blue team
             {
+                telemetry.addData("Path", "shift right");
+                telemetry.update();
                 forwards(0, 2.5, 0.25, 3);   // shift right
-                sleep(100);
+                pause(100);
             }
         }
-        else
+        else if (beaconColor == 2) // used to be just else
         {
             forwards(-5, 0, 0.5, 3);
         }
 
+        telemetry.addData("Path", "align angle");
+        telemetry.update();
         pivotVuforia(targetAngle, 0.3);
 
-        forwards(17.5, 0, 0.25, 3); // push the button
-        sleep(100);
+        telemetry.addData("Path", "push button");
+        telemetry.update();
+        forwards(17, 0, 0.25, 3); // push the button
+        pause(100);
         forwards(-10, 0, 0.5, 3);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(10000);
+        pause(10000);
+*/
     }
 
     public void initializeRobot()
@@ -453,7 +542,7 @@ int delay = 0;
         // We show the log in oldest-to-newest order, as that's better for poetry
         telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.OLDEST_FIRST);
         // We can control the number of lines shown in the log
-        telemetry.log().setCapacity(3);
+        telemetry.log().setCapacity(4);
         //configureDashboard();
     }
 
@@ -463,6 +552,9 @@ int delay = 0;
     // speed: the max speed
     public void forwards(double forwardInches, double horiInches, double speed, double timeout) throws InterruptedException
     {
+        Kmove = 1.0/1200.0;
+        TOL = 20;
+
         int newTargetFL;
         int newTargetBL;
         int newTargetFR;
@@ -485,46 +577,47 @@ int delay = 0;
 
         runtime.reset(); // used for timeout
 
-
         // wait until the motors reach the position
         do
         {
             errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
-            speedFL = Math.abs(errorFL / 200);
+            speedFL = Math.abs(errorFL / Kmove);
             speedFL = Range.clip(speedFL, 0.2, speed);
             speedFL = speedFL * Math.signum(errorFL);
 
             errorFR = newTargetFR - motorFrontRight.getCurrentPosition();
-            speedFR = Math.abs(errorFR / 200);
+            speedFR = Math.abs(errorFR / Kmove);
             speedFR = Range.clip(speedFR, 0.2, speed);
             speedFR = speedFR * Math.signum(errorFR);
 
             errorBL = newTargetBL - motorBackLeft.getCurrentPosition();
-            speedBL = Math.abs(errorBL / 200);
+            speedBL = Math.abs(errorBL / Kmove);
             speedBL = Range.clip(speedBL, 0.2, speed);
             speedBL = speedBL * Math.signum(errorBL);
 
             errorBR = newTargetBR - motorBackRight.getCurrentPosition();
-            speedBR = Math.abs(errorBR / 200);
+            speedBR = Math.abs(errorBR / Kmove);
             speedBR = Range.clip(speedBR, 0.2, speed);
             speedBR = speedBR * Math.signum(errorBR);
 
-            if (Math.abs(errorFL) < 10)
+ /*
+            if (Math.abs(errorFL) < TOL - 3)
             {
                 speedFL = 0;
             }
-            if (Math.abs(errorFR) < 10)
+            if (Math.abs(errorFR) < TOL - 3)
             {
                 speedFR = 0;
             }
-            if (Math.abs(errorBL) < 10)
+            if (Math.abs(errorBL) < TOL - 3)
             {
                 speedBL = 0;
             }
-            if (Math.abs(errorBR) < 10)
+            if (Math.abs(errorBR) < TOL - 3)
             {
                 speedBR = 0;
             }
+*/
 
             motorFrontLeft.setPower(speedFL);
             motorFrontRight.setPower(speedFR);
@@ -535,7 +628,7 @@ int delay = 0;
         }
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
-                (Math.abs(errorFL) > 10 || Math.abs(errorFR) > 10 || Math.abs(errorBL) > 10 || Math.abs(errorBR) > 10));
+                (Math.abs(errorFL) > TOL || Math.abs(errorFR) > TOL || Math.abs(errorBL) > TOL || Math.abs(errorBR) > TOL));
 
         // stop the motors
         motorFrontLeft.setPower(0);
@@ -588,13 +681,13 @@ int delay = 0;
             if (Math.abs(error) < 2)
 
             {
-                sleep(15);
+                pause(15);
                 // stop motors
                 motorFrontLeft.setPower(0);
                 motorFrontRight.setPower(0);
                 motorBackLeft.setPower(0);
                 motorBackRight.setPower(0);
-                sleep(150);
+                pause(150);
             }
             */
 
@@ -870,11 +963,11 @@ int delay = 0;
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        final double Kmove = 1.0f/600.0f; // speed is proportional to error
-        final double Kpivot = 1.0f/100.0f;
+        //Kmove = 1.0f/400.0f; // speed is proportional to error
+        //Kpivot = 1.0f/100.0;
 
-        final double TOL = 100;
-        final double TOL_ANGLE = 1;
+        //TOL = 100;
+        //TOL_ANGLE = 5;
 
         int newTargetFL;
         int newTargetBL;
@@ -916,8 +1009,6 @@ int delay = 0;
 
         runtime.reset(); // reset timer, which is used for loop timeout below
 
-        telemetry.log().add(String.format("pivDst %d, x %f, y %f", pivotDst, x, y));
-        telemetry.update();
         // read starting angle
         startAngle = imu.getAngularOrientation().firstAngle;
 
@@ -934,7 +1025,6 @@ int delay = 0;
 
             errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
             speedFL = Kmove * errorFL;  // movement speed proportional to error
-            telemetry.log().add(String.format("spdFL %f", speedFL));
             speedFL += pivotSpeed;  // combine movement and pivot speeds
             speedAbsFL = Math.abs(speedFL);
             speedAbsFL = Range.clip(speedAbsFL, 0.2, speed);  // clip abs(speed)
@@ -961,7 +1051,7 @@ int delay = 0;
             speedAbsBR = Range.clip(speedAbsBR, 0.2, speed);
             speedBR = speedAbsBR * Math.signum(speedBR);
 
-/*
+
             if (Math.abs(errorFL) < (TOL - 3) )
             {
                 speedFL = 0;
@@ -978,22 +1068,26 @@ int delay = 0;
             {
                 speedBR = 0;
             }
-*/
+
 
             motorFrontLeft.setPower(speedFL);
             motorFrontRight.setPower(speedFR);
             motorBackLeft.setPower(speedBL);
             motorBackRight.setPower(speedBR);
 
-            telemetry.log().add(String.format("spFL %f, spFR %f, spBL %f, spBR %f", speedFL, speedFR, speedBL, speedBR));
+            telemetry.log().add(String.format("spFL %f, spFR %f, spBL %f, spBR %f, time %f", speedFL, speedFR, speedBL, speedBR, runtime.seconds() ));
             telemetry.log().add(String.format("errFL %d, errFR %d, errBL %d, errBR %d", errorFL, errorFR, errorBL, errorBR));
             telemetry.update();
             idle();
+            //if (runtime.seconds() > timeout) break;
         }
-        while (opModeIsActive() &&
+        while ( (opModeIsActive()) &&
                 (runtime.seconds() < timeout) &&
-                (Math.abs(errorFL) > TOL || Math.abs(errorFR) > TOL || Math.abs(errorBL) > TOL || Math.abs(errorBR) > TOL) ||
-                (Math.abs(errorAngle) > TOL_ANGLE));
+                (
+                        (Math.abs(errorFL) > TOL) || (Math.abs(errorFR) > TOL) || (Math.abs(errorBL) > TOL) || (Math.abs(errorBR) > TOL) ||
+                                (Math.abs(errorAngle) > TOL_ANGLE)
+                )
+                );
 
         // stop the motors
         motorFrontLeft.setPower(0);
@@ -1006,8 +1100,8 @@ int delay = 0;
     // a combination of both the align and pivot function (WITH VUFORIA) using pivot move
     public void alignPivotVuforia (double speed, double distAway, double timeout)
     {
-        final float TOL = 10;
-        final float TOL_ANGLE = 1;
+        final float VUFORIA_TOL = 10;
+        final float VUFORIA_TOL_ANGLE = 1;
 
         float xPos;
         float yPos;
@@ -1051,6 +1145,7 @@ int delay = 0;
             robotErrorY = -errorX * Math.sin(Math.toRadians(targetAngle)) + errorY * Math.cos(Math.toRadians(targetAngle));
             // shift position back 25 inches away from target image
             robotErrorY -= distAway;
+
 // calls pivot move function here
             pivotMove(robotErrorX, robotErrorY, errorAngle, 0.5, 3); // 0.5 speed, 3 second timeout
 
@@ -1066,7 +1161,7 @@ int delay = 0;
             motorBackRight.setPower(0);
 
             // error is in mm
-        } while (opModeIsActive() && (Math.abs(robotErrorX) > TOL && (Math.abs(robotErrorY) > TOL)));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
+        } while (opModeIsActive() && (Math.abs(robotErrorX) > VUFORIA_TOL && (Math.abs(robotErrorY) > VUFORIA_TOL)));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
 
         // stop motors
         motorFrontLeft.setPower(0);
@@ -1097,11 +1192,11 @@ int delay = 0;
         x = -Math.sin(Math.toRadians(angle));
         y =  Math.cos(Math.toRadians(angle));
 
-        speedX = x*speed;
-        speedY = y*speed;
+        speedX = x * speed;
+        speedY = y * speed;
 
-        dstX = x*forwardInches;
-        dstY = y*forwardInches;
+        dstX = x * forwardInches;
+        dstY = y * forwardInches;
         telemetry.log().add(String.format("Angle: %f, Dst: %f, X: %f, Y: %f", angle, forwardInches, dstX, dstY));
 
         int newTargetFL;
@@ -1159,8 +1254,8 @@ int delay = 0;
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
- //       angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
- //       startAngle = adjustAngles(angles.firstAngle);
+        //       angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        //       startAngle = adjustAngles(angles.firstAngle);
         startAngle = imu.getAngularOrientation().firstAngle;
 
         // read angle, record in starting angle variable
@@ -1220,7 +1315,7 @@ int delay = 0;
     public void PushCapBall() throws InterruptedException
     {
         forwards(45, 0, 0.7, 3);
-        sleep(500);
+        pause(500);
         forwards(5, 0, 0.7, 3);
     }
 
@@ -1284,5 +1379,5 @@ int delay = 0;
     forward      +        +      +        +
     right        +        -      -        +
     d. left      0        +      +        0
-    d. right     +        0      0        +
+    d. right     +        0      0
     */

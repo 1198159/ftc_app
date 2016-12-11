@@ -27,6 +27,8 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorFrontRight = null;
     DcMotor motorBackRight = null;
     DcMotor motorLift = null;
+    //DcMotor motorLauncher = null;
+    //DcMotor motorCollector = null;
     BNO055IMU imu;
     Orientation angles;
     DeviceInterfaceModule dim;                  // Device Object
@@ -41,7 +43,7 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double WHEEL_DIAMETER_INCHES = 6.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4;
+    static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4; // is 2.34
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
     static final int MAX_SPEED = 2700;
@@ -55,11 +57,28 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
         motorLift = hardwareMap.dcMotor.get("motorLift");
+        //motorLauncher = hardwareMap.dcMotor.get("motorLauncher");
+        //motorCollector = hardwareMap.dcMotor.get("motorCollector");
 
         // get a reference to a Modern Robotics DIM, and IO channels.
         //dim = hardwareMap.get(DeviceInterfaceModule.class, "dim");   //  Use generic form of device mapping
         liftSwitch  = hardwareMap.get(DigitalChannel.class, "liftSwitch");     //  Use generic form of device mapping
         liftSwitch.setMode(DigitalChannelController.Mode.INPUT);          // Set the direction of each channel
+
+        motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //motorLauncher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //motorLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //motorCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         motorFrontLeft.setMaxSpeed(MAX_SPEED);
         motorFrontRight.setMaxSpeed(MAX_SPEED);
@@ -71,6 +90,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
         motorLift.setPower(0);
+        //motorLauncher.setPower(0);
+        //motorCollector.setPower(0);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -100,7 +121,6 @@ abstract public class MasterOpMode extends LinearOpMode
             sleep(100);
             angle = imu.getAngularOrientation().firstAngle;
         }
-
     }
 
 
@@ -112,6 +132,17 @@ abstract public class MasterOpMode extends LinearOpMode
         while(angle < -180)
             angle += 360;
         return angle;
+    }
+
+    //wait a number of milliseconds
+    public void pause(int t) throws InterruptedException
+    {
+        //we don't use System.currentTimeMillis() because it can be inconsistent
+        long initialTime = System.nanoTime();
+        while((System.nanoTime() - initialTime)/1000/1000 < t)
+        {
+            idle();
+        }
     }
 
 
