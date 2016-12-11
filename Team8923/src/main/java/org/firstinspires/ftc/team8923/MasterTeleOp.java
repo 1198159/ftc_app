@@ -19,6 +19,11 @@ abstract class MasterTeleOp extends Master
         else if(gamepad1.dpad_up)
             slowModeDivisor = 1.0;
 
+        if(gamepad1.start)
+            reverseDrive(false);
+        if(gamepad1.back)
+            reverseDrive(true);
+
         double y = -gamepad1.left_stick_y; // Y axis is negative when up
         double x = gamepad1.left_stick_x;
 

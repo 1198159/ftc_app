@@ -206,6 +206,8 @@ abstract class MasterAutonomous extends Master
         setUpRoutine();
         initHardware();
 
+        reverseDrive(true);
+
         // Set last known encoder values
         lastEncoderFL = motorFL.getCurrentPosition();
         lastEncoderFR = motorFR.getCurrentPosition();

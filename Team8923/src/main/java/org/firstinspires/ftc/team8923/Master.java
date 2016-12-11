@@ -37,6 +37,7 @@ abstract class Master extends LinearOpMode
     static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION;
 
     double slowModeDivisor = 1.0;
+    private boolean reverseDrive = false;
 
     enum ServoPositions
     {
@@ -67,9 +68,7 @@ abstract class Master extends LinearOpMode
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
         motorFlywheel = hardwareMap.dcMotor.get("motorFlywheel");
 
-        motorFR.setDirection(DcMotor.Direction.REVERSE);
-        // Should reverse the BR, but there is a wiring issue. Hardware people...
-        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        reverseDrive(false);
         // Some hardware person got the wiring backwards...
         motorLift.setDirection(DcMotor.Direction.REVERSE);
 
@@ -103,11 +102,35 @@ abstract class Master extends LinearOpMode
         telemetry.setMsTransmissionInterval(50);
     }
 
+    void reverseDrive(boolean reverse)
+    {
+        // Forwards
+        if(!reverse)
+        {
+            reverseDrive = false;
+            motorFL.setDirection(DcMotor.Direction.FORWARD);
+            motorFR.setDirection(DcMotor.Direction.REVERSE);
+            motorBL.setDirection(DcMotor.Direction.REVERSE);
+            motorBR.setDirection(DcMotor.Direction.FORWARD);
+            return;
+        }
+
+        // Reverse
+        reverseDrive = true;
+        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorFR.setDirection(DcMotor.Direction.FORWARD);
+        motorBL.setDirection(DcMotor.Direction.FORWARD);
+        motorBR.setDirection(DcMotor.Direction.REVERSE);
+    }
+
     // Sends information to Driver Station screen for drivers to see
     void sendTelemetry()
     {
         //TODO: Probably won't need this after testing. It takes up a lot of room, so remove if no longer needed.
         // Drive motor info
+        telemetry.addData("Reversed", reverseDrive);
+
+
         telemetry.addData("FL Enc", formatNumber(motorFL.getCurrentPosition()));
         telemetry.addData("FR Enc", formatNumber(motorFR.getCurrentPosition()));
         telemetry.addData("BL Enc", formatNumber(motorBL.getCurrentPosition()));
@@ -165,10 +188,21 @@ abstract class Master extends LinearOpMode
         powerBR /= (scalar * slowModeDivisor);
 
         // Set motor powers
-        motorFL.setPower(powerFL);
-        motorFR.setPower(powerFR);
-        motorBL.setPower(powerBL);
-        motorBR.setPower(powerBR);
+        if(!reverseDrive)
+        {
+            // Drive forwards
+            motorFL.setPower(powerFL);
+            motorFR.setPower(powerFR);
+            motorBL.setPower(powerBL);
+            motorBR.setPower(powerBR);
+            return;
+        }
+
+        // Drive backwards
+        motorFL.setPower(powerBR);
+        motorFR.setPower(powerBL);
+        motorBL.setPower(powerFR);
+        motorBR.setPower(powerFL);
     }
 
     void stopDriving()
