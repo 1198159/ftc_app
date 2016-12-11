@@ -18,6 +18,7 @@ public class TeleOpCompetition extends MasterTeleOp
         while(opModeIsActive())
         {
             driveMecanumTeleOp();
+            controlBeaconPusher();
             runLift();
             grabCapBall();
             runCollector();

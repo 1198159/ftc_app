@@ -198,6 +198,7 @@ public class AutonomousCompetition extends MasterAutonomous
             buttonDistance = 65;
         }
 
+        servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
         // Line up with button
         driveToPoint(beaconX + buttonDistance, beaconY - observationDistance, 90, 0.3);
         // Move forward to press button
@@ -205,6 +206,7 @@ public class AutonomousCompetition extends MasterAutonomous
         sleep(500); // TODO: Is this needed?
         // Back away from beacon
         driveToPoint(beaconX, beaconY - observationDistance, 90, 0.3);
+        servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
     }
 
     // This is separate from pressBeaconBlue, because combining them is difficult
@@ -265,6 +267,7 @@ public class AutonomousCompetition extends MasterAutonomous
             buttonDistance = 65;
         }
 
+        servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
         // Line up with button
         driveToPoint(beaconX - observationDistance, beaconY + buttonDistance, 0, 0.3);
         // Move forward to press button
@@ -272,6 +275,7 @@ public class AutonomousCompetition extends MasterAutonomous
         sleep(500); // TODO: Is this needed?
         // Back away from beacon
         driveToPoint(beaconX - observationDistance, beaconY, 0, 0.3);
+        servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
     }
 
     // TODO: Test me

@@ -29,6 +29,14 @@ abstract class MasterTeleOp extends Master
         driveMecanum(angle, power, turnPower);
     }
 
+    void controlBeaconPusher()
+    {
+        if(gamepad1.a)
+            servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
+        else if(gamepad1.x)
+            servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
+    }
+
     void runLift()
     {
         if(gamepad2.dpad_up)

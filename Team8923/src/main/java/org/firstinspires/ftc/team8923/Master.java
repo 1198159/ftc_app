@@ -28,6 +28,7 @@ abstract class Master extends LinearOpMode
 
     BNO055IMU imu;
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+    Servo servoBeaconPusher = null;
 
     double headingOffset = 0.0;
 
@@ -46,6 +47,8 @@ abstract class Master extends LinearOpMode
         FLYWHEEL_STOW(0.0),
         FINGER_RETRACT(0.65),
         FINGER_EXTEND(0.35),
+        BEACON_RETRACT(0.98),
+        BEACON_EXTEND(0.32),
         GRABBER_STOW(0.7),
         GRABBER_GRAB(0.55),
         GRABBER_RELEASE(0.0);
@@ -91,6 +94,7 @@ abstract class Master extends LinearOpMode
         servoGrabberLeft = hardwareMap.servo.get("servoGrabberLeft");
         servoFinger = hardwareMap.servo.get("servoFinger");
         servoFlywheelAngle = hardwareMap.servo.get("servoFlywheelAngle");
+        servoBeaconPusher = hardwareMap.servo.get("servoBeaconPusher");
 
         servoGrabberLeft.setDirection(Servo.Direction.REVERSE);
 
@@ -103,6 +107,7 @@ abstract class Master extends LinearOpMode
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+        servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
 
         telemetry.setMsTransmissionInterval(50);
     }
