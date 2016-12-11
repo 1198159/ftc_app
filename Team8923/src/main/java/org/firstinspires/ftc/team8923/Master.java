@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.team8923;
 
-import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -25,9 +24,6 @@ abstract class Master extends LinearOpMode
     Servo servoGrabberRight = null;
     Servo servoFinger = null;
     Servo servoFlywheelAngle = null;
-
-    BNO055IMU imu;
-    private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
     Servo servoBeaconPusher = null;
 
     double headingOffset = 0.0;
@@ -102,11 +98,6 @@ abstract class Master extends LinearOpMode
         servoGrabberLeft.setPosition(ServoPositions.GRABBER_STOW.pos);
         servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
         servoFlywheelAngle.setPosition(ServoPositions.FLYWHEEL_STOW.pos);
-
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
         servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
 
         telemetry.setMsTransmissionInterval(50);
