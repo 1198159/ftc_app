@@ -85,11 +85,11 @@ public class TeleOpCompetition extends MasterTeleOp
             {
                 if(driver2.isButtonPressed(Button.DPAD_LEFT))
                 {
-                    launcher.pullBackMotor.setPower(-1);
+                    launcher.pullBackMotor.setPower(-1.0);
                 }
                 else if (driver2.isButtonPressed(Button.DPAD_RIGHT))
                 {
-                    launcher.pullBackMotor.setPower(1);
+                    launcher.pullBackMotor.setPower(1.0);
                 }
                 else
                 {

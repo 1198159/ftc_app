@@ -20,13 +20,10 @@ public class AutonomousRedCapBallPark extends MasterAutonomous
 
         waitForStart();
 
-        //TODO test turning, then uncomment lower code
-        turnTo(90.0);
-
-        /*drive.moveRobot(-0.4, 1.0, 0.0);
+        drive.moveRobot(0.4, 1.0, 0.0);
 
         pause(1400);
 
-        stopAllDriveMotors();*/
+        stopAllDriveMotors();
     }
 }

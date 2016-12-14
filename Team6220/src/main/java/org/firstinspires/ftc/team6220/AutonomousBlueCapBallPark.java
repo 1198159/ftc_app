@@ -21,7 +21,7 @@ public class AutonomousBlueCapBallPark extends MasterAutonomous
 
         waitForStart();
 
-        drive.moveRobot(0.4, 1.0, 0.0);
+        drive.moveRobot(-0.4, 1.0, 0.0);
 
         pause(1400);
 

@@ -19,7 +19,7 @@ public class Constants
     public static final double DEGREE_TO_RADIAN = Math.PI / 180;
 
     //used for PID loops involving rotation and turning power adjustments
-    public static final double TURNING_POWER_FACTOR = 1 / 350;
+    public static final double TURNING_POWER_FACTOR = 1.0 / 350;
 
     public static final double MINIMUM_TURNING_POWER = 0.08;
     public static final double ANGLE_TOLERANCE = 3.0;

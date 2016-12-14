@@ -168,7 +168,7 @@ public class DriveSystem implements ConcurrentOperation
             scalingFactor = largest;
         }
 
-        return SequenceUtilities.scalarMultiply(rawPowers, 1/scalingFactor);
+        return SequenceUtilities.scalarMultiply(rawPowers, 1 / scalingFactor);
 
     }
 

@@ -317,12 +317,9 @@ abstract public class MasterOpMode extends LinearOpMode
             {
                 turningPower = -Constants.MINIMUM_TURNING_POWER;
             }
-            else
-            {
 
-            }
+            telemetry.addData("angleDiff: ", angleDiff);
 
-            telemetry.addData("current angle: ", getAngularOrientationWithOffset());
             telemetry.update();
 
             drive.moveRobot(0.0, 0.0, -turningPower);

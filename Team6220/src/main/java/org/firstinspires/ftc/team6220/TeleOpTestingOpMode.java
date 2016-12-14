@@ -79,15 +79,19 @@ public class TeleOpTestingOpMode extends MasterTeleOp
                 idle();
             }
 
-            /*//navigation test for rotation
+            //navigation test for rotation
             //TODO test; not working
             if(gamepad2.right_bumper)
             {
                 //location 2 feet out from the wall with same x and y coordinate as AutoRed2 starting position, but different rot
                 //double[] m = drive.navigateTo(new Transform2D(0.609, 2.395, -90.0));
-                turnTo(0.0);
+                turnTo(180.0);
+
+                telemetry.addData("FrontRightPow: ", driveAssemblies[FRONT_RIGHT]);
+                telemetry.update();
             }
 
+            /*
             if (gamepad2.x && !lastBtn[2])
             {
                 motorToggler.toggleMotor();
@@ -96,7 +100,8 @@ public class TeleOpTestingOpMode extends MasterTeleOp
             if (gamepad2.b && !lastBtn[1])
             {
                 motorTogglerReverse.toggleMotor();
-            }*/
+            }
+            */
 
             lastBtn[0] = gamepad2.a;
             lastBtn[1] = gamepad2.b;
