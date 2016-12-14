@@ -77,7 +77,7 @@ abstract class Master extends LinearOpMode
         motorFR.setMaxSpeed(2700);
         motorBL.setMaxSpeed(2700);
         motorBR.setMaxSpeed(2700);
-        motorFlywheel.setMaxSpeed(1000);
+        motorFlywheel.setMaxSpeed(800);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -131,7 +131,7 @@ abstract class Master extends LinearOpMode
         //TODO: Probably won't need this after testing. It takes up a lot of room, so remove if no longer needed.
         // Drive motor info
         telemetry.addData("Reversed", reverseDrive);
-
+        telemetry.addData("Grabbers L/R", "" + servoGrabberLeft.getPosition() + servoGrabberRight.getPosition());
 
         telemetry.addData("FL Enc", formatNumber(motorFL.getCurrentPosition()));
         telemetry.addData("FR Enc", formatNumber(motorFR.getCurrentPosition()));
@@ -242,10 +242,6 @@ abstract class Master extends LinearOpMode
         // Set motor power and servo position
         motorFlywheel.setPower(power);
         servoFlywheelAngle.setPosition(position);
-
-        // TODO: This will prevent anything else from running for this time. Is that a problem for us?
-        // Give servo time to move and flywheel time to speed up
-        sleep(500);
     }
 
     // Truncates numbers to fit displays better. Not recommended for numbers that span many

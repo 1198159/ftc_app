@@ -303,6 +303,9 @@ public class AutonomousCompetition extends MasterAutonomous
 
         setFlywheelPowerAndAngle(calculateDistance(goalX - robotX, goalY - robotY));
 
+        // Wait for servo to move and flywheel to speed up
+        sleep(1500);
+
         // Shoot twice
         for(int i = 0; i < 2; i++)
         {
