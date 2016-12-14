@@ -144,7 +144,7 @@ public class AutonomousCompetition extends MasterAutonomous
     private void pressBeaconRed(double beaconX, double beaconY) throws InterruptedException
     {
         // Distance from which we look at the vision target and beacon in mm
-        double observationDistance = 500;
+        double observationDistance = 650;
 
         turnAndDrive(beaconX, beaconY - observationDistance);
 
@@ -202,7 +202,7 @@ public class AutonomousCompetition extends MasterAutonomous
         // Line up with button
         driveToPoint(beaconX + buttonDistance, beaconY - observationDistance, 90, 0.3);
         // Move forward to press button
-        driveToPoint(beaconX + buttonDistance, beaconY - 170, 90, 0.3);
+        driveToPoint(beaconX + buttonDistance, beaconY - 155, 90, 0.3);
         sleep(500); // TODO: Is this needed?
         // Back away from beacon
         driveToPoint(beaconX, beaconY - 250, 90, 0.3);
@@ -213,7 +213,7 @@ public class AutonomousCompetition extends MasterAutonomous
     private void pressBeaconBlue(double beaconX, double beaconY) throws InterruptedException
     {
         // Distance from which we look at the vision target and beacon in mm
-        double observationDistance = 500;
+        double observationDistance = 650;
 
         turnAndDrive(beaconX - observationDistance, beaconY);
 
@@ -274,7 +274,7 @@ public class AutonomousCompetition extends MasterAutonomous
         driveToPoint(beaconX - 170, beaconY + buttonDistance, 0, 0.3);
         sleep(500); // TODO: Is this needed?
         // Back away from beacon
-        driveToPoint(beaconX - 250, beaconY, 0, 0.3);
+        driveToPoint(beaconX - 200, beaconY, 0, 0.3);
         servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
     }
 
