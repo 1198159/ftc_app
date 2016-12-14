@@ -19,15 +19,24 @@ public class AutoRedLaunchParticle extends MasterTeleOp
 
         waitForStart();
 
-        pauseWhileUpdating(4.0);
+        //initial wait
+        pauseWhileUpdating(6.0);
+
+        //move to shoot
         drive.moveRobot(-0.5, 0.0, 0.0);
         pauseWhileUpdating(0.4);
         drive.writeToMotors(new double[]{0.0, 0.0, 0.0, 0.0});
         pauseWhileUpdating(0.5);
-        launcher.pullback();
+
+        //launch
+        launcher.pullBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        launcher.pullBackMotor.setPower(-1.0);
         pauseWhileUpdating(3.0);
-        launcher.launchParticle();
+        //launcher.launchParticle();
         pauseWhileUpdating(2.0);
+        launcher.pullBackMotor.setPower(0.0);
+
+        //move to cap ball
         drive.moveRobot(-0.7, -0.2, 0.0);
         pauseWhileUpdating(1.45);
         drive.writeToMotors(new double[]{0.0, 0.0, 0.0, 0.0});
@@ -38,7 +47,9 @@ public class AutoRedLaunchParticle extends MasterTeleOp
         pauseWhileUpdating(0.45);
         drive.writeToMotors(new double[]{0.0, 0.0, 0.0, 0.0});
         pauseWhileUpdating(0.5);
-        drive.moveRobot(0.0, -0.5, 0.0);
+
+        //move forward/park
+        //drive.moveRobot(0.0, -0.5, 0.0);
         pauseWhileUpdating(0.8);
         drive.writeToMotors(new double[]{0.0, 0.0, 0.0, 0.0});
         pauseWhileUpdating(0.5);

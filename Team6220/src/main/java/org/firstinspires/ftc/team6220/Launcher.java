@@ -28,6 +28,7 @@ public class Launcher implements ConcurrentOperation
 
     private int launchCount = 0;
     private int currentLaunchTargetStart = 0;
+    private double lst = 0.0;
 
     //servo gate states
     private enum GateState
@@ -55,6 +56,7 @@ public class Launcher implements ConcurrentOperation
     private double servoWaitTime = 0;
     private double motorWaitTime = 0;
 
+    public boolean disableEncoder = true;
     private MasterOpMode masterOpMode;
 
     //used to initialize objects that are part of the launcher
@@ -192,45 +194,75 @@ public class Launcher implements ConcurrentOperation
 
         //launching state machine
 
-        //if pullback requested
-        if(launchState == LaunchState.PULLBACK)
+        //if(!disableEncoder)
         {
-            pullBackMotor.setPower(Constants.LAUNCHER_SHOOT_POWER);
-            setMotorTargetOffset(pullBackMotor, Constants.LAUNCHER_PULLBACK_POSITION);
-            currentLaunchTargetStart = pullMotorPosition;
-            launchState = LaunchState.WAIT_WHILE_PULLBACK;
-        }
+            //if pullback requested
+            if (launchState == LaunchState.PULLBACK) {
+                pullBackMotor.setPower(Constants.LAUNCHER_SHOOT_POWER);
+                launchState = LaunchState.WAIT_WHILE_PULLBACK;
+            }
 
-        if (launchState == LaunchState.WAIT_WHILE_PULLBACK)
-        {
-            //masterOpMode.telemetry.addLine("Waiting: Pulling back." + loopcounter++);
-            if(isWithinTolerance(pullMotorPosition, currentLaunchTargetStart + Constants.LAUNCHER_PULLBACK_POSITION, 20))
-            {
-                //now, wait for a launch
-                launchState = LaunchState.WAIT_FOR_LAUNCH;
-                //masterOpMode.telemetry.addLine("Waiting to launch." + loopcounter++);
+            if (launchState == LaunchState.WAIT_WHILE_PULLBACK) {
+                lst += eTime;
+                if (lst > 1.0) {
+                    //now, wait for a launch
+                    launchState = LaunchState.WAIT_FOR_LAUNCH;
+                    pullBackMotor.setPower(0);
+                    lst = 0;
+                    //masterOpMode.telemetry.addLine("Waiting to launch." + loopcounter++);
+                }
+            }
+            //if launch requested and already pulled back
+            if (launchState == LaunchState.LAUNCH) {
+                pullBackMotor.setPower(Constants.LAUNCHER_SHOOT_POWER);
+                launchState = LaunchState.WAIT_WHILE_LAUNCHING;
+            }
+
+            if (launchState == LaunchState.WAIT_WHILE_LAUNCHING) {
+                lst += eTime;
+                if (lst > 1.0) {
+                    //now, wait for a launch
+                    launchState = LaunchState.IDLE;
+                    pullBackMotor.setPower(0);
+                    lst = 0;
+                    //masterOpMode.telemetry.addLine("Waiting to launch." + loopcounter++);
+                }
             }
         }
-        //if launch requested and already pulled back
-        if(launchState == LaunchState.LAUNCH) {
-            pullBackMotor.setPower(Constants.LAUNCHER_SHOOT_POWER);
-            setMotorTargetOffset(pullBackMotor,Constants.LAUNCHER_FIRING_POSITION);
-            currentLaunchTargetStart = pullMotorPosition;
-            launchCount++;
-            launchState = LaunchState.WAIT_WHILE_LAUNCHING;
-        }
-
-        if (launchState == LaunchState.WAIT_WHILE_LAUNCHING)
+        //else
         {
-            //masterOpMode.telemetry.addLine("Waiting: Launching." + loopcounter++);
-            if(isWithinTolerance(pullMotorPosition,currentLaunchTargetStart+Constants.LAUNCHER_FIRING_POSITION,20))
-            {
-                //launch is finished. do nothing
-                masterOpMode.telemetry.addLine("Launcher idling.");
-                launchState = LaunchState.IDLE;
-                //pullBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                //pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                //pullBackMotor.setTargetPosition(0);
+            if (launchState == LaunchState.PULLBACK) {
+                pullBackMotor.setPower(Constants.LAUNCHER_SHOOT_POWER);
+                launchState = LaunchState.WAIT_WHILE_PULLBACK;
+            }
+
+            if (launchState == LaunchState.WAIT_WHILE_PULLBACK) {
+                //masterOpMode.telemetry.addLine("Waiting: Pulling back." + loopcounter++);
+                if (isWithinTolerance(pullMotorPosition, currentLaunchTargetStart + Constants.LAUNCHER_PULLBACK_POSITION, 20)) {
+                    //now, wait for a launch
+                    launchState = LaunchState.WAIT_FOR_LAUNCH;
+                    //masterOpMode.telemetry.addLine("Waiting to launch." + loopcounter++);
+                }
+            }
+            //if launch requested and already pulled back
+            if (launchState == LaunchState.LAUNCH) {
+                pullBackMotor.setPower(Constants.LAUNCHER_SHOOT_POWER);
+                setMotorTargetOffset(pullBackMotor, Constants.LAUNCHER_FIRING_POSITION);
+                currentLaunchTargetStart = pullMotorPosition;
+                launchCount++;
+                launchState = LaunchState.WAIT_WHILE_LAUNCHING;
+            }
+
+            if (launchState == LaunchState.WAIT_WHILE_LAUNCHING) {
+                //masterOpMode.telemetry.addLine("Waiting: Launching." + loopcounter++);
+                if (isWithinTolerance(pullMotorPosition, currentLaunchTargetStart + Constants.LAUNCHER_FIRING_POSITION, 20)) {
+                    //launch is finished. do nothing
+                    masterOpMode.telemetry.addLine("Launcher idling.");
+                    launchState = LaunchState.IDLE;
+                    //pullBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    //pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    //pullBackMotor.setTargetPosition(0);
+                }
             }
         }
 

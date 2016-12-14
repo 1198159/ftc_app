@@ -42,6 +42,8 @@ abstract public class MasterOpMode extends LinearOpMode
     //used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
     private double headingOffset = 0.0;
 
+
+
     private BNO055IMU imu;
 
     DriveAssembly[] driveAssemblies;

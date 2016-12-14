@@ -55,7 +55,7 @@ public class TeleOpCompetition extends MasterTeleOp
             //pulls back launcher
             if (driver2.isButtonPressed(Button.DPAD_DOWN))
             {
-                launcher.pullback();
+                //launcher.pullback();
             }
 
             //puts a particle into the launcher
@@ -72,24 +72,24 @@ public class TeleOpCompetition extends MasterTeleOp
 
             if (driver2.isButtonPressed(Button.Y))
             {
-                launcher.trimForward();
+                //launcher.trimForward();
             }
 
 
             if (driver2.isButtonPressed(Button.A))
             {
-                launcher.trimBackward();
+                //launcher.trimBackward();
             }
 
             if(launcherManualControl)
             {
                 if(driver2.isButtonPressed(Button.DPAD_LEFT))
                 {
-                    launcher.pullBackMotor.setPower(-0.1);
+                    launcher.pullBackMotor.setPower(-1);
                 }
                 else if (driver2.isButtonPressed(Button.DPAD_RIGHT))
                 {
-                    launcher.pullBackMotor.setPower(0.1);
+                    launcher.pullBackMotor.setPower(1);
                 }
                 else
                 {
