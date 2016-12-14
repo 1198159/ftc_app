@@ -19,6 +19,11 @@ abstract class MasterTeleOp extends Master
         else if(gamepad1.dpad_up)
             slowModeDivisor = 1.0;
 
+        if(gamepad1.start)
+            reverseDrive(false);
+        if(gamepad1.back)
+            reverseDrive(true);
+
         double y = -gamepad1.left_stick_y; // Y axis is negative when up
         double x = gamepad1.left_stick_x;
 
@@ -27,6 +32,14 @@ abstract class MasterTeleOp extends Master
         double turnPower = -gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
 
         driveMecanum(angle, power, turnPower);
+    }
+
+    void controlBeaconPusher()
+    {
+        if(gamepad1.a)
+            servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
+        else if(gamepad1.x)
+            servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
     }
 
     void runLift()
@@ -55,7 +68,8 @@ abstract class MasterTeleOp extends Master
 
     void runCollector()
     {
-        motorCollector.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+        double speedFactor = 0.6;
+        motorCollector.setPower((gamepad2.right_trigger - gamepad2.left_trigger) * speedFactor);
     }
 
     // We want to be able to shoot from various distances, so this sets the motor power and servo
@@ -80,7 +94,7 @@ abstract class MasterTeleOp extends Master
             fingerTimer.reset();
         }
         // Retract finger after 250 milliseconds
-        if(fingerTimer.milliseconds() > 250)
+        if(fingerTimer.milliseconds() > 500)
             servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
     }
 }

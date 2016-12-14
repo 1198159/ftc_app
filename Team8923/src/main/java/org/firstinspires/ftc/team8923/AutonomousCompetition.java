@@ -144,7 +144,7 @@ public class AutonomousCompetition extends MasterAutonomous
     private void pressBeaconRed(double beaconX, double beaconY) throws InterruptedException
     {
         // Distance from which we look at the vision target and beacon in mm
-        double observationDistance = 300;
+        double observationDistance = 500;
 
         turnAndDrive(beaconX, beaconY - observationDistance);
 
@@ -198,20 +198,22 @@ public class AutonomousCompetition extends MasterAutonomous
             buttonDistance = 65;
         }
 
+        servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
         // Line up with button
         driveToPoint(beaconX + buttonDistance, beaconY - observationDistance, 90, 0.3);
         // Move forward to press button
-        driveToPoint(beaconX + buttonDistance, beaconY - 150, 90, 0.3);
+        driveToPoint(beaconX + buttonDistance, beaconY - 170, 90, 0.3);
         sleep(500); // TODO: Is this needed?
         // Back away from beacon
-        driveToPoint(beaconX, beaconY - observationDistance, 90, 0.3);
+        driveToPoint(beaconX, beaconY - 250, 90, 0.3);
+        servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
     }
 
     // This is separate from pressBeaconBlue, because combining them is difficult
     private void pressBeaconBlue(double beaconX, double beaconY) throws InterruptedException
     {
         // Distance from which we look at the vision target and beacon in mm
-        double observationDistance = 300;
+        double observationDistance = 500;
 
         turnAndDrive(beaconX - observationDistance, beaconY);
 
@@ -265,13 +267,15 @@ public class AutonomousCompetition extends MasterAutonomous
             buttonDistance = 65;
         }
 
+        servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
         // Line up with button
         driveToPoint(beaconX - observationDistance, beaconY + buttonDistance, 0, 0.3);
         // Move forward to press button
-        driveToPoint(beaconX - 115, beaconY + buttonDistance, 0, 0.3);
+        driveToPoint(beaconX - 170, beaconY + buttonDistance, 0, 0.3);
         sleep(500); // TODO: Is this needed?
         // Back away from beacon
-        driveToPoint(beaconX - observationDistance, beaconY, 0, 0.3);
+        driveToPoint(beaconX - 250, beaconY, 0, 0.3);
+        servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
     }
 
     // TODO: Test me

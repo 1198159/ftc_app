@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.team8923;
 
-import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -25,9 +24,7 @@ abstract class Master extends LinearOpMode
     Servo servoGrabberRight = null;
     Servo servoFinger = null;
     Servo servoFlywheelAngle = null;
-
-    BNO055IMU imu;
-    private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+    Servo servoBeaconPusher = null;
 
     double headingOffset = 0.0;
 
@@ -40,12 +37,15 @@ abstract class Master extends LinearOpMode
     static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION;
 
     double slowModeDivisor = 1.0;
+    private boolean reverseDrive = false;
 
     enum ServoPositions
     {
         FLYWHEEL_STOW(0.0),
-        FINGER_RETRACT(0.65),
+        FINGER_RETRACT(0.7),
         FINGER_EXTEND(0.35),
+        BEACON_RETRACT(0.98),
+        BEACON_EXTEND(0.32),
         GRABBER_STOW(0.7),
         GRABBER_GRAB(0.55),
         GRABBER_RELEASE(0.0);
@@ -68,9 +68,7 @@ abstract class Master extends LinearOpMode
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
         motorFlywheel = hardwareMap.dcMotor.get("motorFlywheel");
 
-        motorFR.setDirection(DcMotor.Direction.REVERSE);
-        // Should reverse the BR, but there is a wiring issue. Hardware people...
-        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        reverseDrive(false);
         // Some hardware person got the wiring backwards...
         motorLift.setDirection(DcMotor.Direction.REVERSE);
 
@@ -79,7 +77,7 @@ abstract class Master extends LinearOpMode
         motorFR.setMaxSpeed(2700);
         motorBL.setMaxSpeed(2700);
         motorBR.setMaxSpeed(2700);
-        motorFlywheel.setMaxSpeed(2700);
+        motorFlywheel.setMaxSpeed(1000);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -87,10 +85,13 @@ abstract class Master extends LinearOpMode
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        motorFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
         servoGrabberRight = hardwareMap.servo.get("servoGrabberRight");
         servoGrabberLeft = hardwareMap.servo.get("servoGrabberLeft");
         servoFinger = hardwareMap.servo.get("servoFinger");
         servoFlywheelAngle = hardwareMap.servo.get("servoFlywheelAngle");
+        servoBeaconPusher = hardwareMap.servo.get("servoBeaconPusher");
 
         servoGrabberLeft.setDirection(Servo.Direction.REVERSE);
 
@@ -98,13 +99,30 @@ abstract class Master extends LinearOpMode
         servoGrabberLeft.setPosition(ServoPositions.GRABBER_STOW.pos);
         servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
         servoFlywheelAngle.setPosition(ServoPositions.FLYWHEEL_STOW.pos);
-
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
+        servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
 
         telemetry.setMsTransmissionInterval(50);
+    }
+
+    void reverseDrive(boolean reverse)
+    {
+        // Forwards
+        if(!reverse)
+        {
+            reverseDrive = false;
+            motorFL.setDirection(DcMotor.Direction.FORWARD);
+            motorFR.setDirection(DcMotor.Direction.REVERSE);
+            motorBL.setDirection(DcMotor.Direction.REVERSE);
+            motorBR.setDirection(DcMotor.Direction.FORWARD);
+            return;
+        }
+
+        // Reverse
+        reverseDrive = true;
+        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorFR.setDirection(DcMotor.Direction.FORWARD);
+        motorBL.setDirection(DcMotor.Direction.FORWARD);
+        motorBR.setDirection(DcMotor.Direction.REVERSE);
     }
 
     // Sends information to Driver Station screen for drivers to see
@@ -112,6 +130,9 @@ abstract class Master extends LinearOpMode
     {
         //TODO: Probably won't need this after testing. It takes up a lot of room, so remove if no longer needed.
         // Drive motor info
+        telemetry.addData("Reversed", reverseDrive);
+
+
         telemetry.addData("FL Enc", formatNumber(motorFL.getCurrentPosition()));
         telemetry.addData("FR Enc", formatNumber(motorFR.getCurrentPosition()));
         telemetry.addData("BL Enc", formatNumber(motorBL.getCurrentPosition()));
@@ -169,10 +190,21 @@ abstract class Master extends LinearOpMode
         powerBR /= (scalar * slowModeDivisor);
 
         // Set motor powers
-        motorFL.setPower(powerFL);
-        motorFR.setPower(powerFR);
-        motorBL.setPower(powerBL);
-        motorBR.setPower(powerBR);
+        if(!reverseDrive)
+        {
+            // Drive forwards
+            motorFL.setPower(powerFL);
+            motorFR.setPower(powerFR);
+            motorBL.setPower(powerBL);
+            motorBR.setPower(powerBR);
+            return;
+        }
+
+        // Drive backwards
+        motorFL.setPower(powerBR);
+        motorFR.setPower(powerBL);
+        motorBL.setPower(powerFR);
+        motorBR.setPower(powerFL);
     }
 
     void stopDriving()
@@ -201,7 +233,7 @@ abstract class Master extends LinearOpMode
         double angle = Math.toDegrees(Math.atan2(vX, vY));
 
         // Calculate motor power and servo position based on velocity and angle required
-        double power = Range.scale(velocity, 0, 15, 0, 1); // 15 m/s is max launching speed of flywheel
+        double power = Range.scale(velocity, 0, 6.3, 0, 1); // 15 m/s is max launching speed of flywheel
         double position = Range.scale(angle, 0, 60, 0, 1); // Servo has a 3:1 gear ratio, so adjust angle
 
         telemetry.log().add("Power" + power);

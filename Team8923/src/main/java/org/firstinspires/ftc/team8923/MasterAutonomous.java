@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team8923;
 
+import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
@@ -11,6 +12,9 @@ import java.util.ArrayList;
  */
 abstract class MasterAutonomous extends Master
 {
+    BNO055IMU imu;
+    private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
     enum Alliance
     {
         BLUE,
@@ -50,7 +54,7 @@ abstract class MasterAutonomous extends Master
     // Constants for robot in autonomous
     // Max drive power is less than 1 to ensure speed controller works
     private static final double MAX_DRIVE_POWER = 0.6;
-    private static final double MIN_DRIVE_POWER = 0.2;
+    private static final double MIN_DRIVE_POWER = 0.15;
     private static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
     private static final double DRIVE_POWER_CONSTANT = 1.0 / 1000.0;
 
@@ -202,11 +206,18 @@ abstract class MasterAutonomous extends Master
         setUpRoutine();
         initHardware();
 
+        reverseDrive(true);
+
         // Set last known encoder values
         lastEncoderFL = motorFL.getCurrentPosition();
         lastEncoderFR = motorFR.getCurrentPosition();
         lastEncoderBL = motorBL.getCurrentPosition();
         lastEncoderBR = motorBR.getCurrentPosition();
+
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
 
         // Set IMU heading offset
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
@@ -264,7 +275,7 @@ abstract class MasterAutonomous extends Master
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
-        double DISTANCE_TOLERANCE = 45; // In mm
+        double DISTANCE_TOLERANCE = 35; // In mm
         double ANGLE_TOLERANCE = 5; // In degrees
 
         // Run until robot is within tolerable distance and angle

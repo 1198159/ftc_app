@@ -33,6 +33,8 @@ public class MasterTeleOp extends MasterOpMode
     double imuAngle;
     final double LIFT_POWER = 0.9;
 
+    double motorLauncherSpeed = 0;
+
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -97,7 +99,7 @@ public class MasterTeleOp extends MasterOpMode
 
            if (gamepad1.right_bumper) // if slow mode (when right bumper is held down)
             {
-                mecanumDrive(0.7, 0.5);
+                mecanumDrive(0.5, 0.3);
             }
            else
            {
@@ -106,6 +108,20 @@ public class MasterTeleOp extends MasterOpMode
 
             telemetry.update();
             idle();
+
+
+
+           if (gamepad2.right_bumper) // when right bumper is held down, launcher motor runs
+           {
+               rampShooterMotor(0.9);
+           }
+           else
+           {
+               rampShooterMotor(0);
+           }
+
+           telemetry.update();
+           idle();
         }
 
         // for safety, turn off all motors
@@ -114,6 +130,7 @@ public class MasterTeleOp extends MasterOpMode
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
         motorLift.setPower(0);
+        //motorCollector.setPower(0);
     }
 
     public void mecanumDrive(double kDrive, double kPivot)
@@ -180,6 +197,8 @@ public class MasterTeleOp extends MasterOpMode
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //motorLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //motorCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // caution, no encoder
 
         // reverse front and back right motors just for TeleOp
         motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -192,6 +211,22 @@ public class MasterTeleOp extends MasterOpMode
 
         // Set up telemetry data
         configureDashboard();
+    }
+
+    public void rampShooterMotor(double speed)
+    {
+        while (motorLauncherSpeed < speed)
+        {
+            motorLauncherSpeed += speed / 10.0;
+            //motorLauncher.setPower(motorLauncherSpeed);
+            sleep(200);
+        }
+        while (motorLauncherSpeed > speed)
+        {
+            motorLauncherSpeed -= speed / 10.0;
+            //motorLauncher.setPower(motorLauncherSpeed);
+            sleep(200);
+        }
     }
 
     public void configureDashboard()
