@@ -11,7 +11,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     //                                                         between 100 and 0.
     FIRFilter pilotInputFilter = new FIRFilter(new Polynomial(new double[]{100,-1,0.0025}),200);
 
-    //                                                   y = 1/2x^3 + 0x^2 + 1/2x + 0
+    //                                                    y = 1/2x^3 + 0x^2 + 1/2x + 0
     Polynomial pilotInputCurve = new Polynomial(new double[]{ 0.0, 0.5, 0.0, 0.5 });
 
     //takes driver 1 stick input and uses it to move the robot
@@ -22,6 +22,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         //factor changing magnitude of rotational movement
         double rFactor = 1.0;
 
+        //slows down the robot if slow mode is requested
         if(slow)
         {
             tFactor = 0.2;
@@ -30,8 +31,8 @@ abstract public class MasterTeleOp extends MasterOpMode
 
         //TODO make sure driving at constant heading works; has code duplicates
         drive.moveRobotAtConstantHeading(pilotInputCurve.getOuput(xMotionAxis) * tFactor,
-                        pilotInputCurve.getOuput(yMotionAxis) * tFactor,
-                        pilotInputCurve.getOuput(rotationAxis) * rFactor,
-                        getAngularOrientationWithOffset());
+                                         pilotInputCurve.getOuput(yMotionAxis) * tFactor,
+                                         pilotInputCurve.getOuput(rotationAxis) * rFactor,
+                                         getAngularOrientationWithOffset());
     }
 }

@@ -28,7 +28,9 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         currentAngle = getAngularOrientationWithOffset();
 
-        double positionOffsetMagnitude = Math.sqrt(Math.pow(TargetX - drive.robotLocation.x,2)+Math.pow(TargetY - drive.robotLocation.y,2));
+        //used to determine whether the robot has come near enough to its target location
+        double positionOffsetMagnitude = Math.sqrt(Math.pow(TargetX - drive.robotLocation.x, 2) + Math.pow(TargetY - drive.robotLocation.y, 2));
+
         while (((positionOffsetMagnitude > Constants.POSITION_TOLERANCE) || (Math.abs(TargetAngle - drive.robotLocation.rot) > Constants.ANGLE_TOLERANCE)) && opModeIsActive())
         {
             positionOffsetMagnitude = Math.sqrt(Math.pow(TargetX - drive.robotLocation.x,2)+Math.pow(TargetY - drive.robotLocation.y,2));
@@ -116,5 +118,46 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         stopAllDriveMotors();
 
+    }
+
+    //tells our robot to turn to a specified angle
+    public void turnTo(double targetAngle)
+    {
+        double currentAngle = getAngularOrientationWithOffset();
+        double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
+        double turningPower;
+
+        while((Math.abs(angleDiff) > Constants.ANGLE_TOLERANCE) && opModeIsActive())
+        {
+            currentAngle = getAngularOrientationWithOffset();
+            angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
+            turningPower = angleDiff * Constants.TURNING_POWER_FACTOR;
+
+            //makes sure turn power doesn't go above maximum power
+            if (Math.abs(turningPower) > 1.0)
+            {
+                turningPower = Math.signum(turningPower);
+            }
+
+            // Makes sure turn power doesn't go below minimum power
+            if(turningPower > 0 && turningPower < Constants.MINIMUM_TURNING_POWER)
+            {
+                turningPower = Constants.MINIMUM_TURNING_POWER;
+            }
+            else if (turningPower < 0 && turningPower > -Constants.MINIMUM_TURNING_POWER)
+            {
+                turningPower = -Constants.MINIMUM_TURNING_POWER;
+            }
+
+            telemetry.addData("angleDiff: ", angleDiff);
+
+            telemetry.update();
+
+            drive.moveRobot(0.0, 0.0, -turningPower);
+
+            idle();
+        }
+
+        stopAllDriveMotors();
     }
 }
