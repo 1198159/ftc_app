@@ -33,7 +33,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         while (((positionOffsetMagnitude > Constants.POSITION_TOLERANCE) || (Math.abs(TargetAngle - drive.robotLocation.rot) > Constants.ANGLE_TOLERANCE)) && opModeIsActive())
         {
-            positionOffsetMagnitude = Math.sqrt(Math.pow(TargetX - drive.robotLocation.x,2)+Math.pow(TargetY - drive.robotLocation.y,2));
+            positionOffsetMagnitude = Math.sqrt(Math.pow(TargetX - drive.robotLocation.x, 2) + Math.pow(TargetY - drive.robotLocation.y, 2));
             float[] l = vuforiaHelper.getRobotLocation();
             //vuforia data comes out as an array instead of readable data, so it must be changed to a Transform2D;
             //also, vuforia data must be converted from millimeters to meters to be consistent with the rest of our code
@@ -45,7 +45,6 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             //use the imu to find our angle instead of vuforia; prevents wild rotation if vuforia does not locate target
             currentAngle = getAngularOrientationWithOffset();
-
             drive.robotLocation.rot = currentAngle;
 
             //Inform drivers of robot location. Location is null if we lose track of the targets
@@ -53,15 +52,14 @@ abstract public class MasterAutonomous extends MasterOpMode
             {
                 telemetry.addData("XPos: ", drive.robotLocation.x);
                 telemetry.addData("YPos: ", drive.robotLocation.y);
-                telemetry.addData("AngleDiff: ", TargetAngle - drive.robotLocation.rot);
                 telemetry.update();
             }
             else
             {
                 telemetry.addData("Pos:", "Unknown");
-
                 telemetry.update();
             }
+
 
             //move the robot to the desired location
             double[] m = drive.navigateTo(TargetLocation);
@@ -69,6 +67,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             telemetry.addData("mX:", m[0]);
             telemetry.addData("mY:", m[1]);
             telemetry.addData("mW:", m[2]);
+
 
             idle();
         }

@@ -33,7 +33,7 @@ public class TeleOpTestingOpMode extends MasterAutonomous
 
         waitForStart();
 
-        //Start tracking targets
+        //Start tracking vision targets
         vuforiaHelper.startTracking();
 
         //delay to allow vuforia to get ready
@@ -44,55 +44,28 @@ public class TeleOpTestingOpMode extends MasterAutonomous
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
+            //TODO adjust encoder function
             //values are displayed for testing purposes
-            updateLocationUsingEncoders(eTime);
+            //updateLocationUsingEncoders(eTime);
 
             //@TODO test; not working
-            //navigation test for y direction
-            while ((gamepad2.left_stick_y > 0.1) && opModeIsActive())
+            //navigation test for y direction (relative to the robot)
+            if (gamepad2.left_stick_y > 0.1)
             {
-                float[] l = vuforiaHelper.getRobotLocation();
-
-                //we use this to convert our location from an array to a transform
-                drive.robotLocation.SetPositionFromFloatArray(l);
-
-                //location directly in front of beacon 1
-                double[] m = drive.navigateTo(new Transform2D(3.428, 1.500, 0.0));
-
-                telemetry.addData("robot location: ", drive.robotLocation);
-                telemetry.update();
-
-                idle();
+                vuforiaDriveToPosition(3.428, 1.500, 0.0);
             }
 
             //@TODO test; not working
-            //navigation test for x direction
-            while ((gamepad2.left_stick_x > 0.1) && opModeIsActive())
+            //navigation test for x direction (relative to the robot)
+            if (gamepad2.left_stick_x > 0.1)
             {
-                float[] l = vuforiaHelper.getRobotLocation();
-
-                //we use this to convert our location from an array to a transform
-                drive.robotLocation.SetPositionFromFloatArray(l);
-
-                //location near center of field and to the right of beacon 1
-                double[] m = drive.navigateTo(new Transform2D(2.438, 1.800, 0.0));
-
-                telemetry.addData("robot location: ", drive.robotLocation);
-                telemetry.update();
-
-                idle();
+                vuforiaDriveToPosition(2.438, 1.800, 0.0);
             }
 
             //navigation test for rotation
-            if(gamepad2.right_bumper)
+            if (gamepad2.right_bumper)
             {
-                //same as start location, but with different rotation
-                double[] m = drive.navigateTo(new Transform2D(2.438, 1.500, 90.0));
-
-                //turnTo(180.0);
-
-                telemetry.addData("FrontRightPow: ", driveAssemblies[FRONT_RIGHT]);
-                telemetry.update();
+                turnTo(180.0);
             }
 
             /*
