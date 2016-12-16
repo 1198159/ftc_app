@@ -309,6 +309,7 @@ abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
+    // We often need to first turn to where we're going, then go there. This makes our lives simpler
     void turnAndDrive(double x, double y) throws InterruptedException
     {
         double driveAngle = Math.toDegrees(Math.atan2(y - robotY, x - robotX));
@@ -320,6 +321,8 @@ abstract class MasterAutonomous extends Master
     // where we need to be sure that we're tracking the target
     void lookForVisionTarget() throws InterruptedException
     {
+        // TODO: Better to use update location?
+
         boolean trackingOtherAllianceTarget = false;
 
         if(alliance == Alliance.RED)
@@ -341,8 +344,9 @@ abstract class MasterAutonomous extends Master
     // Updates robot's coordinates and angle
     void updateRobotLocation()
     {
+        // We only use the robot's own alliance's vision targets, because the others give us bogus
+        // numbers for some reason
         boolean trackingOtherAllianceTarget = false;
-
         if(alliance == Alliance.RED)
             trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
                     || vuforiaLocator.getTargetName().equals("Target Blue Right");
@@ -350,37 +354,49 @@ abstract class MasterAutonomous extends Master
             trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
                     || vuforiaLocator.getTargetName().equals("Target Red Right");
 
-        // Use Vuforia if a it's tracking something. We only use the robot's own alliance's
-        // vision targets, because the others give us bogus numbers for some reason
+        // Use Vuforia if a it's tracking something
         if(vuforiaLocator.isTracking() && !trackingOtherAllianceTarget)
         {
             float[] location = vuforiaLocator.getRobotLocation();
+
+            // Update coordinates and angle
             robotX = location[0];
             robotY = location[1];
-
             robotAngle = vuforiaLocator.getRobotAngle();
         }
         // Otherwise, use encoders and IMU to determine distance travelled and angle
         else
         {
+            // Update robot angle
             robotAngle = imu.getAngularOrientation().firstAngle - headingOffset;
 
+            // Calculate how far each motor has turned since last time
             int deltaFL = motorFL.getCurrentPosition() - lastEncoderFL;
             int deltaFR = motorFR.getCurrentPosition() - lastEncoderFR;
             int deltaBL = motorBL.getCurrentPosition() - lastEncoderBL;
             int deltaBR = motorBR.getCurrentPosition() - lastEncoderBR;
 
-            // Take average of encoders ticks, and convert to mm. Some are negative because of 45
-            // degree roller angle X value is divided by root 2, because the rollers spin when
-            // going sideways. The rollers are stagnant when going forwards, so root 2 doesn't apply
-            double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4 * MM_PER_TICK / Math.sqrt(2);
-            double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4 * MM_PER_TICK;
+            // Take average of encoder ticks to find translational x and y components. FR and BL are
+            // negative because of the direction at which they turn when going sideways
+            double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4;
+            double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4;
 
-            // Delta x and y are intrinsic to robot, so make extrinsic and update robot location
+            // Convert to mm. X is divided by root 2 because the rollers turn when going sideways.
+            // They do not turn when going forwards, so y doesn't need the division
+            deltaX *= MM_PER_TICK / Math.sqrt(2);
+            deltaY *= MM_PER_TICK;
+
+            /*
+             * Delta x and y are intrinsic to the robot, so they need to be converted to extrinsic.
+             * Each intrinsic component has 2 extrinsic components, which are added to find the
+             * total extrinsic components of displacement. The extrinsic displacement components
+             * are then added to the previous position to set the new coordinates
+             */
             robotX += deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
             robotY += deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
         }
 
+        // Set last encoder values for next loop
         lastEncoderFL = motorFL.getCurrentPosition();
         lastEncoderFR = motorFR.getCurrentPosition();
         lastEncoderBL = motorBL.getCurrentPosition();

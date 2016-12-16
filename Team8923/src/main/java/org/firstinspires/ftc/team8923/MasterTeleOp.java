@@ -1,24 +1,23 @@
 package org.firstinspires.ftc.team8923;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 /**
- * This class contains all objects and methods that should be accessible by all TeleOpModes for the CapBot
+ * This class contains all objects and methods that should be accessible by all TeleOpModes
  */
 abstract class MasterTeleOp extends Master
 {
-    // TODO: Add comments
     private ElapsedTime fingerTimer = new ElapsedTime();
-    private double flywheelPower = 0.0;
 
     void driveMecanumTeleOp()
     {
+        // Set slow mode if desired. 4 seems to be a good divisor for TeleOp
         if(gamepad1.dpad_down)
             slowModeDivisor = 4.0;
         else if(gamepad1.dpad_up)
             slowModeDivisor = 1.0;
 
+        // Reverse drive if desired
         if(gamepad1.start)
             reverseDrive(false);
         if(gamepad1.back)
@@ -34,6 +33,7 @@ abstract class MasterTeleOp extends Master
         driveMecanum(angle, power, turnPower);
     }
 
+    // Extends and retracts beacon pusher
     void controlBeaconPusher()
     {
         if(gamepad1.a)
@@ -42,16 +42,19 @@ abstract class MasterTeleOp extends Master
             servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
     }
 
+    // Runs lift up and down
     void runLift()
     {
         if(gamepad2.dpad_up)
             motorLift.setPower(1.0);
         else if(gamepad2.dpad_down)
             motorLift.setPower(-1.0);
+        // If no button is pressed, stop!
         else
             motorLift.setPower(0);
     }
 
+    // Closes and opens grabber servos to grab and release cap ball
     void grabCapBall()
     {
         if(gamepad2.right_bumper)
@@ -66,8 +69,10 @@ abstract class MasterTeleOp extends Master
         }
     }
 
+    // Runs collector. Can be run forwards and backwards
     void runCollector()
     {
+        // Full speed is too fast
         double speedFactor = 0.6;
         motorCollector.setPower((gamepad2.right_trigger - gamepad2.left_trigger) * speedFactor);
     }
@@ -93,7 +98,7 @@ abstract class MasterTeleOp extends Master
             servoFinger.setPosition(ServoPositions.FINGER_EXTEND.pos);
             fingerTimer.reset();
         }
-        // Retract finger after 250 milliseconds
+        // Retract finger after this many milliseconds
         if(fingerTimer.milliseconds() > 500)
             servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
     }

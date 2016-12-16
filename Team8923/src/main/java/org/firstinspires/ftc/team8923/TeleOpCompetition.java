@@ -3,7 +3,7 @@ package org.firstinspires.ftc.team8923;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
- * This class contains code for running the CapBot with all driver controls
+ * This class contains code for running the robot with all driver controls
  */
 @TeleOp(name = "TeleOp Competition")
 public class TeleOpCompetition extends MasterTeleOp
@@ -17,6 +17,7 @@ public class TeleOpCompetition extends MasterTeleOp
 
         while(opModeIsActive())
         {
+            // Run all of the mechanisms
             driveMecanumTeleOp();
             controlBeaconPusher();
             runLift();

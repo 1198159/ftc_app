@@ -3,7 +3,6 @@ package org.firstinspires.ftc.team8923;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.util.Range;
 
 /*
  *  Autonomous OpMode for both alliances. The OpMode is setup with a gamepad during initialization,
@@ -53,6 +52,8 @@ public class AutonomousCompetition extends MasterAutonomous
         sleep(10000);
     }
 
+    // Drives the robot onto either the center platform or corner vortex ramp based on alliance
+    // and chosen parking location
     private void parkOnObjective(Objectives objective) throws InterruptedException
     {
         double locationX;
@@ -97,6 +98,8 @@ public class AutonomousCompetition extends MasterAutonomous
         turnAndDrive(locationX, locationY);
     }
 
+    // Each alliance has its own method for the beacons, because they are hard to combine. This
+    // method runs the corresponding method, and also sets the coordinates based on selected beacon
     private void pressBeacon(Objectives objective) throws InterruptedException
     {
         double beaconX;
@@ -198,7 +201,9 @@ public class AutonomousCompetition extends MasterAutonomous
             buttonDistance = 65;
         }
 
+        // Extend pusher to press button
         servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
+
         // Line up with button
         driveToPoint(beaconX + buttonDistance, beaconY - observationDistance, 90, 0.3);
         // Move forward to press button
@@ -206,10 +211,12 @@ public class AutonomousCompetition extends MasterAutonomous
         sleep(500); // TODO: Is this needed?
         // Back away from beacon
         driveToPoint(beaconX, beaconY - 250, 90, 0.3);
+
+        // Retract pusher to prevent damage or anything else bad
         servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
     }
 
-    // This is separate from pressBeaconBlue, because combining them is difficult
+    // This is separate from pressBeaconRed, because combining them is difficult
     private void pressBeaconBlue(double beaconX, double beaconY) throws InterruptedException
     {
         // Distance from which we look at the vision target and beacon in mm
@@ -267,7 +274,9 @@ public class AutonomousCompetition extends MasterAutonomous
             buttonDistance = 65;
         }
 
+        // Extend pusher to press button
         servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
+
         // Line up with button
         driveToPoint(beaconX - observationDistance, beaconY + buttonDistance, 0, 0.3);
         // Move forward to press button
@@ -275,6 +284,8 @@ public class AutonomousCompetition extends MasterAutonomous
         sleep(500); // TODO: Is this needed?
         // Back away from beacon
         driveToPoint(beaconX - 200, beaconY, 0, 0.3);
+
+        // Retract pusher to prevent damage or anything else bad
         servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
     }
 

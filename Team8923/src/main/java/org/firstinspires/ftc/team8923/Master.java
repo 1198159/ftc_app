@@ -68,6 +68,7 @@ abstract class Master extends LinearOpMode
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
         motorFlywheel = hardwareMap.dcMotor.get("motorFlywheel");
 
+        // Set drive motor directions
         reverseDrive(false);
         // Some hardware person got the wiring backwards...
         motorLift.setDirection(DcMotor.Direction.REVERSE);
@@ -128,7 +129,7 @@ abstract class Master extends LinearOpMode
     // Sends information to Driver Station screen for drivers to see
     void sendTelemetry()
     {
-        //TODO: Probably won't need this after testing. It takes up a lot of room, so remove if no longer needed.
+        //TODO: Change to most useful information
         // Drive motor info
         telemetry.addData("Reversed", reverseDrive);
         telemetry.addData("Grabbers L/R", "" + servoGrabberLeft.getPosition() + servoGrabberRight.getPosition());
