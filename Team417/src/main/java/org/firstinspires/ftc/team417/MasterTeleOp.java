@@ -34,6 +34,7 @@ public class MasterTeleOp extends MasterOpMode
     final double LIFT_POWER = 0.9;
 
     double motorLauncherSpeed = 0;
+    double driveSpeed = 0;
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -97,9 +98,11 @@ public class MasterTeleOp extends MasterOpMode
            }
            isLeftBumperPushed = gamepad1.left_bumper;
 
+
+           // Slow Mode!
            if (gamepad1.right_bumper) // if slow mode (when right bumper is held down)
             {
-                mecanumDrive(0.5, 0.3);
+                mecanumDrive(0.3, 0.2);
             }
            else
            {
@@ -109,6 +112,16 @@ public class MasterTeleOp extends MasterOpMode
             telemetry.update();
             idle();
 
+
+           // LEGATO MODE!! (play at a bold forte)
+           if (gamepad1.dpad_down)
+           {
+               rampDriveMotors(0.9);
+           }
+           else if (gamepad1.dpad_up)
+           {
+               rampDriveMotors(0.0);
+           }
 
 
            if (gamepad2.right_bumper) // when right bumper is held down, launcher motor runs
@@ -225,6 +238,31 @@ public class MasterTeleOp extends MasterOpMode
         {
             motorLauncherSpeed -= speed / 10.0;
             //motorLauncher.setPower(motorLauncherSpeed);
+            sleep(200);
+        }
+    }
+
+
+    // TODO: finish writing this...
+    public void rampDriveMotors(double speed)
+    {
+        while (driveSpeed < speed)
+        {
+            driveSpeed += speed / 10.0;
+            motorFrontLeft.setPower(driveSpeed);
+            motorFrontRight.setPower(driveSpeed);
+            motorBackLeft.setPower(driveSpeed);
+            motorBackRight.setPower(driveSpeed);
+            sleep(200);
+        }
+        while (driveSpeed > speed)
+        {
+            driveSpeed -= speed / 10.0;
+            driveSpeed += speed / 10.0;
+            motorFrontLeft.setPower(driveSpeed);
+            motorFrontRight.setPower(driveSpeed);
+            motorBackLeft.setPower(driveSpeed);
+            motorBackRight.setPower(driveSpeed);
             sleep(200);
         }
     }
