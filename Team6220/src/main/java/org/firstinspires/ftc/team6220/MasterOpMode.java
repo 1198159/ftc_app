@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team6220;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ abstract public class MasterOpMode extends LinearOpMode
     public final int BACK_RIGHT  = 3;
 
     DcMotor collectorMotor;
+    Servo collectorServo;
 
     private int EncoderFR = 0;
     private int EncoderFL = 0;
@@ -82,6 +84,8 @@ abstract public class MasterOpMode extends LinearOpMode
 
         //motors associated with our collection system
         collectorMotor = hardwareMap.dcMotor.get("motorCollector");
+        collectorServo = hardwareMap.servo.get("collector");
+        collectorServo.setPosition(0.5);
 
         //TODO tune our own drive PID loop using DriveAssemblyPID instead of build-in P/step filter
         //TODO Must be disabled if motor encoders are not correctly reporting
