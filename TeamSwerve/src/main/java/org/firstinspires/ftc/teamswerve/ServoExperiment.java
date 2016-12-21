@@ -99,7 +99,6 @@ public class ServoExperiment extends LinearOpMode
                 // crServo.setDirection(DcMotorSimple.Direction.FORWARD);
             }
 
-
             telemetry.update();
             idle();
         }

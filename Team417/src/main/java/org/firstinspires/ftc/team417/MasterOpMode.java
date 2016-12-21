@@ -3,6 +3,7 @@ import android.graphics.Bitmap;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -27,6 +28,7 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorFrontRight = null;
     DcMotor motorBackRight = null;
     DcMotor motorLift = null;
+    CRServo servoParticle = null;
     //DcMotor motorLauncher = null;
     //DcMotor motorCollector = null;
     BNO055IMU imu;
@@ -57,6 +59,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
         motorLift = hardwareMap.dcMotor.get("motorLift");
+        servoParticle = hardwareMap.crservo.get("servoParticle");
         //motorLauncher = hardwareMap.dcMotor.get("motorLauncher");
         //motorCollector = hardwareMap.dcMotor.get("motorCollector");
 
@@ -89,6 +92,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
+        servoParticle.setPower(0);
         motorLift.setPower(0);
         //motorLauncher.setPower(0);
         //motorCollector.setPower(0);

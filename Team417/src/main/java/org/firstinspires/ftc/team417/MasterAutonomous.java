@@ -37,8 +37,6 @@ abstract class MasterAutonomous extends MasterOpMode
     int startDelay; // the time to delay the start if another team needs us to delay
     int delay = 0;
     int targetIndex; // specify what image target it is
-    int targetDimX;  // specify x or y dim to use for alignment; red :x:0, blue :y:1
-    int targetDimY;
 
     //double teamAngle;
     double pivotAngle; // will be 60, -60 depending on what team you're on
@@ -47,13 +45,15 @@ abstract class MasterAutonomous extends MasterOpMode
     float[] targetPos = {1524, mmFTCFieldWidth}; // target position x and y with an origin right between the driver stations
     VuforiaNavigation VuforiaNav = new VuforiaNavigation();
 
-    // TODO: test 1200 for pivotmoves kmove
-
     double Kmove = 1.0f/1200.0f; // speed is proportional to error
     double Kpivot = 1.0f/150.0f;
 
     double TOL = 100;
     double TOL_ANGLE = 5;
+
+    float VUFORIA_TOL = 20;
+    float VUFORIA_TOL_ANGLE = 1;
+
 
     //CodeReview: add a comment before every method describing what the method does. It can be a single sentence.
     //CodeReview: If the method has input parameters, describe what they are.
@@ -207,12 +207,12 @@ abstract class MasterAutonomous extends MasterOpMode
         {
 //            angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 //            curTurnAngle = adjustAngles(angles.firstAngle) - startAngle;
-            VuforiaNav.getLocation(); // update target location and angle
+            VuforiaNav.getLocation(targetIndex); // update target location and angle
             //CodeReview: sometimes getLocation returns null. Sometimes Vuforia.lastLocation might be null. Does your code handle that case gracefully?
 
             do
             {
-                VuforiaNav.getLocation(); // update target location and angle
+                VuforiaNav.getLocation(targetIndex); // update target location and angle
                 idle();
             }
             while (VuforiaNav.lastLocation == null);
@@ -298,7 +298,7 @@ abstract class MasterAutonomous extends MasterOpMode
             VuforiaNav.lastLocation = null;
             do
             {
-                VuforiaNav.getLocation(); // update target location and angle
+                VuforiaNav.getLocation(targetIndex); // update target location and angle
                 idle();
             }
             while (VuforiaNav.lastLocation == null);  //CodeReview: this will hang your robot while Vuforia can't get its location. That could be a long time.
@@ -447,7 +447,7 @@ abstract class MasterAutonomous extends MasterOpMode
         double errorAngle;
 
         int pivotDst;
-        final double ROBOT_DIAMETER_MM = 18.0 * 25.4;
+        final double ROBOT_DIAMETER_MM = 17.0 * 25.4;   // diagonal 17 inch FL to BR and FR to BL
         pivotDst = (int) ((pivotAngle / 360) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
         newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
@@ -471,7 +471,7 @@ abstract class MasterAutonomous extends MasterOpMode
             curTurnAngle = imu.getAngularOrientation().firstAngle - startAngle;
             curTurnAngle = adjustAngles(curTurnAngle);
             errorAngle =  pivotAngle - curTurnAngle;
-            pivotSpeed = speed * errorAngle * Kpivot;
+            pivotSpeed = errorAngle * Kpivot;
             pivotSpeed = Range.clip(pivotSpeed, -0.3, 0.3); // limit max pivot speed
             // pivotSpeed is added to each motor's movement speed
 
@@ -479,31 +479,31 @@ abstract class MasterAutonomous extends MasterOpMode
             speedFL = Kmove * errorFL;  // movement speed proportional to error
             speedFL += pivotSpeed;  // combine movement and pivot speeds
             speedAbsFL = Math.abs(speedFL);
-            speedAbsFL = Range.clip(speedAbsFL, 0.2, speed);  // clip abs(speed)
+            speedAbsFL = Range.clip(speedAbsFL, 0.25, speed);  // clip abs(speed)
             speedFL = speedAbsFL * Math.signum(speedFL);  // set sign of speed
 
             errorFR = newTargetFR - motorFrontRight.getCurrentPosition();
             speedFR = Kmove * errorFR;
             speedFR -= pivotSpeed;  // combine movement and pivot speeds
             speedAbsFR = Math.abs(speedFR);
-            speedAbsFR = Range.clip(speedAbsFR, 0.2, speed);  // clip abs(speed)
+            speedAbsFR = Range.clip(speedAbsFR, 0.25, speed);  // clip abs(speed)
             speedFR = speedAbsFR * Math.signum(speedFR);
 
             errorBL = newTargetBL - motorBackLeft.getCurrentPosition();
             speedBL = Kmove * errorBL;
             speedBL += pivotSpeed;  // combine movement and pivot speeds
             speedAbsBL = Math.abs(speedBL);
-            speedAbsBL = Range.clip(speedAbsBL, 0.2, speed);  // clip abs(speed)
+            speedAbsBL = Range.clip(speedAbsBL, 0.25, speed);  // clip abs(speed)
             speedBL = speedAbsBL * Math.signum(speedBL);
 
             errorBR = newTargetBR - motorBackRight.getCurrentPosition();
             speedBR = Kmove * errorBR;
             speedBR -= pivotSpeed;  // combine movement and pivot speeds
             speedAbsBR = Math.abs(speedBR);
-            speedAbsBR = Range.clip(speedAbsBR, 0.2, speed);
+            speedAbsBR = Range.clip(speedAbsBR, 0.25, speed);
             speedBR = speedAbsBR * Math.signum(speedBR);
 
-
+/*
             if (Math.abs(errorFL) < (TOL - 3) )
             {
                 speedFL = 0;
@@ -520,16 +520,15 @@ abstract class MasterAutonomous extends MasterOpMode
             {
                 speedBR = 0;
             }
-
-
+*/
             motorFrontLeft.setPower(speedFL);
             motorFrontRight.setPower(speedFR);
             motorBackLeft.setPower(speedBL);
             motorBackRight.setPower(speedBR);
 
-            telemetry.log().add(String.format("spFL %f, spFR %f, spBL %f, spBR %f, time %f", speedFL, speedFR, speedBL, speedBR, runtime.seconds() ));
-            telemetry.log().add(String.format("errFL %d, errFR %d, errBL %d, errBR %d", errorFL, errorFR, errorBL, errorBR));
-            telemetry.update();
+            //telemetry.log().add(String.format("spFL %f, spFR %f, spBL %f, spBR %f, time %f", speedFL, speedFR, speedBL, speedBR, runtime.seconds() ));
+            //telemetry.log().add(String.format("errFL %d, errFR %d, errBL %d, errBR %d", errorFL, errorFR, errorBL, errorBR));
+            //telemetry.update();
             idle();
             //if (runtime.seconds() > timeout) break;
         }
@@ -552,9 +551,6 @@ abstract class MasterAutonomous extends MasterOpMode
     // a combination of both the align and pivot function (WITH VUFORIA) using pivot move
     public void alignPivotVuforia (double speed, double distAway, double timeout)
     {
-        final float VUFORIA_TOL = 10;
-        final float VUFORIA_TOL_ANGLE = 1;
-
         float xPos;
         float yPos;
         float errorX;
@@ -575,13 +571,15 @@ abstract class MasterAutonomous extends MasterOpMode
         int loopCount = 0;
         do
         {
+            while (!VuforiaNav.isVisible(targetIndex) && opModeIsActive())
+                idle();
             VuforiaNav.lastLocation = null;
             do
             {
-                VuforiaNav.getLocation(); // update target location and angle
+                VuforiaNav.getLocation(targetIndex); // update target location and angle
                 idle();
             }
-            while (VuforiaNav.lastLocation == null);
+            while (VuforiaNav.lastLocation == null && opModeIsActive());
 
             xPos = VuforiaNav.lastLocation.getTranslation().getData()[0];
             yPos = VuforiaNav.lastLocation.getTranslation().getData()[1];
@@ -598,8 +596,12 @@ abstract class MasterAutonomous extends MasterOpMode
             // shift position back 25 inches away from target image
             robotErrorY -= distAway;
 
+            telemetry.log().add("executing");
+            telemetry.update();
 // calls pivot move function here
-            pivotMove(robotErrorX, robotErrorY, errorAngle, 0.5, 3); // 0.5 speed, 3 second timeout
+            pivotMove(robotErrorX, robotErrorY, errorAngle, 0.6, 3); // 0.5 speed, 3 second timeout
+            telemetry.log().add("done");
+            telemetry.update();
 
             runtime.reset();
             telemetry.log().add(String.format("loop: %d", loopCount));
@@ -611,9 +613,11 @@ abstract class MasterAutonomous extends MasterOpMode
             motorFrontRight.setPower(0);
             motorBackLeft.setPower(0);
             motorBackRight.setPower(0);
+            sleep(200);
 
             // error is in mm
-        } while (opModeIsActive() && (Math.abs(robotErrorX) > VUFORIA_TOL && (Math.abs(robotErrorY) > VUFORIA_TOL)));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
+        } while ( opModeIsActive() && ( Math.abs(robotErrorX) > VUFORIA_TOL || Math.abs(robotErrorY) > VUFORIA_TOL
+                || errorAngle > VUFORIA_TOL_ANGLE ) );
 
         // stop motors
         motorFrontLeft.setPower(0);
@@ -683,13 +687,47 @@ abstract class MasterAutonomous extends MasterOpMode
             telemetry.log().add(String.format("StartAngle: %f, CurAngle: %f, error: %f", startAngle, curTurnAngle, error));
             idle();
 
-        } while (opModeIsActive() && (Math.abs(error) > 0.5 && Math.abs(errorP1) > 0.5 && Math.abs(errorP2) > 0.5) );
+        } while (opModeIsActive() && (Math.abs(error) > TOL_ANGLE || Math.abs(errorP1) > TOL_ANGLE) );
 
         // stop motors
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
+    }
+
+
+    public void pivotDetectTarget (double span, int numIterations) throws InterruptedException
+    {
+        double angle = 0.0;
+        int i;
+        for (i = 0; i < numIterations; i++)
+        {
+            // allow Vuforia to catch up
+            sleep(300);
+            if (VuforiaNav.isVisible(targetIndex))
+            {
+                return;
+            }
+            angle += span / (double) numIterations;
+            //pivot(angle, 0.5);
+            PivotForSeconds(0.5, 200);
+        }
+        //pivot(-span, 0.7);
+        PivotForSeconds(-0.5, 800);
+        angle = 0.0;
+        sleep(300);
+        for (i = 0; i < numIterations; i++)
+        {
+            sleep(300);
+            if (VuforiaNav.isVisible(targetIndex))
+            {
+                return;
+            }
+            angle -= span / (double) numIterations;
+            //pivot(angle, 0.5);
+            PivotForSeconds(-0.5, 200);
+        }
     }
 
 
@@ -700,15 +738,6 @@ abstract class MasterAutonomous extends MasterOpMode
         else pivot(100, 0.6);
 
         DriveForSeconds(-0.6, 2500); // drive for 2.5 seconds
-
-        /*
-        motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        forwards(-30, 0, 0.5, 3);
-        */
     }
 
 
@@ -720,6 +749,23 @@ abstract class MasterAutonomous extends MasterOpMode
         motorFrontRight.setPower(speed);
         motorBackLeft.setPower(speed);
         motorBackRight.setPower(speed);
+        // let it run for x seconds
+        pause(milliSeconds);
+        // stop the motors after two seconds
+        motorFrontLeft.setPower(0);
+        motorFrontRight.setPower(0);
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+    }
+
+    // this method drives for seconds, and it can only pivot
+    public void PivotForSeconds(double speed, int milliSeconds) throws InterruptedException
+    {
+        // turn on power
+        motorFrontLeft.setPower(speed);
+        motorFrontRight.setPower(-speed);
+        motorBackLeft.setPower(speed);
+        motorBackRight.setPower(-speed);
         // let it run for x seconds
         pause(milliSeconds);
         // stop the motors after two seconds

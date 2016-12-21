@@ -2,10 +2,6 @@ package org.firstinspires.ftc.team417;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-/**
- * Created by user on 12/12/2016.
- */
-
 @Autonomous(name="Autonomous Competition", group = "Swerve")
 // @Disabled
 
@@ -78,8 +74,6 @@ public class AutonomousCompetition extends MasterAutonomous
                 targetPos[1] = mmFTCFieldWidth;
                 //telemetry.addData("Team: ", "Red 2"); // display what team we're on after choosing with the buttons
             }
-            targetDimY = 0; // x
-            targetDimY = 1;
             telemetry.update();
         } else // if team BLUE
         {
@@ -104,8 +98,6 @@ public class AutonomousCompetition extends MasterAutonomous
                 targetPos[1] = 1524;
                 //telemetry.addData("Team: ", "Blue 2");
             }
-            targetDimX = 1; // y
-            targetDimY = 0;
         }
 
         // Wait for the game to start (driver presses PLAY)
@@ -113,7 +105,7 @@ public class AutonomousCompetition extends MasterAutonomous
 
         VuforiaNav.startTracking();
         //     pause(startDelay);
-        VuforiaNav.getLocation();
+        VuforiaNav.getLocation(targetIndex);
 
         //pause(delay);
 
@@ -154,7 +146,7 @@ public class AutonomousCompetition extends MasterAutonomous
 
         do
         {
-            VuforiaNav.getLocation(); // update target location and angle
+            VuforiaNav.getLocation(targetIndex); // update target location and angle
         }
         while (VuforiaNav.lastLocation == null);
 
@@ -294,7 +286,7 @@ public class AutonomousCompetition extends MasterAutonomous
 
         do
         {
-            VuforiaNav.getLocation(); // update target location and angle
+            VuforiaNav.getLocation(targetIndex); // update target location and angle
         }
         while (VuforiaNav.lastLocation == null);
 
@@ -303,13 +295,6 @@ public class AutonomousCompetition extends MasterAutonomous
         telemetry.update();
         alignPivotVuforia(0.7, 700, 3);
 
-        /*
-        pivotVuforia(targetAngle, 0.5);
-        alignVuforia(0.4, 700, 2);
-        pivotVuforia(targetAngle, 0.5);
-        */
-
-        /*
         // detect beacon color of left side: 0 is blue, 1 is red
         beaconColor = VuforiaNav.GetBeaconColor();
 
@@ -362,8 +347,6 @@ public class AutonomousCompetition extends MasterAutonomous
         telemetry.addData("Path", "Complete");
         telemetry.update();
         pause(10000);
-*/
-    }
-
 
     }
+}

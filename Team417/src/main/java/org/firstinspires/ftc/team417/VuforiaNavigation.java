@@ -181,34 +181,25 @@ public class VuforiaNavigation {
     }
 
     // TODO: make it tell us which target is visible
-    public boolean isVisible()
+    public boolean isVisible(int targetIndex)
     {
-        for (int i = 0; i < listeners.length; i++)
-        {
-            if (listeners[i].isVisible() )
-            {
-                return true;
-            }
-        }
-        return false;
+        return listeners[targetIndex].isVisible();
     }
 
-    public OpenGLMatrix getLocation()
+    public OpenGLMatrix getLocation(int targetIndex)
     {
-        for (int i = 0; i < listeners.length; i++) {
-            /**
-             * getUpdatedRobotLocation() will return null if no new information is available since
-             * the last time that call was made, or if the trackable is not currently visible.
-             * getRobotLocation() will return null if the trackable is not currently visible.
-             */
+        /**
+         * getUpdatedRobotLocation() will return null if no new information is available since
+         * the last time that call was made, or if the trackable is not currently visible.
+         * getRobotLocation() will return null if the trackable is not currently visible.
+         */
 
-            //OpenGLMatrix robotLocationTransform = listeners[i].getUpdatedRobotLocation();
-            OpenGLMatrix robotLocationTransform = listeners[i].getRobotLocation();
-            if (robotLocationTransform != null)
-            {
-                lastLocation = robotLocationTransform;
-                return robotLocationTransform; // could be in class
-            }
+        //OpenGLMatrix robotLocationTransform = listeners[i].getUpdatedRobotLocation();
+        OpenGLMatrix robotLocationTransform = listeners[targetIndex].getRobotLocation();
+        if (robotLocationTransform != null)
+        {
+            lastLocation = robotLocationTransform;
+            return robotLocationTransform; // could be in class
         }
         OpenGLMatrix location = null;
         return location;
@@ -299,7 +290,6 @@ public class VuforiaNavigation {
         }
         return 2; // return illegal color value
     }
-
 
 
     // sample area in image to determine color hue for beacon - detect red or blue

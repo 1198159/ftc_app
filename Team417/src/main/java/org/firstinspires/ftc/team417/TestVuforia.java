@@ -159,9 +159,9 @@ public class TestVuforia extends MasterOpMode
         int beaconColor = 0;
         while (opModeIsActive()) {
 
-            VuforiaNav.getLocation();
+            VuforiaNav.getLocation(targetIndex);
             beaconColor = VuforiaNav.GetBeaconColor();
-            telemetry.addData("tracking ", VuforiaNav.isVisible() ? "Visible" : "Not Visible");
+            telemetry.addData("tracking ", VuforiaNav.isVisible(targetIndex) ? "Visible" : "Not Visible");
             if (VuforiaNav.lastLocation != null)
             {
                 telemetry.addData("location ", format(VuforiaNav.lastLocation));
@@ -190,7 +190,7 @@ public class TestVuforia extends MasterOpMode
         telemetry.addData("State: ", "Move Forward");
         telemetry.update();
         // move foward until 25 inches away
-        VuforiaNav.getLocation(); // update target location and angle
+        VuforiaNav.getLocation(targetIndex); // update target location and angle
         float error = targetPos[targetDimY] - VuforiaNav.lastLocation.getTranslation().getData()[targetDimY];
         if (error > 635)  // further than 25 inches away
         {
@@ -353,7 +353,7 @@ public class TestVuforia extends MasterOpMode
         {
 //            angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 //            curTurnAngle = adjustAngles(angles.firstAngle) - startAngle;
-            VuforiaNav.getLocation(); // update target location and angle
+            VuforiaNav.getLocation(targetIndex); // update target location and angle
             // now extract the angle out of "get location", andn stores your location
             curTurnAngle = Orientation.getOrientation(VuforiaNav.lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
             curTurnAngle = adjustAngles(curTurnAngle);
@@ -456,7 +456,7 @@ public class TestVuforia extends MasterOpMode
 
         do
         {
-            VuforiaNav.getLocation(); // update target location and angle
+            VuforiaNav.getLocation(targetIndex); // update target location and angle
             xPos = VuforiaNav.lastLocation.getTranslation().getData()[targetDimX];
             error = xPos - targetPos[targetDimX];
             int newTargetFL;

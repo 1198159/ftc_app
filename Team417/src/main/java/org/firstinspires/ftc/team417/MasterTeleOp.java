@@ -13,6 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 @TeleOp(name="TeleOp", group = "Swerve")
 // @Disabled
 
+//TODO: add servo fork to configuration and make it move, look at old test code in team Swerve
+
 // CONTROLS:
 // left joystick controls the turn, or pivot alone
 // right joystick controls forwards, backwards, horizontal left and right
@@ -26,8 +28,11 @@ public class MasterTeleOp extends MasterOpMode
     boolean isLiftActivated = false;
     boolean isLeftBumperPushed = false; // is left bumper causes is mode to toggle
     boolean isModeReversed = false;
+    boolean isLegatoMode = false;
+    boolean isAButtonPushed = false;
     private ElapsedTime runtime = new ElapsedTime();
     Orientation angles;
+    AvgFilter filterJoyStickInput = new AvgFilter();
     double startAngle;
     double currentAngle;
     double imuAngle;
@@ -35,6 +40,11 @@ public class MasterTeleOp extends MasterOpMode
 
     double motorLauncherSpeed = 0;
     double driveSpeed = 0;
+
+    double jx2;
+    double jy2;
+    double turn;
+
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -62,35 +72,47 @@ public class MasterTeleOp extends MasterOpMode
            isSwitchPressed = liftSwitch.getState();    //  Read the input pin
 
            if (gamepad2.b && !isBButtonPressed)
-            {
+           {
                 isBButtonPressed = true;
                 isLiftActivated = !isLiftActivated;
-            }
+           }
             isBButtonPressed = gamepad2.b;
 
-            if (isLiftActivated && !isSwitchPressed) // if the switch is NOT pressed
-            {
-                if (gamepad2.dpad_up)
-                {
+           if (isLiftActivated && !isSwitchPressed) // if the switch is NOT pressed
+           {
+               if (gamepad2.dpad_up)
+               {
                     motorLift.setPower(LIFT_POWER);
-                }
-                else if (gamepad2.dpad_down)
-                {
+               }
+               else if (gamepad2.dpad_down)
+               {
                     motorLift.setPower(-LIFT_POWER);
-                }
-                else
-                {
+               }
+               else
+               {
                     motorLift.setPower(0);
-                }
-            }
+               }
+           }
            else
-            {
-                motorLift.setPower(0);
-            }
-            // Gamepads have a new state, so update things that need updating
-            //if(updateGamepads())
+           {
+               motorLift.setPower(0);
+           }
 
-           // if just pressed and previous time wasn't pressed
+// move particle servo
+           if (gamepad2.left_bumper)
+           {
+               servoParticle.setPower(1);
+           }
+           else if (gamepad2.right_bumper)
+           {
+               servoParticle.setPower(-1);
+           }
+           else
+           {
+               servoParticle.setPower(0);
+           }
+
+           // if just pressed and previous time wasn't pressed, for reverse mode
            if (gamepad1.left_bumper && !isLeftBumperPushed)
            {
                isLeftBumperPushed = true;
@@ -101,29 +123,14 @@ public class MasterTeleOp extends MasterOpMode
 
            // Slow Mode!
            if (gamepad1.right_bumper) // if slow mode (when right bumper is held down)
-            {
-                mecanumDrive(0.3, 0.2);
-            }
+           {
+               mecanumDrive(0.3, 0.2);
+           }
            else
            {
-               mecanumDrive(1.0, 0.7);
+               mecanumDrive(1.0, 0.8);
            }
-
-            telemetry.update();
-            idle();
-
-
-           // LEGATO MODE!! (play at a bold forte)
-           if (gamepad1.dpad_down)
-           {
-               rampDriveMotors(0.9);
-           }
-           else if (gamepad1.dpad_up)
-           {
-               rampDriveMotors(0.0);
-           }
-
-
+/*
            if (gamepad2.right_bumper) // when right bumper is held down, launcher motor runs
            {
                rampShooterMotor(0.9);
@@ -132,10 +139,19 @@ public class MasterTeleOp extends MasterOpMode
            {
                rampShooterMotor(0);
            }
+*/
+           // press button a to toggle legato mode
+           if (gamepad1.a && !isAButtonPushed)
+           {
+               isAButtonPushed = true;
+               isLegatoMode = !isLegatoMode;
+           }
+           isAButtonPushed = gamepad1.a;
+           telemetry.addData("legato: ", isLegatoMode);
 
            telemetry.update();
            idle();
-        }
+        } // =================================== end of while active ===========================
 
         // for safety, turn off all motors
         motorFrontLeft.setPower(0);
@@ -148,16 +164,17 @@ public class MasterTeleOp extends MasterOpMode
 
     public void mecanumDrive(double kDrive, double kPivot)
     {
+        double avgX;
+        double avgY;
+        double avgPivot;
+
         double rx;  // represents RIGHT joystick "x axis"
         double ry;  // represents RIGHT joystick "y axis"
-        double turn; // for turning with LEFT joystick
         double lx; // represents joystick LEFT "x axis"
 
         rx = gamepad1.right_stick_x;
         ry = -gamepad1.right_stick_y; // the joystick is reversed, so make this negative
         lx = gamepad1.left_stick_x;
-        double jx2; // jx2 and jy2 are the modified variables to the quadratic function
-        double jy2;
 
         jx2 = modJoyStickInput(rx);
         jx2 = Range.clip(jx2, -1, 1);
@@ -166,17 +183,36 @@ public class MasterTeleOp extends MasterOpMode
         turn = modJoyStickInput(lx);
         turn = Range.clip(turn, -1, 1);
 
+        filterJoyStickInput.appendInput(jx2, jy2, turn);
+
+        if (isLegatoMode)
+        {
+            avgX = filterJoyStickInput.getFilteredX();
+            avgY = filterJoyStickInput.getFilteredY();
+            avgPivot = filterJoyStickInput.getFilteredP();
+        }
+        else
+        {
+            avgX = jx2;
+            avgY = jy2;
+            avgPivot = turn;
+        }
+
         if (isModeReversed)
         {
+            /*
             jx2 = -jx2;
             jy2 = -jy2;
+            */
+            avgX = -avgX;
+            avgY = -avgY;
         }
         telemetry.addData("Reversed: ", isModeReversed);
 
-        motorFrontLeft.setPower(jx2 * kDrive + jy2 * kDrive + turn * kPivot);
-        motorFrontRight.setPower(-jx2 * kDrive + jy2 * kDrive - turn * kPivot);
-        motorBackLeft.setPower(-jx2 * kDrive + jy2 * kDrive + turn * kPivot);
-        motorBackRight.setPower(jx2 * kDrive + jy2 * kDrive - turn * kPivot);
+        motorFrontLeft.setPower(avgX * kDrive + avgY * kDrive + avgPivot * kPivot);
+        motorFrontRight.setPower(-avgX * kDrive + avgY * kDrive - avgPivot * kPivot);
+        motorBackLeft.setPower(-avgX * kDrive + avgY * kDrive + avgPivot * kPivot);
+        motorBackRight.setPower(avgX * kDrive + avgY * kDrive - avgPivot * kPivot);
         // lx is defined as game pad input, then turn gets value from function "modJoyStickInput"
         // turn used in final equation for each motor
     }
@@ -199,6 +235,34 @@ public class MasterTeleOp extends MasterOpMode
         return Math.pow(x,2) * Math.signum(x);
     }
 
+    /*
+    public void avgJoyStickInput()
+    {
+        jx[0] = jx2;
+        jy[0] = jy2;
+        jPivot[0] = turn;
+        // shift of values
+        for (int i = 1; i < jx.length; i++) // change numAvg later, has to be less than jx.length
+        {
+            jx[i] = jx[i - 1];
+            jy[i] = jy[i - 1];
+            jPivot[i] = jPivot[i - 1];
+        }
+        avgX = 0.0;
+        avgY = 0.0;
+        avgPivot = 0.0;
+        // sum of values
+        for (int i = 0; i < jx.length; i++)
+        {
+            avgX += jx[i];
+            avgY += jx[i];
+            avgPivot += jx[i];
+        }
+        avgX = avgX / (double) jx.length;
+        avgY = avgY / (double) jy.length;
+        avgPivot = avgPivot / (double) jPivot.length;
+    }
+    */
 
     public void initializeRobot()
     {
@@ -243,30 +307,6 @@ public class MasterTeleOp extends MasterOpMode
     }
 
 
-    // TODO: finish writing this...
-    public void rampDriveMotors(double speed)
-    {
-        while (driveSpeed < speed)
-        {
-            driveSpeed += speed / 10.0;
-            motorFrontLeft.setPower(driveSpeed);
-            motorFrontRight.setPower(driveSpeed);
-            motorBackLeft.setPower(driveSpeed);
-            motorBackRight.setPower(driveSpeed);
-            sleep(200);
-        }
-        while (driveSpeed > speed)
-        {
-            driveSpeed -= speed / 10.0;
-            driveSpeed += speed / 10.0;
-            motorFrontLeft.setPower(driveSpeed);
-            motorFrontRight.setPower(driveSpeed);
-            motorBackLeft.setPower(driveSpeed);
-            motorBackRight.setPower(driveSpeed);
-            sleep(200);
-        }
-    }
-
     public void configureDashboard()
     {
         telemetry.addLine()
@@ -290,44 +330,6 @@ public class MasterTeleOp extends MasterOpMode
                         return formatNumber(motorBackRight.getPower());
                     }
                 });
-
-/*
-        telemetry.addLine()
-                .addData("currentAnglet: ", new Func<String>() {
-                    @Override public String value() {
-                        return formatNumber(currentAngle);
-                    }
-                })
-                .addData("startAngle: ", new Func<String>() {
-                    @Override public String value() {
-                        return formatNumber(startAngle);
-                    }
-                })
-                .addData("imuAngle: ", new Func<String>() {
-                    @Override public String value() {
-                        return formatNumber(imuAngle);
-                    }
-                });
-*/
-
-        /*
-        telemetry.addLine()
-                .addData("heading", new Func<String>() {
-                    @Override public String value() {
-                        return formatAngle(angles.angleUnit, currentAngle);
-                    }
-                })
-                .addData("startAngle", new Func<String>() {
-                    @Override public String value() {
-                        return formatAngle(angles.angleUnit, startAngle);
-                    }
-                })
-                .addData("imuAngle", new Func<String>() {
-                    @Override public String value() {
-                        return formatAngle(angles.angleUnit, imuAngle);
-                    }
-                });
-*/
     }
 
     public String formatNumber(double d)
