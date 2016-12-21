@@ -64,10 +64,9 @@ abstract public class MasterAutonomous extends MasterOpMode
             //move the robot to the desired location
             double[] m = drive.navigateTo(TargetLocation);
 
-            telemetry.addData("mX:", m[0]);
-            telemetry.addData("mY:", m[1]);
-            telemetry.addData("mW:", m[2]);
-
+            telemetry.addData("XRate:", m[0]);
+            telemetry.addData("YRate:", m[1]);
+            telemetry.addData("WRate:", m[2]);
 
             idle();
         }

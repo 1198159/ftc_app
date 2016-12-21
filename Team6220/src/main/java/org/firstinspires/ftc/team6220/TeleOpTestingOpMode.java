@@ -27,7 +27,7 @@ public class TeleOpTestingOpMode extends MasterAutonomous
         vuforiaHelper.setupVuforia();
 
         //the robot is placed in front of the blue1 beacon when starting the test
-        drive.robotLocation = new Transform2D(2.438, 1.500, 0.0);
+        drive.robotLocation = new Transform2D(2.638, 1.500, 0.0);
 
         setRobotStartingOrientation(0.0);
 
@@ -59,13 +59,13 @@ public class TeleOpTestingOpMode extends MasterAutonomous
             //navigation test for x direction (relative to the robot)
             if (gamepad2.left_stick_x > 0.1)
             {
-                vuforiaDriveToPosition(2.438, 1.800, 0.0);
+                vuforiaDriveToPosition(2.438, 1.750, 0.0);
             }
 
             //navigation test for rotation
             if (gamepad2.right_bumper)
             {
-                turnTo(180.0);
+                turnTo(90.0);
             }
 
             /*

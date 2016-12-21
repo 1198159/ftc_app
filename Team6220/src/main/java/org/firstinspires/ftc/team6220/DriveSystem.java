@@ -53,12 +53,12 @@ public class DriveSystem implements ConcurrentOperation
     //IMPORTANT:  assumes robot position has already been updated
     public double[] navigateTo(Transform2D target)
     {
-        //update error terms
+        //updates the error terms
         double angleDiff = currentOpMode.normalizeRotationTarget(target.rot, robotLocation.rot);
         LocationControlFilter[0].roll(target.x - robotLocation.x);
         LocationControlFilter[1].roll(target.y - robotLocation.y);
         RotationControlFilter.roll(angleDiff);
-        currentOpMode.telemetry.addData("Angle diff:",angleDiff);
+        currentOpMode.telemetry.addData("Angle diff: ", angleDiff);
         double xRate = LocationControlFilter[0].getFilteredValue();
         double yRate = LocationControlFilter[1].getFilteredValue();
         double wRate = RotationControlFilter.getFilteredValue();    // double wRate = target.rot - robotLocation.rot
@@ -114,7 +114,6 @@ public class DriveSystem implements ConcurrentOperation
         }
 
         return SequenceUtilities.scalarMultiply(rawPowers, 1/scalingFactor);
-
     }
 
     //@TODO code duplicate; incorporate both getMotorPowers into a single function accounting for heading
