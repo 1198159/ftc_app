@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     TeleOp program used for testing functions such as turnTo and navigateTo; extends MasterAutonomous to allow access to
     turning and vuforia navigation
 */
-@TeleOp(name="TeleOpTestingOpMode", group="6220")
-public class TeleOpTestingOpMode extends MasterAutonomous
+@TeleOp(name="Test Autonomous", group="6220")
+public class AutonomousTest extends MasterAutonomous
 {
     ElapsedTime timer = new ElapsedTime();
 
