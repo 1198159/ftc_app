@@ -124,8 +124,8 @@ public class VuforiaHelper
         targets[BLUE_RIGHT].setLocation(createMatrix(MM_FIELD_SIZE, 1524, 0, 90, 0, -90));
 
         // Set phone location on robot. The center of the camera is the origin
-        //phoneLocation = createMatrix(25, 164, 0, 90, 0, 90);
-        phoneLocation = createMatrix(0, 0, 0, 90, 0, 90);
+        //phoneLocation = createMatrix(0, 0, 0, 90, 0, 180);
+        phoneLocation = createMatrix(-70, 220, 0, 90, 0, 180);
 
         // Setup listeners
         for(int i = 0; i < targets.length; i++)

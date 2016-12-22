@@ -59,10 +59,11 @@ public class DriveSystem implements ConcurrentOperation
         LocationControlFilter[1].roll(target.y - robotLocation.y);
         RotationControlFilter.roll(angleDiff);
         currentOpMode.telemetry.addData("Angle diff: ", angleDiff);
-        double xRate = LocationControlFilter[0].getFilteredValue();
-        double yRate = LocationControlFilter[1].getFilteredValue();
-        double wRate = RotationControlFilter.getFilteredValue();    // double wRate = target.rot - robotLocation.rot
+        double xRate = 0.3 * LocationControlFilter[0].getFilteredValue();
+        double yRate = 0.3 * LocationControlFilter[1].getFilteredValue();
+        double wRate = 0.3 * RotationControlFilter.getFilteredValue();
 
+        //makes sure that none of our rates are too large
         if(Math.abs(xRate) > 0.3)
         {
             xRate = 0.3 * Math.signum(xRate);
@@ -73,14 +74,10 @@ public class DriveSystem implements ConcurrentOperation
             yRate = 0.3 * Math.signum(yRate);
         }
 
-        //makes sure that wRate is in the acceptable range
+
         if(Math.abs(wRate) > 0.3)
         {
             wRate = 0.3 * Math.signum(wRate);
-        }
-        else if(Math.abs(wRate) < Constants.MINIMUM_TURNING_POWER)
-        {
-            wRate = Constants.MINIMUM_TURNING_POWER * Math.signum(wRate);
         }
 
         writeToMotors(getMotorPowersFromMotion(new Transform2D(xRate, yRate, wRate)));
