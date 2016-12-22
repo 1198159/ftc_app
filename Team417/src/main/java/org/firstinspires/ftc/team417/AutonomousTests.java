@@ -79,9 +79,9 @@ public class AutonomousTests extends MasterAutonomous
             {
                 // OPTION RED ONE (TOOLS)
                 startDelay = 2000;
-                pivotAngle = 55; // pivot this amount before acquiring target
+                pivotAngle = 50; // pivot this amount before acquiring target
                 targetAngle = 0; // Vuforia angle
-                startDist = 90;
+                startDist = 2286;
                 targetIndex = 1;
                 targetPos[0] = 2743.2f;
                 targetPos[1] = mmFTCFieldWidth;
@@ -91,9 +91,9 @@ public class AutonomousTests extends MasterAutonomous
             {
                 // OPTION RED TWO (GEARS)
                 startDelay = 0;
-                pivotAngle = 55; // pivot this amount before acquiring target
+                pivotAngle = 50; // pivot this amount before acquiring target
                 targetAngle = 0; // Vuforia angle
-                startDist = 50;
+                startDist = 1397;
                 targetIndex = 3;
                 targetPos[0] = 1524;
                 targetPos[1] = mmFTCFieldWidth;
@@ -107,9 +107,9 @@ public class AutonomousTests extends MasterAutonomous
             {
                 // OPTION BLUE ONE (LEGOS)
                 startDelay = 2000;
-                pivotAngle = -55; // recalc pivot?? also for red one??
+                pivotAngle = -50; // recalc pivot?? also for red one??
                 targetAngle = -90;
-                startDist = 90;
+                startDist = 2286;
                 targetIndex = 2;
                 targetPos[0] = mmFTCFieldWidth;
                 targetPos[1] = 2743.2f;
@@ -119,9 +119,9 @@ public class AutonomousTests extends MasterAutonomous
             {
                 // OPTION BLUE TWO (WHEELS)
                 startDelay = 0;
-                pivotAngle = -55;
+                pivotAngle = -50;
                 targetAngle = -90;
-                startDist = 50;
+                startDist = 1397;
                 targetIndex = 0;
                 targetPos[0] = mmFTCFieldWidth;
                 targetPos[1] = 1524;
@@ -160,61 +160,226 @@ public class AutonomousTests extends MasterAutonomous
         //TODO: figure out how to use accelerometer
         //TODO: test with Vuforia
         //TODO: make sideways fast and go longer
+        VUFORIA_TOL_ANGLE = 2;
         TOL = 30;
-        TOL_ANGLE = 1;
+        TOL_ANGLE = 2;
         Kmove = 1.0/1200.0;
-        Kpivot = 1.0/100.0;
+        Kpivot = 1.0/140.0;
 
-        /*
-        forwards(20, 0, 0.7, 3); // make this in mm
+
+        telemetry.addData("Path", "start forwards");
+        telemetry.update();
+        // go towards target
+        forwards(startDist, 0, 0.7, 3);  // inches, speed, timeout
+        pause(100);
+
+        telemetry.addData("Path", "pivot 60");
+        telemetry.update();
+        // pivot to face target
+        pivot(pivotAngle, 0.7); // make sure IMU is on
         pause(200);
-        forwards(0, 20, 0.7, 3);
-        pause(30000);
-        telemetry.addData("Path", "Done (end it!)");
 
-
-        telemetry.addData("Path", "forwards, 0.5");
+        telemetry.addData("Path", "scanning for target");
         telemetry.update();
-        pivotMove(0, 300, 0, 0.5, 3);
-        pause(3000);
-
-        telemetry.addData("Path", "forwards, 0.8");
-        telemetry.update();
-        pivotMove(0, 300, 0, 0.8, 3);
-        pause(3000);
-
-        telemetry.addData("Path", "right, 0.5");
-        telemetry.update();
-        pivotMove(300, 0, 0, 0.5, 3);
-        pause(3000);
-
-        telemetry.addData("Path", "left, 0.8");
-        telemetry.update();
-        pivotMove(-300, 0, 0, 0.5, 3);
-        pause(3000);
-
-        telemetry.addData("Path", "pivot left");
-        telemetry.update();
-        pivotMove(0, 0, 90, 0.8, 3);
-        pause(3000);
-
-        telemetry.addData("Path", "pivot right");
-        telemetry.update();
-        pivotMove(0, 0, -90, 0.8, 3);
-
-        telemetry.addData("Path", "Done (end it!)");
-        telemetry.update();
-        pause(30000);
-
-*/
         TOL_ANGLE = 3;
         pivotDetectTarget(30, 5);
         TOL_ANGLE = 0.5;
-        alignPivotVuforia(targetAngle, 700, 4);
-        //pivotVuforia(0.5, 0.5);
-        telemetry.addData("Path", "Done (end it!)");
+        telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
-        pause(2000);
+        alignPivotVuforia(targetAngle, 600, 4);
+        pause(100);
+
+        do
+        {
+            VuforiaNav.getLocation(targetIndex); // update target location and angle
+        }
+        while (VuforiaNav.lastLocation == null);
+
+// detect beacon color of left side: 0 is blue, 1 is red
+        int beaconColor = VuforiaNav.GetBeaconColor();
+        telemetry.log().add(String.format("LeftSide: %f, RightSide: %f", VuforiaNav.leftColorHSV[0], VuforiaNav.rightColorHSV[0]));
+        telemetry.log().add(String.format("Returned Color: %d", beaconColor));
+        if (isRedTeam)
+        {
+            telemetry.log().add(String.format("team red"));
+        }
+        else
+        {
+            telemetry.log().add(String.format("team blue"));
+        }
+        telemetry.update();
+
+// shift left or right before pushing button
+        if (beaconColor == 0)   // if left side beacon is blue
+        {
+            if (isRedTeam)     // red team
+            {
+                telemetry.addData("Path", "shift right");
+                telemetry.update();
+                //pivotMove(100, 0, 0, 0.25, 3);
+                forwards(0, 100, 0.25, 3);   // shift right
+            }
+            else    // blue team
+            {
+                telemetry.addData("Path", "shift left");
+                telemetry.update();
+                //pivotMove(-38, 0, 0, 0.25, 3);
+                forwards(0, -38, 0.25, 4);   // shift left
+            }
+        }
+        else if (beaconColor == 1)  // if left side beacon is red
+        {
+            if (isRedTeam)     // red team
+            {
+                telemetry.addData("Path", "shift left");
+                telemetry.update();
+                //pivotMove(-38, 0, 0, 0.25, 3);
+                forwards(0, -38, 0.25, 4);   // shift left
+            }
+            else    // blue team
+            {
+                telemetry.addData("Path", "shift right");
+                telemetry.update();
+                //pivotMove(100, 0, 0, 0.25, 3);
+                forwards(0, 100, 0.25, 3);   // shift right
+            }
+        }
+        else // when the color is unknown
+        {
+            telemetry.addData("Path", "unknown color, going back");
+            telemetry.update();
+            forwards(-5, 0, 0.5, 3);
+        }
+
+        //CodeReview: do you still try to push the button if the color is unknown?
+        //            Or is this wasted movement because you backed up a moment ago?
+
+        telemetry.addData("Path", "pushing button");
+        telemetry.update();
+        forwards(300, 0, 0.25, 3); // push the button (first target)!!
+        telemetry.log().add(String.format("pushed first button"));
+        pause(100);
+        forwards(-250, 0, 0.25, 3);
+
+
+        // determine next beacon target
+        if (isRedTeam) // if team RED
+        {
+            // OPTION RED ONE (TOOLS)
+            targetIndex = 1;
+            targetPos[0] = 2743.2f;
+            targetPos[1] = mmFTCFieldWidth;
+            //telemetry.addData("Team: ", "Red 1"); // display what team we're on after choosing with the buttons
+        }
+        else // if team BLUE
+        {
+            // OPTION BLUE ONE (LEGOS)
+            targetIndex = 2;
+            targetPos[0] = mmFTCFieldWidth;
+            targetPos[1] = 2743.2f;
+            //telemetry.addData("Team: ", "Blue 1");
+        }
+
+        Kmove = 1.0/2000.0;
+        Kpivot = 1.0/50.0;
+// shift to new target!!
+        telemetry.addData("Path", "shift to new target");
+        telemetry.update();
+        if (beaconColor == 0) // if left side blue
+        {
+            if (isRedTeam) // move shorter
+            {
+                //forwards(0, 1220, 0.6, 4);
+                pivotMove(1220, 0, 0, 0.7, 4);
+            }
+            else // move longer
+            {
+                //forwards(0, -1220, 0.6, 4);
+                pivotMove(-1220, 0, 0, 0.7, 4);
+            }
+        }
+        else if (beaconColor == 1) // if left side red
+        {
+            if (isRedTeam) // move longer
+            {
+                //forwards(0, 1220, 0.6, 4);
+                pivotMove(1220, 0, 0, 0.7, 4);
+            }
+            else // move shorter
+            {
+                //forwards(0, -1220, 0.6, 4);
+                pivotMove(-1220, 0, 0, 0.7, 4);
+            }
+        }
+        pause(200);
+
+        Kmove = 1.0/1200.0;
+        Kpivot = 1.0/140.0;
+        telemetry.addData("Path", "scanning for target");
+        telemetry.update();
+        TOL_ANGLE = 3;
+        pivotDetectTarget(30, 5);
+        TOL_ANGLE = 0.5;
+        telemetry.addData("Path", "align pivot vuf");
+        telemetry.update();
+        alignPivotVuforia(targetAngle, 600, 4);
+        pause(100);
+
+
+        // detect beacon color of left side: 0 is blue, 1 is red
+        beaconColor = VuforiaNav.GetBeaconColor();
+
+        // shift left or right before pushing button
+        if (beaconColor == 0)   // if left side beacon is blue
+        {
+            if (isRedTeam)     // red team
+            {
+                telemetry.addData("Path", "shift right");
+                telemetry.update();
+                //pivotMove(100, 0, 0, 0.25, 3);
+                forwards(0, 100, 0.25, 3);   // shift right
+            }
+            else    // blue team
+            {
+                telemetry.addData("Path", "shift left");
+                telemetry.update();
+                //pivotMove(-38, 0, 0, 0.25, 3);
+                forwards(0, -38, 0.25, 4);   // shift left
+            }
+        }
+        else if (beaconColor == 1)  // if left side beacon is red
+        {
+            if (isRedTeam)     // red team
+            {
+                telemetry.addData("Path", "shift left");
+                telemetry.update();
+                //pivotMove(-38, 0, 0, 0.25, 3);
+                forwards(0, -38, 0.25, 4);   // shift left
+            }
+            else    // blue team
+            {
+                telemetry.addData("Path", "shift right");
+                telemetry.update();
+                //pivotMove(100, 0, 0, 0.25, 3);
+                forwards(0, 100, 0.25, 3);   // shift right
+            }
+        }
+        else // when the color is unknown
+        {
+            telemetry.addData("Path", "unknown color, going back");
+            telemetry.update();
+            forwards(-5, 0, 0.5, 3);
+        }
+
+        telemetry.addData("Path", "pushing button");
+        telemetry.update();
+        forwards(300, 0, 0.25, 3);
+        telemetry.log().add(String.format("pushed second button"));
+        pause(100);
+        forwards(-300, 0, 0.25, 3);
+
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
     }
 
 }

@@ -123,10 +123,17 @@ abstract class MasterAutonomous extends MasterOpMode
         double speedBL;
         double speedBR;
 
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) + (int) Math.round(COUNTS_PER_INCH * horiMm * 1.414);
-        newTargetFR = motorFrontRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) - (int) Math.round(COUNTS_PER_INCH * horiMm * 1.414);
-        newTargetBL = motorBackLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) - (int) Math.round(COUNTS_PER_INCH * horiMm * 1.414);
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) + (int) Math.round(COUNTS_PER_INCH * horiMm * 1.414);
+        /*
+        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) + (int) Math.round(COUNTS_PER_MM * horiMm * 1.414);
+        newTargetFR = motorFrontRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) - (int) Math.round(COUNTS_PER_MM * horiMm * 1.414);
+        newTargetBL = motorBackLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) - (int) Math.round(COUNTS_PER_MM * horiMm * 1.414);
+        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) + (int) Math.round(COUNTS_PER_MM * horiMm * 1.414);
+        */
+
+        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) + (int) Math.round(COUNTS_PER_MM * horiMm * 1.0);
+        newTargetFR = motorFrontRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) - (int) Math.round(COUNTS_PER_MM * horiMm * 1.0);
+        newTargetBL = motorBackLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) - (int) Math.round(COUNTS_PER_MM * horiMm * 1.0);
+        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) + (int) Math.round(COUNTS_PER_MM * horiMm * 1.0);
 
         runtime.reset(); // used for timeout
 
@@ -450,6 +457,7 @@ abstract class MasterAutonomous extends MasterOpMode
         final double ROBOT_DIAMETER_MM = 17.0 * 25.4;   // diagonal 17 inch FL to BR and FR to BL
         pivotDst = (int) ((pivotAngle / 360) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
+        /*
         newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
         newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.414))
@@ -457,6 +465,16 @@ abstract class MasterAutonomous extends MasterOpMode
         newTargetBL = motorBackLeft.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.414))
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
         newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
+                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
+
+*/
+        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.0))
+                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
+        newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.0))
+                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
+        newTargetBL = motorBackLeft.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.0))
+                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
+        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.0))
                 + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
 
         runtime.reset(); // reset timer, which is used for loop timeout below
@@ -604,7 +622,7 @@ abstract class MasterAutonomous extends MasterOpMode
             telemetry.update();
 
             runtime.reset();
-            telemetry.log().add(String.format("loop: %d", loopCount));
+            telemetry.log().add(String.format("loop: %d", loopCount)); // display each motor error as well
             telemetry.update();
             loopCount++;
 
