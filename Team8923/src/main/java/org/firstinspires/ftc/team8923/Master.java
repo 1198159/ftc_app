@@ -29,8 +29,8 @@ abstract class Master extends LinearOpMode
     double headingOffset = 0.0;
 
     // Constants to be used in code. Measurements in millimeters
-    private static final double GEAR_RATIO = 1.0; // Ratio of driven gear to driving gear
-    private static final double TICKS_PER_MOTOR_REVOLUTION = 560.0;
+    private static final double GEAR_RATIO = 1.5; // Ratio of driven gear to driving gear
+    private static final double TICKS_PER_MOTOR_REVOLUTION = 1120.0;
     private static final double TICKS_PER_WHEEL_REVOLUTION = TICKS_PER_MOTOR_REVOLUTION / GEAR_RATIO;
     private static final double WHEEL_DIAMETER = 4 * 25.4; // 4 inch diameter
     private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
@@ -107,23 +107,26 @@ abstract class Master extends LinearOpMode
 
     void reverseDrive(boolean reverse)
     {
+        // Normally one side of the robot would be reversed, but because the front motors use gears
+        // and the back motors use chain, opposite corners are reversed
+
         // Forwards
         if(!reverse)
         {
             reverseDrive = false;
-            motorFL.setDirection(DcMotor.Direction.FORWARD);
-            motorFR.setDirection(DcMotor.Direction.REVERSE);
-            motorBL.setDirection(DcMotor.Direction.REVERSE);
-            motorBR.setDirection(DcMotor.Direction.FORWARD);
+            motorFL.setDirection(DcMotor.Direction.REVERSE);
+            motorFR.setDirection(DcMotor.Direction.FORWARD);
+            motorBL.setDirection(DcMotor.Direction.FORWARD);
+            motorBR.setDirection(DcMotor.Direction.REVERSE);
             return;
         }
 
         // Reverse
         reverseDrive = true;
-        motorFL.setDirection(DcMotor.Direction.REVERSE);
-        motorFR.setDirection(DcMotor.Direction.FORWARD);
-        motorBL.setDirection(DcMotor.Direction.FORWARD);
-        motorBR.setDirection(DcMotor.Direction.REVERSE);
+        motorFL.setDirection(DcMotor.Direction.FORWARD);
+        motorFR.setDirection(DcMotor.Direction.REVERSE);
+        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        motorBR.setDirection(DcMotor.Direction.FORWARD);
     }
 
     // Sends information to Driver Station screen for drivers to see
