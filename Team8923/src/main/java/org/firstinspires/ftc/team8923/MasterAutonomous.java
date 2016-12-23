@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team8923;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
  */
 abstract class MasterAutonomous extends Master
 {
+    ColorSensor colorSensor;
     BNO055IMU imu;
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -213,6 +215,8 @@ abstract class MasterAutonomous extends Master
         lastEncoderFR = motorFR.getCurrentPosition();
         lastEncoderBL = motorBL.getCurrentPosition();
         lastEncoderBR = motorBR.getCurrentPosition();
+
+        colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
