@@ -48,7 +48,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             drive.robotLocation.rot = currentAngle;
 
             //removed for testing
-            /*
             //Informs drivers of robot location. Location is null if we lose track of the targets
             if(vuforiaHelper.lastKnownLocation != null)
             {
@@ -61,7 +60,6 @@ abstract public class MasterAutonomous extends MasterOpMode
                 telemetry.addData("Pos:", "Unknown");
                 telemetry.update();
             }
-            */
 
             //move the robot to the desired location
             double[] m = drive.navigateTo(TargetLocation);
@@ -69,6 +67,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             telemetry.addData("XRate:", m[0]);
             telemetry.addData("YRate:", m[1]);
             telemetry.addData("WRate:", m[2]);
+            telemetry.update();
 
             idle();
         }

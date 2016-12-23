@@ -74,7 +74,6 @@ public class DriveSystem implements ConcurrentOperation
             yRate = 0.3 * Math.signum(yRate);
         }
 
-
         if(Math.abs(wRate) > 0.3)
         {
             wRate = 0.3 * Math.signum(wRate);

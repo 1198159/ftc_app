@@ -123,9 +123,12 @@ public class VuforiaHelper
         targets[BLUE_LEFT].setLocation(createMatrix(MM_FIELD_SIZE, 2743.2f, 0, 90, 0, -90));
         targets[BLUE_RIGHT].setLocation(createMatrix(MM_FIELD_SIZE, 1524, 0, 90, 0, -90));
 
-        // Set phone location on robot. The center of the camera is the origin
-        //phoneLocation = createMatrix(0, 0, 0, 90, 0, 180);
-        phoneLocation = createMatrix(-70, 220, 0, 90, 0, 180);
+        //Sets phone location on robot. The center of the camera is the origin
+        //This location is 90 degrees less than the phone's actual rotation about the z-axis since we
+        //use the mathematical sense of absolute rotation (0 degrees located on the x-axis) while vuforia
+        //uses compass coordinates for rotation (0 degrees located on the y-axis)
+        phoneLocation = createMatrix(-70, 220, 0, 90, 0, 90);
+        //phoneLocation = createMatrix(-70, 220, 0, 90, 0, 180);
 
         // Setup listeners
         for(int i = 0; i < targets.length; i++)
