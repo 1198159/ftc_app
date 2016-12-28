@@ -211,7 +211,7 @@ public class AutonomousCompetition extends MasterAutonomous
         // Extend pusher to press button
         servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
         // Drive slower for more accuracy
-        slowModeDivisor = 2.0;
+        //slowModeDivisor = 1.0;
 
         // Line up with button
         driveRelativeToBeacon(buttonDistance, observationDistance);
@@ -223,7 +223,7 @@ public class AutonomousCompetition extends MasterAutonomous
         // Retract pusher to prevent damage or anything else bad
         servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
         // Reset slow mode
-        slowModeDivisor = 1.0;
+        //slowModeDivisor = 1.0;
     }
 
     // TODO: Test me
