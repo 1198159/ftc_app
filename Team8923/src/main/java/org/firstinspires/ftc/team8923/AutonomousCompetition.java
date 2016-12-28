@@ -216,7 +216,7 @@ public class AutonomousCompetition extends MasterAutonomous
         // Line up with button
         driveRelativeToBeacon(buttonDistance, observationDistance);
         // Move forward to press button
-        driveRelativeToBeacon(buttonDistance, 155);
+        driveRelativeToBeacon(buttonDistance, 100);
         // Back away from beacon
         driveRelativeToBeacon(buttonDistance, observationDistance);
 
