@@ -44,8 +44,8 @@ abstract class Master extends LinearOpMode
         FLYWHEEL_STOW(0.0),
         FINGER_RETRACT(0.7),
         FINGER_EXTEND(0.35),
-        BEACON_RETRACT(0.98),
-        BEACON_EXTEND(0.32),
+        BEACON_RETRACT(0.15),
+        BEACON_EXTEND(0.80),
         GRABBER_STOW(0.7),
         GRABBER_GRAB(0.55),
         GRABBER_RELEASE(0.0);
