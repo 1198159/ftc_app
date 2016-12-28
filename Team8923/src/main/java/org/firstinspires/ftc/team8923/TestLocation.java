@@ -48,6 +48,11 @@ public class TestLocation extends MasterAutonomous
                 sleep(2000);
             }
 
+            if(gamepad1.x)
+                servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
+            else if(gamepad1.y)
+                servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
+
             updateRobotLocation();
 
             telemetry.addData("X", robotX);
