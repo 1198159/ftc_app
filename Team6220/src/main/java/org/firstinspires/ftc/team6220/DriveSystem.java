@@ -82,10 +82,10 @@ public class DriveSystem implements ConcurrentOperation
         //Local and global orientation do not always match up.  For instance, if the robot is rotated
         //90 degrees, local x motion will result in global y motion.
         //This calculation corresponds to the new coordinates of a point rotated to an angle.  The 90
-        //added on to getAngularOrientationWithOffset() has to do with how our robot's local orientation
+        //subtracted from beaconActivationAngle has to do with how our robot's local orientation
         //was defined
-        double localXRate = xRate * Math.cos(currentOpMode.beaconActivationAngle + 90) - yRate * Math.sin(currentOpMode.beaconActivationAngle + 90);
-        double localYRate = xRate * Math.sin(currentOpMode.beaconActivationAngle + 90) + yRate * Math.cos(currentOpMode.beaconActivationAngle + 90);
+        double localXRate = xRate * Math.cos(currentOpMode.beaconActivationAngle - 90) - yRate * Math.sin(currentOpMode.beaconActivationAngle - 90);
+        double localYRate = xRate * Math.sin(currentOpMode.beaconActivationAngle - 90) + yRate * Math.cos(currentOpMode.beaconActivationAngle - 90);
 
         writeToMotors(getMotorPowersFromMotion(new Transform2D(localXRate, localYRate, wRate)));
 
