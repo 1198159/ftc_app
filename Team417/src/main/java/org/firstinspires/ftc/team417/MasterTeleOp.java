@@ -112,6 +112,20 @@ public class MasterTeleOp extends MasterOpMode
                servoParticle.setPower(0);
            }
 
+           // controls the forks servo
+           /*
+           if (gamepad2.a)
+           {
+               servoForks.setPosition(-1);
+           }
+           if (gamepad2.y)
+           {
+               servoForks.setPosition(1);
+           }
+           */
+           servoForks.setPosition(0);
+           servoForks.setPosition(gamepad2.right_stick_y);
+
            // if just pressed and previous time wasn't pressed, for reverse mode
            if (gamepad1.left_bumper && !isLeftBumperPushed)
            {

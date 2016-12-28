@@ -170,7 +170,7 @@ public class AutonomousTests extends MasterAutonomous
         telemetry.addData("Path", "start forwards");
         telemetry.update();
         // go towards target
-        forwards(startDist, 0, 0.7, 3);  // inches, speed, timeout
+        move(0, startDist, 0.7, 3);
         pause(100);
 
         telemetry.addData("Path", "pivot 60");
@@ -216,15 +216,15 @@ public class AutonomousTests extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                //pivotMove(100, 0, 0, 0.25, 3);
-                forwards(0, 100, 0.25, 3);   // shift right
+                move(100, 0, 0.25, 3); // shift right
+                PushButton();
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                //pivotMove(-38, 0, 0, 0.25, 3);
-                forwards(0, -38, 0.25, 4);   // shift left
+                move(-38, 0, 0.25, 4); // shift left
+                PushButton();
             }
         }
         else if (beaconColor == 1)  // if left side beacon is red
@@ -233,34 +233,25 @@ public class AutonomousTests extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                //pivotMove(-38, 0, 0, 0.25, 3);
-                forwards(0, -38, 0.25, 4);   // shift left
+                move(-38, 0, 0.25, 4); // shift left
+                PushButton();
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                //pivotMove(100, 0, 0, 0.25, 3);
-                forwards(0, 100, 0.25, 3);   // shift right
+                move(100, 0, 0.25, 3); // shift right
+                PushButton();
             }
         }
         else // when the color is unknown
         {
-            telemetry.addData("Path", "unknown color, going back");
+            telemetry.addData("Path", "unknown color, moving on");
             telemetry.update();
-            forwards(-5, 0, 0.5, 3);
         }
 
-        //CodeReview: do you still try to push the button if the color is unknown?
-        //            Or is this wasted movement because you backed up a moment ago?
-
-        telemetry.addData("Path", "pushing button");
-        telemetry.update();
-        forwards(300, 0, 0.25, 3); // push the button (first target)!!
-        telemetry.log().add(String.format("pushed first button"));
         pause(100);
-        forwards(-250, 0, 0.25, 3);
-
+        move(0, -250, 0.25, 3); // back up from button (or just back up)
 
         // determine next beacon target
         if (isRedTeam) // if team RED
@@ -336,15 +327,15 @@ public class AutonomousTests extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                //pivotMove(100, 0, 0, 0.25, 3);
-                forwards(0, 100, 0.25, 3);   // shift right
+                move(100, 0, 0.25, 3); // shift right
+                PushButton();
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                //pivotMove(-38, 0, 0, 0.25, 3);
-                forwards(0, -38, 0.25, 4);   // shift left
+                move(-38, 0, 0.25, 4); // shift left
+                PushButton();
             }
         }
         else if (beaconColor == 1)  // if left side beacon is red
@@ -353,30 +344,26 @@ public class AutonomousTests extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                //pivotMove(-38, 0, 0, 0.25, 3);
-                forwards(0, -38, 0.25, 4);   // shift left
+                move(-38, 0, 0.25, 4); // shift left
+                PushButton();
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                //pivotMove(100, 0, 0, 0.25, 3);
-                forwards(0, 100, 0.25, 3);   // shift right
+                move(100, 0, 0.25, 3); // shift right
+                PushButton();
             }
         }
         else // when the color is unknown
         {
-            telemetry.addData("Path", "unknown color, going back");
+            telemetry.addData("Path", "unknown color, standing by");
             telemetry.update();
-            forwards(-5, 0, 0.5, 3);
         }
 
-        telemetry.addData("Path", "pushing button");
-        telemetry.update();
-        forwards(300, 0, 0.25, 3);
-        telemetry.log().add(String.format("pushed second button"));
+        PushButton();
         pause(100);
-        forwards(-300, 0, 0.25, 3);
+        move(0, -300, 0.25, 3); // back up
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

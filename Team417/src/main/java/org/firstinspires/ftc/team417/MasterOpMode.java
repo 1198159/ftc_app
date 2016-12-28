@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.vuforia.Image;
 
@@ -29,6 +30,7 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorBackRight = null;
     DcMotor motorLift = null;
     CRServo servoParticle = null;
+    Servo servoForks = null;
     //DcMotor motorLauncher = null;
     //DcMotor motorCollector = null;
     BNO055IMU imu;
@@ -60,6 +62,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
         motorLift = hardwareMap.dcMotor.get("motorLift");
         servoParticle = hardwareMap.crservo.get("servoParticle");
+        servoForks = hardwareMap.servo.get("servoForks");
         //motorLauncher = hardwareMap.dcMotor.get("motorLauncher");
         //motorCollector = hardwareMap.dcMotor.get("motorCollector");
 
@@ -93,6 +96,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
         servoParticle.setPower(0);
+        servoForks.setPosition(0);
         motorLift.setPower(0);
         //motorLauncher.setPower(0);
         //motorCollector.setPower(0);
@@ -104,12 +108,12 @@ abstract public class MasterOpMode extends LinearOpMode
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        //parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
         //CodeReview: have you run the calibration sample opmode and created this file? You should ensure this file exists
         //            if you are going to reference it here. Otherwise you should not set this variable (it's not required).
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        //parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         //CodeReview: I believe it's optional to have an accelerationIntegrationAlgorithm and you don't need to specify it here.
         //            This particular one doesn't seem to be providing your robot any benefit other than adding to logs.
 

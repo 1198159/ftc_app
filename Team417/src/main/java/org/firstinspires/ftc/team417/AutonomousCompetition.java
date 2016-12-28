@@ -129,7 +129,8 @@ public class AutonomousCompetition extends MasterAutonomous
         telemetry.addData("Path", "start forwards");
         telemetry.update();
         // go towards target
-        forwards(startDist, 0, 0.7, 3);  // inches, speed, timeout
+        //forwards(startDist, 0, 0.7, 3);  // inches, speed, timeout
+        move(0, startDist, 0.7, 3);
         pause(100);
 
         telemetry.addData("Path", "pivot 60");
@@ -171,13 +172,15 @@ public class AutonomousCompetition extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                forwards(0, 2.5, 0.25, 3);   // shift right
+                //forwards(0, 2.5, 0.25, 3);   // shift right
+                move(63.5, 0, 0.25, 3);
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                forwards(0, -2.5, 0.25, 4);   // shift left
+                //forwards(0, -2.5, 0.25, 4);   // shift left
+                move(-63.5, 0, 0.25, 3);
             }
         }
         else if (beaconColor == 1)  // if left side beacon is red
@@ -186,13 +189,15 @@ public class AutonomousCompetition extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                forwards(0, -2.5, 0.25, 4);   // shift left
+                //forwards(0, -2.5, 0.25, 4);   // shift left
+                move(-63.5, 0, 0.25, 3);
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                forwards(0, 2.5, 0.25, 3);   // shift right
+                //forwards(0, 2.5, 0.25, 3);   // shift right
+                move(63.5, 0, 0.25, 3);
                 pause(100);
             }
         }
@@ -200,7 +205,8 @@ public class AutonomousCompetition extends MasterAutonomous
         {
             telemetry.addData("Path", "unknown color, going back");
             telemetry.update();
-            forwards(-5, 0, 0.5, 3);
+            //forwards(-5, 0, 0.5, 3);
+            move(0, 50, 0.5, 3);
         }
 
         //CodeReview: do you still try to push the button if the color is unknown?
@@ -208,14 +214,16 @@ public class AutonomousCompetition extends MasterAutonomous
 
         telemetry.addData("Path", "pushing button");
         telemetry.update();
-        forwards(17, 0, 0.25, 3); // push the button (first target)!!
+        //forwards(17, 0, 0.25, 3); // push the button (first target)!!
+        move(0, 431.8, 0.25, 3);
         telemetry.log().add(String.format("pushed first button"));
         pause(100);
 
         // back up and align once again
         telemetry.addData("Path", "back up and align");
         telemetry.update();
-        forwards(-20, 0, 0.3, 3);
+        //forwards(-20, 0, 0.3, 3);
+        move(0, -508, 0.3, 3);
         pivotVuforia(targetAngle, 0.3);
 
 // determine next beacon target
@@ -243,22 +251,25 @@ public class AutonomousCompetition extends MasterAutonomous
         {
             if (isRedTeam) // move shorter
             {
-                forwards(0, 36, 0.6, 4);
+                //forwards(0, 36, 0.6, 4);
+                move(914.4, 0, 0.6, 4);
             }
             else // move longer
             {
-                forwards(0, -38, 0.6, 4);
+                //forwards(0, -965.2, 0.6, 4);
+                move(-965.2, 0, 0.6, 4);
             }
         }
         else if (beaconColor == 1) // if left side red
         {
             if (isRedTeam) // move longer
             {
-                forwards(0, 38, 0.6, 4);
+                //forwards(0, 38, 0.6, 4);
+                move(965.2, 0, 0.6, 4);
             }
             else // move shorter
             {
-                forwards(0, -36, 0.6, 4);
+                move(-914.4, 0, 0.6, 4);
             }
         }
 
@@ -266,11 +277,12 @@ public class AutonomousCompetition extends MasterAutonomous
         {
             if (isRedTeam) // move positive
             {
-                forwards(0, 35, 0.6, 4);
+                //forwards(0, 35, 0.6, 4);
+                move(889, 0, 0.6, 4);
             }
             else // move shorter
             {
-                forwards(0, -35, 0.6, 4);
+                move(-889, 0, 0.6, 4);
             }
         }
         pause(1000);
@@ -280,7 +292,8 @@ public class AutonomousCompetition extends MasterAutonomous
 
         telemetry.addData("Path", "back up");
         telemetry.update();
-        forwards(-4, 0, 0.4, 2);
+        //forwards(-4, 0, 0.4, 2);
+        move(0, 101.6, 0, 2);
 
         VuforiaNav.lastLocation = null;
 
@@ -296,21 +309,21 @@ public class AutonomousCompetition extends MasterAutonomous
         alignPivotVuforia(0.7, 700, 3);
 
         // detect beacon color of left side: 0 is blue, 1 is red
-        beaconColor = VuforiaNav.GetBeaconColor();
-
         if (beaconColor == 0)   // if left side beacon is blue
         {
             if (isRedTeam)     // red team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                forwards(0, 2.5, 0.25, 3);   // shift right
+                //forwards(0, 2.5, 0.25, 3);   // shift right
+                move(63.5, 0, 0.25, 3);
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                forwards(0, -2, 0.25, 4);   // shift left
+                //forwards(0, -2.5, 0.25, 4);   // shift left
+                move(-63.5, 0, 0.25, 3);
             }
         }
         else if (beaconColor == 1)  // if left side beacon is red
@@ -319,19 +332,24 @@ public class AutonomousCompetition extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                forwards(0, -2, 0.25, 4);   // shift left
+                //forwards(0, -2.5, 0.25, 4);   // shift left
+                move(-63.5, 0, 0.25, 3);
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                forwards(0, 2.5, 0.25, 3);   // shift right
+                //forwards(0, 2.5, 0.25, 3);   // shift right
+                move(63.5, 0, 0.25, 3);
                 pause(100);
             }
         }
-        else if (beaconColor == 2) // used to be just else
+        else // when the color is unknown
         {
-            forwards(-5, 0, 0.5, 3);
+            telemetry.addData("Path", "unknown color, going back");
+            telemetry.update();
+            //forwards(-5, 0, 0.5, 3);
+            move(0, 50, 0.5, 3);
         }
 
         telemetry.addData("Path", "align angle");
@@ -340,10 +358,10 @@ public class AutonomousCompetition extends MasterAutonomous
 
         telemetry.addData("Path", "push button");
         telemetry.update();
-        forwards(17, 0, 0.25, 3); // push the button
+        move(0, 431.8, 0.25, 3);
+        //forwards(17, 0, 0.25, 3); // push the button
         pause(100);
-        forwards(-10, 0, 0.5, 3);
-
+        move(0, -254, 0.25, 3);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         pause(10000);

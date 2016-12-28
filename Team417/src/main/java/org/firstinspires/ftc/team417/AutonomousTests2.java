@@ -216,14 +216,14 @@ public class AutonomousTests2 extends MasterAutonomous
 */
 
         VUFORIA_TOL_ANGLE = 2;
-        TOL = 30;
-        TOL_ANGLE = 2;
+        TOL = 40;
+        TOL_ANGLE = 1;
         Kmove = 1.0/1500.0;
-        Kpivot = 1.0/50.0;
+        Kpivot = 1.0/100.0;
 
-        pivotMove(1220, 0, 0, 0.8, 4);
+        pivotMove(1220, 0, 0, 0.7, 4);
         pause(200);
-        pivotMove(-1220, 0, 0, 0.8, 4);
+        //pivotMove(0, 0, -90, 0.8, 4);
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }

@@ -55,13 +55,6 @@ abstract class MasterAutonomous extends MasterOpMode
     float VUFORIA_TOL_ANGLE = 1;
 
 
-    //CodeReview: add a comment before every method describing what the method does. It can be a single sentence.
-    //CodeReview: If the method has input parameters, describe what they are.
-
-    //CodeReview: MasterAutonomous shouldn't have a runOpMode because it's not meant to be an opmode by itself.
-    //            Instead, you should create one or more subclasses of MasterAutonomous for each of your autonomous programs.
-
-
     public void initializeRobot()
     {
         super.initializeHardware(); // call master op mode's init method
@@ -103,7 +96,7 @@ abstract class MasterAutonomous extends MasterOpMode
     // forwardsInches: how many inches forward
     // horiInches: how many x axis inches you want to go
     // speed: the max speed
-    public void forwards(double forwardMm, double horiMm, double speed, double timeout) throws InterruptedException
+    public void move(double x, double y, double speed, double timeout) throws InterruptedException
     {
         //Kmove = 1.0/1200.0;
         //TOL = 20;
@@ -130,10 +123,10 @@ abstract class MasterAutonomous extends MasterOpMode
         newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) + (int) Math.round(COUNTS_PER_MM * horiMm * 1.414);
         */
 
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) + (int) Math.round(COUNTS_PER_MM * horiMm * 1.0);
-        newTargetFR = motorFrontRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) - (int) Math.round(COUNTS_PER_MM * horiMm * 1.0);
-        newTargetBL = motorBackLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) - (int) Math.round(COUNTS_PER_MM * horiMm * 1.0);
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) + (int) Math.round(COUNTS_PER_MM * horiMm * 1.0);
+        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) + (int) Math.round(COUNTS_PER_MM * x * 1.0);
+        newTargetFR = motorFrontRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) - (int) Math.round(COUNTS_PER_MM * x * 1.0);
+        newTargetBL = motorBackLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) - (int) Math.round(COUNTS_PER_MM * x * 1.0);
+        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) + (int) Math.round(COUNTS_PER_MM * x * 1.0);
 
         runtime.reset(); // used for timeout
 
@@ -233,9 +226,7 @@ abstract class MasterAutonomous extends MasterOpMode
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
 
 
-            pivot(error, 0.3);
-
-            // allow some time for IMU to catch up
+            pivot(error, pivotSpeed); // second parameter used to be 0.3
 
             /*
             if (Math.abs(error) < 2)
@@ -422,12 +413,6 @@ abstract class MasterAutonomous extends MasterOpMode
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        //Kmove = 1.0f/400.0f; // speed is proportional to error
-        //Kpivot = 1.0f/100.0;
-
-        //TOL = 100;
-        //TOL_ANGLE = 5;
-
         int newTargetFL;
         int newTargetBL;
         int newTargetFR;
@@ -454,10 +439,10 @@ abstract class MasterAutonomous extends MasterOpMode
         double errorAngle;
 
         int pivotDst;
-        final double ROBOT_DIAMETER_MM = 17.0 * 25.4;   // diagonal 17 inch FL to BR and FR to BL
-        pivotDst = (int) ((pivotAngle / 360) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
+        final double ROBOT_DIAMETER_MM = 27.0 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
+        pivotDst = (int) ((pivotAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
-        /*
+
         newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
         newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.414))
@@ -467,7 +452,7 @@ abstract class MasterAutonomous extends MasterOpMode
         newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
                 + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
 
-*/
+        /*
         newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.0))
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
         newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.0))
@@ -476,7 +461,7 @@ abstract class MasterAutonomous extends MasterOpMode
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
         newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.0))
                 + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
-
+*/
         runtime.reset(); // reset timer, which is used for loop timeout below
 
         // read starting angle
@@ -622,7 +607,7 @@ abstract class MasterAutonomous extends MasterOpMode
             telemetry.update();
 
             runtime.reset();
-            telemetry.log().add(String.format("loop: %d", loopCount)); // display each motor error as well
+            telemetry.log().add(String.format("%d %.2f %.2f %.2f", loopCount, robotErrorX, robotErrorY, errorAngle)); // display each motor error as well
             telemetry.update();
             loopCount++;
 
@@ -799,32 +784,46 @@ abstract class MasterAutonomous extends MasterOpMode
         // CENTER VORTEX OPTION
         if (isRedTeam) pivot(50, 0.6);
         else pivot(-50, 0.6);
-        forwards(-30, 0, 0.6, 3);
+        //forwards(-30, 0, 0.6, 3);
+        move(0, 762, 0.6, 3);
     }
 
     // pushes the cap ball and parks on the center vortex
     public void PushCapBall() throws InterruptedException
     {
-        forwards(45, 0, 0.7, 3);
+        //forwards(45, 0, 0.7, 3);
+        move(0, 1143, 0.7, 3);
         pause(500);
-        forwards(5, 0, 0.7, 3);
+        //forwards(5, 0, 0.7, 3);
+        move(0, 127, 0.7, 3);
     }
 
 
     // parks parks on corner vortex
     public void parkCornerVortex() throws InterruptedException
     {
-        forwards(30, 0, 0.7, 3);
+        //forwards(30, 0, 0.7, 3);
+        move(0, 762, 0.7, 3);
         if (isRedTeam)
         {
-            forwards(0, -20, 0.8, 3); // horizontal left (20 inches)
+            move(-508, 0, 0.8, 3);
+            //forwards(0, -20, 0.8, 3); // horizontal left (20 inches)
         }
         else
         {
-            forwards(0, 20, 0.8, 3); // horizontal right
+            //forwards(0, 20, 0.8, 3); // horizontal right
+            move(508, 0, 0.8, 3);
         }
     }
 
+    public void PushButton() throws InterruptedException
+    {
+        pause(70);
+        telemetry.addData("Path", "pushing button");
+        telemetry.update();
+        move(0, 300, 0.25, 0); // push the button
+        telemetry.log().add(String.format("pushed button"));
+    }
 
     public void configureDashboard()
     {
