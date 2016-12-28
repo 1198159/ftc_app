@@ -44,7 +44,8 @@ abstract public class MasterOpMode extends LinearOpMode
     //used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
     private double headingOffset = 0.0;
 
-
+    //Allows navigateTo to adjust based on which alliance it is on
+    double beaconActivationAngle;
 
     private BNO055IMU imu;
 

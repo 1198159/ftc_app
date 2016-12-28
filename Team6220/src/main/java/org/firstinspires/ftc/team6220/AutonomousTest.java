@@ -31,6 +31,8 @@ public class AutonomousTest extends MasterAutonomous
 
         setRobotStartingOrientation(0.0);
 
+        beaconActivationAngle = 0.0;
+
         waitForStart();
 
         //Start tracking vision targets
@@ -52,7 +54,7 @@ public class AutonomousTest extends MasterAutonomous
             //navigation test for y direction (relative to the robot)
             if (gamepad2.left_stick_y > 0.1)
             {
-                vuforiaDriveToPosition(3.428, 1.500, 0.0);
+                vuforiaDriveToPosition(3.300, 1.500, 0.0);
             }
 
             //@TODO test; not working

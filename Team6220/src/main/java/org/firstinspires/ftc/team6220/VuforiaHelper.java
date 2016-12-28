@@ -127,7 +127,7 @@ public class VuforiaHelper
         //This location is 90 degrees less than the phone's actual rotation about the z-axis since we
         //use the mathematical sense of absolute rotation (0 degrees located on the x-axis) while vuforia
         //uses compass coordinates for rotation (0 degrees located on the y-axis)
-        phoneLocation = createMatrix(-70, 220, 0, 90, 0, 90);
+        phoneLocation = createMatrix(-70, 220, 0, 90, 0, 180);
         //phoneLocation = createMatrix(-70, 220, 0, 90, 0, 180);
 
         // Setup listeners

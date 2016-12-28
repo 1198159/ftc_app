@@ -79,13 +79,21 @@ public class DriveSystem implements ConcurrentOperation
             wRate = 0.3 * Math.signum(wRate);
         }
 
-        writeToMotors(getMotorPowersFromMotion(new Transform2D(xRate, yRate, wRate)));
+        //Local and global orientation do not always match up.  For instance, if the robot is rotated
+        //90 degrees, local x motion will result in global y motion.
+        //This calculation corresponds to the new coordinates of a point rotated to an angle.  The 90
+        //added on to getAngularOrientationWithOffset() has to do with how our robot's local orientation
+        //was defined
+        double localXRate = xRate * Math.cos(currentOpMode.beaconActivationAngle + 90) - yRate * Math.sin(currentOpMode.beaconActivationAngle + 90);
+        double localYRate = xRate * Math.sin(currentOpMode.beaconActivationAngle + 90) + yRate * Math.cos(currentOpMode.beaconActivationAngle + 90);
 
-        return new double[]{xRate,yRate,wRate};
+        writeToMotors(getMotorPowersFromMotion(new Transform2D(localXRate, localYRate, wRate)));
+
+        return new double[]{localXRate, localYRate, wRate};
     }
 
     //TODO make assemblies.location represent their actual values
-    //return an array with the motor powers for the requested motion
+    //returns an array with the motor powers for the requested motion
     //                           horizontal vertical  rotation
     public double[] getMotorPowersFromMotion(Transform2D requestedMotion)
     {
