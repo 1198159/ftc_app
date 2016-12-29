@@ -148,13 +148,7 @@ public class AutonomousTests2 extends MasterAutonomous
         */
 
 
-// TESTS
-
-        //TODO: test diagonal at 0 degrees
-        //TODO: figure out how to use accelerometer
-        //TODO: test with Vuforia
-        //TODO: make sideways fast and go longer
-
+// TODO: TESTS
 
 /*
         forwards(30, 0, 0.7, 3); // make this in mm
@@ -171,8 +165,6 @@ public class AutonomousTests2 extends MasterAutonomous
         pause(3000);
 */
 
-
-
         // square stuff
         /*
         telemetry.addData("Path", "forwards, 0.8");
@@ -180,42 +172,75 @@ public class AutonomousTests2 extends MasterAutonomous
         pivotMove(0, 1220, 0, 0.8, 3);
         pause(3000);
 
+
+        // for left and right
+        TOL = 40;
+        TOL_ANGLE = 1;
+        Kmove = 1.0/2000.0;
+        Kpivot = 1.0/50.0;
+
         telemetry.addData("Path", "right, 0.5");
         telemetry.update();
-        pivotMove(1220, 0, 0, 0.5, 4);
-        pause(3000);
-
+        pivotMove(1220, 0, 0, 0.65, 4);
+        pause(10000);
         telemetry.addData("Path", "left, 0.5");
         telemetry.update();
-        pivotMove(-1220, 0, 0, 0.5, 4);
-        pause(3000);
-        */
-
-/*
-        telemetry.addData("Path", "pivot left");
-        telemetry.update();
-        pivotMove(0, 0, 90, 0.8, 3);
-        pause(3000);
-
-        telemetry.addData("Path", "pivot right");
-        telemetry.update();
-        pivotMove(0, 0, -90, 0.8, 3);
+        pivotMove(-1220, 0, 0, 0.65, 4);
+        pause(300);
 */
-        //telemetry.addData("Path", "Done (end it!)");
-        //telemetry.update();
-
+        // align with Vuforia
 /*
-        TOL_ANGLE = 3;
+        TOL = 40;
+        TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
+        Kmove = 1.0/1500.0;
+        Kpivot = 1.0/100.0;
+        telemetry.addData("Path", "scan");
+        telemetry.update();
         pivotDetectTarget(30, 5);
-        TOL_ANGLE = 0.5;
+        TOL_ANGLE = 2.0;
+        VUFORIA_TOL_ANGLE = 2.0;
+        telemetry.addData("Path", "alignPivotVuforia");
+        telemetry.update();
         alignPivotVuforia(targetAngle, 600, 4);
-        //pivotVuforia(0.5, 0.5);
+        TOL_ANGLE = 1.0;
+        VUFORIA_TOL_ANGLE = 1.0;
+        telemetry.addData("Path", "pivotVuforia");
+        telemetry.update();
+        pivotVuforia(0.5, 0.5);
         telemetry.addData("Path", "Done (end it!)");
         telemetry.update();
         pause(2000);
 */
 
         VUFORIA_TOL_ANGLE = 2;
+        TOL = 30;
+        TOL_ANGLE = 2;
+        Kmove = 1.0/1200.0;
+        Kpivot = 1.0/140.0;
+
+        startDelay = 0;
+        pivotAngle = 60; // pivot this amount before acquiring target
+        targetAngle = 0; // Vuforia angle
+        startDist = 1397;
+        targetIndex = 3;
+        targetPos[0] = 1524;
+        targetPos[1] = mmFTCFieldWidth;
+/*
+        telemetry.addData("Path", "start forwards");
+        telemetry.update();
+        // go towards target
+        move(0, startDist, 0.7, 3);
+        pause(100);
+*/
+        telemetry.addData("Path", "pivot 70");
+        telemetry.update();
+        // pivot to face target
+        pivot(pivotAngle, 0.7); // make sure IMU is on
+        pause(200);
+
+
+        // pivot and move tests
+        /*
         TOL = 40;
         TOL_ANGLE = 1;
         Kmove = 1.0/1500.0;
@@ -226,6 +251,7 @@ public class AutonomousTests2 extends MasterAutonomous
         //pivotMove(0, 0, -90, 0.8, 4);
         telemetry.addData("Path", "Complete");
         telemetry.update();
+        */
     }
 
 }

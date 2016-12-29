@@ -51,6 +51,7 @@ public class MasterTeleOp extends MasterOpMode
     {
         // Initialize hardware and other important things
         initializeRobot();
+        servoForks.setPosition(0);
 
         telemetry.addData("Path", "InitDone");
         telemetry.update();
@@ -123,7 +124,6 @@ public class MasterTeleOp extends MasterOpMode
                servoForks.setPosition(1);
            }
            */
-           servoForks.setPosition(0);
            servoForks.setPosition(gamepad2.right_stick_y);
 
            // if just pressed and previous time wasn't pressed, for reverse mode

@@ -174,6 +174,7 @@ public class AutonomousCompetition extends MasterAutonomous
                 telemetry.update();
                 //forwards(0, 2.5, 0.25, 3);   // shift right
                 move(63.5, 0, 0.25, 3);
+                PushButton();
             }
             else    // blue team
             {

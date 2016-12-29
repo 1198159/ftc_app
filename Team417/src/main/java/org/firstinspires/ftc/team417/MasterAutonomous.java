@@ -51,8 +51,8 @@ abstract class MasterAutonomous extends MasterOpMode
     double TOL = 100;
     double TOL_ANGLE = 5;
 
-    float VUFORIA_TOL = 20;
-    float VUFORIA_TOL_ANGLE = 1;
+    double VUFORIA_TOL = 20;
+    double VUFORIA_TOL_ANGLE = 1;
 
 
     public void initializeRobot()
@@ -221,12 +221,12 @@ abstract class MasterAutonomous extends MasterOpMode
             curTurnAngle = Orientation.getOrientation(VuforiaNav.lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
             curTurnAngle = adjustAngles(curTurnAngle);
             error =  targetAngle - curTurnAngle;
-            pivotSpeed = speed * Math.abs(error) / 100;
-            pivotSpeed = Range.clip(pivotSpeed, 0.2, 0.7); // limit abs speed
+            pivotSpeed = speed * Math.abs(error) * Kpivot;
+            pivotSpeed = Range.clip(pivotSpeed, 0.2, speed); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
 
 
-            pivot(error, pivotSpeed); // second parameter used to be 0.3
+            pivot(error, pivotSpeed);
 
             /*
             if (Math.abs(error) < 2)
@@ -245,7 +245,7 @@ abstract class MasterAutonomous extends MasterOpMode
             telemetry.log().add(String.format("CurAngle: %f, error: %f", curTurnAngle, error));
             idle();
 
-        } while (opModeIsActive() && (Math.abs(error) > 2));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
+        } while (opModeIsActive() && (Math.abs(error) > TOL_ANGLE));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
 
         // stop motors
         motorFrontLeft.setPower(0);
@@ -439,10 +439,10 @@ abstract class MasterAutonomous extends MasterOpMode
         double errorAngle;
 
         int pivotDst;
-        final double ROBOT_DIAMETER_MM = 27.0 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
+        final double ROBOT_DIAMETER_MM = 27.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
         pivotDst = (int) ((pivotAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
-
+        /*
         newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
         newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.414))
@@ -451,17 +451,18 @@ abstract class MasterAutonomous extends MasterOpMode
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
         newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
                 + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
+        */
 
-        /*
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.0))
+
+        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.0))
+        newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
                 + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
-        newTargetBL = motorBackLeft.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.0))
+        newTargetBL = motorBackLeft.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.0))
+        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
                 + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
-*/
+
         runtime.reset(); // reset timer, which is used for loop timeout below
 
         // read starting angle
@@ -821,7 +822,7 @@ abstract class MasterAutonomous extends MasterOpMode
         pause(70);
         telemetry.addData("Path", "pushing button");
         telemetry.update();
-        move(0, 300, 0.25, 0); // push the button
+        move(0, 325, 0.25, 3); // push the button
         telemetry.log().add(String.format("pushed button"));
     }
 
