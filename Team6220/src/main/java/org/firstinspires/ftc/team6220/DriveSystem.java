@@ -3,6 +3,8 @@ package org.firstinspires.ftc.team6220;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+
 /*
     Contains the robot's drive assemblies, and gives them power or velocity targets based upon robot velocity, power, or position targets.
 
@@ -85,11 +87,57 @@ public class DriveSystem implements ConcurrentOperation
         //subtracted from beaconActivationAngle has to do with how our robot's local orientation
         //was defined
         double localXRate = xRate * Math.cos(currentOpMode.beaconActivationAngle - 90) - yRate * Math.sin(currentOpMode.beaconActivationAngle - 90);
-        double localYRate = xRate * Math.sin(currentOpMode.beaconActivationAngle - 90) + yRate * Math.cos(currentOpMode.beaconActivationAngle - 90);
+        double localYRate = -xRate * Math.sin(currentOpMode.beaconActivationAngle - 90) - yRate * Math.cos(currentOpMode.beaconActivationAngle - 90);
 
         writeToMotors(getMotorPowersFromMotion(new Transform2D(localXRate, localYRate, wRate)));
 
         return new double[]{localXRate, localYRate, wRate};
+    }
+
+    //TODO add ability to use non "zig-zag" paths
+    //PID-driven navigation to a point; call once per loop
+    //IMPORTANT:  assumes robot position has already been updated
+    public double[] navigateTranslationally(String redOrBlue, String xOrY, double targetPosition, double targetAngle)
+    {
+        double posRate;
+
+        //updates the error terms
+        if (redOrBlue == "red")
+        {
+            LocationControlFilter[0].roll(-(targetPosition - robotLocation.x));
+            posRate = 0.3 * LocationControlFilter[0].getFilteredValue();
+        }
+        else
+        {
+            LocationControlFilter[1].roll(targetPosition - robotLocation.y);
+            posRate = 0.3 * LocationControlFilter[1].getFilteredValue();
+        }
+        double angleDiff = currentOpMode.normalizeRotationTarget(targetAngle, robotLocation.rot);
+        RotationControlFilter.roll(angleDiff);
+        double wRate = 0.3 * RotationControlFilter.getFilteredValue();
+        currentOpMode.telemetry.addData("Angle diff: ", angleDiff);
+
+        //makes sure that none of our rates are too large
+        if(Math.abs(posRate) > 0.3)
+        {
+            posRate = 0.3 * Math.signum(posRate);
+        }
+
+        if(Math.abs(wRate) > 0.3)
+        {
+            wRate = 0.3 * Math.signum(wRate);
+        }
+
+        if (xOrY == "x")
+        {
+            writeToMotors(getMotorPowersFromMotion(new Transform2D(posRate, 0.0, wRate)));
+        }
+        else
+        {
+            writeToMotors(getMotorPowersFromMotion(new Transform2D(0.0, posRate, wRate)));
+        }
+
+        return new double[]{posRate, wRate};
     }
 
     //TODO make assemblies.location represent their actual values

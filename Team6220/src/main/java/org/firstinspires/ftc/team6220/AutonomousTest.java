@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team6220;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -52,16 +54,28 @@ public class AutonomousTest extends MasterAutonomous
 
             //@TODO test; not working
             //navigation test for y direction (relative to the robot)
-            if (gamepad2.left_stick_y > 0.1)
+            if (gamepad2.left_stick_y < -0.1)
             {
                 vuforiaDriveToPosition(3.300, 1.500, 0.0);
             }
 
             //@TODO test; not working
             //navigation test for x direction (relative to the robot)
-            if (gamepad2.left_stick_x > 0.1)
+            if (gamepad2.left_bumper)
             {
-                vuforiaDriveToPosition(2.438, 1.750, 0.0);
+                vuforiaAlign("blue", "x", 1.524, 0.0);
+
+                AlignWithBeacon(1.524);
+
+                pause(1000);
+
+                vuforiaAlign("blue", "y", 3.200, 0.0);
+
+                //drive.moveRobotAtConstantHeading(0.0, -0.2, 0.0, 0.0);
+
+                pause(800);
+
+                stopAllDriveMotors();
             }
 
             //navigation test for rotation
@@ -88,6 +102,29 @@ public class AutonomousTest extends MasterAutonomous
             lastBtn[3] = gamepad2.y;
 
             idle();
+        }
+    }
+
+    //CodeReview: This method is used in several autonomous opmodes. It should probably
+    //            move into MasterAutonomous.
+    //once at a beacon, we use this function to press it
+    //HERE FOR AUTONOMOUS TESTING PURPOSES
+    public void AlignWithBeacon(double yPosition) throws InterruptedException
+    {
+        int colorLeftSide = vuforiaHelper.getPixelColor(-40, 230, 30);
+        int colorRightSide = vuforiaHelper.getPixelColor(40, 230, 30);
+
+        if(Color.blue(colorRightSide) < Color.blue(colorLeftSide))
+        {
+            vuforiaAlign("blue", "x", 1.800, 0.0);
+
+            stopAllDriveMotors();
+        }
+        else
+        {
+            vuforiaAlign("blue", "x", 1.200, 0.0);
+
+            stopAllDriveMotors();
         }
     }
 }
