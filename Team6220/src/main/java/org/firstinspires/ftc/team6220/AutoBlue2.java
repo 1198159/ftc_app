@@ -100,8 +100,6 @@ public class AutoBlue2 extends MasterAutonomous
         {
             vuforiaDriveToPosition(3.000, yPosition + 0.110, 0.0);
 
-            turnTo(-180.0);
-
             drive.moveRobot(0.0, -0.2, 0.0);
 
             pause(800);
@@ -117,10 +115,11 @@ public class AutoBlue2 extends MasterAutonomous
 
             stopAllDriveMotors();
 
+            /*
             turnTo(0.0);
 
             vuforiaDriveToPosition(2.600, yPosition, 0.0);
-
+            */
         }
         else
         {
@@ -143,10 +142,11 @@ public class AutoBlue2 extends MasterAutonomous
 
             stopAllDriveMotors();
 
+            /*
             turnTo(0.0);
 
             vuforiaDriveToPosition(2.600, yPosition, 0.0);
+            */
         }
-
     }
 }

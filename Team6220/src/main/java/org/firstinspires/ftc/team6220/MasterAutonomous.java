@@ -73,6 +73,72 @@ abstract public class MasterAutonomous extends MasterOpMode
         }
     }
 
+    //uses vuforia to move to align with the center of the vision target
+    public void vuforiaAlign(String redOrBlue, String xOrY, double targetPosition, double targetAngle)
+    {
+        double translationOffsetMagnitude;
+
+        if (redOrBlue == "red")
+        {
+            //used to determine whether the robot has come near enough to its target location
+            translationOffsetMagnitude = -(targetPosition - drive.robotLocation.x);
+        }
+        else
+        {
+            //used to determine whether the robot has come near enough to its target location
+            translationOffsetMagnitude = targetPosition - drive.robotLocation.y;
+        }
+
+        currentAngle = vuforiaHelper.getRobotAngle();
+
+        while ((Math.abs(translationOffsetMagnitude) > Constants.POSITION_TOLERANCE || Math.abs(targetAngle - drive.robotLocation.rot) > Constants.ANGLE_TOLERANCE) && opModeIsActive())
+        {
+            float[] l = vuforiaHelper.getRobotLocation();
+            //vuforia data comes out as an array instead of readable data, so it must be changed to a Transform2D;
+            //also, vuforia data must be converted from millimeters to meters to be consistent with the rest of our code
+            l[0] = l[0]/1000;
+            l[1] = l[1]/1000;
+
+            //we use this to convert our location from an array to a transform
+            drive.robotLocation.SetPositionFromFloatArray(l);
+
+            if (redOrBlue == "red")
+            {
+                //used to determine whether the robot has come near enough to its target location
+                translationOffsetMagnitude = -(targetPosition - drive.robotLocation.x);
+            }
+            else
+            {
+                //used to determine whether the robot has come near enough to its target location
+                translationOffsetMagnitude = targetPosition - drive.robotLocation.y;
+            }
+
+            //Informs drivers of robot location. Location is null if we lose track of the targets
+            if(vuforiaHelper.lastKnownLocation != null)
+            {
+                telemetry.addData("XPos: ", drive.robotLocation.x);
+                telemetry.addData("YPos: ", drive.robotLocation.y);
+                telemetry.update();
+            }
+            else
+            {
+                telemetry.addData("Pos:", "Unknown");
+                telemetry.update();
+            }
+
+            //move the robot to the desired location
+            double[] m = drive.navigateTranslationally(redOrBlue, xOrY, targetPosition, targetAngle);
+
+            telemetry.addData("posRate:", m[0]);
+            telemetry.addData("wRate:", m[1]);
+            telemetry.update();
+
+            idle();
+        }
+    }
+
+
+
     //TODO actually implement driving portion of code
     public void driveWhileTurning(double x, double y, double w)
     {
