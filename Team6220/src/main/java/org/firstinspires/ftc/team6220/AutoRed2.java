@@ -34,7 +34,7 @@ public class AutoRed2 extends MasterAutonomous
 
         stopAllDriveMotors();
 
-        turnTo(90.0);
+        turnTo("imu", 90.0);
 
         stopAllDriveMotors();
 
@@ -51,7 +51,7 @@ public class AutoRed2 extends MasterAutonomous
 
         ActivateBeacon(2.700);
 
-        turnTo(45);
+        turnTo("imu", 45);
 
         vuforiaDriveToPosition(1.880, 2.313, 45.0);
 
@@ -95,7 +95,7 @@ public class AutoRed2 extends MasterAutonomous
         {
             vuforiaDriveToPosition(xPosition - 0.110, 3.000, 90.0);
 
-            turnTo(-90.0);
+            turnTo("imu", -90.0);
 
             drive.moveRobot(0.0, -0.2, 0.0);
 
@@ -112,7 +112,7 @@ public class AutoRed2 extends MasterAutonomous
 
             stopAllDriveMotors();
 
-            turnTo(90.0);
+            turnTo("imu", 90.0);
 
             vuforiaDriveToPosition(xPosition, 3.428, 90.0);
 
@@ -121,7 +121,7 @@ public class AutoRed2 extends MasterAutonomous
         {
             vuforiaDriveToPosition(xPosition + 0.110, 3.000, 90.0);
 
-            turnTo(-90.0);
+            turnTo("imu", -90.0);
 
             drive.moveRobot(0.0, -0.2, 0.0);
 
@@ -138,7 +138,7 @@ public class AutoRed2 extends MasterAutonomous
 
             stopAllDriveMotors();
 
-            turnTo(90.0);
+            turnTo("imu", 90.0);
 
             vuforiaDriveToPosition(xPosition, 3.428, 90.0);
         }

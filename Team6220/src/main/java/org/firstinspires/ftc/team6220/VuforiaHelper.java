@@ -225,7 +225,7 @@ public class VuforiaHelper
     float getRobotAngle()
     {
         updateLocation();
-        return Orientation.getOrientation(lastKnownLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
+        return Orientation.getOrientation(lastKnownLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
     }
 
     boolean isTracking()

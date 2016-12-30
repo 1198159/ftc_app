@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.team6220;
 
 /*
-    []
+    Contains important methods for use in our autonomous programs
 */
 abstract public class MasterAutonomous extends MasterOpMode
 {
@@ -62,7 +62,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
 
             //move the robot to the desired location
-            double[] m = drive.navigateTo(TargetLocation);
+            double[] m = drive.NavigateTo(TargetLocation);
 
             telemetry.addData("XRate:", m[0]);
             telemetry.addData("YRate:", m[1]);
@@ -71,9 +71,12 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             idle();
         }
+
+        stopAllDriveMotors();
     }
 
-    //uses vuforia to move to align with the center of the vision target
+    //uses vuforia to move to align with the center of the vision target; used because zig-zag pathing
+    //in vuforiaDriveToPosition is inefficient
     public void vuforiaAlign(String redOrBlue, String xOrY, double targetPosition, double targetAngle)
     {
         double translationOffsetMagnitude;
@@ -88,8 +91,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             //used to determine whether the robot has come near enough to its target location
             translationOffsetMagnitude = targetPosition - drive.robotLocation.y;
         }
-
-        currentAngle = vuforiaHelper.getRobotAngle();
 
         while ((Math.abs(translationOffsetMagnitude) > Constants.POSITION_TOLERANCE || Math.abs(targetAngle - drive.robotLocation.rot) > Constants.ANGLE_TOLERANCE) && opModeIsActive())
         {
@@ -127,7 +128,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
 
             //move the robot to the desired location
-            double[] m = drive.navigateTranslationally(redOrBlue, xOrY, targetPosition, targetAngle);
+            double[] m = drive.NavigateAxially(redOrBlue, xOrY, targetPosition, targetAngle);
 
             telemetry.addData("posRate:", m[0]);
             telemetry.addData("wRate:", m[1]);
@@ -135,66 +136,36 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             idle();
         }
-    }
-
-
-
-    //TODO actually implement driving portion of code
-    public void driveWhileTurning(double x, double y, double w)
-    {
-        double currentAngle = getAngularOrientationWithOffset();
-        double angleDiff = w - currentAngle;
-        double turningPower;
-
-        //sets the power of the motors to turn.  Since the turning direction of the robot is reversed from the motors,
-        //negative signs are necessary.
-        while((Math.abs(angleDiff) > Constants.ANGLE_TOLERANCE) && opModeIsActive())
-        {
-            currentAngle = getAngularOrientationWithOffset();
-            angleDiff = normalizeRotationTarget(w, currentAngle);
-            turningPower = angleDiff * Constants.TURNING_POWER_FACTOR;
-
-            if (Math.abs(turningPower) > 1.0)
-            {
-                turningPower = Math.signum(turningPower);
-            }
-
-            // Make sure turn power doesn't go below minimum power
-            if(turningPower > 0 && turningPower < Constants.MINIMUM_TURNING_POWER)
-            {
-                turningPower = Constants.MINIMUM_TURNING_POWER;
-            }
-            else if (turningPower < 0 && turningPower > -Constants.MINIMUM_TURNING_POWER)
-            {
-                turningPower = -Constants.MINIMUM_TURNING_POWER;
-            }
-            else
-            {
-
-            }
-
-            telemetry.addData("angleDiff: ", angleDiff);
-            telemetry.update();
-
-            drive.moveRobot(0.0, 0.0, -turningPower);
-
-            idle();
-        }
 
         stopAllDriveMotors();
-
     }
 
     //tells our robot to turn to a specified angle
-    public void turnTo(double targetAngle)
+    public void turnTo(String imuOrVuforia, double targetAngle)
     {
-        double currentAngle = getAngularOrientationWithOffset();
+        if (imuOrVuforia == "imu")
+        {
+            currentAngle = getAngularOrientationWithOffset();
+        }
+        else if (imuOrVuforia == "vuforia")
+        {
+            currentAngle = vuforiaHelper.getRobotAngle();
+        }
+
         double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
         double turningPower;
 
         while((Math.abs(angleDiff) > Constants.ANGLE_TOLERANCE) && opModeIsActive())
         {
-            currentAngle = getAngularOrientationWithOffset();
+            if (imuOrVuforia == "imu")
+            {
+                currentAngle = getAngularOrientationWithOffset();
+            }
+            else if (imuOrVuforia == "vuforia")
+            {
+                currentAngle = vuforiaHelper.getRobotAngle();
+            }
+
             angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
             turningPower = angleDiff * Constants.TURNING_POWER_FACTOR;
 

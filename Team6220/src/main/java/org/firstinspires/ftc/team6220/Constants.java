@@ -22,12 +22,14 @@ public class Constants
     public static final double TURNING_POWER_FACTOR = 1.0 / 500;
 
     public static final double MINIMUM_TURNING_POWER = 0.07;
-    public static final double ANGLE_TOLERANCE = 3.0;
-    public static final double POSITION_TOLERANCE = .010;
+    public static final double ANGLE_TOLERANCE = 2.5;
+    public static final double POSITION_TOLERANCE = .015;
 
     public static final double GATE_SERVO_RETRACTED_POSITION = 0.0;
     public static final double GATE_SERVO_DEPLOYED_POSITION = 0.48;
     public static final double GATE_SERVO_CLOSE_DELAY = 0.4;
+
+    public static final double BEACON_PRESS_OFFSET = 0.100;
 
 
 }

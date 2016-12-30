@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
-    TeleOp program used for testing functions such as turnTo and navigateTo; extends MasterAutonomous to allow access to
+    TeleOp program used for testing functions such as turnTo and NavigateTo; extends MasterAutonomous to allow access to
     turning and vuforia navigation
 */
 @TeleOp(name="Test Autonomous", group="6220")
@@ -65,15 +65,17 @@ public class AutonomousTest extends MasterAutonomous
             {
                 vuforiaAlign("blue", "x", 1.524, 0.0);
 
-                AlignWithBeacon(1.524);
+                drive.moveRobot(0.0, 0.2, 0.0);
 
                 pause(1000);
 
-                vuforiaAlign("blue", "y", 3.200, 0.0);
+                stopAllDriveMotors();
 
-                //drive.moveRobotAtConstantHeading(0.0, -0.2, 0.0, 0.0);
+                AlignWithBeacon(1.524);
 
-                pause(800);
+                drive.moveRobot(0.0, 0.10, 0.0);
+
+                pause(2500);
 
                 stopAllDriveMotors();
             }
@@ -81,7 +83,7 @@ public class AutonomousTest extends MasterAutonomous
             //navigation test for rotation
             if (gamepad2.right_bumper)
             {
-                turnTo(90.0);
+                turnTo("imu", 90.0);
             }
 
             /*
@@ -107,24 +109,47 @@ public class AutonomousTest extends MasterAutonomous
 
     //CodeReview: This method is used in several autonomous opmodes. It should probably
     //            move into MasterAutonomous.
-    //once at a beacon, we use this function to press it
+    //once at a beacon, we use this function to align with it
     //HERE FOR AUTONOMOUS TESTING PURPOSES
     public void AlignWithBeacon(double yPosition) throws InterruptedException
     {
-        int colorLeftSide = vuforiaHelper.getPixelColor(-40, 230, 30);
-        int colorRightSide = vuforiaHelper.getPixelColor(40, 230, 30);
+        //int colorLeftSide = vuforiaHelper.getPixelColor(-40, 230, 30);
+        //int colorRightSide = vuforiaHelper.getPixelColor(40, 230, 30);
 
-        if(Color.blue(colorRightSide) < Color.blue(colorLeftSide))
+        pause(500);
+
+        turnTo("vuforia", 0.0);
+
+        float[] colorLeftSide = new float[3];
+        float[] colorRightSide = new float[3];
+
+        pause(1000);
+
+        Color.colorToHSV(vuforiaHelper.getPixelColor(-55, 235, 30), colorLeftSide);
+        Color.colorToHSV(vuforiaHelper.getPixelColor(55, 235, 30), colorRightSide);
+
+        //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
+        //value is always greater than the blue side's, thus creating a positive value when blue is
+        //subtracted from red and allowing the robot to drive to the correct side of the beacon
+        if(colorLeftSide[0] < 90)
         {
-            vuforiaAlign("blue", "x", 1.800, 0.0);
-
-            stopAllDriveMotors();
+            colorLeftSide[0] += 360;
         }
-        else
+        if(colorRightSide[0] < 90)
         {
-            vuforiaAlign("blue", "x", 1.200, 0.0);
-
-            stopAllDriveMotors();
+            colorRightSide[0] += 360;
         }
+
+        if(colorLeftSide[0] - colorRightSide[0] < 0)
+        {
+            vuforiaAlign("blue", "x", yPosition + Constants.BEACON_PRESS_OFFSET, 0.0);
+        }
+        else if(colorLeftSide[0] - colorRightSide[0] > 0)
+        {
+
+            vuforiaAlign("blue", "x", yPosition - Constants.BEACON_PRESS_OFFSET, 0.0);
+        }
+
+        stopAllDriveMotors();
     }
 }

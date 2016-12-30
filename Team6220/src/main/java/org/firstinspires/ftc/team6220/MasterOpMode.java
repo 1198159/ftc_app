@@ -44,7 +44,7 @@ abstract public class MasterOpMode extends LinearOpMode
     //used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
     private double headingOffset = 0.0;
 
-    //allows navigateTo to adjust based on which alliance the robot is on
+    //allows NavigateTo to adjust based on which alliance the robot is on
     double beaconActivationAngle;
 
     private BNO055IMU imu;
@@ -113,9 +113,9 @@ abstract public class MasterOpMode extends LinearOpMode
         //                                          drive assemblies  initial loc:     x    y    w
         drive = new DriveSystem(this, vuforiaHelper, driveAssemblies, new Transform2D(0.0, 0.0, 0.0),
                 new PIDFilter[]{
-                        new PIDFilter(0.8, 0.0, 0.1),    //x location control
-                        new PIDFilter(0.8, 0.0, 0.1),    //y location control
-                        new PIDFilter(Constants.TURNING_POWER_FACTOR, 0.0, 0.0002)}); //rotation control
+                        new PIDFilter(0.8, 0.00009, 0.1),    //x location control
+                        new PIDFilter(0.8, 0.00009, 0.1),    //y location control
+                        new PIDFilter(Constants.TURNING_POWER_FACTOR, 0.0000006, 0.0002)}); //rotation control
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -229,7 +229,7 @@ abstract public class MasterOpMode extends LinearOpMode
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
-            drive.navigateTo(Target);
+            drive.NavigateTo(Target);
 
             drive.robotLocation = updateLocationUsingEncoders(eTime);
 

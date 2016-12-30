@@ -34,7 +34,7 @@ public class AutoBlue2 extends MasterAutonomous
 
         stopAllDriveMotors();
 
-        turnTo(0.0);
+        turnTo("imu", 0.0);
 
         stopAllDriveMotors();
 
@@ -50,7 +50,7 @@ public class AutoBlue2 extends MasterAutonomous
 
         ActivateBeacon(2.700);
 
-        turnTo(45);
+        turnTo("imu", 45);
 
         //@TODO incorrect for blue side
         vuforiaDriveToPosition(1.880, 2.313, 45);
@@ -125,7 +125,7 @@ public class AutoBlue2 extends MasterAutonomous
         {
             vuforiaDriveToPosition(3.000, yPosition - 0.110, 0.0);
 
-            turnTo(-180.0);
+            turnTo("imu", -180.0);
 
             drive.moveRobot(0.0, -0.2, 0.0);
 

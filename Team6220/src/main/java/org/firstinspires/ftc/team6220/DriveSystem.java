@@ -53,7 +53,7 @@ public class DriveSystem implements ConcurrentOperation
     //TODO add ability to use non "zig-zag" paths
     //PID-driven navigation to a point; call once per loop
     //IMPORTANT:  assumes robot position has already been updated
-    public double[] navigateTo(Transform2D target)
+    public double[] NavigateTo(Transform2D target)
     {
         //updates the error terms
         double angleDiff = currentOpMode.normalizeRotationTarget(target.rot, robotLocation.rot);
@@ -94,10 +94,11 @@ public class DriveSystem implements ConcurrentOperation
         return new double[]{localXRate, localYRate, wRate};
     }
 
-    //TODO add ability to use non "zig-zag" paths
+    //@todo navigating in the y direction does not work
+    //used to navigate along a single axis instead of a zig-zag path
     //PID-driven navigation to a point; call once per loop
     //IMPORTANT:  assumes robot position has already been updated
-    public double[] navigateTranslationally(String redOrBlue, String xOrY, double targetPosition, double targetAngle)
+    public double[] NavigateAxially(String redOrBlue, String xOrY, double targetPosition, double targetAngle)
     {
         double posRate;
 
@@ -128,6 +129,7 @@ public class DriveSystem implements ConcurrentOperation
             wRate = 0.3 * Math.signum(wRate);
         }
 
+        //changes axis of motion based on input
         if (xOrY == "x")
         {
             writeToMotors(getMotorPowersFromMotion(new Transform2D(posRate, 0.0, wRate)));
