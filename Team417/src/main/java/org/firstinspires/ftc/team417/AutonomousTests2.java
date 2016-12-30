@@ -150,20 +150,7 @@ public class AutonomousTests2 extends MasterAutonomous
 
 // TODO: TESTS
 
-/*
-        forwards(30, 0, 0.7, 3); // make this in mm
-        pause(200);
-        forwards(0, 20, 0.7, 3);
-        pause(30000);
-        telemetry.addData("Path", "Done (end it!)");
-*/
 
-/*
-        telemetry.addData("Path", "forwards, 0.5");
-        telemetry.update();
-        pivotMove(0, 300, 0, 0.5, 3);
-        pause(3000);
-*/
 
         // square stuff
         /*
@@ -171,7 +158,6 @@ public class AutonomousTests2 extends MasterAutonomous
         telemetry.update();
         pivotMove(0, 1220, 0, 0.8, 3);
         pause(3000);
-
 
         // for left and right
         TOL = 40;
