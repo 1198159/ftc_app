@@ -437,7 +437,7 @@ abstract class MasterAutonomous extends MasterOpMode
         final double ROBOT_DIAMETER_MM = 27.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
         pivotDst = (int) ((pivotAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
-        /*
+
         newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
         newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.414))
@@ -446,8 +446,8 @@ abstract class MasterAutonomous extends MasterOpMode
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
         newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
                 + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
-        */
 
+/*
         newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
         newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
@@ -456,7 +456,7 @@ abstract class MasterAutonomous extends MasterOpMode
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
         newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
                 + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
-
+*/
         runtime.reset(); // reset timer, which is used for loop timeout below
 
         // read starting angle
@@ -477,28 +477,28 @@ abstract class MasterAutonomous extends MasterOpMode
             speedFL = Kmove * errorFL;  // movement speed proportional to error
             speedFL += pivotSpeed;  // combine movement and pivot speeds
             speedAbsFL = Math.abs(speedFL);
-            speedAbsFL = Range.clip(speedAbsFL, 0.25, speed);  // clip abs(speed)
+            speedAbsFL = Range.clip(speedAbsFL, 0.3, speed);  // clip abs(speed)
             speedFL = speedAbsFL * Math.signum(speedFL);  // set sign of speed
 
             errorFR = newTargetFR - motorFrontRight.getCurrentPosition();
             speedFR = Kmove * errorFR;
             speedFR -= pivotSpeed;  // combine movement and pivot speeds
             speedAbsFR = Math.abs(speedFR);
-            speedAbsFR = Range.clip(speedAbsFR, 0.25, speed);  // clip abs(speed)
+            speedAbsFR = Range.clip(speedAbsFR, 0.3, speed);  // clip abs(speed)
             speedFR = speedAbsFR * Math.signum(speedFR);
 
             errorBL = newTargetBL - motorBackLeft.getCurrentPosition();
             speedBL = Kmove * errorBL;
             speedBL += pivotSpeed;  // combine movement and pivot speeds
             speedAbsBL = Math.abs(speedBL);
-            speedAbsBL = Range.clip(speedAbsBL, 0.25, speed);  // clip abs(speed)
+            speedAbsBL = Range.clip(speedAbsBL, 0.3, speed);  // clip abs(speed)
             speedBL = speedAbsBL * Math.signum(speedBL);
 
             errorBR = newTargetBR - motorBackRight.getCurrentPosition();
             speedBR = Kmove * errorBR;
             speedBR -= pivotSpeed;  // combine movement and pivot speeds
             speedAbsBR = Math.abs(speedBR);
-            speedAbsBR = Range.clip(speedAbsBR, 0.25, speed);
+            speedAbsBR = Range.clip(speedAbsBR, 0.3, speed);
             speedBR = speedAbsBR * Math.signum(speedBR);
 
 /*

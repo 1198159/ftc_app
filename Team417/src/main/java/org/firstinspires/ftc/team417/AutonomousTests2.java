@@ -198,6 +198,7 @@ public class AutonomousTests2 extends MasterAutonomous
         pause(2000);
 */
 
+        /*
         VUFORIA_TOL_ANGLE = 2;
         TOL = 30;
         TOL_ANGLE = 2;
@@ -211,33 +212,31 @@ public class AutonomousTests2 extends MasterAutonomous
         targetIndex = 3;
         targetPos[0] = 1524;
         targetPos[1] = mmFTCFieldWidth;
-/*
+
         telemetry.addData("Path", "start forwards");
         telemetry.update();
         // go towards target
         move(0, startDist, 0.7, 3);
         pause(100);
-*/
+
         telemetry.addData("Path", "pivot 70");
         telemetry.update();
         // pivot to face target
         pivot(pivotAngle, 0.7); // make sure IMU is on
         pause(200);
-
-
+*/
+pause(100);
         // pivot and move tests
-        /*
         TOL = 40;
         TOL_ANGLE = 1;
         Kmove = 1.0/1500.0;
         Kpivot = 1.0/100.0;
 
-        pivotMove(1220, 0, 0, 0.7, 4);
+        pivotMove(1220, 1220, 0, 0.7, 4);
         pause(200);
         //pivotMove(0, 0, -90, 0.8, 4);
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        */
     }
 
 }
