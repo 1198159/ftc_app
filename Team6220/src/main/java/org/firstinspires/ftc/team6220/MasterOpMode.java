@@ -6,6 +6,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -273,6 +278,13 @@ abstract public class MasterOpMode extends LinearOpMode
         double correctedHeading = normalizeAngle(imu.getAngularOrientation().firstAngle + headingOffset);
 
         return correctedHeading;
+    }
+
+    //uses vuforia instead of imu
+    public double getRobotAngleUsingVuforia()
+    {
+        vuforiaHelper.updateLocation();
+        return Orientation.getOrientation(vuforiaHelper.lastKnownLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle + headingOffset;
     }
 
     //wait a number of milliseconds

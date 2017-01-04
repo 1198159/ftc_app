@@ -199,7 +199,7 @@ public class VuforiaHelper
         return 0;
     }
 
-    private void updateLocation()
+    public void updateLocation()
     {
         // Checks each target to see if we can find our location. If none are visible, then it returns null
         for(int i = 0; i < targets.length; i++)
@@ -220,12 +220,6 @@ public class VuforiaHelper
     void startTracking()
     {
         visionTargets.activate();
-    }
-
-    float getRobotAngle()
-    {
-        updateLocation();
-        return Orientation.getOrientation(lastKnownLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
     }
 
     boolean isTracking()

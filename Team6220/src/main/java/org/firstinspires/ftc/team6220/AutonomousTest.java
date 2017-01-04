@@ -63,7 +63,7 @@ public class AutonomousTest extends MasterAutonomous
             //navigation test for x direction (relative to the robot)
             if (gamepad2.left_bumper)
             {
-                vuforiaAlign("blue", "x", 1.524, 0.0);
+                vuforiaAlign(false, true, 1.524, 0.0);
 
                 drive.moveRobot(0.0, 0.2, 0.0);
 
@@ -83,7 +83,7 @@ public class AutonomousTest extends MasterAutonomous
             //navigation test for rotation
             if (gamepad2.right_bumper)
             {
-                turnTo("imu", 90.0);
+                turnTo(true, 90.0);
             }
 
             /*
@@ -118,7 +118,7 @@ public class AutonomousTest extends MasterAutonomous
 
         pause(500);
 
-        turnTo("vuforia", 0.0);
+        turnTo(false, 0.0);
 
         float[] colorLeftSide = new float[3];
         float[] colorRightSide = new float[3];
@@ -140,14 +140,23 @@ public class AutonomousTest extends MasterAutonomous
             colorRightSide[0] += 360;
         }
 
+        //picks a side and navigates based on the color of the beacon
         if(colorLeftSide[0] - colorRightSide[0] < 0)
         {
-            vuforiaAlign("blue", "x", yPosition + Constants.BEACON_PRESS_OFFSET, 0.0);
+            vuforiaAlign(false, true, yPosition + Constants.BEACON_PRESS_OFFSET, 0.0);
         }
         else if(colorLeftSide[0] - colorRightSide[0] > 0)
         {
+            vuforiaAlign(false, true, yPosition - Constants.BEACON_PRESS_OFFSET, 0.0);
+        }
+        else
+        {
+            //if vuforia didn't find the color of the beacon, it tries again
+            turnTo(false, 10.0);
+            turnTo(false, -10.0);
+            turnTo(false, 0.0);
 
-            vuforiaAlign("blue", "x", yPosition - Constants.BEACON_PRESS_OFFSET, 0.0);
+            AlignWithBeacon(yPosition);
         }
 
         stopAllDriveMotors();

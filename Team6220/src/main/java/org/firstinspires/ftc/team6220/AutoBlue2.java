@@ -34,119 +34,34 @@ public class AutoBlue2 extends MasterAutonomous
 
         stopAllDriveMotors();
 
-        turnTo("imu", 0.0);
+        turnTo(true, 0.0);
 
         stopAllDriveMotors();
 
+        //presses beacon 1
         pause(1000);
 
-        vuforiaDriveToPosition(3.428, 1.500, 0.0);
+        vuforiaAlign(false, true, 1.524, 0.0);
 
-        pause(1000);
-
-        ActivateBeacon(1.500);
-
-        vuforiaDriveToPosition(3.428, 2.700, 0.0);
-
-        ActivateBeacon(2.700);
-
-        turnTo("imu", 45);
-
-        //@TODO incorrect for blue side
-        vuforiaDriveToPosition(1.880, 2.313, 45);
-
-        /*
-        just in case the code above does not work
-        drive.moveRobot(0.0, 0.5, 0.0);
-        drive.moveRobot(0.0, - 0.2, 0.0);
         drive.moveRobot(0.0, 0.2, 0.0);
-        */
 
+        pause(1000);
 
-        //testing section; use later in season to push ball
-        /*
-        turnTo(-15.0 - headingOffset);
+        stopAllDriveMotors();
 
-        navigateUsingEncoders(new Transform2D(0.570, 3.108, 45.0 - headingOffset));
+        AlignWithBeacon(false, 1.524);
 
-        wait(100);
+        drive.moveRobot(0.0, 0.10, 0.0);
 
-        navigateUsingEncoders(new Transform2D(1.800, 2.658, 0.0 - headingOffset));
+        pause(2500);
 
-        navigateUsingEncoders(new Transform2D(1.500, 2.658, 90.0 - headingOffset));
+        stopAllDriveMotors();
+        //
 
-        ActivateBeacon(1.500);
+        //todo insert code for pressing second beacon, then combine autonomous programs into one
 
-        navigateUsingEncoders(new Transform2D(2.743, 2.395, 90.0 - headingOffset));
+        AlignWithBeacon(false, 2.700);
 
-        ActivateBeacon(2.743);
-
-        vuforiaDriveToPosition(2.800, 2.100, 90.0 - headingOffset);
-        */
-    }
-
-    //CodeReview: This method is used in several autonomous opmodes. It should probably
-    //            move into MasterAutonomous.
-    //once at a beacon, we use this function to press it
-    private void ActivateBeacon(double yPosition) throws InterruptedException
-    {
-        int colorLeftSide = vuforiaHelper.getPixelColor(-40, 230, 30);
-        int colorRightSide = vuforiaHelper.getPixelColor(40, 230, 30);
-
-        //CodeReview: the next two blocks seem identical except for the one parameter 0.110 or -0.110 in vuforiaDriveToPosition
-        //            so perhaps you could have the if statement just set a double with that number,
-        //            and then the rest of the code would not need to be copied. (no code duplication)
-        if(Color.blue(colorRightSide) < Color.blue(colorLeftSide))
-        {
-            vuforiaDriveToPosition(3.000, yPosition + 0.110, 0.0);
-
-            drive.moveRobot(0.0, -0.2, 0.0);
-
-            pause(800);
-
-            stopAllDriveMotors();
-
-            //navigateUsingEncoders(new Transform2D(xPosition- 0.150, 3.318, -90.0 - headingOffset));
-
-            //TODO replace later
-            drive.moveRobot(0.0, 1.0, 0.0);
-
-            pause(200);
-
-            stopAllDriveMotors();
-
-            /*
-            turnTo(0.0);
-
-            vuforiaDriveToPosition(2.600, yPosition, 0.0);
-            */
-        }
-        else
-        {
-            vuforiaDriveToPosition(3.000, yPosition - 0.110, 0.0);
-
-            turnTo("imu", -180.0);
-
-            drive.moveRobot(0.0, -0.2, 0.0);
-
-            pause(800);
-
-            stopAllDriveMotors();
-
-            //navigateUsingEncoders(new Transform2D(xPosition + 0.150, 3.318, -90.0-headingOffset));
-
-            //TODO replace later
-            drive.moveRobot(0.0, 1.0, 0.0);
-
-            pause(200);
-
-            stopAllDriveMotors();
-
-            /*
-            turnTo(0.0);
-
-            vuforiaDriveToPosition(2.600, yPosition, 0.0);
-            */
-        }
+        turnTo(true, 45);
     }
 }

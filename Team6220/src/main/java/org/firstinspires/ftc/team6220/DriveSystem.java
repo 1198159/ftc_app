@@ -98,12 +98,12 @@ public class DriveSystem implements ConcurrentOperation
     //used to navigate along a single axis instead of a zig-zag path
     //PID-driven navigation to a point; call once per loop
     //IMPORTANT:  assumes robot position has already been updated
-    public double[] NavigateAxially(String redOrBlue, String xOrY, double targetPosition, double targetAngle)
+    public double[] NavigateAxially(Boolean redSide, Boolean x, double targetPosition, double targetAngle)
     {
         double posRate;
 
         //updates the error terms
-        if (redOrBlue == "red")
+        if (redSide == true)
         {
             LocationControlFilter[0].roll(-(targetPosition - robotLocation.x));
             posRate = 0.3 * LocationControlFilter[0].getFilteredValue();
@@ -130,7 +130,7 @@ public class DriveSystem implements ConcurrentOperation
         }
 
         //changes axis of motion based on input
-        if (xOrY == "x")
+        if (x == false)
         {
             writeToMotors(getMotorPowersFromMotion(new Transform2D(posRate, 0.0, wRate)));
         }

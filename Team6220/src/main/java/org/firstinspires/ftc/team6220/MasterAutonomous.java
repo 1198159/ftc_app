@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.team6220;
 
+import android.graphics.Color;
+import android.support.annotation.BoolRes;
+
 /*
     Contains important methods for use in our autonomous programs
 */
@@ -75,13 +78,13 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopAllDriveMotors();
     }
 
-    //uses vuforia to move to align with the center of the vision target; used because zig-zag pathing
+    //uses vuforia to align with the center of the vision target; used because zig-zag pathing
     //in vuforiaDriveToPosition is inefficient
-    public void vuforiaAlign(String redOrBlue, String xOrY, double targetPosition, double targetAngle)
+    public void vuforiaAlign(Boolean redSide, Boolean x, double targetPosition, double targetAngle)
     {
         double translationOffsetMagnitude;
 
-        if (redOrBlue == "red")
+        if (redSide == true)
         {
             //used to determine whether the robot has come near enough to its target location
             translationOffsetMagnitude = -(targetPosition - drive.robotLocation.x);
@@ -103,7 +106,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             //we use this to convert our location from an array to a transform
             drive.robotLocation.SetPositionFromFloatArray(l);
 
-            if (redOrBlue == "red")
+            if (redSide == true)
             {
                 //used to determine whether the robot has come near enough to its target location
                 translationOffsetMagnitude = -(targetPosition - drive.robotLocation.x);
@@ -128,7 +131,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
 
             //move the robot to the desired location
-            double[] m = drive.NavigateAxially(redOrBlue, xOrY, targetPosition, targetAngle);
+            double[] m = drive.NavigateAxially(redSide, x, targetPosition, targetAngle);
 
             telemetry.addData("posRate:", m[0]);
             telemetry.addData("wRate:", m[1]);
@@ -141,15 +144,15 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     //tells our robot to turn to a specified angle
-    public void turnTo(String imuOrVuforia, double targetAngle)
+    public void turnTo(Boolean deadReckoning, double targetAngle)
     {
-        if (imuOrVuforia == "imu")
+        if (deadReckoning == true)
         {
             currentAngle = getAngularOrientationWithOffset();
         }
-        else if (imuOrVuforia == "vuforia")
+        else if (deadReckoning == false)
         {
-            currentAngle = vuforiaHelper.getRobotAngle();
+            currentAngle = getRobotAngleUsingVuforia();
         }
 
         double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
@@ -157,13 +160,13 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         while((Math.abs(angleDiff) > Constants.ANGLE_TOLERANCE) && opModeIsActive())
         {
-            if (imuOrVuforia == "imu")
+            if (deadReckoning == true)
             {
                 currentAngle = getAngularOrientationWithOffset();
             }
-            else if (imuOrVuforia == "vuforia")
+            else if (deadReckoning == false)
             {
-                currentAngle = vuforiaHelper.getRobotAngle();
+                currentAngle = getRobotAngleUsingVuforia();
             }
 
             angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
@@ -195,5 +198,104 @@ abstract public class MasterAutonomous extends MasterOpMode
         }
 
         stopAllDriveMotors();
+    }
+
+    //once at a beacon, we use this function to align with it
+    public void AlignWithBeacon(Boolean redSide, double position) throws InterruptedException
+    {
+        if (redSide = true)
+        {
+            pause(500);
+
+            turnTo(false, 90.0);
+
+            float[] colorLeftSide = new float[3];
+            float[] colorRightSide = new float[3];
+
+            pause(1000);
+
+            Color.colorToHSV(vuforiaHelper.getPixelColor(-55, 235, 30), colorLeftSide);
+            Color.colorToHSV(vuforiaHelper.getPixelColor(55, 235, 30), colorRightSide);
+
+            //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
+            //value is always greater than the blue side's, thus creating a positive value when blue is
+            //subtracted from red and allowing the robot to drive to the correct side of the beacon
+            if(colorLeftSide[0] < 90)
+            {
+                colorLeftSide[0] += 360;
+            }
+            if(colorRightSide[0] < 90)
+            {
+                colorRightSide[0] += 360;
+            }
+
+            //picks a side and navigates based on the color of the beacon
+            if(colorLeftSide[0] - colorRightSide[0] < 0)
+            {
+                vuforiaAlign(true, true, position + Constants.BEACON_PRESS_OFFSET, 0.0);
+            }
+            else if(colorLeftSide[0] - colorRightSide[0] > 0)
+            {
+                vuforiaAlign(true, true, position - Constants.BEACON_PRESS_OFFSET, 0.0);
+            }
+            else
+            {
+                //if vuforia didn't find the color of the beacon, it tries again
+                turnTo(false, 100.0);
+                turnTo(false, 80.0);
+                turnTo(false, 90.0);
+
+                AlignWithBeacon(true, position);
+            }
+
+            stopAllDriveMotors();
+        }
+        else
+        {
+            pause(500);
+
+            turnTo(false, 0.0);
+
+            float[] colorLeftSide = new float[3];
+            float[] colorRightSide = new float[3];
+
+            pause(1000);
+
+            Color.colorToHSV(vuforiaHelper.getPixelColor(-55, 235, 30), colorLeftSide);
+            Color.colorToHSV(vuforiaHelper.getPixelColor(55, 235, 30), colorRightSide);
+
+            //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
+            //value is always greater than the blue side's, thus creating a positive value when blue is
+            //subtracted from red and allowing the robot to drive to the correct side of the beacon
+            if(colorLeftSide[0] < 90)
+            {
+                colorLeftSide[0] += 360;
+            }
+            if(colorRightSide[0] < 90)
+            {
+                colorRightSide[0] += 360;
+            }
+
+            //picks a side and navigates based on the color of the beacon
+            if(colorLeftSide[0] - colorRightSide[0] < 0)
+            {
+                vuforiaAlign(false, true, position + Constants.BEACON_PRESS_OFFSET, 0.0);
+            }
+            else if(colorLeftSide[0] - colorRightSide[0] > 0)
+            {
+                vuforiaAlign(false, true, position - Constants.BEACON_PRESS_OFFSET, 0.0);
+            }
+            else
+            {
+                //if vuforia didn't find the color of the beacon, it tries again
+                turnTo(false, 10.0);
+                turnTo(false, -10.0);
+                turnTo(false, 0.0);
+
+                AlignWithBeacon(false, position);
+            }
+
+            stopAllDriveMotors();
+        }
     }
 }
