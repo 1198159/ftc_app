@@ -79,7 +79,7 @@ public class AutonomousTests extends MasterAutonomous
             {
                 // OPTION RED ONE (TOOLS)
                 startDelay = 2000;
-                pivotAngle = 60; // pivot this amount before acquiring target
+                pivotAngle = 55; // pivot this amount before acquiring target
                 targetAngle = 0; // Vuforia angle
                 startDist = 2286;
                 targetIndex = 1;
@@ -91,7 +91,7 @@ public class AutonomousTests extends MasterAutonomous
             {
                 // OPTION RED TWO (GEARS)
                 startDelay = 0;
-                pivotAngle = 60; // pivot this amount before acquiring target
+                pivotAngle = 55; // pivot this amount before acquiring target
                 targetAngle = 0; // Vuforia angle
                 startDist = 1397;
                 targetIndex = 3;
@@ -107,7 +107,7 @@ public class AutonomousTests extends MasterAutonomous
             {
                 // OPTION BLUE ONE (LEGOS)
                 startDelay = 2000;
-                pivotAngle = -60; // recalc pivot?? also for red one??
+                pivotAngle = -55; // recalc pivot?? also for red one??
                 targetAngle = -90;
                 startDist = 2286;
                 targetIndex = 2;
@@ -119,7 +119,7 @@ public class AutonomousTests extends MasterAutonomous
             {
                 // OPTION BLUE TWO (WHEELS)
                 startDelay = 0;
-                pivotAngle = -60;
+                pivotAngle = -55;
                 targetAngle = -90;
                 startDist = 1397;
                 targetIndex = 0;
@@ -233,7 +233,7 @@ public class AutonomousTests extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                move(-38, 0, 0.3, 4); // shift left
+                move(-18, 0, 0.3, 4); // shift left used to be 38
                 PushButton();
             }
         }
@@ -243,7 +243,7 @@ public class AutonomousTests extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                move(-38, 0, 0.3, 4); // shift left
+                move(-18, 0, 0.3, 4); // shift left
                 PushButton();
             }
             else    // blue team
@@ -323,7 +323,7 @@ public class AutonomousTests extends MasterAutonomous
         TOL = 40;
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         Kmove = 1.0/1200.0;
-        Kpivot = 1.0/140.0;
+        Kpivot = 1.0/150.0;
 
         telemetry.addData("Path", "scanning for target");
         telemetry.update();
@@ -362,7 +362,7 @@ public class AutonomousTests extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                move(-38, 0, 0.3, 4); // shift left
+                move(-18, 0, 0.3, 4); // shift left
                 PushButton();
             }
         }
@@ -372,7 +372,7 @@ public class AutonomousTests extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                move(-38, 0, 0.3, 4); // shift left
+                move(-18, 0, 0.3, 4); // shift left
                 PushButton();
             }
             else    // blue team
