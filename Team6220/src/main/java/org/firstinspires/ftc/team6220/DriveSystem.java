@@ -98,7 +98,7 @@ public class DriveSystem implements ConcurrentOperation
     //used to navigate along a single axis instead of a zig-zag path
     //PID-driven navigation to a point; call once per loop
     //IMPORTANT:  assumes robot position has already been updated
-    public double[] NavigateAxially(Boolean redSide, Boolean x, double targetPosition, double targetAngle)
+    public double[] NavigateAxially(boolean redSide, boolean x, double targetPosition, double targetAngle)
     {
         double posRate;
 
@@ -130,7 +130,7 @@ public class DriveSystem implements ConcurrentOperation
         }
 
         //changes axis of motion based on input
-        if (x == false)
+        if (x == true)
         {
             writeToMotors(getMotorPowersFromMotion(new Transform2D(posRate, 0.0, wRate)));
         }
@@ -144,7 +144,7 @@ public class DriveSystem implements ConcurrentOperation
 
     //TODO make assemblies.location represent their actual values
     //returns an array with the motor powers for the requested motion
-    //                           horizontal vertical  rotation
+    //                                      horizontal vertical  rotation
     public double[] getMotorPowersFromMotion(Transform2D requestedMotion)
     {
         double[] rawPowers = new double[]{0.0,0.0,0.0,0.0};
@@ -228,10 +228,18 @@ public class DriveSystem implements ConcurrentOperation
         }
     }
 
-    //generate motor powers and write values to them
+    //generates motor powers and writes values to them
     public void moveRobot(double x, double y, double w)
     {
-        writeToMotors(getMotorPowersFromMotion(new Transform2D(x, y, w)));
+        //allows driver to pick which end of the robot acts as the front
+        if(!currentOpMode.leftButtonPusherAsFront)
+        {
+            writeToMotors(getMotorPowersFromMotion(new Transform2D(x, y, w)));
+        }
+        else
+        {
+            writeToMotors(getMotorPowersFromMotion(new Transform2D(y, -x, w)));
+        }
     }
 
     //TODO see above

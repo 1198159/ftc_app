@@ -80,7 +80,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     //uses vuforia to align with the center of the vision target; used because zig-zag pathing
     //in vuforiaDriveToPosition is inefficient
-    public void vuforiaAlign(Boolean redSide, Boolean x, double targetPosition, double targetAngle)
+    public void vuforiaAlign(boolean redSide, boolean x, double targetPosition, double targetAngle)
     {
         double translationOffsetMagnitude;
 
@@ -144,7 +144,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     //tells our robot to turn to a specified angle
-    public void turnTo(Boolean deadReckoning, double targetAngle)
+    public void turnTo(boolean deadReckoning, double targetAngle)
     {
         if (deadReckoning == true)
         {
@@ -201,11 +201,11 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     //once at a beacon, we use this function to align with it
-    public void AlignWithBeacon(Boolean redSide, double position) throws InterruptedException
+    public void AlignWithBeacon(boolean redSide, double position) throws InterruptedException
     {
         if (redSide = true)
         {
-            pause(500);
+            pause(1000);
 
             turnTo(false, 90.0);
 
@@ -214,8 +214,8 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             pause(1000);
 
-            Color.colorToHSV(vuforiaHelper.getPixelColor(-55, 235, 30), colorLeftSide);
-            Color.colorToHSV(vuforiaHelper.getPixelColor(55, 235, 30), colorRightSide);
+            Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
+            Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
 
             //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
             //value is always greater than the blue side's, thus creating a positive value when blue is
@@ -241,10 +241,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             else
             {
                 //if vuforia didn't find the color of the beacon, it tries again
-                turnTo(false, 100.0);
-                turnTo(false, 80.0);
-                turnTo(false, 90.0);
-
                 AlignWithBeacon(true, position);
             }
 
@@ -252,7 +248,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         }
         else
         {
-            pause(500);
+            pause(1000);
 
             turnTo(false, 0.0);
 
@@ -261,8 +257,8 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             pause(1000);
 
-            Color.colorToHSV(vuforiaHelper.getPixelColor(-55, 235, 30), colorLeftSide);
-            Color.colorToHSV(vuforiaHelper.getPixelColor(55, 235, 30), colorRightSide);
+            Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
+            Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
 
             //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
             //value is always greater than the blue side's, thus creating a positive value when blue is
@@ -288,10 +284,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             else
             {
                 //if vuforia didn't find the color of the beacon, it tries again
-                turnTo(false, 10.0);
-                turnTo(false, -10.0);
-                turnTo(false, 0.0);
-
                 AlignWithBeacon(false, position);
             }
 

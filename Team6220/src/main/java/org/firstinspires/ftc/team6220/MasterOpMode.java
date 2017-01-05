@@ -49,6 +49,9 @@ abstract public class MasterOpMode extends LinearOpMode
     //used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
     private double headingOffset = 0.0;
 
+    //allows robot to have two possible front ends in teleOp
+    boolean leftButtonPusherAsFront = false;
+
     //allows NavigateTo to adjust based on which alliance the robot is on
     double beaconActivationAngle;
 
@@ -93,7 +96,6 @@ abstract public class MasterOpMode extends LinearOpMode
         collectorServo = hardwareMap.servo.get("collector");
         collectorServo.setPosition(0.5);
 
-        //TODO tune our own drive PID loop using DriveAssemblyPID instead of build-in P/step filter
         //TODO Must be disabled if motor encoders are not correctly reporting
         driveAssemblies[FRONT_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[FRONT_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

@@ -66,8 +66,8 @@ public class DriveAssembly
     public double[] getEncoderVectorDerivative(double eTime)
     {
         double length = getEncoderLinearDerivative(eTime);
-        double[] v = new double[]{ length * Math.cos(location.rot*Constants.DEGREE_TO_RADIAN),
-                                     length * Math.sin(location.rot*Constants.DEGREE_TO_RADIAN)  };
+        double[] v = new double[]{ length * Math.cos(location.rot * Constants.DEGREE_TO_RADIAN),
+                                   length * Math.sin(location.rot * Constants.DEGREE_TO_RADIAN) };
 
         return v;
     }

@@ -32,6 +32,15 @@ public class TeleOpCompetition extends MasterTeleOp
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
+            //allows driver to pick front of robot based on whether he is launching or driving around
+            if(driver1.isButtonPressed(Button.DPAD_LEFT))
+            {
+                leftButtonPusherAsFront = true;
+            }
+            else if(driver1.isButtonPressed(Button.DPAD_UP))
+            {
+                leftButtonPusherAsFront = false;
+            }
 
             driveRobotWithJoysticks(gamepad1.left_stick_x,    //local x motion power
                                     gamepad1.left_stick_y,     //local y motion power
@@ -111,7 +120,6 @@ public class TeleOpCompetition extends MasterTeleOp
                 launcher.pullBackMotor.setPower(0.0);
                 launcher.pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-
 
             telemetry.addData("eTime:", eTime);
             updateCallback(eTime);

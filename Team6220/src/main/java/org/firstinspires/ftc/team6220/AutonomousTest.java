@@ -125,8 +125,8 @@ public class AutonomousTest extends MasterAutonomous
 
         pause(1000);
 
-        Color.colorToHSV(vuforiaHelper.getPixelColor(-55, 235, 30), colorLeftSide);
-        Color.colorToHSV(vuforiaHelper.getPixelColor(55, 235, 30), colorRightSide);
+        Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
+        Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
 
         //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
         //value is always greater than the blue side's, thus creating a positive value when blue is
@@ -152,10 +152,6 @@ public class AutonomousTest extends MasterAutonomous
         else
         {
             //if vuforia didn't find the color of the beacon, it tries again
-            turnTo(false, 10.0);
-            turnTo(false, -10.0);
-            turnTo(false, 0.0);
-
             AlignWithBeacon(yPosition);
         }
 
