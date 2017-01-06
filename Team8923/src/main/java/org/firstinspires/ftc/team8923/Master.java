@@ -50,8 +50,8 @@ abstract class Master extends LinearOpMode
         GRABBER_STOW(0.7),
         GRABBER_GRAB(0.55),
         GRABBER_RELEASE(0.0),
-        LIFT_STOW(0.0),
-        LIFT_RELEASE(0.0);
+        LIFT_RELEASE(0.0),
+        LIFT_STOW(0.5);
 
         public double pos;
         ServoPositions(double i)

@@ -53,9 +53,9 @@ abstract class MasterTeleOp extends Master
         else
             motorLift.setPower(0);
 
-        if(gamepad1.a)
+        if(gamepad2.a)
             servoLiftHolder.setPosition(ServoPositions.LIFT_RELEASE.pos);
-        else if(gamepad1.b)
+        else if(gamepad2.b)
             servoLiftHolder.setPosition(ServoPositions.LIFT_STOW.pos);
     }
 
