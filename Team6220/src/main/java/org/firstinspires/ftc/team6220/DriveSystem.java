@@ -172,25 +172,25 @@ public class DriveSystem implements ConcurrentOperation
 
     //@TODO code duplicate; incorporate both getMotorPowers into a single function accounting for heading
     //ensures robot will drive straight while moving
-    public double[] getMotorPowersAccountingForHeading(Transform2D requestedMotion, double idealHeading)
+    public double[] getMotorPowersAccountingForHeading(Transform2D requestedMotion, double targetAngle)
     {
         double[] rawPowers = new double[]{0.0,0.0,0.0,0.0};
 
         double currentAngle = currentOpMode.getAngularOrientationWithOffset();
 
         //if the requested rotation is minimal, the robot will keep itself in a straight line
-        if (Math.abs(requestedMotion.rot) < 0.08)
+        if (Math.abs(requestedMotion.rot) < Constants.MINIMUM_TURNING_POWER)
         {
-            RotationControlFilter.roll(currentOpMode.normalizeRotationTarget(idealHeading, currentAngle));
+            RotationControlFilter.roll(currentOpMode.normalizeRotationTarget(targetAngle, currentAngle));
             requestedMotion.rot = RotationControlFilter.getFilteredValue();
 
             if (Math.abs(requestedMotion.rot) > 1.0)
             {
                 requestedMotion.rot = Math.signum(requestedMotion.rot);
             }
-            else if (Math.abs(requestedMotion.rot) < 0.08)
+            else if (Math.abs(requestedMotion.rot) < Constants.MINIMUM_TURNING_POWER)
             {
-                requestedMotion.rot = 0.08 * Math.signum(requestedMotion.rot);
+                requestedMotion.rot = Constants.MINIMUM_TURNING_POWER * Math.signum(requestedMotion.rot);
             }
         }
 
@@ -216,7 +216,7 @@ public class DriveSystem implements ConcurrentOperation
 
     }
 
-    //give the drive a command
+    //gives the drive motors a command
     public void writeToMotors(double[] powers)
     {
         //write motor powers
