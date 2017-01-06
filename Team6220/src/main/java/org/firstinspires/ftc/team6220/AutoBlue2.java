@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
     Standard autonomous for blue side
 */
 
+//todo: combine autonomous programs into one
+
 @Autonomous(name = "AutoBlue2", group = "Autonomous")
 public class AutoBlue2 extends MasterAutonomous
 {
@@ -58,10 +60,29 @@ public class AutoBlue2 extends MasterAutonomous
         stopAllDriveMotors();
         //
 
-        //todo insert code for pressing second beacon, then combine autonomous programs into one
+        drive.moveRobot(0.0, -0.2, 0.0);
+        pause(1500);
+
+        stopAllDriveMotors();
+
+        drive.moveRobot(0.3, 0.0, 0.0);
+        pause(3000);
+
+        //presses beacon 2
+        pause(1000);
+        vuforiaAlign(false, true, 2.700, 0.0);
+
+        stopAllDriveMotors();
 
         AlignWithBeacon(false, 2.700);
 
-        turnTo(true, 45);
+        drive.moveRobot(0.0, 0.10, 0.0);
+        pause(2000);
+
+        drive.moveRobot(0.0, -0.5, 0.0);
+        pause(3000);
+
+        stopAllDriveMotors();
+        //
     }
 }
