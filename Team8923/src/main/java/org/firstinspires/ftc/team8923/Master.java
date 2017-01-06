@@ -25,6 +25,7 @@ abstract class Master extends LinearOpMode
     Servo servoFinger = null;
     Servo servoFlywheelAngle = null;
     Servo servoBeaconPusher = null;
+    Servo servoLiftHolder = null;
 
     double headingOffset = 0.0;
 
@@ -48,7 +49,9 @@ abstract class Master extends LinearOpMode
         BEACON_EXTEND(0.80),
         GRABBER_STOW(0.7),
         GRABBER_GRAB(0.55),
-        GRABBER_RELEASE(0.0);
+        GRABBER_RELEASE(0.0),
+        LIFT_STOW(0.0),
+        LIFT_RELEASE(0.0);
 
         public double pos;
         ServoPositions(double i)
@@ -93,6 +96,7 @@ abstract class Master extends LinearOpMode
         servoFinger = hardwareMap.servo.get("servoFinger");
         servoFlywheelAngle = hardwareMap.servo.get("servoFlywheelAngle");
         servoBeaconPusher = hardwareMap.servo.get("servoBeaconPusher");
+        servoLiftHolder = hardwareMap.servo.get("servoLiftHolder");
 
         servoGrabberLeft.setDirection(Servo.Direction.REVERSE);
 
@@ -101,6 +105,7 @@ abstract class Master extends LinearOpMode
         servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
         servoFlywheelAngle.setPosition(ServoPositions.FLYWHEEL_STOW.pos);
         servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
+        servoLiftHolder.setPosition(ServoPositions.LIFT_STOW.pos);
 
         telemetry.setMsTransmissionInterval(50);
     }

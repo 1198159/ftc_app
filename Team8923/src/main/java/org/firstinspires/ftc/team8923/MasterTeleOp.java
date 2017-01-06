@@ -52,6 +52,11 @@ abstract class MasterTeleOp extends Master
         // If no button is pressed, stop!
         else
             motorLift.setPower(0);
+
+        if(gamepad1.a)
+            servoLiftHolder.setPosition(ServoPositions.LIFT_RELEASE.pos);
+        else if(gamepad1.b)
+            servoLiftHolder.setPosition(ServoPositions.LIFT_STOW.pos);
     }
 
     // Closes and opens grabber servos to grab and release cap ball
@@ -79,27 +84,27 @@ abstract class MasterTeleOp extends Master
 
     // We want to be able to shoot from various distances, so this sets the motor power and servo
     // position based on the desired distance
-    void controlFlywheel()
-    {
+    //void controlFlywheel()
+    //{
         // Set motor power and servo position based on various distances
-        if(gamepad2.x)
-            setFlywheelPowerAndAngle(400);
-        else if(gamepad2.y)
-            setFlywheelPowerAndAngle(800);
-        else if(gamepad2.b)
-            setFlywheelPowerAndAngle(1200);
+    //    if(gamepad2.x)
+    //        setFlywheelPowerAndAngle(400);
+    //    else if(gamepad2.y)
+    //        setFlywheelPowerAndAngle(800);
+    //    else if(gamepad2.b)
+    //        setFlywheelPowerAndAngle(1200);
         // Stop flywheel
-        else if(gamepad2.a)
-            motorFlywheel.setPower(0.0);
+    //    else if(gamepad2.a)
+    //        motorFlywheel.setPower(0.0);
 
         // Shoot ball
-        if(gamepad2.start)
-        {
-            servoFinger.setPosition(ServoPositions.FINGER_EXTEND.pos);
-            fingerTimer.reset();
-        }
+    //    if(gamepad2.start)
+    //    {
+    //        servoFinger.setPosition(ServoPositions.FINGER_EXTEND.pos);
+    //        fingerTimer.reset();
+    //    }
         // Retract finger after this many milliseconds
-        if(fingerTimer.milliseconds() > 500)
-            servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
-    }
+    //    if(fingerTimer.milliseconds() > 500)
+    //        servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
+    //}
 }
