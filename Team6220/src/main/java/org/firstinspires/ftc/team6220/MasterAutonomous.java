@@ -84,7 +84,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     {
         double translationOffsetMagnitude;
 
-        if (redSide == true)
+        if (redSide)
         {
             //used to determine whether the robot has come near enough to its target location
             translationOffsetMagnitude = -(targetPosition - drive.robotLocation.x);
@@ -106,7 +106,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             //we use this to convert our location from an array to a transform
             drive.robotLocation.SetPositionFromFloatArray(l);
 
-            if (redSide == true)
+            if (redSide)
             {
                 //used to determine whether the robot has come near enough to its target location
                 translationOffsetMagnitude = -(targetPosition - drive.robotLocation.x);
@@ -146,7 +146,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     //tells our robot to turn to a specified angle
     public void turnTo(boolean deadReckoning, double targetAngle)
     {
-        if (deadReckoning == true)
+        if (deadReckoning)
         {
             currentAngle = getAngularOrientationWithOffset();
         }
@@ -160,7 +160,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         while((Math.abs(angleDiff) > Constants.ANGLE_TOLERANCE) && opModeIsActive())
         {
-            if (deadReckoning == true)
+            if (deadReckoning)
             {
                 currentAngle = getAngularOrientationWithOffset();
             }
@@ -203,7 +203,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     //once at a beacon, we use this function to align with it
     public void AlignWithBeacon(boolean redSide, double position) throws InterruptedException
     {
-        if (redSide = true)
+        if (redSide)
         {
             pause(1000);
 

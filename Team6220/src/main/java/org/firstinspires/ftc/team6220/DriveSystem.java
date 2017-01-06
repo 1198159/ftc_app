@@ -103,7 +103,7 @@ public class DriveSystem implements ConcurrentOperation
         double posRate;
 
         //updates the error terms
-        if (redSide == true)
+        if (redSide)
         {
             LocationControlFilter[0].roll(-(targetPosition - robotLocation.x));
             posRate = 0.3 * LocationControlFilter[0].getFilteredValue();
@@ -130,7 +130,7 @@ public class DriveSystem implements ConcurrentOperation
         }
 
         //changes axis of motion based on input
-        if (x == true)
+        if (x)
         {
             writeToMotors(getMotorPowersFromMotion(new Transform2D(posRate, 0.0, wRate)));
         }
