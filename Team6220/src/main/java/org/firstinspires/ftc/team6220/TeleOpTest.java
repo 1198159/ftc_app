@@ -116,12 +116,13 @@ public class TeleOpTest extends MasterTeleOp
                 if(driver1.isButtonPressed(Button.DPAD_UP)){yRate = -1.0;}
                 if(driver1.isButtonPressed(Button.DPAD_DOWN)){yRate = 1.0;}
             }
-            
+
+            /*
             driveRobotWithJoysticks(xRate,    //local x motion power
                     yRate,     //local y motion power
                     gamepad1.right_stick_x/2, //rotation power; divided by 2 to reduce our robot'shigh rotational velocity
                     driver1.isButtonPressed(Button.RIGHT_BUMPER));  //slow mode functionality on right bumper
-
+*/
 
             telemetry.addData("eTime:", eTime);
             updateCallback(eTime);

@@ -19,9 +19,10 @@ public class Polynomial
     {
         double sum = 0.0;
         int size = coefficients.length;
-        for(int i = 0; i<size;i++)
+
+        for(int i = 0; i < size; i++)
         {
-            sum += coefficients[i]*Math.pow(input,i);
+            sum += coefficients[i] * Math.pow(input,i);
         }
         return sum;
     }

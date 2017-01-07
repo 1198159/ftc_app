@@ -39,10 +39,13 @@ public class TestSemiAutomation extends MasterTeleOp
                 //autonomously move to 0,0,0
                 drive.NavigateTo(new Transform2D(0,0,0));
             }
+
+            /*
             driveRobotWithJoysticks(gamepad1.left_stick_x,    //local x motion power
                                     gamepad1.left_stick_y,     //local y motion power
                                     gamepad1.right_stick_x/2,
                                     false);    //rotation power
+*/
 
             telemetry.addData("X: ", drive.robotLocation.x);
             telemetry.addData("Y: ", drive.robotLocation.y);
