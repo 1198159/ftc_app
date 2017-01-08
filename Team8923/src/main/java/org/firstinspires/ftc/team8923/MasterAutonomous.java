@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.team8923;
 
+import android.graphics.Color;
+
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
@@ -30,20 +33,20 @@ abstract class MasterAutonomous extends Master
         LEFT(0),
         RIGHT(0),
 
-        RED_LEFT_START_X(17 * 25.4),
-        RED_LEFT_START_Y(100 * 25.4),
+        RED_LEFT_START_X(550),
+        RED_LEFT_START_Y(2400),
         RED_LEFT_START_ANGLE(45.0),
 
-        RED_RIGHT_START_X(17 * 25.4),
-        RED_RIGHT_START_Y(52 * 25.4),
+        RED_RIGHT_START_X(550),
+        RED_RIGHT_START_Y(1250),
         RED_RIGHT_START_ANGLE(45.0),
 
-        BLUE_LEFT_START_X(52 * 25.4),
-        BLUE_LEFT_START_Y(17 * 25.4),
+        BLUE_LEFT_START_X(1450),
+        BLUE_LEFT_START_Y(300),
         BLUE_LEFT_START_ANGLE(45.0),
 
-        BLUE_RIGHT_START_X(100 * 25.4),
-        BLUE_RIGHT_START_Y(17 * 25.4),
+        BLUE_RIGHT_START_X(2650),
+        BLUE_RIGHT_START_Y(300),
         BLUE_RIGHT_START_ANGLE(45.0);
 
         public final double val;
@@ -55,7 +58,7 @@ abstract class MasterAutonomous extends Master
 
     // Constants for robot in autonomous
     // Max drive power is less than 1 to ensure speed controller works
-    private static final double MAX_DRIVE_POWER = 0.6;
+    private static final double MAX_DRIVE_POWER = 0.8;
     private static final double MIN_DRIVE_POWER = 0.15;
     private static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
     private static final double DRIVE_POWER_CONSTANT = 1.0 / 1000.0;
@@ -86,7 +89,7 @@ abstract class MasterAutonomous extends Master
     Alliance alliance = Alliance.RED;
     int delayTime = 0; // In seconds
 
-    private void setUpRoutine()
+    void setUpRoutine()
     {
         telemetry.log().add("");
         telemetry.log().add("Alliance Blue/Red: X/B");
@@ -205,7 +208,6 @@ abstract class MasterAutonomous extends Master
 
     void initAuto()
     {
-        setUpRoutine();
         initHardware();
 
         reverseDrive(true);
@@ -323,12 +325,11 @@ abstract class MasterAutonomous extends Master
 
     // Robot sometimes won't see the vision targets when it should. This is to be used in places
     // where we need to be sure that we're tracking the target
-    void lookForVisionTarget() throws InterruptedException
+    boolean lookForVisionTarget() throws InterruptedException
     {
-        // TODO: Better to use update location?
-
+        // We only use the robot's own alliance's vision targets, because the others give us bogus
+        // numbers for some reason
         boolean trackingOtherAllianceTarget = false;
-
         if(alliance == Alliance.RED)
             trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
                     || vuforiaLocator.getTargetName().equals("Target Blue Right");
@@ -336,13 +337,46 @@ abstract class MasterAutonomous extends Master
             trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
                     || vuforiaLocator.getTargetName().equals("Target Red Right");
 
-        //TODO: This won't always find the target, so make better
-        // Turn until target is found
+        int count = 0;
+        double referenceAngle = robotAngle;
+        double deltaAngle = 10; // In degrees
+        ElapsedTime timer = new ElapsedTime();
+        int maxSearchTime = 5; // In seconds
+
+        // Turn until target is found or timer runs out
         while(!(vuforiaLocator.isTracking() && !trackingOtherAllianceTarget) && opModeIsActive())
         {
-            turnToAngle(robotAngle - 10);
+            // Increases search angle by delta angle each loop
+            count++;
+            double targetAngle = count * deltaAngle;
+
+            // Look left then right every other loop
+            if(count % 2 == 0)
+                targetAngle *= -1;
+
+            // Add onto original angle
+            targetAngle += referenceAngle;
+
+            // Turn to that angle
+            turnToAngle(targetAngle);
+
+            // Give Vuforia a chance to find the vision target
             sleep(500);
+
+            //Failed to find vision target in time
+            if(timer.seconds() > maxSearchTime)
+                return false;
+
+            // Update target names to ensure we don't look at the wrong ones
+            if(alliance == Alliance.RED)
+                trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
+                        || vuforiaLocator.getTargetName().equals("Target Blue Right");
+            else if(alliance == Alliance.BLUE)
+                trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
+                        || vuforiaLocator.getTargetName().equals("Target Red Right");
         }
+        // Vision target found
+        return true;
     }
 
     // Updates robot's coordinates and angle
@@ -405,6 +439,35 @@ abstract class MasterAutonomous extends Master
         lastEncoderFR = motorFR.getCurrentPosition();
         lastEncoderBL = motorBL.getCurrentPosition();
         lastEncoderBR = motorBR.getCurrentPosition();
+    }
+
+    boolean correctColor()
+    {
+        // Get rgb values of color sensor
+        int red = colorSensor.red();
+        int green = colorSensor.green();
+        int blue = colorSensor.blue();
+
+        // Rgb values go above 255, which is the max we want. So we scale the rgb values to a range
+        // of 0-1, then multiply by 255 to get correct range
+        double scalar = Math.max(red, Math.max(green, blue));
+        red *= 255.0 / scalar;
+        green *= 255.0 / scalar;
+        blue *= 255.0 / scalar;
+
+        // Convert rgb to hsv
+        int argb = Color.argb(0, red, green, blue);
+        float[] color = new float[3];
+        Color.colorToHSV(argb, color);
+        if(color[0] < 90)
+            color[0] += 360;
+
+        // Blue hue is 240 and red hue is 360. Subtracting 300 from the hue will mean that a
+        // positive value is red, and negative is blue
+        color[0] -= 300;
+
+        // Check that alliance color and beacon color match
+        return (alliance == Alliance.RED && color[0] > 0) || (alliance == Alliance.BLUE && color[0] < 0);
     }
 
     // If you subtract 359 degrees from 0, you would get -359 instead of 1. This method handles

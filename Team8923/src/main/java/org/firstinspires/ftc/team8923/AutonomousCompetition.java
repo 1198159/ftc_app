@@ -18,6 +18,7 @@ public class AutonomousCompetition extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
+        setUpRoutine();
         initAuto();
 
         waitForStart();
@@ -149,7 +150,7 @@ public class AutonomousCompetition extends MasterAutonomous
     private void pressBeacon() throws InterruptedException
     {
         // Distance from which we look at the vision target and beacon in mm
-        double observationDistance = 300;
+        double observationDistance = 400;
 
         // Drive in front of the beacon, then face vision target
         switch(alliance)
@@ -170,7 +171,9 @@ public class AutonomousCompetition extends MasterAutonomous
         sleep(500);
 
         // Only actually looks if vision target isn't visible
-        lookForVisionTarget();
+        if(!lookForVisionTarget())
+            // Vision target wasn't found, so abort
+            return;
 
         // Reposition after tracking target
         driveRelativeToBeacon(0.0, observationDistance);
@@ -210,11 +213,22 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // Extend pusher to press button
         servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
-        // Drive slower for more accuracy
-        //slowModeDivisor = 1.0;
 
         // Line up with button
         driveRelativeToBeacon(buttonDistance, observationDistance);
+        // Move in front of button to double check color
+        driveRelativeToBeacon(buttonDistance, 200);
+
+        // If color isn't correct, abort
+        if(!correctColor())
+        {
+            // Retract pusher to prevent damage or anything else bad
+            servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
+            // Back away from beacon
+            driveRelativeToBeacon(buttonDistance, observationDistance);
+            return;
+        }
+
         // Move forward to press button
         driveRelativeToBeacon(buttonDistance, 100);
         // Back away from beacon
@@ -222,8 +236,6 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // Retract pusher to prevent damage or anything else bad
         servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
-        // Reset slow mode
-        //slowModeDivisor = 1.0;
     }
 
     // TODO: Test me

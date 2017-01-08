@@ -39,6 +39,7 @@ public class MasterTeleOp extends MasterOpMode
     final double LIFT_POWER = 0.9;
 
     double motorLauncherSpeed = 0;
+    double motorLauncherSetSpeed = 0;
     double driveSpeed = 0;
 
     double jx2;
@@ -100,19 +101,9 @@ public class MasterTeleOp extends MasterOpMode
            }
 
 // move particle servo
-           if (gamepad2.left_bumper)
-           {
-               servoParticle.setPower(1);
-           }
-           else if (gamepad2.right_bumper)
-           {
-               servoParticle.setPower(-1);
-           }
-           else
-           {
-               servoParticle.setPower(0);
-           }
-
+           servoParticle.setPosition(gamepad2.left_stick_y);
+           servoForks.setPosition(gamepad2.right_stick_y);
+           
            // controls the forks servo
            /*
            if (gamepad2.a)
@@ -124,7 +115,6 @@ public class MasterTeleOp extends MasterOpMode
                servoForks.setPosition(1);
            }
            */
-           servoForks.setPosition(gamepad2.right_stick_y);
 
            // if just pressed and previous time wasn't pressed, for reverse mode
            if (gamepad1.left_bumper && !isLeftBumperPushed)
@@ -144,8 +134,8 @@ public class MasterTeleOp extends MasterOpMode
            {
                mecanumDrive(1.0, 0.8);
            }
-/*
-           if (gamepad2.right_bumper) // when right bumper is held down, launcher motor runs
+
+           if (gamepad2.a) // when game pad 2 a is held down, launcher motor runs
            {
                rampShooterMotor(0.9);
            }
@@ -153,7 +143,16 @@ public class MasterTeleOp extends MasterOpMode
            {
                rampShooterMotor(0);
            }
-*/
+
+           if (gamepad2.x) // hold game pad 2 x is held down
+           {
+               motorCollector.setPower(0.9);
+           }
+           else
+           {
+               motorCollector.setPower(0);
+           }
+
            // press button a to toggle legato mode
            if (gamepad1.a && !isAButtonPushed)
            {
@@ -173,7 +172,7 @@ public class MasterTeleOp extends MasterOpMode
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
         motorLift.setPower(0);
-        //motorCollector.setPower(0);
+        motorCollector.setPower(0);
     }
 
     public void mecanumDrive(double kDrive, double kPivot)
@@ -288,8 +287,8 @@ public class MasterTeleOp extends MasterOpMode
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //motorLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //motorCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // caution, no encoder
+        motorLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // caution, no encoder
 
         // reverse front and back right motors just for TeleOp
         motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -309,13 +308,13 @@ public class MasterTeleOp extends MasterOpMode
         while (motorLauncherSpeed < speed)
         {
             motorLauncherSpeed += speed / 10.0;
-            //motorLauncher.setPower(motorLauncherSpeed);
+            motorLauncher.setPower(motorLauncherSpeed);
             sleep(200);
         }
         while (motorLauncherSpeed > speed)
         {
             motorLauncherSpeed -= speed / 10.0;
-            //motorLauncher.setPower(motorLauncherSpeed);
+            motorLauncher.setPower(motorLauncherSpeed);
             sleep(200);
         }
     }

@@ -13,15 +13,19 @@ public class TestBeaconColor extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
+        initAuto();
+
         waitForStart();
 
         vuforiaLocator.startTracking();
 
+        servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
+
         while(opModeIsActive())
         {
             // Get color values of both sides of beacon
-            int colorLeft = vuforiaLocator.getPixelColor(-60, 230, 30);
-            int colorRight = vuforiaLocator.getPixelColor(60, 230, 30);
+            int colorLeft = vuforiaLocator.getPixelColor(-40, 170, 30);
+            int colorRight = vuforiaLocator.getPixelColor(40, 170, 30);
 
             float[] leftHSV = new float[3];
             float[] rightHSV = new float[3];
@@ -39,6 +43,30 @@ public class TestBeaconColor extends MasterAutonomous
             telemetry.addData("RightRed", Color.red(colorRight));
             telemetry.addData("RightGreen", Color.green(colorRight));
             telemetry.addData("RightBlue", Color.blue(colorRight));
+            telemetry.addData("", "");
+
+            // Color sensor data
+            int colorSensorColor = colorSensor.argb();
+            float[] colorSensorHSV = new float[3];
+
+            int red = colorSensor.red();
+            int green = colorSensor.green();
+            int blue = colorSensor.blue();
+
+            double scalar = Math.max(red, Math.max(green, blue));
+
+            // 255 is max rgb value
+            red *= 255.0 / scalar;
+            green *= 255.0 / scalar;
+            blue *= 255.0 / scalar;
+
+            int argb = Color.argb(0, red, green, blue);
+            Color.colorToHSV(argb, colorSensorHSV);
+
+            telemetry.addData("Color Sensor Hue", colorSensorHSV[0]);
+            telemetry.addData("Color Sensor Red", red);
+            telemetry.addData("Color Sensor Green", green);
+            telemetry.addData("Color Sensor Blue", blue);
 
             telemetry.update();
             idle();
