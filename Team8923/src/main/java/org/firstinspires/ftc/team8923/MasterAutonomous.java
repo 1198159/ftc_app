@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team8923;
 
+import android.graphics.Color;
+
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -437,6 +439,35 @@ abstract class MasterAutonomous extends Master
         lastEncoderFR = motorFR.getCurrentPosition();
         lastEncoderBL = motorBL.getCurrentPosition();
         lastEncoderBR = motorBR.getCurrentPosition();
+    }
+
+    boolean correctColor()
+    {
+        // Get rgb values of color sensor
+        int red = colorSensor.red();
+        int green = colorSensor.green();
+        int blue = colorSensor.blue();
+
+        // Rgb values go above 255, which is the max we want. So we scale the rgb values to a range
+        // of 0-1, then multiply by 255 to get correct range
+        double scalar = Math.max(red, Math.max(green, blue));
+        red *= 255.0 / scalar;
+        green *= 255.0 / scalar;
+        blue *= 255.0 / scalar;
+
+        // Convert rgb to hsv
+        int argb = Color.argb(0, red, green, blue);
+        float[] color = new float[3];
+        Color.colorToHSV(argb, color);
+        if(color[0] < 90)
+            color[0] += 360;
+
+        // Blue hue is 240 and red hue is 360. Subtracting 300 from the hue will mean that a
+        // positive value is red, and negative is blue
+        color[0] -= 300;
+
+        // Check that alliance color and beacon color match
+        return (alliance == Alliance.RED && color[0] > 0) || (alliance == Alliance.BLUE && color[0] < 0);
     }
 
     // If you subtract 359 degrees from 0, you would get -359 instead of 1. This method handles

@@ -216,6 +216,19 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // Line up with button
         driveRelativeToBeacon(buttonDistance, observationDistance);
+        // Move in front of button to double check color
+        driveRelativeToBeacon(buttonDistance, 200);
+
+        // If color isn't correct, abort
+        if(!correctColor())
+        {
+            // Retract pusher to prevent damage or anything else bad
+            servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
+            // Back away from beacon
+            driveRelativeToBeacon(buttonDistance, observationDistance);
+            return;
+        }
+
         // Move forward to press button
         driveRelativeToBeacon(buttonDistance, 100);
         // Back away from beacon
