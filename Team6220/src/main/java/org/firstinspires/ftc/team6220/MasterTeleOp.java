@@ -15,13 +15,12 @@ abstract public class MasterTeleOp extends MasterOpMode
     Polynomial pilotInputCurve = new Polynomial(new double[]{ 0.0, 0.5, 0.0, 0.5 });
 
     //takes driver 1 stick input and uses it to move the robot
-    void driveRobotWithJoysticks(double xMotionAxis, double yMotionAxis, double rotationAxis/*, boolean slow*/)
+    void driveRobotWithJoysticks(double xMotionAxis, double yMotionAxis, double rotationAxis)
     {
         //factor changing magnitude of vertical and horizontal movement
         double tFactor;
         //factor changing magnitude of rotational movement
         double rFactor;
-
 
         //slows down the robot if slow mode is requested
         if(driver1.isButtonPressed(Button.RIGHT_BUMPER))
@@ -35,9 +34,23 @@ abstract public class MasterTeleOp extends MasterOpMode
             rFactor = 1.0;
         }
 
-        //todo: make sure driving at constant heading works; has code duplicates
-        drive.moveRobot(pilotInputCurve.getOuput(xMotionAxis) * tFactor,
-                        pilotInputCurve.getOuput(yMotionAxis) * tFactor,
-                        pilotInputCurve.getOuput(rotationAxis) * rFactor);
+        //logic that senses whether the driver is attempting to turn.  If he is not, the robot
+        //adjusts itself to ensure its heading is correct
+        if (Math.abs(pilotInputCurve.getOuput(rotationAxis) * rFactor) < Constants.MINIMUM_TURNING_POWER)
+        {
+            //todo: make sure driving at constant heading works
+            drive.moveRobotAtConstantHeading(pilotInputCurve.getOuput(xMotionAxis) * tFactor,
+                    pilotInputCurve.getOuput(yMotionAxis) * tFactor,
+                    pilotInputCurve.getOuput(rotationAxis) * rFactor,
+                    targetHeading);
+        }
+        else
+        {
+            targetHeading = getAngularOrientationWithOffset();
+
+            drive.moveRobot(pilotInputCurve.getOuput(xMotionAxis) * tFactor,
+                    pilotInputCurve.getOuput(yMotionAxis) * tFactor,
+                    pilotInputCurve.getOuput(rotationAxis) * rFactor);
+        }
     }
 }

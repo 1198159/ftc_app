@@ -22,11 +22,7 @@ public class AutonomousTest extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        initializeHardware();
-
-        //initialize vuforia
-        vuforiaHelper = new VuforiaHelper();
-        vuforiaHelper.setupVuforia();
+        initializeAuto();
 
         //the robot is placed in front of the blue1 beacon when starting the test
         drive.robotLocation = new Transform2D(2.638, 1.500, 0.0);
@@ -52,14 +48,12 @@ public class AutonomousTest extends MasterAutonomous
             //values are displayed for testing purposes
             //updateLocationUsingEncoders(eTime);
 
-            //@TODO test; not working
             //navigation test for y direction (relative to the robot)
             if (gamepad2.left_stick_y < -0.1)
             {
                 vuforiaDriveToPosition(3.300, 1.500, 0.0);
             }
 
-            //@TODO test; not working
             //navigation test for x direction (relative to the robot)
             if (gamepad2.left_bumper)
             {

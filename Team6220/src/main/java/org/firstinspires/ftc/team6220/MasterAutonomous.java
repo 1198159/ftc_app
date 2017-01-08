@@ -150,7 +150,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         {
             currentAngle = getAngularOrientationWithOffset();
         }
-        else if (deadReckoning == false)
+        else
         {
             currentAngle = getRobotAngleUsingVuforia();
         }
@@ -164,7 +164,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             {
                 currentAngle = getAngularOrientationWithOffset();
             }
-            else if (deadReckoning == false)
+            else
             {
                 currentAngle = getRobotAngleUsingVuforia();
             }

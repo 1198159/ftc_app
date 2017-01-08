@@ -20,6 +20,8 @@ public class AutoBlue2 extends MasterAutonomous
 
         setRobotStartingOrientation(90.0);
 
+        beaconActivationAngle = 0.0;
+
         drive.robotLocation = new Transform2D(2.395, 0.210, 90.0);
 
         waitForStart();
@@ -30,8 +32,7 @@ public class AutoBlue2 extends MasterAutonomous
         //vuforia is not reliably available yet, so we must use encoders at first
         //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
 
-        drive.moveRobot(0.5, 1.0, -0.0);
-
+        drive.moveRobot(0.5, 1.0, 0.0);
         pause(1400);
 
         stopAllDriveMotors();
@@ -42,11 +43,9 @@ public class AutoBlue2 extends MasterAutonomous
 
         //presses beacon 1
         pause(1000);
-
         vuforiaAlign(false, true, 1.524, 0.0);
 
         drive.moveRobot(0.0, 0.2, 0.0);
-
         pause(1000);
 
         stopAllDriveMotors();
@@ -54,7 +53,6 @@ public class AutoBlue2 extends MasterAutonomous
         AlignWithBeacon(false, 1.524);
 
         drive.moveRobot(0.0, 0.10, 0.0);
-
         pause(2500);
 
         stopAllDriveMotors();

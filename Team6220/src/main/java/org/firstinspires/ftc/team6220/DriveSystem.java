@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team6220;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
 /*
@@ -22,6 +23,7 @@ public class DriveSystem implements ConcurrentOperation
     private DriveAssembly[] assemblies;
     private PIDFilter[] LocationControlFilter = new PIDFilter[2];
     private PIDFilter RotationControlFilter;
+    private PIDFilter DriveStraightFilter;
     public Transform2D robotLocation;
     MasterOpMode currentOpMode; //provide access to current opmode so we can use telemetry commands
     VuforiaHelper vuforiaHelper;
@@ -36,6 +38,7 @@ public class DriveSystem implements ConcurrentOperation
         this.LocationControlFilter[0] = filter[0];
         this.LocationControlFilter[1] = filter[1];
         this.RotationControlFilter = filter[2];
+        this.DriveStraightFilter = filter[3];
     }
 
     @Override
@@ -172,29 +175,24 @@ public class DriveSystem implements ConcurrentOperation
 
     //@TODO code duplicate; incorporate both getMotorPowers into a single function accounting for heading
     //ensures robot will drive straight while moving
-    public double[] getMotorPowersAccountingForHeading(Transform2D requestedMotion, double targetAngle)
+    public double[] getMotorPowersAccountingForHeading(Transform2D requestedMotion, double targetHeading)
     {
         double[] rawPowers = new double[]{0.0,0.0,0.0,0.0};
 
         double currentAngle = currentOpMode.getAngularOrientationWithOffset();
 
-        //if the requested rotation is minimal, the robot will keep itself in a straight line
-        if (Math.abs(requestedMotion.rot) < Constants.MINIMUM_TURNING_POWER)
-        {
-            RotationControlFilter.roll(currentOpMode.normalizeRotationTarget(targetAngle, currentAngle));
-            requestedMotion.rot = RotationControlFilter.getFilteredValue();
+        //ensures that the robot is driving at the correct heading
+        DriveStraightFilter.roll(currentOpMode.normalizeRotationTarget(targetHeading, currentAngle));
+        requestedMotion.rot =  DriveStraightFilter.getFilteredValue();
 
-            if (Math.abs(requestedMotion.rot) > 1.0)
-            {
-                requestedMotion.rot = Math.signum(requestedMotion.rot);
-            }
-            else if (Math.abs(requestedMotion.rot) < Constants.MINIMUM_TURNING_POWER)
-            {
-                requestedMotion.rot = Constants.MINIMUM_TURNING_POWER * Math.signum(requestedMotion.rot);
-            }
+        if (Math.abs(requestedMotion.rot) > 1.0)
+        {
+            requestedMotion.rot = Math.signum(requestedMotion.rot);
         }
 
-        //TODO see beginning of MasterOpMode
+        //telemetry.addData("headingDiff: ", )
+
+        //todo: see beginning of MasterOpMode
         //calculate motor powers proportionally
         for (int corner = 0; corner < 4; corner++)
         {
@@ -213,7 +211,6 @@ public class DriveSystem implements ConcurrentOperation
         }
 
         return SequenceUtilities.scalarMultiply(rawPowers, 1 / scalingFactor);
-
     }
 
     //gives the drive motors a command
@@ -244,11 +241,10 @@ public class DriveSystem implements ConcurrentOperation
 
     //TODO see above
     //generate motor powers and write values to them; drives at an ideal angle
-    public void moveRobotAtConstantHeading(double x, double y, double w, double targetAngle)
+    public void moveRobotAtConstantHeading(double x, double y, double w, double targetHeading)
     {
-        writeToMotors(getMotorPowersAccountingForHeading(new Transform2D(x, y, w), targetAngle));
+        writeToMotors(getMotorPowersAccountingForHeading(new Transform2D(x, y, w), targetHeading));
     }
-
 
     //estimate the robot's last motion using encoders
     //returns an average, so more frequent calls will be noisier but will miss some events

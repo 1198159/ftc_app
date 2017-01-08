@@ -2,7 +2,6 @@ package org.firstinspires.ftc.team6220;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
     Competition configuration for driving robot.
@@ -19,11 +18,12 @@ public class TeleOpCompetition extends MasterTeleOp
 {
     boolean launcherManualControl = false;
 
-
     @Override
     public void runOpMode() throws InterruptedException
     {
         initializeHardware();
+
+        targetHeading = getAngularOrientationWithOffset();
 
         waitForStart();
 
@@ -46,23 +46,22 @@ public class TeleOpCompetition extends MasterTeleOp
                                     gamepad1.left_stick_y,     //local y motion power
                                     gamepad1.right_stick_x / 2); //rotation power; divided by 2 to reduce our robot's high rotational velocity
 
-
             //intake balls with collector; drivers must hold buttons to collect
             if (driver2.isButtonPressed(Button.X))
             {
                 collectorMotor.setPower(1.0);
                 //we dont want the 2nd stage servo to reverse and pull out an already troughed particle
-                collectorServo.setPosition(0.5);
+                gateServo.setPosition(0.5);
             }
             else if (driver2.isButtonPressed(Button.B))
             {
                 collectorMotor.setPower(-1.0);
-                collectorServo.setPosition(0.0);
+                gateServo.setPosition(0.0);
             }
             else
             {
                 collectorMotor.setPower(0.0);
-                collectorServo.setPosition(0.5);
+                gateServo.setPosition(0.5);
             }
 
             //pulls back launcher
