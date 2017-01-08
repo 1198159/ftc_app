@@ -149,7 +149,7 @@ public class AutonomousCompetition extends MasterAutonomous
     private void pressBeacon() throws InterruptedException
     {
         // Distance from which we look at the vision target and beacon in mm
-        double observationDistance = 300;
+        double observationDistance = 400;
 
         // Drive in front of the beacon, then face vision target
         switch(alliance)
@@ -210,8 +210,6 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // Extend pusher to press button
         servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
-        // Drive slower for more accuracy
-        //slowModeDivisor = 1.0;
 
         // Line up with button
         driveRelativeToBeacon(buttonDistance, observationDistance);
@@ -222,8 +220,6 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // Retract pusher to prevent damage or anything else bad
         servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
-        // Reset slow mode
-        //slowModeDivisor = 1.0;
     }
 
     // TODO: Test me

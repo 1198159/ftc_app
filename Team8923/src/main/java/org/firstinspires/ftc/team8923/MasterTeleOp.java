@@ -13,7 +13,7 @@ abstract class MasterTeleOp extends Master
     {
         // Set slow mode if desired. 4 seems to be a good divisor for TeleOp
         if(gamepad1.dpad_down)
-            slowModeDivisor = 4.0;
+            slowModeDivisor = 3.0;
         else if(gamepad1.dpad_up)
             slowModeDivisor = 1.0;
 
