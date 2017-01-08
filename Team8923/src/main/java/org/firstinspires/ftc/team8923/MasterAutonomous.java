@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team8923;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
@@ -322,12 +323,11 @@ abstract class MasterAutonomous extends Master
 
     // Robot sometimes won't see the vision targets when it should. This is to be used in places
     // where we need to be sure that we're tracking the target
-    void lookForVisionTarget() throws InterruptedException
+    boolean lookForVisionTarget() throws InterruptedException
     {
-        // TODO: Better to use update location?
-
+        // We only use the robot's own alliance's vision targets, because the others give us bogus
+        // numbers for some reason
         boolean trackingOtherAllianceTarget = false;
-
         if(alliance == Alliance.RED)
             trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
                     || vuforiaLocator.getTargetName().equals("Target Blue Right");
@@ -335,13 +335,46 @@ abstract class MasterAutonomous extends Master
             trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
                     || vuforiaLocator.getTargetName().equals("Target Red Right");
 
-        //TODO: This won't always find the target, so make better
-        // Turn until target is found
+        int count = 0;
+        double referenceAngle = robotAngle;
+        double deltaAngle = 10; // In degrees
+        ElapsedTime timer = new ElapsedTime();
+        int maxSearchTime = 5; // In seconds
+
+        // Turn until target is found or timer runs out
         while(!(vuforiaLocator.isTracking() && !trackingOtherAllianceTarget) && opModeIsActive())
         {
-            turnToAngle(robotAngle - 10);
+            // Increases search angle by delta angle each loop
+            count++;
+            double targetAngle = count * deltaAngle;
+
+            // Look left then right every other loop
+            if(count % 2 == 0)
+                targetAngle *= -1;
+
+            // Add onto original angle
+            targetAngle += referenceAngle;
+
+            // Turn to that angle
+            turnToAngle(targetAngle);
+
+            // Give Vuforia a chance to find the vision target
             sleep(500);
+
+            //Failed to find vision target in time
+            if(timer.seconds() > maxSearchTime)
+                return false;
+
+            // Update target names to ensure we don't look at the wrong ones
+            if(alliance == Alliance.RED)
+                trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Blue Left")
+                        || vuforiaLocator.getTargetName().equals("Target Blue Right");
+            else if(alliance == Alliance.BLUE)
+                trackingOtherAllianceTarget = vuforiaLocator.getTargetName().equals("Target Red Left")
+                        || vuforiaLocator.getTargetName().equals("Target Red Right");
         }
+        // Vision target found
+        return true;
     }
 
     // Updates robot's coordinates and angle

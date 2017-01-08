@@ -171,7 +171,9 @@ public class AutonomousCompetition extends MasterAutonomous
         sleep(500);
 
         // Only actually looks if vision target isn't visible
-        lookForVisionTarget();
+        if(!lookForVisionTarget())
+            // Vision target wasn't found, so abort
+            return;
 
         // Reposition after tracking target
         driveRelativeToBeacon(0.0, observationDistance);
