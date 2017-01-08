@@ -86,7 +86,7 @@ abstract class MasterAutonomous extends Master
     Alliance alliance = Alliance.RED;
     int delayTime = 0; // In seconds
 
-    private void setUpRoutine()
+    void setUpRoutine()
     {
         telemetry.log().add("");
         telemetry.log().add("Alliance Blue/Red: X/B");
@@ -205,7 +205,6 @@ abstract class MasterAutonomous extends Master
 
     void initAuto()
     {
-        setUpRoutine();
         initHardware();
 
         reverseDrive(true);

@@ -18,6 +18,7 @@ public class AutonomousCompetition extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
+        setUpRoutine();
         initAuto();
 
         waitForStart();
