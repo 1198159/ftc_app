@@ -100,6 +100,7 @@ abstract public class MasterOpMode extends LinearOpMode
         collectorServo = hardwareMap.servo.get("servoCollector");
         gateServo = hardwareMap.servo.get("servoCollectorGate");
         gateServo.setPosition(0.5);
+        collectorServo.setPosition(0.5);
 
         //TODO Must be disabled if motor encoders are not correctly reporting
         driveAssemblies[FRONT_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -125,10 +126,10 @@ abstract public class MasterOpMode extends LinearOpMode
         //                                          drive assemblies  initial loc:     x    y    w
         drive = new DriveSystem(this, vuforiaHelper, driveAssemblies, new Transform2D(0.0, 0.0, 0.0),
                 new PIDFilter[]{
-                        new PIDFilter(0.8, 0.00009, 0.1),    //x location control
-                        new PIDFilter(0.8, 0.00009, 0.1),    //y location control
-                        new PIDFilter(Constants.TURNING_POWER_FACTOR, 0.0000006, 0.0002),  //rotation control
-                        new PIDFilter(0.5 * Constants.TURNING_POWER_FACTOR, 0.0, 0.0002)}); //rotation control without I value for driving straight
+                        new PIDFilter(0.8, 0.0001, 0.1),    //x location control
+                        new PIDFilter(0.8, 0.0001, 0.1),    //y location control
+                        new PIDFilter(Constants.TURNING_POWER_FACTOR, 0.0000007, 0.001),  //rotation control
+                        new PIDFilter(0.5 * Constants.TURNING_POWER_FACTOR, 0.0, 0.001)}); //rotation control without I value for driving straight
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;

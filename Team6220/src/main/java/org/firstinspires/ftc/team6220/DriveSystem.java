@@ -22,7 +22,8 @@ public class DriveSystem implements ConcurrentOperation
 {
     private DriveAssembly[] assemblies;
     private PIDFilter[] LocationControlFilter = new PIDFilter[2];
-    private PIDFilter RotationControlFilter;
+    //made public for use in turnTo
+    public PIDFilter RotationControlFilter;
     private PIDFilter DriveStraightFilter;
     public Transform2D robotLocation;
     MasterOpMode currentOpMode; //provide access to current opmode so we can use telemetry commands
@@ -101,7 +102,7 @@ public class DriveSystem implements ConcurrentOperation
     //used to navigate along a single axis instead of a zig-zag path
     //PID-driven navigation to a point; call once per loop
     //IMPORTANT:  assumes robot position has already been updated
-    public double[] NavigateAxially(boolean redSide, boolean x, double targetPosition, double targetAngle)
+    public void NavigateAxially(boolean redSide, boolean x, double targetPosition, double targetAngle)
     {
         double posRate;
 
@@ -135,14 +136,14 @@ public class DriveSystem implements ConcurrentOperation
         //changes axis of motion based on input
         if (x)
         {
-            writeToMotors(getMotorPowersFromMotion(new Transform2D(posRate, 0.0, wRate)));
+            writeToMotors(getMotorPowersFromMotion(new Transform2D(posRate, 0.0, 0.0 * wRate)));
         }
         else
         {
-            writeToMotors(getMotorPowersFromMotion(new Transform2D(0.0, posRate, wRate)));
+            writeToMotors(getMotorPowersFromMotion(new Transform2D(0.0, -posRate, 0.0 * wRate)));
         }
 
-        return new double[]{posRate, wRate};
+        //return this.getMotorPowersFromMotion(new Transform2D(posRate, 0.0 , wRate));
     }
 
     //TODO make assemblies.location represent their actual values
@@ -190,7 +191,7 @@ public class DriveSystem implements ConcurrentOperation
             requestedMotion.rot = Math.signum(requestedMotion.rot);
         }
 
-        //telemetry.addData("headingDiff: ", )
+        currentOpMode.telemetry.addData("headingDiff: ", currentOpMode.normalizeRotationTarget(targetHeading, currentAngle));
 
         //todo: see beginning of MasterOpMode
         //calculate motor powers proportionally

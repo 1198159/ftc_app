@@ -95,7 +95,9 @@ abstract public class MasterAutonomous extends MasterOpMode
             translationOffsetMagnitude = targetPosition - drive.robotLocation.y;
         }
 
-        while ((Math.abs(translationOffsetMagnitude) > Constants.POSITION_TOLERANCE || Math.abs(targetAngle - drive.robotLocation.rot) > Constants.ANGLE_TOLERANCE) && opModeIsActive())
+        drive.robotLocation.rot = getAngularOrientationWithOffset();
+
+        while ((Math.abs(translationOffsetMagnitude) > Constants.POSITION_TOLERANCE /*|| Math.abs(targetAngle - drive.robotLocation.rot) > Constants.ANGLE_TOLERANCE*/) && opModeIsActive())
         {
             float[] l = vuforiaHelper.getRobotLocation();
             //vuforia data comes out as an array instead of readable data, so it must be changed to a Transform2D;
@@ -105,6 +107,8 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             //we use this to convert our location from an array to a transform
             drive.robotLocation.SetPositionFromFloatArray(l);
+
+            drive.robotLocation.rot = getAngularOrientationWithOffset();
 
             if (redSide)
             {
@@ -122,19 +126,17 @@ abstract public class MasterAutonomous extends MasterOpMode
             {
                 telemetry.addData("XPos: ", drive.robotLocation.x);
                 telemetry.addData("YPos: ", drive.robotLocation.y);
-                telemetry.update();
-            }
-            else
-            {
+            } else {
                 telemetry.addData("Pos:", "Unknown");
-                telemetry.update();
             }
 
             //move the robot to the desired location
-            double[] m = drive.NavigateAxially(redSide, x, targetPosition, targetAngle);
+            drive.NavigateAxially(redSide, x, targetPosition, targetAngle);
 
-            telemetry.addData("posRate:", m[0]);
-            telemetry.addData("wRate:", m[1]);
+
+            telemetry.addData("posRate:", translationOffsetMagnitude);
+            telemetry.addData("wRate:", targetAngle - drive.robotLocation.rot);
+            telemetry.addData("Position Offset: ", (Math.abs(translationOffsetMagnitude)));
             telemetry.update();
 
             idle();
@@ -146,6 +148,9 @@ abstract public class MasterAutonomous extends MasterOpMode
     //tells our robot to turn to a specified angle
     public void turnTo(boolean deadReckoning, double targetAngle)
     {
+        //counter used to improve the accuracy of turnTo
+        int  angleToleranceCounter = 0;
+
         if (deadReckoning)
         {
             currentAngle = getAngularOrientationWithOffset();
@@ -158,8 +163,14 @@ abstract public class MasterAutonomous extends MasterOpMode
         double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
         double turningPower;
 
-        while((Math.abs(angleDiff) > Constants.ANGLE_TOLERANCE) && opModeIsActive())
+        while(angleToleranceCounter < 50 && opModeIsActive())
         {
+            //increases the counter if the robot's heading is in tolerance
+            if (Math.abs(angleDiff) <= Constants.ANGLE_TOLERANCE)
+            {
+                angleToleranceCounter++;
+            }
+
             if (deadReckoning)
             {
                 currentAngle = getAngularOrientationWithOffset();
@@ -188,8 +199,7 @@ abstract public class MasterAutonomous extends MasterOpMode
                 turningPower = -Constants.MINIMUM_TURNING_POWER;
             }
 
-            telemetry.addData("angleDiff: ", angleDiff);
-
+            telemetry.log().add("angleDiff: ", angleDiff);
             telemetry.update();
 
             drive.moveRobot(0.0, 0.0, -turningPower);
@@ -207,15 +217,29 @@ abstract public class MasterAutonomous extends MasterOpMode
         {
             pause(1000);
 
-            turnTo(false, 90.0);
+            turnTo(true, 90.0);
 
-            float[] colorLeftSide = new float[3];
-            float[] colorRightSide = new float[3];
+            float[] colorLeftSide = new float[]{0,0,0};
+            float[] colorRightSide = new float[]{0,0,0};
 
             pause(1000);
 
-            Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
-            Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
+            //Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
+            //Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
+            //Color.colorToHSV(vuforiaHelper.getPixelColor(-127, 92, 0), colorLeftSide);
+            //Color.colorToHSV(vuforiaHelper.getPixelColor(127, 92, 0), colorRightSide);
+            
+            for(int i = 1; i <=40; i++)
+            {
+                for(int j = 1; j <= 40; j++)
+                {
+                    float[] tempColorLeft = new float[3];
+                    Color.colorToHSV(vuforiaHelper.getPixelColor(-127 - j, 92 -i, 0), tempColorLeft);
+                    Color.colorToHSV(vuforiaHelper.getPixelColor(127-j, 92-i, 0), colorRightSide);
+                    int weight = i + j;
+                    colorLeftSide[0] = ((colorLeftSide[0] * weight) + tempColorLeft[0]) / (weight + 1);
+                }
+            }
 
             //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
             //value is always greater than the blue side's, thus creating a positive value when blue is
@@ -250,15 +274,26 @@ abstract public class MasterAutonomous extends MasterOpMode
         {
             pause(1000);
 
-            turnTo(false, 0.0);
+            turnTo(true, 0.0);
 
             float[] colorLeftSide = new float[3];
             float[] colorRightSide = new float[3];
 
             pause(1000);
 
-            Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
-            Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
+            //Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
+            //Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
+            //Color.colorToHSV(vuforiaHelper.getPixelColor(-127, 92, 0), colorLeftSide);
+            //Color.colorToHSV(vuforiaHelper.getPixelColor(127, 92, 0), colorRightSide);
+
+            for(int i = 1; i <=40; i++)
+            {
+                for(int j = 1; j <= 40; j++)
+                {
+                    Color.colorToHSV(vuforiaHelper.getPixelColor(-127 - j, 92 -i, 0), colorLeftSide);
+                    Color.colorToHSV(vuforiaHelper.getPixelColor(127-j, 92-i, 0), colorRightSide);
+                }
+            }
 
             //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
             //value is always greater than the blue side's, thus creating a positive value when blue is

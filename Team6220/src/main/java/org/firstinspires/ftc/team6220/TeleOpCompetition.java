@@ -51,17 +51,17 @@ public class TeleOpCompetition extends MasterTeleOp
             {
                 collectorMotor.setPower(1.0);
                 //we dont want the 2nd stage servo to reverse and pull out an already troughed particle
-                gateServo.setPosition(0.5);
+                collectorServo.setPosition(0.5);
             }
             else if (driver2.isButtonPressed(Button.B))
             {
                 collectorMotor.setPower(-1.0);
-                gateServo.setPosition(0.0);
+                collectorServo.setPosition(0.0);
             }
             else
             {
                 collectorMotor.setPower(0.0);
-                gateServo.setPosition(0.5);
+                collectorServo.setPosition(0.5);
             }
 
             //pulls back launcher

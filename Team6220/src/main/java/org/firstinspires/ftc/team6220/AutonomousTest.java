@@ -5,6 +5,8 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.lang.annotation.Target;
+
 /*
     TeleOp program used for testing functions such as turnTo and NavigateTo; extends MasterAutonomous to allow access to
     turning and vuforia navigation
@@ -73,6 +75,14 @@ public class AutonomousTest extends MasterAutonomous
 
                 stopAllDriveMotors();
             }
+            if(gamepad2.a)
+            {
+                double a[] = drive.NavigateTo(new Transform2D(1.0, 0.0, 0.0));
+                telemetry.addData("Navigate To: ", a[0]);
+                telemetry.addData("Navigate To: ", a[1]);
+                telemetry.addData("Naviagte To: ", a[2]);
+                telemetry.update();
+            }
 
             //navigation test for rotation
             if (gamepad2.right_bumper)
@@ -119,8 +129,11 @@ public class AutonomousTest extends MasterAutonomous
 
         pause(1000);
 
-        Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
-        Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
+        //Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
+        //Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
+        Color.colorToHSV(vuforiaHelper.getPixelColor(-127, 92, 0), colorLeftSide);
+        Color.colorToHSV(vuforiaHelper.getPixelColor(127, 92, 0), colorRightSide);
+
 
         //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
         //value is always greater than the blue side's, thus creating a positive value when blue is
