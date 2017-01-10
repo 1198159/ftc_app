@@ -807,6 +807,47 @@ abstract class MasterAutonomous extends MasterOpMode
         }
     }
 
+    public void parkCornerVortexAfterBeacons() throws InterruptedException
+    {
+        move(0, -300, 0.5, 3); // back up
+        if (isRedTeam)
+        {
+            pivot(-45, 0.8);
+        }
+        else
+        {
+            pivot(45, 0.8);
+        }
+        move(0, -1524, 0.8, 3); // move back 60 inches
+    }
+
+    public void shootParticlesAfterBeacons() throws InterruptedException
+    {
+        move(0, -300, 0.5, 3); // back up
+
+        Kpivot = 1.0/60.0;
+        TOL_ANGLE = 3;
+
+        if (isRedTeam)
+        {
+            pivot(-45, 0.8);
+        }
+        else
+        {
+            pivot(50, 0.8);
+        }
+        motorLauncher.setPower(0.7);
+        pause(1000);
+        servoParticle.setPosition(0.8);
+        pause(300);
+        servoParticle.setPosition(0.0);
+        pause(900);
+        servoParticle.setPosition(0.8);
+        pause(300);
+        servoParticle.setPosition(0.0);
+        motorLauncher.setPower(0.0);
+    }
+
     public void PushButton() throws InterruptedException
     {
         pause(70);

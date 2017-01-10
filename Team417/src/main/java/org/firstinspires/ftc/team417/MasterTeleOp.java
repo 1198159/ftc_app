@@ -101,20 +101,8 @@ public class MasterTeleOp extends MasterOpMode
            }
 
 // move particle servo
-           servoParticle.setPosition(gamepad2.left_stick_y);
+           servoParticle.setPosition(Range.clip(-gamepad2.left_stick_y, 0, 0.8));
            servoForks.setPosition(gamepad2.right_stick_y);
-           
-           // controls the forks servo
-           /*
-           if (gamepad2.a)
-           {
-               servoForks.setPosition(-1);
-           }
-           if (gamepad2.y)
-           {
-               servoForks.setPosition(1);
-           }
-           */
 
            // if just pressed and previous time wasn't pressed, for reverse mode
            if (gamepad1.left_bumper && !isLeftBumperPushed)
@@ -137,16 +125,22 @@ public class MasterTeleOp extends MasterOpMode
 
            if (gamepad2.a) // when game pad 2 a is held down, launcher motor runs
            {
-               rampShooterMotor(0.9);
+               //rampShooterMotor(0.7);
+               motorLauncher.setPower(0.7);
            }
            else
            {
-               rampShooterMotor(0);
+               //rampShooterMotor(0);
+               motorLauncher.setPower(0.0);
            }
 
-           if (gamepad2.x) // hold game pad 2 x is held down
+           if (gamepad2.dpad_left) // hold game pad left or right is held down
            {
                motorCollector.setPower(0.9);
+           }
+           else if (gamepad2.dpad_right)
+           {
+               motorCollector.setPower(-0.9);
            }
            else
            {
@@ -290,6 +284,11 @@ public class MasterTeleOp extends MasterOpMode
         motorLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // caution, no encoder
 
+        motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
         // reverse front and back right motors just for TeleOp
         motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
         motorBackRight.setDirection(DcMotor.Direction.REVERSE);
@@ -298,6 +297,7 @@ public class MasterTeleOp extends MasterOpMode
         motorBackLeft.setDirection(DcMotor.Direction.FORWARD);
 
         motorLift.setDirection(DcMotor.Direction.REVERSE);
+        motorCollector.setDirection(DcMotor.Direction.REVERSE);
 
         // Set up telemetry data
         configureDashboard();
@@ -307,13 +307,13 @@ public class MasterTeleOp extends MasterOpMode
     {
         while (motorLauncherSpeed < speed)
         {
-            motorLauncherSpeed += speed / 10.0;
+            motorLauncherSpeed += speed / 20.0;
             motorLauncher.setPower(motorLauncherSpeed);
             sleep(200);
         }
         while (motorLauncherSpeed > speed)
         {
-            motorLauncherSpeed -= speed / 10.0;
+            motorLauncherSpeed -= 0.05;
             motorLauncher.setPower(motorLauncherSpeed);
             sleep(200);
         }

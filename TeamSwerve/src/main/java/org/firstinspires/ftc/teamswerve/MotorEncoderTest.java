@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "Concept: Ramp Motor Speed", group = "Concept")
+@Autonomous(name = "Motor Test", group = "Concept")
 @Disabled
 public class MotorEncoderTest extends LinearOpMode {
 
@@ -31,38 +31,48 @@ public class MotorEncoderTest extends LinearOpMode {
     double  power   = 0;
     boolean rampUp  = true;
 
+    double startPos;
+    double endPos;
+    double difPos;
+
 
     @Override
     public void runOpMode() {
 
         // Connect to motor (Assume standard left wheel)
         // Change the text in quotes to match any motor name on your robot.
-        motor = hardwareMap.dcMotor.get("left_drive");
+        motor = hardwareMap.dcMotor.get("motor");
+
+        motor.setMaxSpeed(1157); // set to ticks per second
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Wait for the start button
         telemetry.addData(">", "Press Start to run Motors." );
         telemetry.update();
         waitForStart();
 
+        /*
+        push button
+        get motor encoder count
+        run at max speed for 10 seconds
+        get motor encoder count
+        stop motor
+        subtract for diff.
+        then telemetry
+         */
+
         // Ramp motor speeds till stop pressed.
         while(opModeIsActive()) {
 
-            // Ramp the motors, according to the rampUp variable.
-            if (rampUp) {
-                // Keep stepping up until we hit the max value.
-                power += INCREMENT ;
-                if (power >= MAX_FWD ) {
-                    power = MAX_FWD;
-                    rampUp = !rampUp;   // Switch ramp direction
-                }
-            }
-            else {
-                // Keep stepping down until we hit the min value.
-                power -= INCREMENT ;
-                if (power <= MAX_REV ) {
-                    power = MAX_REV;
-                    rampUp = !rampUp;  // Switch ramp direction
-                }
+            if (gamepad1.a)
+            {
+                startPos = motor.getCurrentPosition();
+                motor.setPower(1.0);
+                sleep(10000);
+                endPos = motor.getCurrentPosition();
+                motor.setPower(0);
+                difPos = endPos - startPos;
+                telemetry.addData("difPos", difPos);
             }
 
             // Display the current value

@@ -261,7 +261,7 @@ public class AutonomousTests extends MasterAutonomous
         }
 
         pause(100);
-        move(0, -250, 0.25, 3); // back up from button (or just back up)
+        move(0, -250, 0.5, 3); // back up from button (or just back up)
 
         // determine next beacon target
         if (isRedTeam) // if team RED
@@ -390,7 +390,8 @@ public class AutonomousTests extends MasterAutonomous
         }
 
         pause(100);
-        move(0, -300, 0.25, 3); // back up
+
+        shootParticlesAfterBeacons();
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
