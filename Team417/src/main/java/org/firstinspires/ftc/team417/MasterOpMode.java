@@ -84,12 +84,17 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        motorLauncher.setDirection(DcMotor.Direction.REVERSE);
 
         motorFrontLeft.setMaxSpeed(MAX_SPEED);
         motorFrontRight.setMaxSpeed(MAX_SPEED);
         motorBackLeft.setMaxSpeed(MAX_SPEED);
         motorBackRight.setMaxSpeed(MAX_SPEED);
+
+        motorLauncher.setMaxSpeed(1157); // this is a different type of motor, 1157 ticks per second
 
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
