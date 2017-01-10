@@ -58,10 +58,10 @@ abstract class MasterAutonomous extends Master
 
     // Constants for robot in autonomous
     // Max drive power is less than 1 to ensure speed controller works
-    private static final double MAX_DRIVE_POWER = 0.8;
+    private static final double MAX_DRIVE_POWER = 1.0;
     private static final double MIN_DRIVE_POWER = 0.15;
     private static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
-    private static final double DRIVE_POWER_CONSTANT = 1.0 / 1000.0;
+    private static final double DRIVE_POWER_CONSTANT = 1.0 / 650.0;
 
     enum Objectives
     {
