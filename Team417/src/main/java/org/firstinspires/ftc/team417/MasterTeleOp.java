@@ -29,7 +29,7 @@ public class MasterTeleOp extends MasterOpMode
     boolean isLeftBumperPushed = false; // is left bumper causes is mode to toggle
     boolean isModeReversed = false;
     boolean isLegatoMode = false;
-    boolean isAButtonPushed = false;
+    boolean isRightBumperPushed = false;
     private ElapsedTime runtime = new ElapsedTime();
     Orientation angles;
     AvgFilter filterJoyStickInput = new AvgFilter();
@@ -113,8 +113,8 @@ public class MasterTeleOp extends MasterOpMode
            isLeftBumperPushed = gamepad1.left_bumper;
 
 
-           // Slow Mode!
-           if (gamepad1.right_bumper) // if slow mode (when right bumper is held down)
+// Adagio Legato Mode!
+           if (isLegatoMode) // if mode activated, reduce constants and filter input
            {
                mecanumDrive(0.3, 0.2);
            }
@@ -148,12 +148,12 @@ public class MasterTeleOp extends MasterOpMode
            }
 
            // press button a to toggle legato mode
-           if (gamepad1.a && !isAButtonPushed)
+           if (gamepad1.right_bumper && !isRightBumperPushed)
            {
-               isAButtonPushed = true;
+               isRightBumperPushed = true;
                isLegatoMode = !isLegatoMode;
            }
-           isAButtonPushed = gamepad1.a;
+           isRightBumperPushed = gamepad1.right_bumper;
            telemetry.addData("legato: ", isLegatoMode);
 
            telemetry.update();
