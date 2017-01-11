@@ -136,11 +136,11 @@ public class MasterTeleOp extends MasterOpMode
 
            if (gamepad2.dpad_left) // hold game pad left or right is held down
            {
-               motorCollector.setPower(0.9);
+               motorCollector.setPower(1.0);
            }
            else if (gamepad2.dpad_right)
            {
-               motorCollector.setPower(-0.9);
+               motorCollector.setPower(-1.0);
            }
            else
            {
