@@ -57,14 +57,15 @@ public class AutoBlue2 extends MasterAutonomous
         pause(2500);
 
         stopAllDriveMotors();
+        //
 
         drive.moveRobot(0.0, -0.2, 0.0);
         pause(1000);
 
         stopAllDriveMotors();
 
-        drive.moveRobot(0.3, 0.0, 0.0);
-        pause(1500);
+        drive.moveRobot(0.25, 0.0, 0.0);
+        pause(1200);
 
         stopAllDriveMotors();
 
