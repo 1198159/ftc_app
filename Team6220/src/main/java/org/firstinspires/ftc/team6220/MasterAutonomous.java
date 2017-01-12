@@ -3,17 +3,111 @@ package org.firstinspires.ftc.team6220;
 import android.graphics.Color;
 import android.support.annotation.BoolRes;
 
+import java.util.concurrent.Delayed;
+
 /*
     Contains important methods for use in our autonomous programs
 */
 abstract public class MasterAutonomous extends MasterOpMode
 {
+    //variables used in autonomous setup
+    Alliance alliance = Alliance.BLUE;
+    RoutineOption routineOption = RoutineOption.LAUNCHANDBUTTONS;
+    int delay = 0;
+
     //used for initializations only necessary in autonomous
     public void initializeAuto()
     {
         initializeHardware();
         vuforiaHelper = new VuforiaHelper();
         vuforiaHelper.setupVuforia();
+    }
+
+    //enums used for autonomous setup
+    enum Alliance
+    {
+        BLUE,
+        RED
+    }
+    enum RoutineOption
+    {
+        LAUNCHANDBUTTONS,
+        LAUNCH,
+        BUTTONS,
+        PARKANDCAPBALL
+
+    }
+
+    //allows the driver to decide which autonomous routine should be run
+    public void runSetUp()
+    {
+        //tells driver the routine options available
+        telemetry.log().add("BlueSide/RedSide = X/B");
+        telemetry.log().add("Delay/No = Y/A");
+        telemetry.log().add("LaunchAndButtons = Dpad Left");
+        telemetry.log().add("Launch = Dpad Right");
+        telemetry.log().add("Buttons = Left Bumper");
+        telemetry.log().add("ParkAndCapBall = Right Bumper");
+        telemetry.log().add("Press start to exit setup.");
+
+        boolean isSetUpRunning = true;
+
+        while(isSetUpRunning)
+        {
+            if (driver1.isButtonPressed(Button.X))
+            {
+                alliance = Alliance.BLUE;
+            }
+            else if (driver1.isButtonPressed(Button.B))
+            {
+                alliance = Alliance.RED;
+            }
+            else if (driver1.isButtonPressed(Button.Y))
+            {
+                delay++;
+            }
+            else if (driver1.isButtonPressed(Button.A))
+            {
+                delay--;
+            }
+            else if (driver1.isButtonPressed(Button.DPAD_LEFT))
+            {
+                routineOption = RoutineOption.LAUNCHANDBUTTONS;
+            }
+            else if (driver1.isButtonPressed(Button.DPAD_RIGHT))
+            {
+                routineOption = RoutineOption.LAUNCHANDBUTTONS;
+            }
+            else if (driver1.isButtonPressed(Button.LEFT_BUMPER))
+            {
+                routineOption = RoutineOption.LAUNCHANDBUTTONS;
+            }
+            else if (driver1.isButtonPressed(Button.RIGHT_BUMPER))
+            {
+                routineOption = RoutineOption.LAUNCHANDBUTTONS;
+            }
+            else if (driver1.isButtonPressed(Button.START))
+            {
+                //stops the setup loop
+                isSetUpRunning = false;
+            }
+
+            //ensures delay is not negative
+            if (delay < 0)
+            {
+                delay = 0;
+            }
+
+            //displays current configuration
+            telemetry.addData("Alliance: ", alliance.name());
+            telemetry.addData("Delay: ", delay);
+            telemetry.addData("Routine Option: ", routineOption.name());
+            telemetry.update();
+
+            idle();
+        }
+
+        telemetry.log().add("Setup finished.");
     }
 
     //a function for finding the distance between two points
