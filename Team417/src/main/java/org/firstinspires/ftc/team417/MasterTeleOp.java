@@ -101,8 +101,8 @@ public class MasterTeleOp extends MasterOpMode
            }
 
 // move particle servo
-           servoParticle.setPosition(Range.clip(-gamepad2.left_stick_y, 0, 0.8));
-           servoForks.setPosition(gamepad2.right_stick_y);
+           servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.8));
+           servoForks.setPosition(gamepad2.left_stick_y);
            motorLauncher.setPower(Range.clip(gamepad2.right_trigger, 0, 0.7));
 
            // if just pressed and previous time wasn't pressed, for reverse mode
@@ -117,7 +117,7 @@ public class MasterTeleOp extends MasterOpMode
 // Adagio Legato Mode!
            if (isLegatoMode) // if mode activated, reduce constants and filter input
            {
-               mecanumDrive(0.3, 0.2);
+               mecanumDrive(0.3, 0.3);
            }
            else
            {
