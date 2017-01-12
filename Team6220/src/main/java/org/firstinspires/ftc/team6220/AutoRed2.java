@@ -31,7 +31,7 @@ public class AutoRed2 extends MasterAutonomous
         //vuforia is not reliably available yet, so we must use encoders at first
         //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
 
-        drive.moveRobot(-0.5, 1.0, 0.0);
+        drive.moveRobot(0.0, 1.0, 0.0);
         pause(1400);
 
         stopAllDriveMotors();
@@ -40,16 +40,15 @@ public class AutoRed2 extends MasterAutonomous
 
         stopAllDriveMotors();
 
-        drive.moveRobot(0.0, 0.1, 90.0);
-        pause(1500);
-
         //presses beacon 1
-        pause(500);
+        pause(1000);
         vuforiaAlign(true, true, 1.524, 90.0);
+
+        drive.moveRobot(0.0, 0.2, 90.0);
+        pause(1000);
 
         stopAllDriveMotors();
 
-        pause(500);
         AlignWithBeacon(true, 1.524);
 
         drive.moveRobot(0.0, 0.1, 90.0);
@@ -59,14 +58,12 @@ public class AutoRed2 extends MasterAutonomous
         //
 
         drive.moveRobot(0.0, -0.2, 90.0);
-        pause(1000);
+        pause(1500);
 
         stopAllDriveMotors();
 
-        drive.moveRobot(-0.25, 0.0, 90.0);
-        pause(1200);
-
-        stopAllDriveMotors();
+        drive.moveRobot(-0.3, 0.0, 90.0);
+        pause(3000);
 
         //presses beacon 2
         pause(1000);

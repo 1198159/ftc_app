@@ -1,17 +1,21 @@
 package org.firstinspires.ftc.team6220;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  *  Autonomous allowing driver to select its routine
  */
 
 @Autonomous(name = "AutoCompetition", group = "Autonomous")
+@Disabled
 public class AutoCompetition extends MasterAutonomous
 {
     @Override
     public void runOpMode() throws InterruptedException
     {
+        //todo:  nullpointer exception
         runSetUp();
         initializeAuto();
 
@@ -39,7 +43,74 @@ public class AutoCompetition extends MasterAutonomous
 
         if (alliance == Alliance.BLUE && routineOption == RoutineOption.LAUNCHANDBUTTONS)
         {
+            drive.robotLocation = new Transform2D(0.210, 2.395, 180.0);
+            setRobotStartingOrientation(180.0);
 
+            //vuforia is not reliably available yet, so we must use encoders at first
+            //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
+
+            drive.moveRobot(0.0, 0.25, 180.0);
+            pause(800);
+
+            //shoots a ball
+            launcher.pullback();
+            pauseWhileUpdating(3.0);
+            launcher.loadParticle();
+            pauseWhileUpdating(2.0);
+            launcher.launchParticle();
+            pauseWhileUpdating(2.0);
+            launcher.pullBackMotor.setPower(0.0);
+
+            stopAllDriveMotors();
+
+            turnTo(true, 0.0);
+
+            stopAllDriveMotors();
+
+            drive.moveRobot(0.0, 0.1, 0.0);
+            pause(1200);
+
+            //presses beacon 1
+            pause(500);
+            vuforiaAlign(false, true, 1.524, 0.0);
+
+            stopAllDriveMotors();
+
+            pause(500);
+            AlignWithBeacon(false, 1.524);
+
+            drive.moveRobot(0.0, 0.1, 0.0);
+            pause(2500);
+
+            stopAllDriveMotors();
+            //
+
+            drive.moveRobot(0.0, -0.2, 0.0);
+            pause(1000);
+
+            stopAllDriveMotors();
+
+            drive.moveRobot(0.25, 0.0, 0.0);
+            pause(1200);
+
+            stopAllDriveMotors();
+
+            //presses beacon 2
+            pause(1000);
+            vuforiaAlign(false, true, 2.700, 0.0);
+
+            stopAllDriveMotors();
+
+            AlignWithBeacon(false, 2.700);
+
+            drive.moveRobot(0.0, 0.10, 0.0);
+            pause(2000);
+
+            drive.moveRobot(0.0, -0.5, 0.0);
+            pause(3000);
+
+            stopAllDriveMotors();
+            //
         }
         if (alliance == Alliance.BLUE && routineOption == RoutineOption.LAUNCH)
         {
@@ -175,6 +246,23 @@ public class AutoCompetition extends MasterAutonomous
         if (alliance == Alliance.BLUE && routineOption == RoutineOption.PARKANDCAPBALL)
         {
 
+        }
+    }
+
+    //gives the launcher time to update its state machine
+    void pauseWhileUpdating(double time)
+    {
+        while(opModeIsActive() && time > 0)
+        {
+            double eTime = timer.seconds() - lTime;
+            lTime = timer.seconds();
+            time -= eTime;
+
+            telemetry.addData("eTime:", eTime);
+            telemetry.addData("Time Remaining:", time);
+            updateCallback(eTime);
+            telemetry.update();
+            idle();
         }
     }
 }

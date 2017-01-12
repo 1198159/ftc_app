@@ -71,6 +71,5 @@ public class AutoBlueLaunchParticle extends MasterTeleOp
             telemetry.update();
             idle();
         }
-
     }
 }

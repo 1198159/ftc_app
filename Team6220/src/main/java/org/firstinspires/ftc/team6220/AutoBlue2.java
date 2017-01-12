@@ -32,7 +32,7 @@ public class AutoBlue2 extends MasterAutonomous
         //vuforia is not reliably available yet, so we must use encoders at first
         //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
 
-        drive.moveRobot(0.5, 1.0, 0.0);
+        drive.moveRobot(0.0, 1.0, 0.0);
         pause(1400);
 
         stopAllDriveMotors();
