@@ -40,15 +40,16 @@ public class AutoRed2 extends MasterAutonomous
 
         stopAllDriveMotors();
 
-        //presses beacon 1
-        pause(1000);
-        vuforiaAlign(true, true, 1.524, 90.0);
+        drive.moveRobot(0.0, 0.1, 90.0);
+        pause(1500);
 
-        drive.moveRobot(0.0, 0.2, 90.0);
-        pause(1000);
+        //presses beacon 1
+        pause(500);
+        vuforiaAlign(true, true, 1.524, 90.0);
 
         stopAllDriveMotors();
 
+        pause(500);
         AlignWithBeacon(true, 1.524);
 
         drive.moveRobot(0.0, 0.1, 90.0);
@@ -58,12 +59,14 @@ public class AutoRed2 extends MasterAutonomous
         //
 
         drive.moveRobot(0.0, -0.2, 90.0);
-        pause(1500);
+        pause(1000);
 
         stopAllDriveMotors();
 
-        drive.moveRobot(-0.3, 0.0, 90.0);
-        pause(3000);
+        drive.moveRobot(-0.25, 0.0, 90.0);
+        pause(1200);
+
+        stopAllDriveMotors();
 
         //presses beacon 2
         pause(1000);

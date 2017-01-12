@@ -12,8 +12,10 @@ public class AutoCompetition extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
+        runSetUp();
         initializeAuto();
 
+        //sets starting location based on alliance
         if (alliance == Alliance.BLUE)
         {
             drive.robotLocation = new Transform2D(2.395, 0.210, 90.0);
@@ -27,14 +29,13 @@ public class AutoCompetition extends MasterAutonomous
             beaconActivationAngle = 90.0;
         }
 
-        runSetUp();
-
         waitForStart();
+
+        //delay is in seconds; pause takes milliseconds
+        pause(delay * 1000);
 
         //Start tracking targets
         vuforiaHelper.startTracking();
-
-        pause(delay);
 
         if (alliance == Alliance.BLUE && routineOption == RoutineOption.LAUNCHANDBUTTONS)
         {
@@ -46,7 +47,62 @@ public class AutoCompetition extends MasterAutonomous
         }
         if (alliance == Alliance.BLUE && routineOption == RoutineOption.BUTTONS)
         {
+            //vuforia is not reliably available yet, so we must use encoders at first
+            //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
 
+            drive.moveRobot(0.5, 1.0, 0.0);
+            pause(1400);
+
+            stopAllDriveMotors();
+
+            turnTo(true, 0.0);
+
+            stopAllDriveMotors();
+
+            drive.moveRobot(0.0, 0.1, 0.0);
+            pause(1500);
+
+            //presses beacon 1
+            pause(500);
+            vuforiaAlign(false, true, 1.524, 0.0);
+
+            stopAllDriveMotors();
+
+            pause(500);
+            AlignWithBeacon(false, 1.524);
+
+            drive.moveRobot(0.0, 0.1, 0.0);
+            pause(2500);
+
+            stopAllDriveMotors();
+            //
+
+            drive.moveRobot(0.0, -0.2, 0.0);
+            pause(1000);
+
+            stopAllDriveMotors();
+
+            drive.moveRobot(0.25, 0.0, 0.0);
+            pause(1200);
+
+            stopAllDriveMotors();
+
+            //presses beacon 2
+            pause(1000);
+            vuforiaAlign(false, true, 2.700, 0.0);
+
+            stopAllDriveMotors();
+
+            AlignWithBeacon(false, 2.700);
+
+            drive.moveRobot(0.0, 0.10, 0.0);
+            pause(2000);
+
+            drive.moveRobot(0.0, -0.5, 0.0);
+            pause(3000);
+
+            stopAllDriveMotors();
+            //
         }
         if (alliance == Alliance.BLUE && routineOption == RoutineOption.PARKANDCAPBALL)
         {
@@ -62,7 +118,59 @@ public class AutoCompetition extends MasterAutonomous
         }
         if (alliance == Alliance.RED && routineOption == RoutineOption.BUTTONS)
         {
+            //vuforia is not reliably available yet, so we must use encoders at first
+            //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
 
+            drive.moveRobot(-0.5, 1.0, 0.0);
+            pause(1400);
+
+            stopAllDriveMotors();
+
+            turnTo(true, 90.0);
+
+            stopAllDriveMotors();
+
+            //presses beacon 1
+            pause(1000);
+            vuforiaAlign(true, true, 1.524, 90.0);
+
+            drive.moveRobot(0.0, 0.2, 90.0);
+            pause(1000);
+
+            stopAllDriveMotors();
+
+            AlignWithBeacon(true, 1.524);
+
+            drive.moveRobot(0.0, 0.1, 90.0);
+            pause(2500);
+
+            stopAllDriveMotors();
+            //
+
+            drive.moveRobot(0.0, -0.2, 90.0);
+            pause(1500);
+
+            stopAllDriveMotors();
+
+            drive.moveRobot(-0.3, 0.0, 90.0);
+            pause(3000);
+
+            //presses beacon 2
+            pause(1000);
+            vuforiaAlign(true, true, 2.700, 90.0);
+
+            stopAllDriveMotors();
+
+            AlignWithBeacon(true, 2.700);
+
+            drive.moveRobot(0.0, 0.10, 90.0);
+            pause(2000);
+
+            drive.moveRobot(0.0, -0.5, 90.0);
+            pause(3000);
+
+            stopAllDriveMotors();
+            //
         }
         if (alliance == Alliance.BLUE && routineOption == RoutineOption.PARKANDCAPBALL)
         {
