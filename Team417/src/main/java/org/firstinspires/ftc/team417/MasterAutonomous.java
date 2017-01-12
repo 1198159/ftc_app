@@ -25,6 +25,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 abstract class MasterAutonomous extends MasterOpMode
 {
     private ElapsedTime runtime = new ElapsedTime();
+    public ElapsedTime autoRuntime = new ElapsedTime();
 
     final float mmPerInch = 25.4f;
     final float mmBotWidth = 18 * mmPerInch; // the robot width
@@ -826,18 +827,19 @@ abstract class MasterAutonomous extends MasterOpMode
         move(0, -300, 0.5, 3); // back up
 
         Kpivot = 1.0/60.0;
-        TOL_ANGLE = 3;
+        TOL_ANGLE = 2;
 
+        motorLauncher.setPower(0.7);
         if (isRedTeam)
         {
-            pivot(-45, 0.8);
+            pivot(-43, 0.8);
         }
         else
         {
-            pivot(50, 0.8);
+            pivot(48, 0.8);
         }
-        motorLauncher.setPower(0.7);
-        pause(1000);
+
+        //pause(1000);
         servoParticle.setPosition(0.8);
         pause(300);
         servoParticle.setPosition(0.0);

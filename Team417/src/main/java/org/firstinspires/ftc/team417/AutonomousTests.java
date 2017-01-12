@@ -132,6 +132,8 @@ public class AutonomousTests extends MasterAutonomous
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        autoRuntime.reset(); // set the 30 second timer
+
         VuforiaNav.startTracking();
         //     pause(startDelay);
         VuforiaNav.getLocation(targetIndex);
@@ -391,7 +393,10 @@ public class AutonomousTests extends MasterAutonomous
 
         pause(100);
 
-        shootParticlesAfterBeacons();
+        if (autoRuntime.milliseconds() < 28000)
+        {
+            shootParticlesAfterBeacons();
+        }
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

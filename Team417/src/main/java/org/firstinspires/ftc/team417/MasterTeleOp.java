@@ -103,6 +103,7 @@ public class MasterTeleOp extends MasterOpMode
 // move particle servo
            servoParticle.setPosition(Range.clip(-gamepad2.left_stick_y, 0, 0.8));
            servoForks.setPosition(gamepad2.right_stick_y);
+           motorLauncher.setPower(Range.clip(gamepad2.right_trigger, 0, 0.7));
 
            // if just pressed and previous time wasn't pressed, for reverse mode
            if (gamepad1.left_bumper && !isLeftBumperPushed)
@@ -122,7 +123,7 @@ public class MasterTeleOp extends MasterOpMode
            {
                mecanumDrive(1.0, 0.8);
            }
-
+/*
            if (gamepad2.a) // when game pad 2 a is held down, launcher motor runs
            {
                //rampShooterMotor(0.7);
@@ -133,7 +134,7 @@ public class MasterTeleOp extends MasterOpMode
                //rampShooterMotor(0);
                motorLauncher.setPower(0.0);
            }
-
+*/
            if (gamepad2.dpad_left) // hold game pad left or right is held down
            {
                motorCollector.setPower(1.0);
