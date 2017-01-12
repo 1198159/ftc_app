@@ -34,7 +34,7 @@ abstract class MasterAutonomous extends Master
         RIGHT(0),
 
         RED_LEFT_START_X(550),
-        RED_LEFT_START_Y(2400),
+        RED_LEFT_START_Y(2600),
         RED_LEFT_START_ANGLE(45.0),
 
         RED_RIGHT_START_X(550),
@@ -60,8 +60,8 @@ abstract class MasterAutonomous extends Master
     // Max drive power is less than 1 to ensure speed controller works
     private static final double MAX_DRIVE_POWER = 1.0;
     private static final double MIN_DRIVE_POWER = 0.15;
-    private static final double TURN_POWER_CONSTANT = 1.0 / 150.0;
-    private static final double DRIVE_POWER_CONSTANT = 1.0 / 650.0;
+    private static final double TURN_POWER_CONSTANT = 1.0 / 125.0;
+    private static final double DRIVE_POWER_CONSTANT = 1.0 / 800.0;
 
     enum Objectives
     {
