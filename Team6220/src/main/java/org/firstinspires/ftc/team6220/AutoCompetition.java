@@ -49,8 +49,10 @@ public class AutoCompetition extends MasterAutonomous
             //vuforia is not reliably available yet, so we must use encoders at first
             //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
 
-            drive.moveRobot(0.0, 0.25, 180.0);
+            drive.moveRobot(0.25, 0.0, 180.0);
             pause(800);
+
+            stopAllDriveMotors();
 
             //shoots a ball
             launcher.pullback();
@@ -60,6 +62,9 @@ public class AutoCompetition extends MasterAutonomous
             launcher.launchParticle();
             pauseWhileUpdating(2.0);
             launcher.pullBackMotor.setPower(0.0);
+
+            drive.moveRobot(0.8, -0.5, 0.0);
+            pause(1500);
 
             stopAllDriveMotors();
 
@@ -181,7 +186,79 @@ public class AutoCompetition extends MasterAutonomous
         }
         if (alliance == Alliance.RED && routineOption == RoutineOption.LAUNCHANDBUTTONS)
         {
+            drive.robotLocation = new Transform2D(0.210, 2.395, 90.0);
+            setRobotStartingOrientation(90.0);
 
+            //vuforia is not reliably available yet, so we must use encoders at first
+            //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
+
+            drive.moveRobot(0.25, 0.0, 90.0);
+            pause(800);
+
+            stopAllDriveMotors();
+
+            //shoots a ball
+            launcher.pullback();
+            pauseWhileUpdating(3.0);
+            launcher.loadParticle();
+            pauseWhileUpdating(2.0);
+            launcher.launchParticle();
+            pauseWhileUpdating(2.0);
+            launcher.pullBackMotor.setPower(0.0);
+
+            drive.moveRobot(0.8, 0.5, 90.0);
+            pause(1500);
+
+            stopAllDriveMotors();
+
+            turnTo(true, 90.0);
+
+            stopAllDriveMotors();
+
+            drive.moveRobot(0.0, 0.1, 90.0);
+            pause(1200);
+
+            //presses beacon 1
+            pause(1000);
+            vuforiaAlign(true, true, 1.524, 90.0);
+
+            drive.moveRobot(0.0, 0.2, 90.0);
+            pause(1000);
+
+            stopAllDriveMotors();
+
+            AlignWithBeacon(true, 1.524);
+
+            drive.moveRobot(0.0, 0.1, 90.0);
+            pause(2500);
+
+            stopAllDriveMotors();
+            //
+
+            drive.moveRobot(0.0, -0.2, 90.0);
+            pause(1500);
+
+            stopAllDriveMotors();
+
+            drive.moveRobot(-0.3, 0.0, 90.0);
+            pause(3000);
+
+            //presses beacon 2
+            pause(1000);
+            vuforiaAlign(true, true, 2.700, 90.0);
+
+            stopAllDriveMotors();
+
+            AlignWithBeacon(true, 2.700);
+
+            drive.moveRobot(0.0, 0.10, 90.0);
+            pause(2000);
+
+            drive.moveRobot(0.0, -0.5, 90.0);
+            pause(3000);
+
+            stopAllDriveMotors();
+            //
         }
         if (alliance == Alliance.RED && routineOption == RoutineOption.LAUNCH)
         {

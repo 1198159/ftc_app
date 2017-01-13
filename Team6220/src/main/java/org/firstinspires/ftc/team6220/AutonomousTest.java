@@ -75,7 +75,7 @@ public class AutonomousTest extends MasterAutonomous
 
                 stopAllDriveMotors();
             }
-            if(gamepad2.a)
+            if(gamepad2.dpad_down)
             {
                 double a[] = drive.NavigateTo(new Transform2D(1.0, 0.0, 0.0));
                 telemetry.addData("Navigate To: ", a[0]);
@@ -83,7 +83,22 @@ public class AutonomousTest extends MasterAutonomous
                 telemetry.addData("Naviagte To: ", a[2]);
                 telemetry.update();
             }
-
+            if(gamepad2.a)
+            {
+                drive.moveRobot(0.0, 0.1, 0.0);
+            }
+            if(gamepad2.y)
+            {
+                drive.moveRobot(0.0, -0.1, 0.0);
+            }
+            if(gamepad2.b)
+            {
+                drive.moveRobot(0.1, 0.0, 0.0);
+            }
+            if(gamepad2.x)
+            {
+                drive.moveRobot(-0.1, 0.0, 0.0);
+            }
             //navigation test for rotation
             if (gamepad2.right_bumper)
             {
