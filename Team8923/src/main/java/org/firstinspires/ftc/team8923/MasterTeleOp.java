@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.team8923;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -8,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 abstract class MasterTeleOp extends Master
 {
     private ElapsedTime fingerTimer = new ElapsedTime();
+    private int springshotTarget = 0;
 
     void driveMecanumTeleOp()
     {
@@ -84,27 +88,39 @@ abstract class MasterTeleOp extends Master
 
     // We want to be able to shoot from various distances, so this sets the motor power and servo
     // position based on the desired distance
-    //void controlFlywheel()
-    //{
+    /*void controlFlywheel()
+    {
         // Set motor power and servo position based on various distances
-    //    if(gamepad2.x)
-    //        setFlywheelPowerAndAngle(400);
-    //    else if(gamepad2.y)
-    //        setFlywheelPowerAndAngle(800);
-    //    else if(gamepad2.b)
-    //        setFlywheelPowerAndAngle(1200);
+        if(gamepad2.x)
+            setFlywheelPowerAndAngle(400);
+        else if(gamepad2.y)
+            setFlywheelPowerAndAngle(800);
+        else if(gamepad2.b)
+            setFlywheelPowerAndAngle(1200);
         // Stop flywheel
-    //    else if(gamepad2.a)
-    //        motorFlywheel.setPower(0.0);
+        else if(gamepad2.a)
+            motorFlywheel.setPower(0.0);
 
         // Shoot ball
-    //    if(gamepad2.start)
-    //    {
-    //        servoFinger.setPosition(ServoPositions.FINGER_EXTEND.pos);
-    //        fingerTimer.reset();
-    //    }
+        if(gamepad2.start)
+        {
+            servoFinger.setPosition(ServoPositions.FINGER_EXTEND.pos);
+            fingerTimer.reset();
+        }
         // Retract finger after this many milliseconds
-    //    if(fingerTimer.milliseconds() > 500)
-    //        servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
-    //}
+        if(fingerTimer.milliseconds() > 500)
+            servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
+    }*/
+
+    void controlSpringshot()
+    {
+        if(gamepad2.x && !motorSpringshot.isBusy())
+        {
+            // 1680 is the number of ticks per revolution fo the output shaft of a NeveRest 60 gearmotor
+            // We are using two of these revolutions because the motor is geared 2 to 1
+            springshotTarget += 1680 * 2;
+            motorSpringshot.setTargetPosition(springshotTarget);
+            motorSpringshot.setPower(1.0);
+        }
+    }
 }

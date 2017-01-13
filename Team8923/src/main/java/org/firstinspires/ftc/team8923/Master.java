@@ -18,7 +18,7 @@ abstract class Master extends LinearOpMode
     DcMotor motorBR = null;
     DcMotor motorLift = null;
     DcMotor motorCollector = null;
-    DcMotor motorFlywheel = null;
+    DcMotor motorSpringshot = null;
 
     Servo servoGrabberLeft = null;
     Servo servoGrabberRight = null;
@@ -69,7 +69,7 @@ abstract class Master extends LinearOpMode
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorLift = hardwareMap.dcMotor.get("motorLift");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
-        motorFlywheel = hardwareMap.dcMotor.get("motorFlywheel");
+        motorSpringshot = hardwareMap.dcMotor.get("motorFlywheel");
 
         // Set drive motor directions
         reverseDrive(false);
@@ -81,15 +81,15 @@ abstract class Master extends LinearOpMode
         motorFR.setMaxSpeed(2700);
         motorBL.setMaxSpeed(2700);
         motorBR.setMaxSpeed(2700);
-        motorFlywheel.setMaxSpeed(800);
+        motorSpringshot.setMaxSpeed(800);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorSpringshot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        motorFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorSpringshot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         servoGrabberRight = hardwareMap.servo.get("servoGrabberRight");
         servoGrabberLeft = hardwareMap.servo.get("servoGrabberLeft");
@@ -224,7 +224,7 @@ abstract class Master extends LinearOpMode
         motorBR.setPower(0.0);
     }
 
-    void setFlywheelPowerAndAngle(double distanceToGoal)
+    /*void setFlywheelPowerAndAngle(double distanceToGoal)
     {
         // Convert from mm to meters for math
         distanceToGoal /= 1000;
@@ -251,7 +251,7 @@ abstract class Master extends LinearOpMode
         // Set motor power and servo position
         motorFlywheel.setPower(power);
         servoFlywheelAngle.setPosition(position);
-    }
+    }*/
 
     // Truncates numbers to fit displays better. Not recommended for numbers that span many
     // magnitudes. Also consider the decimal point character.

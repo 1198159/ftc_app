@@ -47,9 +47,9 @@ public class AutonomousCompetition extends MasterAutonomous
                 case PARK_CENTER:
                     parkOnObjective(Objectives.PARK_CENTER);
                     break;
-                case SHOOT_CENTER:
+                /*case SHOOT_CENTER:
                     shootInCenter();
-                    break;
+                    break;*/
             }
         }
 
@@ -241,7 +241,7 @@ public class AutonomousCompetition extends MasterAutonomous
     // TODO: Test me
     // Shoots balls into the center vortex. Should only be used as the first objective, because
     // robot will be placed correctly at start. Robot's position won't be as accurate later on
-    private void shootInCenter()
+    /*private void shootInCenter()
     {
         double goalX;
         double goalY;
@@ -277,7 +277,7 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // Stop flywheel
         motorFlywheel.setPower(0.0);
-    }
+    }*/
 
     // Drives robot with coordinates relative to beacon. Parameters are coordinates intrinsic to
     // beacon, which are then converted to extrinsic coordinates to which the robot drives
