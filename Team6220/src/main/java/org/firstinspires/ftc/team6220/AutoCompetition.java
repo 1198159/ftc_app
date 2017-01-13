@@ -219,14 +219,12 @@ public class AutoCompetition extends MasterAutonomous
             pause(1200);
 
             //presses beacon 1
-            pause(1000);
+            pause(500);
             vuforiaAlign(true, true, 1.524, 90.0);
-
-            drive.moveRobot(0.0, 0.2, 90.0);
-            pause(1000);
 
             stopAllDriveMotors();
 
+            pause(500);
             AlignWithBeacon(true, 1.524);
 
             drive.moveRobot(0.0, 0.1, 90.0);
@@ -323,23 +321,6 @@ public class AutoCompetition extends MasterAutonomous
         if (alliance == Alliance.BLUE && routineOption == RoutineOption.PARKANDCAPBALL)
         {
 
-        }
-    }
-
-    //gives the launcher time to update its state machine
-    void pauseWhileUpdating(double time)
-    {
-        while(opModeIsActive() && time > 0)
-        {
-            double eTime = timer.seconds() - lTime;
-            lTime = timer.seconds();
-            time -= eTime;
-
-            telemetry.addData("eTime:", eTime);
-            telemetry.addData("Time Remaining:", time);
-            updateCallback(eTime);
-            telemetry.update();
-            idle();
         }
     }
 }
