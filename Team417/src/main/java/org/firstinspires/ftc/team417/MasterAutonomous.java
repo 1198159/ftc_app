@@ -598,7 +598,7 @@ abstract class MasterAutonomous extends MasterOpMode
             telemetry.log().add("executing");
             telemetry.update();
 // calls pivot move function here
-            pivotMove(robotErrorX, robotErrorY, errorAngle, 0.6, 3); // 0.5 speed, 3 second timeout
+            pivotMove(robotErrorX, robotErrorY, errorAngle, 0.6, 3); // speed, 3 second timeout
             telemetry.log().add("done");
             telemetry.update();
 
@@ -829,14 +829,14 @@ abstract class MasterAutonomous extends MasterOpMode
         Kpivot = 1.0/60.0;
         TOL_ANGLE = 2;
 
-        motorLauncher.setPower(0.7);
+        motorLauncher.setPower(0.5);
         if (isRedTeam)
         {
-            pivot(-43, 0.8);
+            pivot(-41, 0.8);
         }
         else
         {
-            pivot(48, 0.8);
+            pivot(50, 0.8);
         }
 
         //pause(1000);
