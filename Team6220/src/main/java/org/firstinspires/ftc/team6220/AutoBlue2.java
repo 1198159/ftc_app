@@ -32,14 +32,26 @@ public class AutoBlue2 extends MasterAutonomous
         //vuforia is not reliably available yet, so we must use encoders at first
         //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
 
-        drive.moveRobot(0.25, 0.0, 180.0);
-        pause(800);
-
-        stopAllDriveMotors();
-
-        //shoots a ball
+        //shoots ball 1
         launcher.pullback();
-        pauseWhileUpdating(3.0);
+        pauseWhileUpdating(6.0);
+        launcher.launchParticle();
+        pauseWhileUpdating(2.0);
+        launcher.pullBackMotor.setPower(0.0);
+        //
+
+        //loads ball 2
+        collectorMotor.setPower(-1.0);
+        collectorServo.setPosition(0.0);
+        pause(300);
+        collectorMotor.setPower(0.0);
+        collectorServo.setPosition(0.5);
+        pause(600);
+        //
+
+        //shoots ball 2
+        launcher.pullback();
+        pauseWhileUpdating(6.0);
         launcher.loadParticle();
         pauseWhileUpdating(2.0);
         launcher.launchParticle();
@@ -47,7 +59,7 @@ public class AutoBlue2 extends MasterAutonomous
         launcher.pullBackMotor.setPower(0.0);
         //
 
-        drive.moveRobot(0.8, -0.5, 0.0);
+        /*drive.moveRobot(0.8, -0.5, 0.0);
         pause(1500);
 
         stopAllDriveMotors();
@@ -86,6 +98,6 @@ public class AutoBlue2 extends MasterAutonomous
         pause(1500);
 
         stopAllDriveMotors();
-        //
+        //*/
     }
 }

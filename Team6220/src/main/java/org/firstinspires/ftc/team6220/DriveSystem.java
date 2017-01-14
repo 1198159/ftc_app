@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
+import java.util.Timer;
+
 /*
     Contains the robot's drive assemblies, and gives them power or velocity targets based upon robot velocity, power, or position targets.
 
@@ -162,6 +164,7 @@ public class DriveSystem implements ConcurrentOperation
                     + Math.signum(assemblies[corner].location.y) * requestedMotion.x         //assemblies[corner].location.y works as sine of the angle of each motor
                     + Math.signum(assemblies[corner].location.x) * requestedMotion.y         //assemblies[corner].location.x works as cosine of the angle of each motor
                     ;
+            //currentOpMode.telemetry.addData("etime: ", )
         }
         //scales values so that they will remain in proportion in the case that they would "overflow"; e.g. [0.4,0.6,1.0,2.0] becomes [0.2,0.3,0.5,1.0]
         double scalingFactor = 1.0;

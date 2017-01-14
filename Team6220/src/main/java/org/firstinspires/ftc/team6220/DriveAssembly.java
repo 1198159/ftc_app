@@ -15,7 +15,7 @@ public class DriveAssembly
     public double wheelRadius;
     //this value is only for andymark 20 motors; should be changed if used for other motors
     public static final int encoderTicks = 560;
-    public double encoderCorrectionFactor = 1.0;//correct for mismatch or reversed gearboxes  //CodeReview: make this final so it's a constant
+    public double encoderCorrectionFactor = 1.0;  //correct for mismatch or reversed gearboxes
     private int lastEncoderValue = 0;
     private double lastReadTime = 0;
     public Transform2D location;
@@ -29,7 +29,7 @@ public class DriveAssembly
     //construct a DriveAssembly with values added
     public DriveAssembly(DcMotor m, Transform2D t, double gear, double radius,double cFactor)
     {
-        this.initialize(m, t, gear, radius,cFactor);
+        this.initialize(m, t, gear, radius, cFactor);
     }
 
     public void initialize(DcMotor m, Transform2D t, double gear, double radius, double cFactor)

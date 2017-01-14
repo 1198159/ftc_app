@@ -90,7 +90,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         //our robot uses an omni drive, so our motors are positioned at 45 degree angles to motor positions on a normal drive.
         //                                                                             mtr,                          x,    y,  rot,  gear, radius, correction factor
-        driveAssemblies[BACK_RIGHT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"),  new Transform2D(1.0,  1.0, 135), 1.0, 0.1016, 1.0);
+        driveAssemblies[BACK_RIGHT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorBackRight"),  new Transform2D(1.0, 1.0, 135), 1.0, 0.1016, 1.0);
         driveAssemblies[BACK_LEFT]   = new DriveAssembly(hardwareMap.dcMotor.get("motorBackLeft"),   new Transform2D(-1.0,  1.0, 225), 1.0, 0.1016, 1.0);
         driveAssemblies[FRONT_LEFT]  = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontLeft"),  new Transform2D(-1.0, -1.0, 315), 1.0, 0.1016, 1.0);
         driveAssemblies[FRONT_RIGHT] = new DriveAssembly(hardwareMap.dcMotor.get("motorFrontRight"), new Transform2D(1.0,  -1.0,  45), 1.0, 0.1016, 1.0);
@@ -99,7 +99,7 @@ abstract public class MasterOpMode extends LinearOpMode
         collectorMotor = hardwareMap.dcMotor.get("motorCollector");
         collectorServo = hardwareMap.servo.get("servoCollector");
         gateServo = hardwareMap.servo.get("servoCollectorGate");
-        gateServo.setPosition(0.5);
+        gateServo.setPosition(Constants.GATE_SERVO_DEPLOYED_POSITION);
         collectorServo.setPosition(0.5);
 
         //TODO Must be disabled if motor encoders are not correctly reporting
