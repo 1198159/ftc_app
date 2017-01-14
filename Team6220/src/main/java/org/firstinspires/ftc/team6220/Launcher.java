@@ -28,8 +28,6 @@ public class Launcher implements ConcurrentOperation
 
     private boolean isLaunching = false;
 
-    //private int loopcounter=0;
-
     private int launchCount = 0;
     private int currentLaunchTargetStart = 0;
     private double lst = 0.0;
@@ -138,7 +136,6 @@ public class Launcher implements ConcurrentOperation
             {
                 pullBackMotor.setPower(0.0);
             }
-
         }
 
         //if launch requested and already pulled back

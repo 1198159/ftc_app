@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     Set up aligned with wall and with launcher pointed toward center vortex
 */
 @Autonomous(name="RED Launch Particle to Center", group="6220")
-public class AutoRedLaunchParticle extends MasterTeleOp
+public class AutoRedLaunchParticle extends MasterAutonomous
 {
     double taskElapsedTime = 0;
     @Override
@@ -55,22 +55,6 @@ public class AutoRedLaunchParticle extends MasterTeleOp
         pauseWhileUpdating(0.5);
 
 
-
-    }
-    void pauseWhileUpdating(double time)
-    {
-        while(opModeIsActive() && time > 0)
-        {
-            double eTime = timer.seconds() - lTime;
-            lTime = timer.seconds();
-            time -= eTime;
-
-            telemetry.addData("eTime:", eTime);
-            telemetry.addData("Time Remaining:", time);
-            updateCallback(eTime);
-            telemetry.update();
-            idle();
-        }
 
     }
 }

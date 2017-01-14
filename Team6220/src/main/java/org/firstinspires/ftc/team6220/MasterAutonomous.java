@@ -3,6 +3,8 @@ package org.firstinspires.ftc.team6220;
 import android.graphics.Color;
 import android.support.annotation.BoolRes;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import java.util.concurrent.Delayed;
 
 /*
@@ -426,17 +428,16 @@ abstract public class MasterAutonomous extends MasterOpMode
     //gives the launcher time to update its state machine
     void pauseWhileUpdating(double time)
     {
-        while(opModeIsActive() && time >= 0)
+        ElapsedTime e = new ElapsedTime();
+        double lastInterval = e.seconds();
+        while(opModeIsActive() && e.seconds() < time)
         {
-            double eTime = timer.seconds() - lTime;
-            lTime = timer.seconds();
-            time -= eTime;
-
-            telemetry.addData("eTime:", eTime);
-            telemetry.addData("Time Remaining:", time);
-            updateCallback(eTime);
+            telemetry.addData("eTime:", e.seconds());
+            telemetry.addData("Time Remaining:", time - e.seconds());
+            updateCallback(e.seconds() - lastInterval);
             telemetry.update();
             idle();
+            lastInterval = e.seconds() - lastInterval;
         }
     }
 }

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
     Set up aligned with wall and with launcher pointed toward center vortex
 */
 @Autonomous(name="BLUE Launch Particle to Center", group="6220")
-public class AutoBlueLaunchParticle extends MasterTeleOp
+public class AutoBlueLaunchParticle extends MasterAutonomous
 {
     double taskElapsedTime = 0;
     @Override
@@ -56,20 +56,5 @@ public class AutoBlueLaunchParticle extends MasterTeleOp
 
 
 
-    }
-    void pauseWhileUpdating(double time)
-    {
-        while(opModeIsActive() && time > 0)
-        {
-            double eTime = timer.seconds() - lTime;
-            lTime = timer.seconds();
-            time -= eTime;
-
-            telemetry.addData("eTime:", eTime);
-            telemetry.addData("Time Remaining:", time);
-            updateCallback(eTime);
-            telemetry.update();
-            idle();
-        }
     }
 }
