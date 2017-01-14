@@ -27,6 +27,8 @@ public class TeleOpCompetition extends MasterTeleOp
 
         waitForStart();
 
+        lTime = timer.seconds();
+
         while (opModeIsActive())
         {
             double eTime = timer.seconds() - lTime;

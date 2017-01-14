@@ -428,16 +428,19 @@ abstract public class MasterAutonomous extends MasterOpMode
     //gives the launcher time to update its state machine
     void pauseWhileUpdating(double time)
     {
-        ElapsedTime e = new ElapsedTime();
-        double lastInterval = e.seconds();
-        while(opModeIsActive() && e.seconds() < time)
+        lTime = timer.seconds();
+
+        while(opModeIsActive() && (time > 0) )
         {
-            telemetry.addData("eTime:", e.seconds());
-            telemetry.addData("Time Remaining:", time - e.seconds());
-            updateCallback(e.seconds() - lastInterval);
+            double eTime = timer.seconds() - lTime;
+            lTime = timer.seconds();
+            time -= eTime;
+            telemetry.addData("eTime:", eTime);
+            telemetry.addData("Time Remaining:", time);
+            updateCallback(eTime);
             telemetry.update();
             idle();
-            lastInterval = e.seconds() - lastInterval;
+
         }
     }
 }

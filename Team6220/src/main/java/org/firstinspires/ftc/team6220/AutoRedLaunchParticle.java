@@ -53,8 +53,5 @@ public class AutoRedLaunchParticle extends MasterAutonomous
         pauseWhileUpdating(0.8);
         drive.writeToMotors(new double[]{0.0, 0.0, 0.0, 0.0});
         pauseWhileUpdating(0.5);
-
-
-
     }
 }

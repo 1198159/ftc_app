@@ -8,12 +8,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
     Set up aligned with wall and with launcher pointed toward center vortex
 */
 @Autonomous(name="BLUE Launch Particle to Center", group="6220")
-public class AutoBlueLaunchParticle extends MasterAutonomous
-{
+public class AutoBlueLaunchParticle extends MasterAutonomous {
     double taskElapsedTime = 0;
+
     @Override
-    public void runOpMode() throws InterruptedException
-    {
+    public void runOpMode() throws InterruptedException {
         initializeHardware();
 
         waitForStart();
@@ -53,8 +52,5 @@ public class AutoBlueLaunchParticle extends MasterAutonomous
         pauseWhileUpdating(0.8);
         drive.writeToMotors(new double[]{0.0, 0.0, 0.0, 0.0});
         pauseWhileUpdating(0.5);
-
-
-
     }
 }

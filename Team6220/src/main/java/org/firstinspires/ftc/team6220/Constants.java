@@ -22,9 +22,9 @@ public class Constants
 
     public static final double GATE_SERVO_RETRACTED_POSITION = 0.48;
     public static final double GATE_SERVO_DEPLOYED_POSITION = 0.0;
-    public static final double GATE_SERVO_CLOSE_DELAY = 0.4;
+    public static final double GATE_SERVO_CLOSE_DELAY = 0.8;
 
-    public static final double BEACON_PRESS_OFFSET = 0.105;
+    public static final double BEACON_PRESS_OFFSET = 0.100;
 
 
 }

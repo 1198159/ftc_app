@@ -34,7 +34,7 @@ public class AutoBlue2 extends MasterAutonomous
 
         //shoots ball 1
         launcher.pullback();
-        pauseWhileUpdating(3.0);
+        pauseWhileUpdating(1.0);
         launcher.launchParticle();
         pauseWhileUpdating(2.0);
         launcher.pullBackMotor.setPower(0.0);
@@ -43,7 +43,7 @@ public class AutoBlue2 extends MasterAutonomous
         //loads ball 2
         collectorMotor.setPower(-1.0);
         collectorServo.setPosition(0.0);
-        pause(300);
+        pause(1000);
         collectorMotor.setPower(0.0);
         collectorServo.setPosition(0.5);
         pause(600);
@@ -51,18 +51,24 @@ public class AutoBlue2 extends MasterAutonomous
 
         //shoots ball 2
         launcher.pullback();
-        pauseWhileUpdating(3.0);
+        pauseWhileUpdating(1.0);
         launcher.loadParticle();
-        pauseWhileUpdating(2.0);
+        pauseWhileUpdating(1.0);
         launcher.launchParticle();
         pauseWhileUpdating(2.0);
         launcher.pullBackMotor.setPower(0.0);
         //
 
-        /*drive.moveRobot(0.8, -0.5, 0.0);
+        drive.moveRobot(-1.0, -0.5, 180.0);
         pause(1500);
 
         stopAllDriveMotors();
+
+        //pushes cap ball
+        turnTo(true, 90.0);
+
+        pause(500);
+        //
 
         turnTo(true, 0.0);
 
@@ -71,6 +77,7 @@ public class AutoBlue2 extends MasterAutonomous
 
         stopAllDriveMotors();
 
+        /*
         //presses beacon 1
         pause(500);
         vuforiaAlign(false, true, 1.524, 0.0);
@@ -83,21 +90,6 @@ public class AutoBlue2 extends MasterAutonomous
 
         stopAllDriveMotors();
         //
-
-        //pushes cap ball
-        drive.moveRobot(-0.1, -0.2, 90.0);
-        pause(2500);
-
-        stopAllDriveMotors();
-
-        turnTo(true, 135.0);
-
-        turnTo(true, 90.0);
-
-        drive.moveRobot(0.0, -0.2, 90.0);
-        pause(1500);
-
-        stopAllDriveMotors();
-        //*/
+        */
     }
 }
