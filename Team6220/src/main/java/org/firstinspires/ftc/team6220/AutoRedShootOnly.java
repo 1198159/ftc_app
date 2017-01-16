@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.team6220;
 
-import android.graphics.Color;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /*
@@ -9,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 */
 
 //todo: combine autonomous programs into one
-@Autonomous(name = "AutoRed2", group = "Autonomous")
-public class AutoRed2 extends MasterAutonomous
+@Autonomous(name = "AutoRedShootOnly", group = "Autonomous")
+public class AutoRedShootOnly extends MasterAutonomous
 {
     @Override
     public void runOpMode() throws InterruptedException
@@ -60,7 +58,7 @@ public class AutoRed2 extends MasterAutonomous
 
         pause(200);
         stopAllDriveMotors();
-
+       /*
         drive.moveRobot(-1.0, 0.0, 0.0);
         pause(1800);
 
@@ -79,7 +77,7 @@ public class AutoRed2 extends MasterAutonomous
 
         stopAllDriveMotors();
 
-        /*
+
         //presses beacon 1
         pause(500);
         vuforiaAlign(true, true, 1.524, 0.0);
@@ -91,7 +89,7 @@ public class AutoRed2 extends MasterAutonomous
         pause(2500);
 
         stopAllDriveMotors();
-        //*/
-
+        //
+        */
     }
 }

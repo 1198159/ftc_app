@@ -34,7 +34,7 @@ public class AutoBlue2 extends MasterAutonomous
 
         //shoots ball 1
         launcher.pullback();
-        pauseWhileUpdating(1.0);
+        pauseWhileUpdating(1.5);
         launcher.launchParticle();
         pauseWhileUpdating(2.0);
         launcher.pullBackMotor.setPower(0.0);
@@ -51,7 +51,7 @@ public class AutoBlue2 extends MasterAutonomous
 
         //shoots ball 2
         launcher.pullback();
-        pauseWhileUpdating(1.0);
+        pauseWhileUpdating(1.5);
         launcher.loadParticle();
         pauseWhileUpdating(1.0);
         launcher.launchParticle();
@@ -59,8 +59,11 @@ public class AutoBlue2 extends MasterAutonomous
         launcher.pullBackMotor.setPower(0.0);
         //
 
-        drive.moveRobot(-1.0, -0.5, 180.0);
-        pause(1500);
+        pause(200);
+        stopAllDriveMotors();
+
+        drive.moveRobot(-1.0, 0.0, 0.0);
+        pause(2000);
 
         stopAllDriveMotors();
 
@@ -72,7 +75,7 @@ public class AutoBlue2 extends MasterAutonomous
 
         turnTo(true, 0.0);
 
-        drive.moveRobot(0.0, 0.1, 0.0);
+        drive.moveRobot(0.2, -0.1, 0.0);
         pause(1200);
 
         stopAllDriveMotors();
@@ -88,8 +91,8 @@ public class AutoBlue2 extends MasterAutonomous
         drive.moveRobot(0.0, 0.1, 0.0);
         pause(2500);
 
-        stopAllDriveMotors();
-        //
-        */
+        stopAllDriveMotors();*/
+        //*/
+
     }
 }

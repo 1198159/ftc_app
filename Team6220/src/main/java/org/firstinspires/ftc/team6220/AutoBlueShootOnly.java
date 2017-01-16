@@ -1,27 +1,26 @@
 package org.firstinspires.ftc.team6220;
 
-import android.graphics.Color;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /*
-    Standard autonomous for red side
+    Standard autonomous for blue side
 */
 
 //todo: combine autonomous programs into one
-@Autonomous(name = "AutoRed2", group = "Autonomous")
-public class AutoRed2 extends MasterAutonomous
+
+@Autonomous(name = "AutoBlueShootOnly", group = "Autonomous")
+public class AutoBlueShootOnly extends MasterAutonomous
 {
     @Override
     public void runOpMode() throws InterruptedException
     {
         initializeAuto();
 
-        setRobotStartingOrientation(90.0);
+        setRobotStartingOrientation(180.0);
 
-        beaconActivationAngle = 90.0;
+        beaconActivationAngle = 0.0;
 
-        drive.robotLocation = new Transform2D(0.210, 2.395, 90.0);
+        drive.robotLocation = new Transform2D(2.395, 0.210, 180.0);
 
         waitForStart();
 
@@ -60,21 +59,21 @@ public class AutoRed2 extends MasterAutonomous
 
         pause(200);
         stopAllDriveMotors();
-
+        /*
         drive.moveRobot(-1.0, 0.0, 0.0);
-        pause(1800);
+        pause(2000);
 
         stopAllDriveMotors();
 
         //pushes cap ball
-        turnTo(true, 180.0);
+        turnTo(true, 90.0);
 
         pause(500);
         //
 
-        turnTo(true, 90.0);
+        turnTo(true, 0.0);
 
-        drive.moveRobot(-0.2, 0.0, 0.0);
+        drive.moveRobot(0.2, -0.1, 0.0);
         pause(1200);
 
         stopAllDriveMotors();
@@ -82,15 +81,15 @@ public class AutoRed2 extends MasterAutonomous
         /*
         //presses beacon 1
         pause(500);
-        vuforiaAlign(true, true, 1.524, 0.0);
+        vuforiaAlign(false, true, 1.524, 0.0);
 
         pause(500);
-        AlignWithBeacon(true, 1.524);
+        AlignWithBeacon(false, 1.524);
 
         drive.moveRobot(0.0, 0.1, 0.0);
         pause(2500);
 
-        stopAllDriveMotors();
+        stopAllDriveMotors();*/
         //*/
 
     }
