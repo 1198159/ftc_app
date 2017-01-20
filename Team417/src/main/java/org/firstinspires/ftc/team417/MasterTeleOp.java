@@ -101,7 +101,7 @@ public class MasterTeleOp extends MasterOpMode
            }
 
 // move particle servo
-           servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.8));
+           servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.95));
            servoForks.setPosition(gamepad2.left_stick_y);
            motorLauncher.setPower(Range.clip(gamepad2.right_trigger, 0, 0.7));
 

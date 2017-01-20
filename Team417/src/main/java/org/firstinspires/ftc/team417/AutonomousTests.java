@@ -393,6 +393,8 @@ public class AutonomousTests extends MasterAutonomous
 
         pause(100);
 
+        move(0, -300, 0.5, 3); // back up
+
         if (autoRuntime.milliseconds() < 28000)
         {
             shootParticlesAfterBeacons();

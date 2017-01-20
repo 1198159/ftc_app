@@ -824,7 +824,6 @@ abstract class MasterAutonomous extends MasterOpMode
 
     public void shootParticlesAfterBeacons() throws InterruptedException
     {
-        move(0, -300, 0.5, 3); // back up
 
         Kpivot = 1.0/60.0;
         TOL_ANGLE = 2;
