@@ -2,7 +2,7 @@ package org.firstinspires.ftc.team417;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Autonomous Tests 2", group = "Swerve")
+@Autonomous(name="Autonomous Tests Move", group = "Swerve")
 // @Disabled
 
 public class AutonomousTestsMove extends MasterAutonomous
@@ -130,42 +130,19 @@ public class AutonomousTestsMove extends MasterAutonomous
         //     pause(startDelay);
         VuforiaNav.getLocation(targetIndex);
 
-        //pause(delay);
+        // setting for pivot Vuforia
+        TOL_ANGLE = 2.0;
+        VUFORIA_TOL_ANGLE = 2.0;
+        TOL = 40;
+        Kmove = 1.0/1200.0;
+        Kpivot = 1.0/140.0;
+        MINSPEED = 0.3;
 
-        /*
-        while (opModeIsActive()) {
-
-            VuforiaNav.getLocation();
-            telemetry.addData("tracking ", VuforiaNav.isVisible() ? "Visible" : "Not Visible");
-            if (VuforiaNav.lastLocation != null)
-            {
-                telemetry.addData("location ", format(VuforiaNav.lastLocation));
-            }
-
-            telemetry.update();
-            //pause(500);
-        }
-        */
-
-
-        // shoot twice
-        motorLauncher.setPower(0.7);
-        pause(1500);
-        servoParticle.setPosition(0.8);
-        pause(400);
-        servoParticle.setPosition(0.0);
-        pause(1200);
-        servoParticle.setPosition(0.8);
-        pause(400);
-        servoParticle.setPosition(0.0);
-        motorLauncher.setPower(0.0);
-
-        pause(20000);
-
-        move(0, -2149, 0.7, 4);
-        pause(500);
-        move(0, -100, 0.4, 3);
-
+        telemetry.addData("Path", "shift right");
+        telemetry.update();
+        move(100, 0, 0.3, 3); // shift right
+        pause(3000);
+        move(-100, 0, 0.3, 3);
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
