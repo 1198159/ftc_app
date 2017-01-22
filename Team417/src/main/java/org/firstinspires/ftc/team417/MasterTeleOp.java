@@ -103,7 +103,9 @@ public class MasterTeleOp extends MasterOpMode
 // move particle servo
            servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.95));
            servoForks.setPosition(gamepad2.left_stick_y);
-           motorLauncher.setPower(Range.clip(gamepad2.right_trigger, 0, 0.7));
+           motorLauncherSpeed = Range.clip(gamepad2.right_trigger, 0, 0.7);
+           motorLauncher.setPower(motorLauncherSpeed);
+           //motorLauncher.setPower(Range.clip(gamepad2.right_trigger, 0, 0.7));
 
            // if just pressed and previous time wasn't pressed, for reverse mode
            if (gamepad1.left_bumper && !isLeftBumperPushed)
@@ -282,7 +284,6 @@ public class MasterTeleOp extends MasterOpMode
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // caution, no encoder
 
         motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
