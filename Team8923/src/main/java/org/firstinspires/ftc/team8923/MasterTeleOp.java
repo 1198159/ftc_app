@@ -1,17 +1,11 @@
 package org.firstinspires.ftc.team8923;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 /**
  * This class contains all objects and methods that should be accessible by all TeleOpModes
  */
 abstract class MasterTeleOp extends Master
 {
-    private ElapsedTime fingerTimer = new ElapsedTime();
-    private int springshotTarget = 0;
+    private int catapultTarget = 0;
 
     void driveMecanumTeleOp()
     {
@@ -56,26 +50,6 @@ abstract class MasterTeleOp extends Master
         // If no button is pressed, stop!
         else
             motorLift.setPower(0);
-
-        if(gamepad2.a)
-            servoLiftHolder.setPosition(ServoPositions.LIFT_RELEASE.pos);
-        else if(gamepad2.b)
-            servoLiftHolder.setPosition(ServoPositions.LIFT_STOW.pos);
-    }
-
-    // Closes and opens grabber servos to grab and release cap ball
-    void grabCapBall()
-    {
-        if(gamepad2.right_bumper)
-        {
-            servoGrabberRight.setPosition(ServoPositions.GRABBER_GRAB.pos);
-            servoGrabberLeft.setPosition(ServoPositions.GRABBER_GRAB.pos);
-        }
-        if(gamepad2.left_bumper)
-        {
-            servoGrabberRight.setPosition(ServoPositions.GRABBER_RELEASE.pos);
-            servoGrabberLeft.setPosition(ServoPositions.GRABBER_RELEASE.pos);
-        }
     }
 
     // Runs collector. Can be run forwards and backwards
@@ -86,41 +60,16 @@ abstract class MasterTeleOp extends Master
         motorCollector.setPower((gamepad2.right_trigger - gamepad2.left_trigger) * speedFactor);
     }
 
-    // We want to be able to shoot from various distances, so this sets the motor power and servo
-    // position based on the desired distance
-    /*void controlFlywheel()
+    void controlCatapult()
     {
-        // Set motor power and servo position based on various distances
-        if(gamepad2.x)
-            setFlywheelPowerAndAngle(400);
-        else if(gamepad2.y)
-            setFlywheelPowerAndAngle(800);
-        else if(gamepad2.b)
-            setFlywheelPowerAndAngle(1200);
-        // Stop flywheel
-        else if(gamepad2.a)
-            motorFlywheel.setPower(0.0);
-
-        // Shoot ball
-        if(gamepad2.start)
-        {
-            servoFinger.setPosition(ServoPositions.FINGER_EXTEND.pos);
-            fingerTimer.reset();
-        }
-        // Retract finger after this many milliseconds
-        if(fingerTimer.milliseconds() > 500)
-            servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
-    }*/
-
-    void controlSpringshot()
-    {
-        if(gamepad2.x && !motorSpringshot.isBusy())
+        // TODO: Add a touch sensor to ensure the catapult is in sync
+        if(gamepad2.x && !motorCatapult.isBusy())
         {
             // 1680 is the number of ticks per revolution fo the output shaft of a NeveRest 60 gearmotor
-            // We are using two of these revolutions because the motor is geared 2 to 1
-            springshotTarget += 1680 * 2;
-            motorSpringshot.setTargetPosition(springshotTarget);
-            motorSpringshot.setPower(1.0);
+            // We are using two of these revolutions because the motor is geared 3 to 1
+            catapultTarget += 1680 * 3;
+            motorCatapult.setTargetPosition(catapultTarget);
+            motorCatapult.setPower(1.0);
         }
     }
 }

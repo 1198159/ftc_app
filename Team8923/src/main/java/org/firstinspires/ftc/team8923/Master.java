@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 /*
  * This class contains all objects and methods that should be accessible by all OpModes
@@ -18,14 +17,10 @@ abstract class Master extends LinearOpMode
     DcMotor motorBR = null;
     DcMotor motorLift = null;
     DcMotor motorCollector = null;
-    DcMotor motorSpringshot = null;
+    DcMotor motorCatapult = null;
 
-    Servo servoGrabberLeft = null;
-    Servo servoGrabberRight = null;
-    Servo servoFinger = null;
-    Servo servoFlywheelAngle = null;
     Servo servoBeaconPusher = null;
-    Servo servoLiftHolder = null;
+    Servo servoCapBallHolder = null;
 
     double headingOffset = 0.0;
 
@@ -42,16 +37,10 @@ abstract class Master extends LinearOpMode
 
     enum ServoPositions
     {
-        FLYWHEEL_STOW(0.0),
-        FINGER_RETRACT(0.7),
-        FINGER_EXTEND(0.35),
         BEACON_RETRACT(0.15),
         BEACON_EXTEND(0.80),
-        GRABBER_STOW(0.7),
-        GRABBER_GRAB(0.55),
-        GRABBER_RELEASE(0.0),
-        LIFT_RELEASE(0.0),
-        LIFT_STOW(0.5);
+        CAP_BALL_HOLD(0.0),
+        CAP_BALL_RELEASE(1.0);
 
         public double pos;
         ServoPositions(double i)
@@ -69,7 +58,7 @@ abstract class Master extends LinearOpMode
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorLift = hardwareMap.dcMotor.get("motorLift");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
-        motorSpringshot = hardwareMap.dcMotor.get("motorFlywheel");
+        motorCatapult = hardwareMap.dcMotor.get("motorFlywheel");
 
         // Set drive motor directions
         reverseDrive(false);
@@ -81,32 +70,21 @@ abstract class Master extends LinearOpMode
         motorFR.setMaxSpeed(2700);
         motorBL.setMaxSpeed(2700);
         motorBR.setMaxSpeed(2700);
-        motorSpringshot.setMaxSpeed(800);
+        motorCatapult.setMaxSpeed(2700);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorSpringshot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        motorSpringshot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        servoGrabberRight = hardwareMap.servo.get("servoGrabberRight");
-        servoGrabberLeft = hardwareMap.servo.get("servoGrabberLeft");
-        servoFinger = hardwareMap.servo.get("servoFinger");
-        servoFlywheelAngle = hardwareMap.servo.get("servoFlywheelAngle");
         servoBeaconPusher = hardwareMap.servo.get("servoBeaconPusher");
-        servoLiftHolder = hardwareMap.servo.get("servoLiftHolder");
+        servoCapBallHolder = hardwareMap.servo.get("servoCapBallHolder");
 
-        servoGrabberLeft.setDirection(Servo.Direction.REVERSE);
-
-        servoGrabberRight.setPosition(ServoPositions.GRABBER_STOW.pos);
-        servoGrabberLeft.setPosition(ServoPositions.GRABBER_STOW.pos);
-        servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
-        servoFlywheelAngle.setPosition(ServoPositions.FLYWHEEL_STOW.pos);
         servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
-        servoLiftHolder.setPosition(ServoPositions.LIFT_STOW.pos);
+        servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_RELEASE.pos);
 
+        // Drivers need to get data quickly, and this doesn't take up too much bandwidth
         telemetry.setMsTransmissionInterval(50);
     }
 
@@ -137,10 +115,9 @@ abstract class Master extends LinearOpMode
     // Sends information to Driver Station screen for drivers to see
     void sendTelemetry()
     {
-        //TODO: Change to most useful information
+        //TODO: Add more debug info
         // Drive motor info
         telemetry.addData("Reversed", reverseDrive);
-        telemetry.addData("Grabbers L/R", "" + servoGrabberLeft.getPosition() + servoGrabberRight.getPosition());
 
         telemetry.addData("FL Enc", formatNumber(motorFL.getCurrentPosition()));
         telemetry.addData("FR Enc", formatNumber(motorFR.getCurrentPosition()));
@@ -159,9 +136,6 @@ abstract class Master extends LinearOpMode
     // this method, and may need to use some math. 0 degrees represents forward
     void driveMecanum(double driveAngle, double drivePower, double turnPower)
     {
-        // A drive power over 1 doesn't make sense
-        drivePower = Range.clip(drivePower, -1, 1);
-
         // Calculate x and y components of drive power, where y is forward (0 degrees) and x is right (-90 degrees)
         double x = drivePower * -Math.sin(Math.toRadians(driveAngle));
         double y = drivePower * Math.cos(Math.toRadians(driveAngle));
@@ -223,35 +197,6 @@ abstract class Master extends LinearOpMode
         motorBL.setPower(0.0);
         motorBR.setPower(0.0);
     }
-
-    /*void setFlywheelPowerAndAngle(double distanceToGoal)
-    {
-        // Convert from mm to meters for math
-        distanceToGoal /= 1000;
-        // Acceleration due to gravity
-        double g = 9.8;
-        // Calculate vertical velocity using energy: vY = sqrt(2gh) where h is 2 meters
-        double vY = Math.sqrt(2 * g * 2);
-        // Calculate the time taken to reach the top of the arc using: a = v / t
-        double flyTime = vY / g;
-        // Calculate horizontal velocity needed to reach goal: vX = x / t
-        double vX= distanceToGoal / flyTime;
-        // vTotal = sqrt(vX ^ 2 + vY ^ 2)
-        double velocity = Math.sqrt(Math.pow(vX, 2) + Math.pow(vY, 2));
-        // Calculate angle required to shoot into goal. vX and vY are flipped to get angle from vertical
-        double angle = Math.toDegrees(Math.atan2(vX, vY));
-
-        // Calculate motor power and servo position based on velocity and angle required
-        double power = Range.scale(velocity, 0, 6.3, 0, 1); // 15 m/s is max launching speed of flywheel
-        double position = Range.scale(angle, 0, 60, 0, 1); // Servo has a 3:1 gear ratio, so adjust angle
-
-        telemetry.log().add("Power" + power);
-        telemetry.log().add("PositionZ" + position);
-
-        // Set motor power and servo position
-        motorFlywheel.setPower(power);
-        servoFlywheelAngle.setPosition(position);
-    }*/
 
     // Truncates numbers to fit displays better. Not recommended for numbers that span many
     // magnitudes. Also consider the decimal point character.
