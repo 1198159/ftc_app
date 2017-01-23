@@ -29,6 +29,7 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorFrontRight = null;
     DcMotor motorBackRight = null;
     DcMotor motorLift = null;
+    DcMotor motorLift2 = null;
     Servo servoParticle = null;
     Servo servoForks = null;
     DcMotor motorLauncher = null;
@@ -61,6 +62,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
         motorLift = hardwareMap.dcMotor.get("motorLift");
+        motorLift2 = hardwareMap.dcMotor.get("motorLift2");
         servoParticle = hardwareMap.servo.get("servoParticle");
         servoForks = hardwareMap.servo.get("servoForks");
         motorLauncher = hardwareMap.dcMotor.get("motorLauncher");
@@ -76,6 +78,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorLauncher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -83,11 +86,12 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        motorLauncher.setDirection(DcMotor.Direction.REVERSE);
+        //motorLauncher.setDirection(DcMotor.Direction.REVERSE);
 
         motorFrontLeft.setMaxSpeed(MAX_SPEED);
         motorFrontRight.setMaxSpeed(MAX_SPEED);
@@ -103,6 +107,7 @@ abstract public class MasterOpMode extends LinearOpMode
         servoParticle.setPosition(0);
         servoForks.setPosition(0);
         motorLift.setPower(0);
+        motorLift2.setPower(0);
         motorLauncher.setPower(0);
         motorCollector.setPower(0);
 

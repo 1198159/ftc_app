@@ -3,39 +3,40 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-/**
- * Created by user on 1/8/2017.
- */
 @TeleOp(name="TeleOpTests", group = "Swerve")
 public class TeleOpTests extends LinearOpMode
 {
-    DcMotor motor;
+    DcMotor motorLauncher;
     double startPos;
     double endPos;
     double difPos;
 
+    // TODO: change config of the one motor file from "motor" to "motorLauncher"
 
     public void runOpMode()
     {
-        // Connect to motor (Assume standard left wheel)
-        motor = hardwareMap.dcMotor.get("motor");
+        // Connect to motor
+        motorLauncher = hardwareMap.dcMotor.get("motorLauncher");
 
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //motorLauncher.setDirection(DcMotor.Direction.REVERSE);
+        motorLauncher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         //motor.setMaxSpeed(1230); // set to ticks per second
-        motor.setMaxSpeed(1157); // set to ticks per second
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLauncher.setMaxSpeed(1157); // set to ticks per second
+        //motorLauncher.setMaxSpeed(800);
+        motorLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Wait for the start button
-        telemetry.addData(">", "Press Start to run Motor" );
+        telemetry.addData(">", "Press Start to run Motor");
         telemetry.update();
 
         waitForStart();
 
-        startPos = motor.getCurrentPosition();
-        motor.setPower(0.75);
+        startPos = motorLauncher.getCurrentPosition();
+        motorLauncher.setPower(1.0);
         sleep(10000);
-        endPos = motor.getCurrentPosition();
-        motor.setPower(0);
+        endPos = motorLauncher.getCurrentPosition();
+        motorLauncher.setPower(0);
         difPos = endPos - startPos;
         telemetry.addData("startPos", startPos);
         telemetry.addData("endPos", endPos);

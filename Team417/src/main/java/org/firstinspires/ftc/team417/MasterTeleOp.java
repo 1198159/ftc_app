@@ -36,7 +36,7 @@ public class MasterTeleOp extends MasterOpMode
     double startAngle;
     double currentAngle;
     double imuAngle;
-    final double LIFT_POWER = 0.9;
+    final double LIFT_POWER = 0.8;
 
     double motorLauncherSpeed = 0;
     double motorLauncherSetSpeed = 0;
@@ -85,25 +85,34 @@ public class MasterTeleOp extends MasterOpMode
                if (gamepad2.dpad_up)
                {
                     motorLift.setPower(LIFT_POWER);
+                    motorLift2.setPower(LIFT_POWER);
                }
                else if (gamepad2.dpad_down)
                {
                     motorLift.setPower(-LIFT_POWER);
+                    motorLift2.setPower(-LIFT_POWER);
                }
                else
                {
                     motorLift.setPower(0);
+                    motorLift2.setPower(0);
                }
            }
            else
            {
                motorLift.setPower(0);
+               motorLift2.setPower(0);
            }
 
 // move particle servo
            servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.95));
            servoForks.setPosition(gamepad2.left_stick_y);
-           motorLauncherSpeed = Range.clip(gamepad2.right_trigger, 0, 0.7);
+
+           // HIGH SPEED FOR MOTOR LAUNCHER IS 0.7, LOW SPEED IS 0.4 (held at least half way down)
+           if (gamepad2.right_trigger > 0.5) motorLauncherSpeed = 0.7;
+           else if (gamepad2.left_trigger > 0.5) motorLauncherSpeed = 0.4;
+           else motorLauncherSpeed = 0;
+
            motorLauncher.setPower(motorLauncherSpeed);
            //motorLauncher.setPower(Range.clip(gamepad2.right_trigger, 0, 0.7));
 
@@ -169,6 +178,7 @@ public class MasterTeleOp extends MasterOpMode
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
         motorLift.setPower(0);
+        motorLift2.setPower(0);
         motorCollector.setPower(0);
     }
 
@@ -284,6 +294,7 @@ public class MasterTeleOp extends MasterOpMode
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // caution, no encoder
 
         motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -298,7 +309,9 @@ public class MasterTeleOp extends MasterOpMode
         motorFrontLeft.setDirection(DcMotor.Direction.FORWARD);
         motorBackLeft.setDirection(DcMotor.Direction.FORWARD);
 
+        // TODO: check if the new motor have to be reversed or not
         motorLift.setDirection(DcMotor.Direction.REVERSE);
+        //motorLift2.setDirection(DcMotor.Direction.REVERSE);
         motorCollector.setDirection(DcMotor.Direction.REVERSE);
 
         // Set up telemetry data
