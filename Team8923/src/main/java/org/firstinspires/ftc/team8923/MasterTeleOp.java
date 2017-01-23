@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team8923;
 
+import com.qualcomm.robotcore.util.Range;
+
 /**
  * This class contains all objects and methods that should be accessible by all TeleOpModes
  */
@@ -9,12 +11,6 @@ abstract class MasterTeleOp extends Master
 
     void driveMecanumTeleOp()
     {
-        // Set slow mode if desired. 4 seems to be a good divisor for TeleOp
-        if(gamepad1.dpad_down)
-            slowModeDivisor = 3.0;
-        else if(gamepad1.dpad_up)
-            slowModeDivisor = 1.0;
-
         // Reverse drive if desired
         if(gamepad1.start)
             reverseDrive(false);
@@ -29,6 +25,32 @@ abstract class MasterTeleOp extends Master
         double turnPower = -gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
 
         driveMecanum(angle, power, turnPower);
+    }
+
+    // TODO: Test
+    void driveAroundCapBall()
+    {
+        // Reverse drive if desired
+        if(gamepad1.start)
+            reverseDrive(false);
+        if(gamepad1.back)
+            reverseDrive(true);
+
+        double turnPower = -gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
+
+        // Distance from center of robot to center of cap ball
+        double radius = 0.5;
+        // Maximum rotation rate of robot
+        double maxOmega = 1;
+        // Find desired rotation rate from scaling joystick
+        double omega = Range.scale(turnPower, -1.0, 1.0, -maxOmega, maxOmega);
+        // Calculate tangential velocity from equation: v=wr
+        double velocity = omega * radius;
+        // Either go left or right
+        double driveAngle = Math.signum(turnPower) * 90;
+
+        // Give values to  drive method
+        driveMecanum(driveAngle, velocity, turnPower);
     }
 
     // Extends and retracts beacon pusher

@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name = "TeleOp Competition")
 public class TeleOpCompetition extends MasterTeleOp
 {
+    private boolean capBallDriveMode = false;
+
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -17,8 +19,19 @@ public class TeleOpCompetition extends MasterTeleOp
 
         while(opModeIsActive())
         {
+            // Select drive mode
+            if(gamepad1.dpad_down)
+                capBallDriveMode = true;
+            else if(gamepad1.dpad_up)
+                capBallDriveMode = false;
+
+            // Run drive mode
+            if(!capBallDriveMode)
+                driveMecanumTeleOp();
+            else if(capBallDriveMode)
+                driveAroundCapBall();
+
             // Run all of the mechanisms
-            driveMecanumTeleOp();
             controlBeaconPusher();
             runLift();
             runCollector();
