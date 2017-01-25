@@ -17,6 +17,9 @@ abstract public class MasterTeleOp extends MasterOpMode
     //takes driver 1 stick input and uses it to move the robot
     void driveRobotWithJoysticks(double xMotionAxis, double yMotionAxis, double rotationAxis)
     {
+        double eTime = timer.seconds() - lTime;
+        lTime = timer.seconds();
+
         //factor changing magnitude of vertical and horizontal movement
         double tFactor;
         //factor changing magnitude of rotational movement
@@ -36,7 +39,7 @@ abstract public class MasterTeleOp extends MasterOpMode
 
         //logic that senses whether the driver is attempting to turn.  If he is not, the robot
         //adjusts itself to ensure its heading is correct
-        if(false)// (Math.abs(pilotInputCurve.getOuput(rotationAxis) * rFactor) < Constants.MINIMUM_TURNING_POWER)
+        if (false)// (Math.abs(pilotInputCurve.getOuput(rotationAxis) * rFactor) < Constants.MINIMUM_TURNING_POWER)
         {
             //todo: make sure driving at constant heading works
             drive.moveRobotAtConstantHeading(pilotInputCurve.getOuput(xMotionAxis) * tFactor,
@@ -52,5 +55,7 @@ abstract public class MasterTeleOp extends MasterOpMode
                     pilotInputCurve.getOuput(yMotionAxis) * tFactor,
                     pilotInputCurve.getOuput(rotationAxis) * rFactor);
         }
+
+        telemetry.addData("eTime: ", eTime);
     }
 }

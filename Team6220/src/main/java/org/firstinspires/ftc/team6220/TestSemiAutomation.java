@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name="Test Semi-Automation", group="6220")
 public class TestSemiAutomation extends MasterTeleOp
 {
-    double lTime = 0;
     @Override
     public void runOpMode() throws InterruptedException
     {

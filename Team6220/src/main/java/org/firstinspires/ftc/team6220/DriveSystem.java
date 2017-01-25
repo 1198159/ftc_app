@@ -177,7 +177,7 @@ public class DriveSystem implements ConcurrentOperation
         return SequenceUtilities.scalarMultiply(rawPowers, 1/scalingFactor);
     }
 
-    //@TODO code duplicate; incorporate both getMotorPowers into a single function accounting for heading
+    //todo: code duplicate; incorporate both getMotorPowers into a single function accounting for heading
     //ensures robot will drive straight while moving
     public double[] getMotorPowersAccountingForHeading(Transform2D requestedMotion, double targetHeading)
     {
@@ -194,6 +194,8 @@ public class DriveSystem implements ConcurrentOperation
             requestedMotion.rot = Math.signum(requestedMotion.rot);
         }
 
+        //data necessary for debugging
+        currentOpMode.telemetry.addData("PID filter value: ", requestedMotion.rot);
         currentOpMode.telemetry.addData("headingDiff: ", currentOpMode.normalizeRotationTarget(targetHeading, currentAngle));
 
         //todo: see beginning of MasterOpMode
@@ -201,7 +203,8 @@ public class DriveSystem implements ConcurrentOperation
         for (int corner = 0; corner < 4; corner++)
         {
             rawPowers[corner] =
-                    requestedMotion.rot
+                    //todo: check to see if sign on requestedMotion.rot is correct
+                    -requestedMotion.rot
                             + Math.signum(assemblies[corner].location.y) * requestedMotion.x         //assemblies[corner].location.y works as sine of the angle of each motor
                             + Math.signum(assemblies[corner].location.x) * requestedMotion.y         //assemblies[corner].location.x works as cosine of the angle of each motor
             ;
