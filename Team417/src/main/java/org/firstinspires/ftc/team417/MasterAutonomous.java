@@ -548,7 +548,7 @@ abstract class MasterAutonomous extends MasterOpMode
 
 
     // a combination of both the align and pivot function (WITH VUFORIA) using pivot move
-    public void alignPivotVuforia(double speed, double distAway, double timeout)
+    public void alignPivotVuforia(double speed, double distAwayX, double distAwayY, double timeout)
     {
         float xPos;
         float yPos;
@@ -593,12 +593,13 @@ abstract class MasterAutonomous extends MasterOpMode
             robotErrorX = errorX * Math.cos(Math.toRadians(targetAngle)) + errorY * Math.sin(Math.toRadians(targetAngle));
             robotErrorY = -errorX * Math.sin(Math.toRadians(targetAngle)) + errorY * Math.cos(Math.toRadians(targetAngle));
             // shift position back 25 inches away from target image
-            robotErrorY -= distAway;
+            robotErrorY -= distAwayY;
+            robotErrorX += distAwayX;
 
             telemetry.log().add("executing");
             telemetry.update();
 // calls pivot move function here
-            pivotMove(robotErrorX, robotErrorY, errorAngle, 0.6, 3); // speed, 3 second timeout
+            pivotMove(robotErrorX, robotErrorY, errorAngle, speed, timeout); // speed, 3 second timeout
             telemetry.log().add("done");
             telemetry.update();
 
