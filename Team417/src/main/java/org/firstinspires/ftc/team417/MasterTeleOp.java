@@ -36,7 +36,7 @@ public class MasterTeleOp extends MasterOpMode
     double startAngle;
     double currentAngle;
     double imuAngle;
-    final double LIFT_POWER = 0.8;
+    final double LIFT_POWER = 1.0;
 
     double motorLauncherSpeed = 0;
     double motorLauncherSetSpeed = 0;
@@ -89,8 +89,8 @@ public class MasterTeleOp extends MasterOpMode
                }
                else if (gamepad2.dpad_down)
                {
-                    motorLift.setPower(-LIFT_POWER);
-                    motorLift2.setPower(-LIFT_POWER);
+                    motorLift.setPower(-LIFT_POWER / 2.0);
+                    motorLift2.setPower(-LIFT_POWER / 2.0);
                }
                else
                {
@@ -105,7 +105,7 @@ public class MasterTeleOp extends MasterOpMode
            }
 
 // move particle servo
-           servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.95));
+           servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.7));
            servoForks.setPosition(gamepad2.left_stick_y);
 
            // HIGH SPEED FOR MOTOR LAUNCHER IS 0.7, LOW SPEED IS 0.4 (held at least half way down)
@@ -293,8 +293,6 @@ public class MasterTeleOp extends MasterOpMode
         motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorLift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // caution, no encoder
 
         motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);

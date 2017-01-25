@@ -85,9 +85,10 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorLift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         motorLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorLift2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
