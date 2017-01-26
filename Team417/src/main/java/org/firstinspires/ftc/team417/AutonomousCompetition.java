@@ -164,7 +164,7 @@ public class AutonomousCompetition extends MasterAutonomous
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
-        alignPivotVuforia(targetAngle, 0, 600, 4);
+        alignPivotVuforia(0.6, 0, 650, 10);
         pause(50);
 
         do
@@ -184,8 +184,8 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // setting for accurate shift over to the right/left beacon
         TOL = 40;
-        TOL_ANGLE = 3.0;
-        VUFORIA_TOL_ANGLE = 3.0;
+        TOL_ANGLE = 2.0;
+        VUFORIA_TOL_ANGLE = 2.0;
 
 // shift left or right before pushing button
         if (beaconColor == 0)   // if left side beacon is blue
@@ -194,14 +194,14 @@ public class AutonomousCompetition extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                alignPivotVuforia(0.5, 100, 600, 3); // shift right
+                alignPivotVuforia(0.5, 100, 650, 3); // shift right
                 PushButton();
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                alignPivotVuforia(0.5, -18, 600, 3); // shift left
+                alignPivotVuforia(0.5, -18, 650, 3); // shift left
                 PushButton();
             }
         }
@@ -211,14 +211,14 @@ public class AutonomousCompetition extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                alignPivotVuforia(0.5, -18, 600, 3); // shift left
+                alignPivotVuforia(0.5, -18, 650, 3); // shift left
                 PushButton();
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                alignPivotVuforia(0.5, 100, 600, 3); // shift right
+                alignPivotVuforia(0.5, 100, 650, 3); // shift right
                 PushButton();
             }
         }
@@ -255,9 +255,9 @@ public class AutonomousCompetition extends MasterAutonomous
 
 
         // for big move left or right
-        TOL = 40;
-        TOL_ANGLE = 1.0;
-        Kmove = 1.0/2000.0;
+        TOL = 100;
+        TOL_ANGLE = 2.0;
+        Kmove = 1.0/1500.0; // 2000.0
         Kpivot = 1.0/50.0;
 // shift to new target!!
         telemetry.addData("Path", "shift to new target");
@@ -291,21 +291,22 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // setting for scan
         TOL = 40;
-        TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
+        TOL_ANGLE = 5.0; // tol angle for scan is 3, not accurate
         Kmove = 1.0/1200.0;
-        Kpivot = 1.0/450.0;
+        Kpivot = 1.0/140.0;
 
         telemetry.addData("Path", "scanning for target");
         telemetry.update();
         pivotDetectTarget(30, 5);
 
-        // setting for align pivot Vuforia
+        // setting for align pivot Vuforia (new tolerances is bigger)
+        TOL = 100;
         TOL_ANGLE = 5.0;
-        VUFORIA_TOL_ANGLE = 5.0; // for rough adjustment
+        VUFORIA_TOL_ANGLE = 5.0;
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
-        alignPivotVuforia(targetAngle, 0, 600, 4);
+        alignPivotVuforia(0.6, 0, 650, 4);
         pause(50);
 
         // detect beacon color of left side: 0 is blue, 1 is red
@@ -313,8 +314,8 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // setting for accurate shift over to the right/left beacon
         TOL = 40;
-        TOL_ANGLE = 3.0;
-        VUFORIA_TOL_ANGLE = 3.0;
+        TOL_ANGLE = 2.0;
+        VUFORIA_TOL_ANGLE = 2.0;
 
 // shift left or right before pushing button
         if (beaconColor == 0)   // if left side beacon is blue
@@ -323,14 +324,14 @@ public class AutonomousCompetition extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                alignPivotVuforia(0.5, 100, 600, 3); // shift right
+                alignPivotVuforia(0.5, 100, 650, 3); // shift right
                 PushButton();
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                alignPivotVuforia(0.5, -18, 600, 3); // shift left
+                alignPivotVuforia(0.5, -18, 650, 3); // shift left
                 PushButton();
             }
         }
@@ -340,14 +341,14 @@ public class AutonomousCompetition extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                alignPivotVuforia(0.5, -18, 600, 3); // shift left
+                alignPivotVuforia(0.5, -18, 650, 3); // shift left
                 PushButton();
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                alignPivotVuforia(0.5, 100, 600, 3); // shift right
+                alignPivotVuforia(0.5, 100, 650, 3); // shift right
                 PushButton();
             }
         }
@@ -360,6 +361,7 @@ public class AutonomousCompetition extends MasterAutonomous
         pause(100);
 
         move(0, -300, 0.5, 3); // back up
+
 
         if (autoRuntime.milliseconds() < 28000)
         {

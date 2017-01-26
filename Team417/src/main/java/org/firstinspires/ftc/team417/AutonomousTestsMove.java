@@ -131,7 +131,7 @@ public class AutonomousTestsMove extends MasterAutonomous
         VuforiaNav.getLocation(targetIndex);
 
         // setting for pivot Vuforia
-        TOL_ANGLE = 2.0;
+        TOL_ANGLE = 1.0;
         VUFORIA_TOL_ANGLE = 2.0;
         TOL = 40;
         Kmove = 1.0/1200.0;
@@ -140,9 +140,12 @@ public class AutonomousTestsMove extends MasterAutonomous
 
         telemetry.addData("Path", "shift right");
         telemetry.update();
-        move(100, 0, 0.3, 3); // shift right
+        //move(100, 0, 0.4, 3); // shift right
+        pivotMove(100, 0, 0, 0.3, 3);
         pause(3000);
-        move(-100, 0, 0.3, 3);
+        //move(-100, 0, 0.4, 3);
+        pivotMove(-100, 0, 0, 0.3, 3);
+
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }

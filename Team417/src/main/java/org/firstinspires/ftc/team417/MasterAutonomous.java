@@ -98,7 +98,7 @@ abstract class MasterAutonomous extends MasterOpMode
     // drive forwards/backwards/horizontal left and right function
     public void move(double x, double y, double speed, double timeout) throws InterruptedException
     {
-        MINSPEED = 0.25;
+        //MINSPEED = 0.25;
         //Kmove = 1.0/1200.0;
         //TOL = 20;
 
@@ -406,7 +406,7 @@ abstract class MasterAutonomous extends MasterOpMode
     // angle has to be small otherwise won't work, this function moves and pivots robot
     public void pivotMove(double x, double y, double pivotAngle, double speed, double timeout)
     {
-        MINSPEED = 0.25;
+        MINSPEED = 0.35;
         // run with encoder mode
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -855,7 +855,7 @@ abstract class MasterAutonomous extends MasterOpMode
         pause(70);
         telemetry.addData("Path", "pushing button");
         telemetry.update();
-        move(0, 311, 0.25, 3); // push the button
+        move(0, 361, 0.25, 3); // push the button
         telemetry.log().add(String.format("pushed button"));
     }
 
