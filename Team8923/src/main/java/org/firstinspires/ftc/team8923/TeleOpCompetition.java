@@ -36,6 +36,7 @@ public class TeleOpCompetition extends MasterTeleOp
             runLift();
             runCollector();
             controlCatapult();
+            controlHopper();
 
             sendTelemetry();
             idle();
