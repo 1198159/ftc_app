@@ -195,7 +195,7 @@ public class DriveSystem implements ConcurrentOperation
         }
 
         //data necessary for debugging
-        currentOpMode.telemetry.addData("PID filter value: ", requestedMotion.rot);
+        currentOpMode.telemetry.addData("PID Filter value: ", requestedMotion.rot);
         currentOpMode.telemetry.addData("headingDiff: ", currentOpMode.normalizeRotationTarget(targetHeading, currentAngle));
 
         //todo: see beginning of MasterOpMode

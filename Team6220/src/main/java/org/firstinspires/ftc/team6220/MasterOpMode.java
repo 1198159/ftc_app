@@ -129,7 +129,7 @@ abstract public class MasterOpMode extends LinearOpMode
                         new PIDFilter(0.9, 0.0005, -0.1),    //x location control
                         new PIDFilter(0.9, 0.0005, -0.1),    //y location control
                         new PIDFilter(Constants.TURNING_POWER_FACTOR, 0.0000007, -0.001),  //rotation control
-                        new PIDFilter(0.5 * Constants.TURNING_POWER_FACTOR, 0.0, -0.001)}); //rotation control without I value for driving straight
+                        new PIDFilter(Constants.TURNING_POWER_FACTOR, 0.0, 0.0)}); //rotation control without I value for driving straight
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
