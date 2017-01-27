@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team8923;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 /**
@@ -7,7 +8,9 @@ import com.qualcomm.robotcore.util.Range;
  */
 abstract class MasterTeleOp extends Master
 {
+    private ElapsedTime timer = new ElapsedTime();
     private int catapultTarget = 0;
+    private boolean hopperServoMoving = false;
 
     void driveMecanumTeleOp()
     {
@@ -82,14 +85,36 @@ abstract class MasterTeleOp extends Master
         motorCollector.setPower((gamepad2.right_trigger - gamepad2.left_trigger) * speedFactor);
     }
 
+    void controlHopper()
+    {
+        if (gamepad2.left_bumper || hopperServoMoving)
+        {
+            hopperServoMoving = true;
+            timer.startTime();
+            //TODO: add functionality for the catapult to come to a "cocked" position here?
+            if(!(timer.milliseconds() > 1000))
+            {
+                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH.pos);
+                if (timer.milliseconds() < 1000)
+                    return;
+            }
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+            if(timer.milliseconds() < 2000)
+                return;
+            timer.reset();
+            hopperServoMoving = false;
+        }
+    }
+
     void controlCatapult()
     {
+        telemetry.addData("Catapult isBusy() = ", motorCatapult.isBusy());
         // TODO: Add a touch sensor to ensure the catapult is in sync
-        if(gamepad2.x && !motorCatapult.isBusy())
+        if(gamepad2.right_bumper && Math.abs(motorCatapult.getCurrentPosition() - catapultTarget) < 10)
         {
-            // 1680 is the number of ticks per revolution fo the output shaft of a NeveRest 60 gearmotor
-            // We are using two of these revolutions because the motor is geared 3 to 1
-            catapultTarget += 1680 * 3;
+            // 1680 is the number of ticks per revolution for the output shaft of a NeveRest 60 gearmotor
+            // We are using 1.5 of these revolutions because the motor is geared 3 to 1
+            catapultTarget += 1680 * 1.5;
             motorCatapult.setTargetPosition(catapultTarget);
             motorCatapult.setPower(1.0);
         }

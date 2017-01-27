@@ -21,6 +21,7 @@ abstract class Master extends LinearOpMode
 
     Servo servoBeaconPusher = null;
     Servo servoCapBallHolder = null;
+    Servo servoHopperSweeper = null;
 
     double headingOffset = 0.0;
 
@@ -40,7 +41,9 @@ abstract class Master extends LinearOpMode
         BEACON_RETRACT(0.15),
         BEACON_EXTEND(0.80),
         CAP_BALL_HOLD(0.0),
-        CAP_BALL_RELEASE(1.0);
+        CAP_BALL_RELEASE(1.0),
+        HOPPER_SWEEP_BACK(0.0),
+        HOPPER_SWEEP_PUSH(0.7);
 
         public double pos;
         ServoPositions(double i)
@@ -58,7 +61,7 @@ abstract class Master extends LinearOpMode
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorLift = hardwareMap.dcMotor.get("motorLift");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
-        motorCatapult = hardwareMap.dcMotor.get("motorFlywheel");
+        motorCatapult = hardwareMap.dcMotor.get("motorCatapult");
 
         // Set drive motor directions
         reverseDrive(false);
@@ -77,12 +80,15 @@ abstract class Master extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorCatapult.setDirection(DcMotor.Direction.REVERSE);
 
         servoBeaconPusher = hardwareMap.servo.get("servoBeaconPusher");
         servoCapBallHolder = hardwareMap.servo.get("servoCapBallHolder");
+        servoHopperSweeper = hardwareMap.servo.get(("servoHopperSweeper"));
 
         servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
         servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_RELEASE.pos);
+        servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
 
         // Drivers need to get data quickly, and this doesn't take up too much bandwidth
         telemetry.setMsTransmissionInterval(50);
