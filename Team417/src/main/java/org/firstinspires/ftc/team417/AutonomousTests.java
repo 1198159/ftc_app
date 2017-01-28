@@ -187,7 +187,7 @@ public class AutonomousTests extends MasterAutonomous
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
-        alignPivotVuforia(targetAngle, 0, 600, 4);
+        alignPivotVuforia(0.6, 0, 600, 4);
         pause(50);
 
         // setting for pivot Vuforia
@@ -333,7 +333,7 @@ public class AutonomousTests extends MasterAutonomous
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
-        alignPivotVuforia(targetAngle, 0, 600, 4);
+        alignPivotVuforia(0.6, 0, 600, 4);
         pause(50);
 
         // setting for pivot Vuforia

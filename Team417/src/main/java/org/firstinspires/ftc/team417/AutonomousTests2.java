@@ -132,21 +132,9 @@ public class AutonomousTests2 extends MasterAutonomous
 
         //pause(delay);
 
-        /*
-        while (opModeIsActive()) {
+// GO FOR, SHOOT, FOR AGAIN
 
-            VuforiaNav.getLocation();
-            telemetry.addData("tracking ", VuforiaNav.isVisible() ? "Visible" : "Not Visible");
-            if (VuforiaNav.lastLocation != null)
-            {
-                telemetry.addData("location ", format(VuforiaNav.lastLocation));
-            }
-
-            telemetry.update();
-            //pause(500);
-        }
-        */
-
+        move(0, -457.2, 0.6, 3);
 
         // shoot twice
         motorLauncher.setPower(0.7);
@@ -162,9 +150,10 @@ public class AutonomousTests2 extends MasterAutonomous
 
         pause(20000);
 
-        move(0, -2149, 0.7, 4);
+        //move(0, -2149, 0.7, 4);
+        move(0, -1066.8, 0.7, 4);
         pause(500);
-        move(0, -100, 0.4, 3);
+        move(0, -50, 0.4, 3);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

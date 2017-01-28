@@ -138,6 +138,33 @@ public class AutonomousTestsMove extends MasterAutonomous
         Kpivot = 1.0/140.0;
         MINSPEED = 0.3;
 
+        TOL = 40;
+        TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
+        Kmove = 1.0/1200.0;
+        Kpivot = 1.0/150.0;
+
+        telemetry.addData("Path", "scanning for target");
+        telemetry.update();
+        pivotDetectTarget(30, 5);
+
+        // setting for align pivot Vuforia
+        TOL_ANGLE = 3.0;
+        VUFORIA_TOL_ANGLE = 3.0;
+
+        telemetry.addData("Path", "align pivot vuf");
+        telemetry.update();
+        alignPivotVuforia(targetAngle, 0, 600, 4);
+        pause(50);
+
+        // setting for pivot Vuforia
+        TOL_ANGLE = 2.0;
+        VUFORIA_TOL_ANGLE = 2.0;
+        telemetry.addData("Path", "pivotVuforia");
+        telemetry.update();
+        pivotVuforia(targetAngle, 0.5);
+
+
+/*
         telemetry.addData("Path", "shift right");
         telemetry.update();
         //move(100, 0, 0.4, 3); // shift right
@@ -145,7 +172,7 @@ public class AutonomousTestsMove extends MasterAutonomous
         pause(3000);
         //move(-100, 0, 0.4, 3);
         pivotMove(-100, 0, 0, 0.3, 3);
-
+*/
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }

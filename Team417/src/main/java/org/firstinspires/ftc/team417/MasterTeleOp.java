@@ -109,11 +109,25 @@ public class MasterTeleOp extends MasterOpMode
            servoForks.setPosition(gamepad2.left_stick_y);
 
            // HIGH SPEED FOR MOTOR LAUNCHER IS 0.7, LOW SPEED IS 0.4 (held at least half way down)
-           if (gamepad2.right_trigger > 0.5) motorLauncherSpeed = 0.7;
-           else if (gamepad2.left_trigger > 0.5) motorLauncherSpeed = 0.4;
-           else motorLauncherSpeed = 0;
+           if (gamepad2.right_trigger > 0.5) motorLauncherSetSpeed = 0.8;
+           else if (gamepad2.left_trigger > 0.5) motorLauncherSetSpeed = 0.6;
+           else motorLauncherSetSpeed = 0;
 
-           motorLauncher.setPower(motorLauncherSpeed);
+           if (runtime.milliseconds() > 100)
+           {
+               resetStartTime();
+               if (motorLauncherSpeed > motorLauncherSetSpeed && motorLauncherSpeed > 0) // shouldn't go negative
+               {
+                   motorLauncherSpeed -= 0.1;
+               }
+               else if (motorLauncherSpeed < motorLauncherSetSpeed)
+               {
+                   motorLauncherSpeed += 0.1;
+               }
+           }
+           motorLauncher.setPower(Range.clip(motorLauncherSpeed, 0, 0.8));
+
+
            //motorLauncher.setPower(Range.clip(gamepad2.right_trigger, 0, 0.7));
 
            // if just pressed and previous time wasn't pressed, for reverse mode
