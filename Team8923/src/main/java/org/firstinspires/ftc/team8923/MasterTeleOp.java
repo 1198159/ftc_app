@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.team8923;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 /**
@@ -9,8 +8,6 @@ import com.qualcomm.robotcore.util.Range;
  */
 abstract class MasterTeleOp extends Master
 {
-    private ElapsedTime hopperTimer = new ElapsedTime();
-
     void driveMecanumTeleOp()
     {
         // Reverse drive if desired
@@ -82,8 +79,8 @@ abstract class MasterTeleOp extends Master
         // Full speed is too fast
         double speedFactor = 0.6;
 
-        // Don't run collector while hopper sweeper is moving
-        if(hopperTimer.milliseconds() < 2.0)
+        // Don't run collector while hopper sweeper is pushing particles
+        if(servoHopperSweeper.getPosition() != ServoPositions.HOPPER_SWEEP_BACK.pos)
             return;
 
         motorCollector.setPower((gamepad2.right_trigger - gamepad2.left_trigger) * speedFactor);
@@ -91,19 +88,14 @@ abstract class MasterTeleOp extends Master
 
     void controlHopper()
     {
-        // Move sweeper forward when requested
+        // When the hopper has 2 particles, the servo doesn't need to move as far
         if(gamepad2.back)
-        {
-            hopperTimer.reset();
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
-        }
+        // When the hopper has 1 particle, the servo needs to move further
         else if(gamepad2.start)
-        {
-            hopperTimer.reset();
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
-        }
-        // Move sweeper back after a while
-        if(hopperTimer.milliseconds() > 1000)
+        // Move sweeper back
+        else
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
     }
 
