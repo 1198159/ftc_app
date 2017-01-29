@@ -9,8 +9,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 abstract class MasterTeleOp extends Master
 {
-    private ElapsedTime timer = new ElapsedTime();
-    private boolean hopperServoMoving = false;
+    private ElapsedTime hopperTimer = new ElapsedTime();
 
     void driveMecanumTeleOp()
     {
@@ -82,28 +81,30 @@ abstract class MasterTeleOp extends Master
     {
         // Full speed is too fast
         double speedFactor = 0.6;
+
+        // Don't run collector while hopper sweeper is moving
+        if(hopperTimer.milliseconds() < 2.0)
+            return;
+
         motorCollector.setPower((gamepad2.right_trigger - gamepad2.left_trigger) * speedFactor);
     }
 
     void controlHopper()
     {
-        if (gamepad2.left_bumper || hopperServoMoving)
+        // Move sweeper forward when requested
+        if(gamepad2.back)
         {
-            hopperServoMoving = true;
-            timer.startTime();
-            //TODO: add functionality for the catapult to come to a "cocked" position here?
-            if(!(timer.milliseconds() > 1000))
-            {
-                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH.pos);
-                if (timer.milliseconds() < 1000)
-                    return;
-            }
-            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
-            if(timer.milliseconds() < 2000)
-                return;
-            timer.reset();
-            hopperServoMoving = false;
+            hopperTimer.reset();
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
         }
+        else if(gamepad2.start)
+        {
+            hopperTimer.reset();
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+        }
+        // Move sweeper back after a while
+        if(hopperTimer.milliseconds() > 1000)
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
     }
 
     void controlCatapult()

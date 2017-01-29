@@ -46,7 +46,8 @@ abstract class Master extends LinearOpMode
         CAP_BALL_HOLD(1.0),
         CAP_BALL_RELEASE(0.0),
         HOPPER_SWEEP_BACK(0.0),
-        HOPPER_SWEEP_PUSH(0.7);
+        HOPPER_SWEEP_PUSH_FIRST(0.5),
+        HOPPER_SWEEP_PUSH_SECOND(0.8);
 
         public double pos;
         ServoPositions(double i)
