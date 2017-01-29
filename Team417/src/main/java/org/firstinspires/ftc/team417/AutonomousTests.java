@@ -153,16 +153,18 @@ public class AutonomousTests extends MasterAutonomous
 
 
 // START OF AUTONOMOUS
-        VUFORIA_TOL_ANGLE = 2;
-        TOL = 30;
-        TOL_ANGLE = 2;
+
+        TOL_ANGLE = 3.0;
+        VUFORIA_TOL_ANGLE = 3.0;
+        TOL = 60;
         Kmove = 1.0/1200.0;
-        Kpivot = 1.0/140.0;
+        Kpivot = 1/140.0;
+        MINSPEED = 0.35;
 
         telemetry.addData("Path", "start forwards");
         telemetry.update();
         // go towards target
-        move(0, startDist, 0.7, 3);
+        moveAverage(0, startDist, 0, 0.7, 3);
         pause(100);
 
         telemetry.addData("Path", "pivot 70");
@@ -172,7 +174,8 @@ public class AutonomousTests extends MasterAutonomous
         pause(200);
 
         // setting for scan
-        TOL = 40;
+        TOL = 30;
+        VUFORIA_TOL = 50;
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         Kmove = 1.0/1200.0;
         Kpivot = 1.0/140.0;
@@ -203,6 +206,8 @@ public class AutonomousTests extends MasterAutonomous
         }
         while (VuforiaNav.lastLocation == null);
 
+        // error came up here
+
 // detect beacon color of left side: 0 is blue, 1 is red
         int beaconColor = VuforiaNav.GetBeaconColor();
         telemetry.log().add(String.format("LeftSide: %f, RightSide: %f", VuforiaNav.leftColorHSV[0], VuforiaNav.rightColorHSV[0]));
@@ -217,21 +222,32 @@ public class AutonomousTests extends MasterAutonomous
         }
         telemetry.update();
 
+
 // shift left or right before pushing button
+
+        TOL_ANGLE = 3.0;
+        VUFORIA_TOL_ANGLE = 3.0;
+        TOL = 40;
+        Kmove = 1.0/1200.0;
+        Kpivot = 1/50.0;
+        MINSPEED = 0.35;
+
         if (beaconColor == 0)   // if left side beacon is blue
         {
             if (isRedTeam)     // red team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                move(100, 0, 0.3, 3); // shift right
+                //move(100, 0, 0.3, 3); // shift right
+                moveAverage(100, 0, 0, 0.7, 3);
                 PushButton();
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                move(-18, 0, 0.3, 4); // shift left used to be 38
+                //move(-18, 0, 0.3, 4); // shift left used to be 38
+                moveAverage(-18, 0, 0, 0.7, 3);
                 PushButton();
             }
         }
@@ -241,14 +257,16 @@ public class AutonomousTests extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                move(-18, 0, 0.3, 4); // shift left
+                //move(-18, 0, 0.3, 4); // shift left
+                moveAverage(-18, 0, 0, 0.7, 3);
                 PushButton();
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                move(100, 0, 0.3, 3); // shift right
+                //move(100, 0, 0.3, 3); // shift right
+                moveAverage(100, 0, 0, 0.7, 3);
                 PushButton();
             }
         }
@@ -259,6 +277,13 @@ public class AutonomousTests extends MasterAutonomous
         }
 
         pause(100);
+
+        TOL_ANGLE = 3.0;
+        VUFORIA_TOL_ANGLE = 3.0;
+        TOL = 60;
+        Kmove = 1.0/1200.0;
+        Kpivot = 1/140.0;
+        MINSPEED = 0.35;
         move(0, -250, 0.5, 3); // back up from button (or just back up)
 
         // determine next beacon target
@@ -293,35 +318,35 @@ public class AutonomousTests extends MasterAutonomous
         {
             if (isRedTeam) // move shorter
             {
-                //forwards(0, 1220, 0.6, 4);
-                pivotMove(1125, 65, 0, 0.7, 4); // 3 inches shorter
+                //pivotMove(1125, 65, 0, 0.7, 4); // 3 inches shorter
+                moveAverage(1125, 0, 0, 0.7, 4);
             }
             else // move longer
             {
-                //forwards(0, -1220, 0.6, 4);
-                pivotMove(-1220, 65, 0, 0.7, 4);
+                //pivotMove(-1220, 65, 0, 0.7, 4);
+                moveAverage(-1220, 0, 0, 0.7, 4);
             }
         }
         else if (beaconColor == 1) // if left side red
         {
             if (isRedTeam) // move longer
             {
-                //forwards(0, 1220, 0.6, 4);
-                pivotMove(1220, 65, 0, 0.7, 4);
+                //pivotMove(1220, 65, 0, 0.7, 4);
+                moveAverage(1220, 0, 0, 0.7, 4);
             }
             else // move shorter
             {
-                //forwards(0, -1220, 0.6, 4);
-                pivotMove(-1125, 65, 0, 0.7, 4);
+                //pivotMove(-1125, 65, 0, 0.7, 4);
+                moveAverage(-1125, 0, 0, 0.7, 4);
             }
         }
         pause(200);
 
-        // setting for scan
-        TOL = 40;
+        TOL = 30;
+        VUFORIA_TOL = 50;
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         Kmove = 1.0/1200.0;
-        Kpivot = 1.0/150.0;
+        Kpivot = 1.0/140.0;
 
         telemetry.addData("Path", "scanning for target");
         telemetry.update();
@@ -347,20 +372,29 @@ public class AutonomousTests extends MasterAutonomous
         beaconColor = VuforiaNav.GetBeaconColor();
 
         // shift left or right before pushing button
+        TOL_ANGLE = 3.0;
+        VUFORIA_TOL_ANGLE = 3.0;
+        TOL = 40;
+        Kmove = 1.0/1200.0;
+        Kpivot = 1/50.0;
+        MINSPEED = 0.35;
+
         if (beaconColor == 0)   // if left side beacon is blue
         {
             if (isRedTeam)     // red team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                move(100, 0, 0.3, 3); // shift right
+                //move(100, 0, 0.3, 3); // shift right
+                moveAverage(100, 0, 0, 0.7, 3);
                 PushButton();
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                move(-18, 0, 0.3, 4); // shift left
+                //move(-18, 0, 0.3, 4); // shift left
+                moveAverage(-18, 0, 0, 0.7, 3);
                 PushButton();
             }
         }
@@ -370,14 +404,16 @@ public class AutonomousTests extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                move(-18, 0, 0.3, 4); // shift left
+                //move(-18, 0, 0.3, 4); // shift left
+                moveAverage(-18, 0, 0, 0.7, 3);
                 PushButton();
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                move(100, 0, 0.3, 3); // shift right
+                //move(100, 0, 0.3, 3); // shift right
+                moveAverage(100, 0, 0, 0.7, 3);
                 PushButton();
             }
         }
@@ -388,6 +424,13 @@ public class AutonomousTests extends MasterAutonomous
         }
 
         pause(100);
+
+        TOL_ANGLE = 3.0;
+        VUFORIA_TOL_ANGLE = 3.0;
+        TOL = 60;
+        Kmove = 1.0/1200.0;
+        Kpivot = 1/140.0;
+        MINSPEED = 0.35;
 
         move(0, -300, 0.5, 3); // back up
 
