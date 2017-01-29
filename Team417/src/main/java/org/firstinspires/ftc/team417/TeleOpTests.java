@@ -24,7 +24,7 @@ public class TeleOpTests extends LinearOpMode
         //motor.setMaxSpeed(1230); // set to ticks per second
         motorLauncher.setMaxSpeed(1157); // set to ticks per second
         //motorLauncher.setMaxSpeed(800);
-        motorLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLauncher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Wait for the start button
         telemetry.addData(">", "Press Start to run Motor");
