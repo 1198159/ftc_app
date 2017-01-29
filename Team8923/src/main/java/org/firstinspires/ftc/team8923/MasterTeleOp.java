@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team8923;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -9,7 +10,6 @@ import com.qualcomm.robotcore.util.Range;
 abstract class MasterTeleOp extends Master
 {
     private ElapsedTime timer = new ElapsedTime();
-    private int catapultTarget = 0;
     private boolean hopperServoMoving = false;
 
     void driveMecanumTeleOp()
@@ -108,14 +108,45 @@ abstract class MasterTeleOp extends Master
 
     void controlCatapult()
     {
-        telemetry.addData("Catapult isBusy() = ", motorCatapult.isBusy());
-        // TODO: Add a touch sensor to ensure the catapult is in sync
-        if(gamepad2.right_bumper && Math.abs(motorCatapult.getCurrentPosition() - catapultTarget) < 10)
+        // Only control the catapult if it's done moving
+        if(Math.abs(motorCatapult.getCurrentPosition() - motorCatapult.getTargetPosition()) < 20)
         {
-            // 1680 is the number of ticks per revolution for the output shaft of a NeveRest 60 gearmotor
-            // We are using 1.5 of these revolutions because the motor is geared 3 to 1
-            catapultTarget += 1680 * 1.5;
-            motorCatapult.setTargetPosition(catapultTarget);
+            // 1680 ticks per motor revolution geared 3:1
+            int ticksPerCycle = 1680 * 3;
+
+            // Go to next arming location
+            if(gamepad2.left_bumper)
+            {
+                catapultCycle++;
+                int targetPosition = catapultZero + ticksPerCycle * catapultCycle;
+                motorCatapult.setTargetPosition(targetPosition);
+            }
+            // Run motor forward a bit to launch particle
+            else if(gamepad2.right_bumper)
+            {
+                int targetPosition = motorCatapult.getCurrentPosition() + 2000;
+                motorCatapult.setTargetPosition(targetPosition);
+            }
+        }
+
+        // As of right now, there is not a way to know if the catapult has been zeroed correctly.
+        // This code allows the driver to manually control the motor to set a zero location for
+        // reference, which is intended to be just before the catapult launches
+        if(Math.abs(gamepad2.right_stick_y) > 0.1)
+        {
+            motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorCatapult.setPower(-gamepad2.right_stick_y); // Y axis is flipped
+        }
+        // Return control to motor controller
+        else if(motorCatapult.getMode() == DcMotor.RunMode.RUN_USING_ENCODER)
+        {
+            // Set new zero location
+            catapultZero = motorCatapult.getCurrentPosition();
+            motorCatapult.setTargetPosition(catapultZero);
+            catapultCycle = 0;
+            motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // Motor will need power to move to next target when it's requested, but won't move yet
+            // because it's already at the target (zero location)
             motorCatapult.setPower(1.0);
         }
     }

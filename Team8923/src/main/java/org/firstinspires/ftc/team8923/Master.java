@@ -25,6 +25,9 @@ abstract class Master extends LinearOpMode
 
     double headingOffset = 0.0;
 
+    int catapultZero = 0;
+    int catapultCycle = 0;
+
     // Constants to be used in code. Measurements in millimeters
     private static final double GEAR_RATIO = 1.5; // Ratio of driven gear to driving gear
     private static final double TICKS_PER_MOTOR_REVOLUTION = 1120.0;
@@ -82,6 +85,8 @@ abstract class Master extends LinearOpMode
         motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorCatapult.setDirection(DcMotor.Direction.REVERSE);
 
+        catapultZero = motorCatapult.getCurrentPosition();
+
         servoBeaconPusher = hardwareMap.servo.get("servoBeaconPusher");
         servoCapBallHolder = hardwareMap.servo.get("servoCapBallHolder");
         servoHopperSweeper = hardwareMap.servo.get(("servoHopperSweeper"));
@@ -121,7 +126,11 @@ abstract class Master extends LinearOpMode
     // Sends information to Driver Station screen for drivers to see
     void sendTelemetry()
     {
-        //TODO: Add more debug info
+        telemetry.addData("Catapult Encoder", motorCatapult.getCurrentPosition());
+        telemetry.addData("Catapult Target", motorCatapult.getTargetPosition());
+        telemetry.addData("Catapult Power", motorCatapult.getPower());
+        telemetry.addData("Catapult Busy", motorCatapult.isBusy());
+
         // Drive motor info
         telemetry.addData("Reversed", reverseDrive);
 
