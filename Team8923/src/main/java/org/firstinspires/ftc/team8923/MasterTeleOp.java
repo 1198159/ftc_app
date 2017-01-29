@@ -80,6 +80,20 @@ abstract class MasterTeleOp extends Master
         // If no button is pressed, stop!
         else
             motorLift.setPower(0);
+
+        // TODO: Test
+        // Deploy lift semi-autonomously
+        if(gamepad1.b)
+        {
+            servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
+            sleep(250);
+            motorLift.setPower(1.0);
+            sleep(250);
+            motorLift.setPower(-1.0);
+            sleep(250);
+            motorLift.setPower(0.0);
+            servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
+        }
     }
 
     // Runs collector. Can be run forwards and backwards
