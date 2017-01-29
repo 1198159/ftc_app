@@ -41,10 +41,10 @@ abstract class Master extends LinearOpMode
 
     enum ServoPositions
     {
-        BEACON_RETRACT(0.15),
-        BEACON_EXTEND(0.80),
-        CAP_BALL_HOLD(0.0),
-        CAP_BALL_RELEASE(1.0),
+        BEACON_RETRACT(0.80),
+        BEACON_EXTEND(0.15),
+        CAP_BALL_HOLD(1.0),
+        CAP_BALL_RELEASE(0.0),
         HOPPER_SWEEP_BACK(0.0),
         HOPPER_SWEEP_PUSH(0.7);
 
@@ -70,6 +70,7 @@ abstract class Master extends LinearOpMode
         reverseDrive(false);
         // Some hardware person got the wiring backwards...
         motorLift.setDirection(DcMotor.Direction.REVERSE);
+        motorCollector.setDirection(DcMotor.Direction.REVERSE);
 
         // Our drive motors seem to run at this speed
         motorFL.setMaxSpeed(2700);
