@@ -19,6 +19,7 @@ public class TeleOpCompetition extends MasterTeleOp
 
         while(opModeIsActive())
         {
+            /* TODO: Add back in when cap ball drive mode has been fixed
             // Select drive mode
             if(gamepad1.dpad_down)
                 capBallDriveMode = true;
@@ -29,7 +30,8 @@ public class TeleOpCompetition extends MasterTeleOp
             if(!capBallDriveMode)
                 driveMecanumTeleOp();
             else if(capBallDriveMode)
-                driveAroundCapBall();
+                driveAroundCapBall();*/
+            driveMecanumTeleOp();
 
             // Run all of the mechanisms
             controlBeaconPusher();

@@ -16,6 +16,11 @@ abstract class MasterTeleOp extends Master
         if(gamepad1.back)
             reverseDrive(true);
 
+        if(gamepad1.dpad_down)
+            slowModeDivisor = 3.0;
+        else if(gamepad1.dpad_up)
+            slowModeDivisor = 1.0;
+
         double y = -gamepad1.left_stick_y; // Y axis is negative when up
         double x = gamepad1.left_stick_x;
 
@@ -38,15 +43,15 @@ abstract class MasterTeleOp extends Master
         double turnPower = -gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
 
         // Distance from center of robot to center of cap ball
-        double radius = 0.5;
+        double radius = 1.5;
         // Maximum rotation rate of robot
-        double maxOmega = 1;
+        double maxOmega = 1.0;
         // Find desired rotation rate from scaling joystick
         double omega = Range.scale(turnPower, -1.0, 1.0, -maxOmega, maxOmega);
         // Calculate tangential velocity from equation: v=wr
         double velocity = omega * radius;
         // Either go left or right
-        double driveAngle = Math.signum(turnPower) * 90;
+        double driveAngle = 90;
 
         // Give values to  drive method
         driveMecanum(driveAngle, velocity, turnPower);
