@@ -112,8 +112,9 @@ class VuforiaLocator
         targets[BLUE_RIGHT].setLocation(createMatrix(
                 TargetLocations.BLUE_RIGHT_X.val, TargetLocations.BLUE_RIGHT_Y.val, 0, 90, 0, -90));
 
-        // Set phone location on robot. Center of the camera is the origin
-        phoneLocation = createMatrix(0, 0, 0, 90, -90, -90);
+        // TODO: Phone shouldn't be rotated around y-axis, should it?
+        // Set phone location on robot. Center of the robot is the origin
+        phoneLocation = createMatrix(180, 180, 0, 90, -90, -90);
 
         // Setup listeners
         for(int i = 0; i < targets.length; i++)

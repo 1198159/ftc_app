@@ -283,6 +283,10 @@ public class AutonomousCompetition extends MasterAutonomous
     // beacon, which are then converted to extrinsic coordinates to which the robot drives
     private void driveRelativeToBeacon(double targetX, double targetY) throws InterruptedException
     {
+        // Beacon pusher and phone camera are offset from center of robot
+        targetX += 40;
+        targetY += 160;
+
         // Y input is always positive, but we need it to be negative for the math
         targetY *= -1;
 
