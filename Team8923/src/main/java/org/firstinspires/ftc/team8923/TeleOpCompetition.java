@@ -17,6 +17,8 @@ public class TeleOpCompetition extends MasterTeleOp
 
         waitForStart();
 
+        servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_UP.pos);
+
         while(opModeIsActive())
         {
             /* TODO: Add back in when cap ball drive mode has been fixed

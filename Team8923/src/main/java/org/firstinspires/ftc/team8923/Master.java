@@ -22,6 +22,7 @@ abstract class Master extends LinearOpMode
     Servo servoBeaconPusher = null;
     Servo servoCapBallHolder = null;
     Servo servoHopperSweeper = null;
+    Servo servoCollectorHolder = null;
 
     double headingOffset = 0.0;
 
@@ -47,7 +48,9 @@ abstract class Master extends LinearOpMode
         CAP_BALL_RELEASE(0.0),
         HOPPER_SWEEP_BACK(0.0),
         HOPPER_SWEEP_PUSH_FIRST(0.5),
-        HOPPER_SWEEP_PUSH_SECOND(0.8);
+        HOPPER_SWEEP_PUSH_SECOND(0.8),
+        COLLECTOR_HOLDER_DOWN(0.65),
+        COLLECTOR_HOLDER_UP(0.0);
 
         public double pos;
         ServoPositions(double i)
@@ -91,11 +94,13 @@ abstract class Master extends LinearOpMode
 
         servoBeaconPusher = hardwareMap.servo.get("servoBeaconPusher");
         servoCapBallHolder = hardwareMap.servo.get("servoCapBallHolder");
-        servoHopperSweeper = hardwareMap.servo.get(("servoHopperSweeper"));
+        servoHopperSweeper = hardwareMap.servo.get("servoHopperSweeper");
+        servoCollectorHolder = hardwareMap.servo.get("servoCollectorHolder");
 
         servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
         servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_RELEASE.pos);
         servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+        servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_DOWN.pos);
 
         // Drivers need to get data quickly, and this doesn't take up too much bandwidth
         telemetry.setMsTransmissionInterval(50);
