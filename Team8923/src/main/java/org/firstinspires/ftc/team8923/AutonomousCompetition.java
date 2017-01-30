@@ -47,9 +47,9 @@ public class AutonomousCompetition extends MasterAutonomous
                 case PARK_CENTER:
                     parkOnObjective(Objectives.PARK_CENTER);
                     break;
-                /*case SHOOT_CENTER:
+                case SHOOT_CENTER:
                     shootInCenter();
-                    break;*/
+                    break;
             }
         }
 
@@ -239,10 +239,12 @@ public class AutonomousCompetition extends MasterAutonomous
     }
 
     // TODO: Test me
-    // Shoots balls into the center vortex. Should only be used as the first objective, because
-    // robot will be placed correctly at start. Robot's position won't be as accurate later on
-    /*private void shootInCenter()
+    // Shoots balls into the center vortex
+    private void shootInCenter() throws InterruptedException
     {
+        // Distance from the goal at which the robot shoots
+        double shootingDistance = 1000;
+
         double goalX;
         double goalY;
 
@@ -261,23 +263,32 @@ public class AutonomousCompetition extends MasterAutonomous
             default: return;
         }
 
-        setFlywheelPowerAndAngle(calculateDistance(goalX - robotX, goalY - robotY));
+        /*
+         * A circle exists around the center goal from which the robot can shoot. The fastest way
+         * for the robot to get on that circle is to follow the radial line from the goal to the
+         * robot, then drive directly to/away from the goal. This point on the field is calculated,
+         * then the robot drives to that point.
+         */
+        // Find angle from robot to goal
+        double angleToGoal = Math.toDegrees(Math.atan2(goalY - robotY, goalX - robotX));
 
-        // Wait for servo to move and flywheel to speed up
-        sleep(1500);
+        // Find closest point to the robot on shooting circle
+        double shootPosX = goalX - Math.cos(Math.toRadians(angleToGoal)) * shootingDistance;
+        double shootPosY = goalY - Math.sin(Math.toRadians(angleToGoal)) * shootingDistance;
 
-        // Shoot twice
-        for(int i = 0; i < 2; i++)
-        {
-            servoFinger.setPosition(ServoPositions.FINGER_EXTEND.pos);
-            sleep(500); // Give servo time to move
-            servoFinger.setPosition(ServoPositions.FINGER_RETRACT.pos);
-            sleep(500); // Give servo time to move
-        }
+        // Go to shooting location
+        turnAndDrive(shootPosX, shootPosY);
 
-        // Stop flywheel
-        motorFlywheel.setPower(0.0);
-    }*/
+        // Catapult shoots 90 degrees from front of robot
+        turnToAngle(angleToGoal - 90);
+
+        // TODO: Make this better. This is just a test
+        // Launch 2 particles
+        motorCatapult.setTargetPosition( motorCatapult.getCurrentPosition() + 1680 * 3); // 1680 ticks per rev with 3:1 gear ratio
+        motorCatapult.setPower(1.0);
+        sleep(3000); // Wait for catapult to fire
+        motorCatapult.setPower(0.0);
+    }
 
     // Drives robot with coordinates relative to beacon. Parameters are coordinates intrinsic to
     // beacon, which are then converted to extrinsic coordinates to which the robot drives
