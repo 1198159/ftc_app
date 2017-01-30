@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team8923;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 /**
@@ -8,6 +9,9 @@ import com.qualcomm.robotcore.util.Range;
  */
 abstract class MasterTeleOp extends Master
 {
+    private ElapsedTime hopperTimer = new ElapsedTime();
+    private boolean hopperServoMoving = false;
+
     void driveMecanumTeleOp()
     {
         // Reverse drive if desired
@@ -93,9 +97,9 @@ abstract class MasterTeleOp extends Master
             servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
             sleep(250);
             motorLift.setPower(1.0);
-            sleep(250);
+            sleep(500);
             motorLift.setPower(-1.0);
-            sleep(250);
+            sleep(750);
             motorLift.setPower(0.0);
             servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
         }
@@ -108,8 +112,11 @@ abstract class MasterTeleOp extends Master
         double speedFactor = 0.6;
 
         // Don't run collector while hopper sweeper is pushing particles
-        if(servoHopperSweeper.getPosition() != ServoPositions.HOPPER_SWEEP_BACK.pos)
+        if(hopperServoMoving)
+        {
+            motorCollector.setPower(0);
             return;
+        }
 
         motorCollector.setPower((gamepad2.right_trigger - gamepad2.left_trigger) * speedFactor);
     }
@@ -118,13 +125,26 @@ abstract class MasterTeleOp extends Master
     {
         // When the hopper has 2 particles, the servo doesn't need to move as far
         if(gamepad2.back)
+        {
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
+            hopperTimer.reset();
+            hopperServoMoving = true;
+        }
         // When the hopper has 1 particle, the servo needs to move further
         else if(gamepad2.start)
+        {
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+            hopperTimer.reset();
+            hopperServoMoving = true;
+        }
         // Move sweeper back
         else
+        {
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+            if(hopperTimer.milliseconds() > 500)
+                hopperServoMoving = false;
+        }
+
     }
 
     void controlCatapult()
