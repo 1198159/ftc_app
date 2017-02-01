@@ -144,7 +144,6 @@ abstract class MasterTeleOp extends Master
             if(hopperTimer.milliseconds() > 500)
                 hopperServoMoving = false;
         }
-
     }
 
     void controlCatapult()
@@ -156,21 +155,31 @@ abstract class MasterTeleOp extends Master
          * that means that it hasn't yet been set. So we keep checking until the touch sensor stops
          * being depressed, and use that as the zero location.
          */
-        if(catapultZero == 0 && !catapultButton.isPressed())
-            catapultZero = motorCatapult.getCurrentPosition();
+        if(catapultZero == 0)
+        {
+            if(gamepad2.left_bumper)
+            {
+                motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                motorCatapult.setPower(1.0);
+            }
+            if(!catapultButton.isPressed())
+            {
+                catapultZero = motorCatapult.getCurrentPosition();
+                motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorCatapult.setTargetPosition(catapultZero);
+            }
+            // Don't run any other code until the armed location has been set
+            return;
+        }
 
         // Only control the catapult if it's done moving
-        if(Math.abs(motorCatapult.getCurrentPosition() - motorCatapult.getTargetPosition()) < 20)
+        if(catapultIsAtTarget())
         {
-            // 1680 ticks per motor revolution geared 3:1
-            int ticksPerCycle = 1680 * 3;
-
             // Go to next arming location
             if(gamepad2.left_bumper)
             {
-                catapultCycle++;
-                int targetPosition = catapultZero + ticksPerCycle * catapultCycle;
-                motorCatapult.setTargetPosition(targetPosition);
+                catapultZero += CATAPULT_TICKS_PER_CYCLE;
+                motorCatapult.setTargetPosition(catapultZero);
             }
             // Run motor forward a bit to launch particle
             else if(gamepad2.right_bumper)

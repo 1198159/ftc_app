@@ -3,7 +3,6 @@ package org.firstinspires.ftc.team8923;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 /*
  *  Autonomous OpMode for both alliances. The OpMode is setup with a gamepad during initialization,
@@ -286,45 +285,10 @@ public class AutonomousCompetition extends MasterAutonomous
         // Drop collector so the hopper isn't blocked
         servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_UP.pos);
 
-        // TODO: The code below here doesn't seem to work right; it seems to skip the loops. Fix me
-        // Zero the catapult
-        telemetry.log().add("Zeroing");
-        motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorCatapult.setPower(1.0);
-        while(!catapultButton.isPressed())
-        {
-            sendTelemetry();
-            idle();
-        }
-        catapultZero = motorCatapult.getCurrentPosition();
-        motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // Launch catapult and arm again
-        telemetry.log().add("Launching first");
-        motorCatapult.setTargetPosition(catapultZero + 1680 * 3);
-        while(Math.abs(motorCatapult.getCurrentPosition() - motorCatapult.getTargetPosition()) < 20)
-        {
-            sendTelemetry();
-            idle();
-        }
-
-        // Load next particle
-        telemetry.log().add("Moving servo");
-        servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
-        sleep(500);
-        servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
-        sleep(500);
-
-        // Launch catapult
-        telemetry.log().add("Launching second");
-        motorCatapult.setTargetPosition(catapultZero + 1680 * 3 + 3000);
-        while(Math.abs(motorCatapult.getCurrentPosition() - motorCatapult.getTargetPosition()) < 20)
-        {
-            sendTelemetry();
-            idle();
-        }
-
-        motorCatapult.setPower(0.0);
+        zeroCatapult();
+        armCatapult();
+        loadCatapult();
+        fireCatapult();
     }
 
     // Drives robot with coordinates relative to beacon. Parameters are coordinates intrinsic to
