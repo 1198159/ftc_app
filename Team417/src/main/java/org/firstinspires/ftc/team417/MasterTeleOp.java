@@ -71,6 +71,7 @@ public class MasterTeleOp extends MasterOpMode
            currentAngle = adjustAngles(currentAngle);
            */
 
+    /*
            isSwitchPressed = liftSwitch.getState();    //  Read the input pin
 
            if (gamepad2.b && !isBButtonPressed)
@@ -103,6 +104,9 @@ public class MasterTeleOp extends MasterOpMode
                motorLift.setPower(0);
                motorLift2.setPower(0);
            }
+      */
+           motorLift.setPower(-gamepad1.left_stick_y);
+           motorLift2.setPower(-gamepad1.left_stick_y);
 
 // move particle servo
            servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.7));
@@ -116,13 +120,14 @@ public class MasterTeleOp extends MasterOpMode
            if (runtime.milliseconds() > 100)
            {
                resetStartTime();
-               if (motorLauncherSpeed > motorLauncherSetSpeed && motorLauncherSpeed > 0) // shouldn't go negative
-               {
-                   motorLauncherSpeed -= 0.1;
-               }
-               else if (motorLauncherSpeed < motorLauncherSetSpeed)
+               if (motorLauncherSpeed < motorLauncherSetSpeed)
                {
                    motorLauncherSpeed += 0.1;
+               }
+               else if (motorLauncherSpeed > motorLauncherSetSpeed) // shouldn't go negative
+               {
+                   if (motorLauncherSpeed < 0.1) motorLauncherSpeed = 0.0;
+                   else motorLauncherSpeed -= 0.01;
                }
            }
            motorLauncher.setPower(Range.clip(motorLauncherSpeed, 0, 0.8));

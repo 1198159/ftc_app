@@ -221,7 +221,7 @@ abstract class MasterAutonomous extends MasterOpMode
             curTurnAngle = adjustAngles(curTurnAngle);
             error =  targetAngle - curTurnAngle;
             pivotSpeed = speed * Math.abs(error) * Kpivot;
-            pivotSpeed = Range.clip(pivotSpeed, 0.2, speed); // limit abs speed
+            pivotSpeed = Range.clip(pivotSpeed, MINSPEED, speed); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
 
 
@@ -714,8 +714,8 @@ abstract class MasterAutonomous extends MasterOpMode
             telemetry.log().add("executing");
             telemetry.update();
 // calls pivot move function here
-            //pivotMove(robotErrorX, robotErrorY, errorAngle, speed, timeout); // speed, 3 second timeout
-            moveAverage(robotErrorX, robotErrorY, errorAngle, speed, timeout); // speed, 3 second timeout
+            pivotMove(robotErrorX, robotErrorY, errorAngle, speed, timeout); // speed, 3 second timeout
+            //moveAverage(robotErrorX, robotErrorY, errorAngle, speed, timeout); // speed, 3 second timeout
             telemetry.log().add("done");
             telemetry.update();
 
@@ -944,27 +944,28 @@ abstract class MasterAutonomous extends MasterOpMode
 
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
-        Kpivot = 1/140.0;
+        Kpivot = 1/100.0;
         MINSPEED = 0.35;
 
-        motorLauncher.setPower(0.5);
+        motorLauncher.setPower(0.85);
         if (isRedTeam)
         {
-            pivot(-41, 0.8);
+            pivot(-47, 0.8);
         }
         else
         {
             pivot(50, 0.8);
         }
+        move(0, -420, 0.6, 2);
 
-        //pause(1000);
         servoParticle.setPosition(0.8);
         pause(300);
         servoParticle.setPosition(0.0);
-        pause(900);
+        pause(1500);
         servoParticle.setPosition(0.8);
         pause(300);
         servoParticle.setPosition(0.0);
+        pause(300);
         motorLauncher.setPower(0.0);
     }
 
@@ -973,7 +974,7 @@ abstract class MasterAutonomous extends MasterOpMode
         pause(70);
         telemetry.addData("Path", "pushing button");
         telemetry.update();
-        move(0, 300, 0.25, 3); // push the button, used to be 361mm forwards
+        move(0, 325, 0.25, 3); // push the button, used to be 361mm forwards
         telemetry.log().add(String.format("pushed button"));
     }
 

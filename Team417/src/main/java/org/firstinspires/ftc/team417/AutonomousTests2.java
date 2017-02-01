@@ -136,6 +136,7 @@ public class AutonomousTests2 extends MasterAutonomous
 
         move(0, -457.2, 0.6, 3);
 
+        /*
         // shoot twice
         motorLauncher.setPower(0.7);
         pause(1500);
@@ -146,6 +147,18 @@ public class AutonomousTests2 extends MasterAutonomous
         servoParticle.setPosition(0.8);
         pause(400);
         servoParticle.setPosition(0.0);
+        motorLauncher.setPower(0.0);
+*/
+
+        motorLauncher.setPower(0.85);
+        servoParticle.setPosition(0.8);
+        pause(300);
+        servoParticle.setPosition(0.0);
+        pause(1500);
+        servoParticle.setPosition(0.8);
+        pause(300);
+        servoParticle.setPosition(0.0);
+        pause(300);
         motorLauncher.setPower(0.0);
 
         pause(20000);

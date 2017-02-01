@@ -156,7 +156,7 @@ public class AutonomousTestsMove extends MasterAutonomous
         //     pause(startDelay);
         VuforiaNav.getLocation(targetIndex);
 
-
+/*
         // setting for pivot Vuforia
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
@@ -172,6 +172,18 @@ public class AutonomousTestsMove extends MasterAutonomous
         pause(3000);
         moveAverage(-100, 0, 0, 0.7, 3);
         //move(100, 0, 0.7, 3);
+*/
+
+        TOL_ANGLE = 3.0;
+        VUFORIA_TOL_ANGLE = 3.0;
+        TOL = 60;
+        Kmove = 1.0/1200.0;
+        Kpivot = 1/140.0;
+        MINSPEED = 0.35;
+
+        move(0, -300, 0.5, 3); // back up
+
+        shootParticlesAfterBeacons();
 
 
         /*

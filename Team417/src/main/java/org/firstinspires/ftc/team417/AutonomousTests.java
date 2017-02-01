@@ -177,6 +177,7 @@ public class AutonomousTests extends MasterAutonomous
         TOL = 30;
         VUFORIA_TOL = 50;
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
+        VUFORIA_TOL_ANGLE = 3.0;
         Kmove = 1.0/1200.0;
         Kpivot = 1.0/140.0;
 
@@ -187,12 +188,14 @@ public class AutonomousTests extends MasterAutonomous
         // setting for align pivot Vuforia
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
+        MINSPEED = 0.3;
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
         alignPivotVuforia(0.6, 0, 600, 4);
         pause(50);
 
+        MINSPEED = 0.25;
         // setting for pivot Vuforia
         TOL_ANGLE = 2.0;
         VUFORIA_TOL_ANGLE = 2.0;
@@ -239,7 +242,7 @@ public class AutonomousTests extends MasterAutonomous
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
                 //move(100, 0, 0.3, 3); // shift right
-                moveAverage(100, 0, 0, 0.7, 3);
+                moveAverage(120, 0, 0, 0.7, 3);
                 PushButton();
             }
             else    // blue team
@@ -247,7 +250,7 @@ public class AutonomousTests extends MasterAutonomous
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
                 //move(-18, 0, 0.3, 4); // shift left used to be 38
-                moveAverage(-18, 0, 0, 0.7, 3);
+                moveAverage(-45, 0, 0, 0.7, 3);
                 PushButton();
             }
         }
@@ -258,7 +261,7 @@ public class AutonomousTests extends MasterAutonomous
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
                 //move(-18, 0, 0.3, 4); // shift left
-                moveAverage(-18, 0, 0, 0.7, 3);
+                moveAverage(-45, 0, 0, 0.7, 3);
                 PushButton();
             }
             else    // blue team
@@ -266,7 +269,7 @@ public class AutonomousTests extends MasterAutonomous
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
                 //move(100, 0, 0.3, 3); // shift right
-                moveAverage(100, 0, 0, 0.7, 3);
+                moveAverage(120, 0, 0, 0.7, 3);
                 PushButton();
             }
         }
@@ -345,6 +348,7 @@ public class AutonomousTests extends MasterAutonomous
         TOL = 30;
         VUFORIA_TOL = 50;
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
+        VUFORIA_TOL_ANGLE = 3.0;
         Kmove = 1.0/1200.0;
         Kpivot = 1.0/140.0;
 
@@ -355,12 +359,14 @@ public class AutonomousTests extends MasterAutonomous
         // setting for align pivot Vuforia
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
+        MINSPEED = 0.35;
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
         alignPivotVuforia(0.6, 0, 600, 4);
         pause(50);
 
+        MINSPEED = 0.25;
         // setting for pivot Vuforia
         TOL_ANGLE = 2.0;
         VUFORIA_TOL_ANGLE = 2.0;
@@ -386,7 +392,7 @@ public class AutonomousTests extends MasterAutonomous
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
                 //move(100, 0, 0.3, 3); // shift right
-                moveAverage(100, 0, 0, 0.7, 3);
+                moveAverage(120, 0, 0, 0.7, 3);
                 PushButton();
             }
             else    // blue team
@@ -394,7 +400,7 @@ public class AutonomousTests extends MasterAutonomous
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
                 //move(-18, 0, 0.3, 4); // shift left
-                moveAverage(-18, 0, 0, 0.7, 3);
+                moveAverage(-45, 0, 0, 0.7, 3);
                 PushButton();
             }
         }
@@ -405,7 +411,7 @@ public class AutonomousTests extends MasterAutonomous
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
                 //move(-18, 0, 0.3, 4); // shift left
-                moveAverage(-18, 0, 0, 0.7, 3);
+                moveAverage(-45, 0, 0, 0.7, 3);
                 PushButton();
             }
             else    // blue team
@@ -413,7 +419,7 @@ public class AutonomousTests extends MasterAutonomous
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
                 //move(100, 0, 0.3, 3); // shift right
-                moveAverage(100, 0, 0, 0.7, 3);
+                moveAverage(120, 0, 0, 0.7, 3);
                 PushButton();
             }
         }

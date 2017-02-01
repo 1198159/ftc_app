@@ -307,8 +307,12 @@ public class VuforiaNavigation {
             int x = (int) beaconPoint.getData()[0];
             int y = (int) beaconPoint.getData()[1];
 
-            x = (x < imageWidth) ? x : imageWidth;
-            y = (y < imageHeight) ? y : imageHeight;
+            // clip the x and y values to width and height
+            x = (x < imageWidth - 8) ? x : imageWidth;
+            y = (y < imageHeight - 8) ? y : imageHeight;
+            // clip the x and y values >= 8
+            x = (x >= 8) ? x : 8;
+            y = (y >= 8) ? y : 8;
 
             // create bitmap of image to detect color
             bm = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
@@ -318,7 +322,8 @@ public class VuforiaNavigation {
 
             // sample and integrate colors for a 16x16 square region of pixels
             for (int j = y - 8; j < y + 8; j++) {
-                for (int i = x - 8; i < x + 8; i++) {
+                for (int i = x - 8; i < x + 8; i++)
+                {
                     // get RGB color of pixel
                     color = bm.getPixel(i, j);
 
@@ -331,7 +336,8 @@ public class VuforiaNavigation {
                         colorHsvSum[k] += colorHSV[k];
 
                     // draw black border around sample region for debugging only
-                    if ((j == y - 8) || (j == y + 7) || (i == x - 8) || (i == x + 7)) {
+                    if ((j == y - 8) || (j == y + 7) || (i == x - 8) || (i == x + 7))
+                    {
                         bm.setPixel(i, j, 0);
                     }
                 }
