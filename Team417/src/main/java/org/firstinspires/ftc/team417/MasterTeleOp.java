@@ -71,7 +71,7 @@ public class MasterTeleOp extends MasterOpMode
            currentAngle = adjustAngles(currentAngle);
            */
 
-    /*
+   /*
            isSwitchPressed = liftSwitch.getState();    //  Read the input pin
 
            if (gamepad2.b && !isBButtonPressed)
@@ -105,8 +105,18 @@ public class MasterTeleOp extends MasterOpMode
                motorLift2.setPower(0);
            }
       */
-           motorLift.setPower(-gamepad1.left_stick_y);
-           motorLift2.setPower(-gamepad1.left_stick_y);
+
+           if (gamepad2.a)
+           {
+               motorLift.setPower(-gamepad2.left_stick_y);
+               motorLift2.setPower(-gamepad2.left_stick_y);
+           }
+           else
+           {
+               motorLift.setPower(0);
+               motorLift2.setPower(0);
+
+           }
 
 // move particle servo
            servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.7));
@@ -153,18 +163,7 @@ public class MasterTeleOp extends MasterOpMode
            {
                mecanumDrive(1.0, 0.8);
            }
-/*
-           if (gamepad2.a) // when game pad 2 a is held down, launcher motor runs
-           {
-               //rampShooterMotor(0.7);
-               motorLauncher.setPower(0.7);
-           }
-           else
-           {
-               //rampShooterMotor(0);
-               motorLauncher.setPower(0.0);
-           }
-*/
+
            if (gamepad2.dpad_left) // hold game pad left or right is held down
            {
                motorCollector.setPower(1.0);
