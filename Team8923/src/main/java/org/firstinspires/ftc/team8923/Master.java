@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 /*
  * This class contains all objects and methods that should be accessible by all OpModes
@@ -23,6 +24,8 @@ abstract class Master extends LinearOpMode
     Servo servoCapBallHolder = null;
     Servo servoHopperSweeper = null;
     Servo servoCollectorHolder = null;
+
+    TouchSensor catapultButton;
 
     double headingOffset = 0.0;
 
@@ -90,8 +93,6 @@ abstract class Master extends LinearOpMode
         motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorCatapult.setDirection(DcMotor.Direction.REVERSE);
 
-        catapultZero = motorCatapult.getCurrentPosition();
-
         servoBeaconPusher = hardwareMap.servo.get("servoBeaconPusher");
         servoCapBallHolder = hardwareMap.servo.get("servoCapBallHolder");
         servoHopperSweeper = hardwareMap.servo.get("servoHopperSweeper");
@@ -101,6 +102,9 @@ abstract class Master extends LinearOpMode
         servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_RELEASE.pos);
         servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
         servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_DOWN.pos);
+
+
+        catapultButton = hardwareMap.touchSensor.get("catapultButton");
 
         // Drivers need to get data quickly, and this doesn't take up too much bandwidth
         telemetry.setMsTransmissionInterval(50);
@@ -137,6 +141,7 @@ abstract class Master extends LinearOpMode
         telemetry.addData("Catapult Target", motorCatapult.getTargetPosition());
         telemetry.addData("Catapult Power", motorCatapult.getPower());
         telemetry.addData("Catapult Busy", motorCatapult.isBusy());
+        telemetry.addData("Catapult Button", catapultButton.isPressed());
 
         // Drive motor info
         telemetry.addData("Reversed", reverseDrive);

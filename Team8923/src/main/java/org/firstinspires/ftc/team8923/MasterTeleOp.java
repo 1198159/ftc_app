@@ -149,6 +149,16 @@ abstract class MasterTeleOp extends Master
 
     void controlCatapult()
     {
+        /*
+         * The catapult needs to know where the arm is at any point in time. We do this by defining
+         * a zero location, which is determined with a touch sensor. Then all movements are based
+         * on the encoder that references the zero value. When the zero location has a value of 0,
+         * that means that it hasn't yet been set. So we keep checking until the touch sensor stops
+         * being depressed, and use that as the zero location.
+         */
+        if(catapultZero == 0 && !catapultButton.isPressed())
+            catapultZero = motorCatapult.getCurrentPosition();
+
         // Only control the catapult if it's done moving
         if(Math.abs(motorCatapult.getCurrentPosition() - motorCatapult.getTargetPosition()) < 20)
         {
@@ -165,14 +175,12 @@ abstract class MasterTeleOp extends Master
             // Run motor forward a bit to launch particle
             else if(gamepad2.right_bumper)
             {
-                int targetPosition = motorCatapult.getCurrentPosition() + 2000;
+                int targetPosition = motorCatapult.getCurrentPosition() + 3000;
                 motorCatapult.setTargetPosition(targetPosition);
             }
         }
 
-        // As of right now, there is not a way to know if the catapult has been zeroed correctly.
-        // This code allows the driver to manually control the motor to set a zero location for
-        // reference, which is intended to be just before the catapult launches
+        // Give manual control to driver if necessary
         if(Math.abs(gamepad2.right_stick_y) > 0.1)
         {
             motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -181,10 +189,8 @@ abstract class MasterTeleOp extends Master
         // Return control to motor controller
         else if(motorCatapult.getMode() == DcMotor.RunMode.RUN_USING_ENCODER)
         {
-            // Set new zero location
-            catapultZero = motorCatapult.getCurrentPosition();
-            motorCatapult.setTargetPosition(catapultZero);
-            catapultCycle = 0;
+            // Keep the motor here
+            motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
             motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             // Motor will need power to move to next target when it's requested, but won't move yet
             // because it's already at the target (zero location)
