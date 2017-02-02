@@ -74,8 +74,8 @@ public class AutonomousCompetition extends MasterAutonomous
                         locationY = 3300;
                         break;
                     case PARK_CENTER:
-                        locationX = 1750;
-                        locationY = 2400;
+                        locationX = 1600;
+                        locationY = 2100;
                         break;
                     // Something is a bogus value, so run away
                     default: return;
@@ -89,8 +89,8 @@ public class AutonomousCompetition extends MasterAutonomous
                         locationY = 600;
                         break;
                     case PARK_CENTER:
-                        locationX = 2000;
-                        locationY = 1500;
+                        locationX = 2100;
+                        locationY = 1600;
                         break;
                     // Something is a bogus value, so run away
                     default: return;

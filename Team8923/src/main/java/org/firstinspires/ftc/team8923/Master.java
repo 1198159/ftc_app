@@ -230,7 +230,7 @@ abstract class Master extends LinearOpMode
 
     boolean catapultIsAtTarget()
     {
-        int tolerance = 20;
+        int tolerance = 100;
         return Math.abs(motorCatapult.getCurrentPosition() - motorCatapult.getTargetPosition()) < tolerance;
     }
 

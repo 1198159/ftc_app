@@ -34,21 +34,21 @@ abstract class MasterAutonomous extends Master
         LEFT(0),
         RIGHT(0),
 
-        RED_LEFT_START_X(550),
-        RED_LEFT_START_Y(2600),
-        RED_LEFT_START_ANGLE(45.0),
+        RED_LEFT_START_X(200),
+        RED_LEFT_START_Y(2200),
+        RED_LEFT_START_ANGLE(0.0),
 
-        RED_RIGHT_START_X(550),
-        RED_RIGHT_START_Y(1250),
-        RED_RIGHT_START_ANGLE(45.0),
+        RED_RIGHT_START_X(200),
+        RED_RIGHT_START_Y(1000),
+        RED_RIGHT_START_ANGLE(0.0),
 
-        BLUE_LEFT_START_X(1450),
-        BLUE_LEFT_START_Y(300),
-        BLUE_LEFT_START_ANGLE(45.0),
+        BLUE_LEFT_START_X(1000),
+        BLUE_LEFT_START_Y(200),
+        BLUE_LEFT_START_ANGLE(90.0),
 
-        BLUE_RIGHT_START_X(2650),
-        BLUE_RIGHT_START_Y(300),
-        BLUE_RIGHT_START_ANGLE(45.0);
+        BLUE_RIGHT_START_X(2200),
+        BLUE_RIGHT_START_Y(200),
+        BLUE_RIGHT_START_ANGLE(90.0);
 
         public final double val;
         StartLocations(double i)
@@ -61,7 +61,7 @@ abstract class MasterAutonomous extends Master
     // Max drive power is less than 1 to ensure speed controller works
     private static final double MAX_DRIVE_POWER = 1.0;
     private static final double MIN_DRIVE_POWER = 0.15;
-    private static final double TURN_POWER_CONSTANT = 1.0 / 125.0;
+    private static final double TURN_POWER_CONSTANT = 1.0 / 100.0;
     private static final double DRIVE_POWER_CONSTANT = 1.0 / 800.0;
 
     enum Objectives
