@@ -131,26 +131,6 @@ public class AutonomousTestsMove extends MasterAutonomous
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-/*
-        while (opModeIsActive())
-        {
-            if (gamepad1.a) speed = 0.5;
-            if (gamepad1.b) speed = 0.7;
-            if (gamepad1.x) TOL_ANGLE = 3;
-            if (gamepad1.y) TOL_ANGLE = 1;
-            telemetry.addData("speed: ", speed);
-            telemetry.addData("TOL angle: ", TOL_ANGLE);
-            telemetry.update();
-
-            while (!gamepad1.right_bumper)
-            {
-                idle();
-            }
-
-            // big move
-            moveAverage(1219, 0, 0, speed, 3);
-        }
-*/
 
         VuforiaNav.startTracking();
         //     pause(startDelay);
@@ -174,23 +154,16 @@ public class AutonomousTestsMove extends MasterAutonomous
         //move(100, 0, 0.7, 3);
 */
 
-        TOL_ANGLE = 3.0;
-        VUFORIA_TOL_ANGLE = 3.0;
+
+
+
         TOL = 60;
-        Kmove = 1.0/1200.0;
-        Kpivot = 1/140.0;
-        MINSPEED = 0.35;
-
-        move(0, -300, 0.5, 3); // back up
-
-        shootParticlesAfterBeacons();
-
-
-        /*
-        TOL = 40;
+        VUFORIA_TOL = 50;
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
-        Kmove = 1.0/1200.0;
-        Kpivot = 1.0/150.0;
+        VUFORIA_TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
+        Kmove = 1.0/1000.0;
+        Kpivot = 1.0/100.0;
+        MINSPEED = 0.3;
 
         telemetry.addData("Path", "scanning for target");
         telemetry.update();
@@ -199,10 +172,11 @@ public class AutonomousTestsMove extends MasterAutonomous
         // setting for align pivot Vuforia
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
+        Kpivot = 1.0/150.0;
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
-        alignPivotVuforia(0.6, 0, 600, 4);
+        alignPivotVuforia(0.3, 0, 600, 4);
         pause(50);
 
         // setting for pivot Vuforia
@@ -210,22 +184,17 @@ public class AutonomousTestsMove extends MasterAutonomous
         VUFORIA_TOL_ANGLE = 2.0;
         telemetry.addData("Path", "pivotVuforia");
         telemetry.update();
-        pivotVuforia(targetAngle, 0.5);
-*/
+        pivotVuforia(targetAngle, 0.3);
+
+
+
 
 
 //------------------------------------------------------------------------------
 
 
-/*
-        telemetry.addData("Path", "shift right");
-        telemetry.update();
-        //move(100, 0, 0.4, 3); // shift right
-        pivotMove(100, 0, 0, 0.3, 3);
-        pause(3000);
-        //move(-100, 0, 0.4, 3);
-        pivotMove(-100, 0, 0, 0.3, 3);
-*/
+
+
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
