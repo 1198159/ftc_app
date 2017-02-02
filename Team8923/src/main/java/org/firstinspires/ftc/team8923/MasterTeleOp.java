@@ -97,9 +97,9 @@ abstract class MasterTeleOp extends Master
             servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
             sleep(250);
             motorLift.setPower(1.0);
-            sleep(500);
+            sleep(250);
             motorLift.setPower(-1.0);
-            sleep(750);
+            sleep(500);
             motorLift.setPower(0.0);
             servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
         }
@@ -141,7 +141,7 @@ abstract class MasterTeleOp extends Master
         else
         {
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
-            if(hopperTimer.milliseconds() > 500)
+            if(hopperTimer.milliseconds() > 250)
                 hopperServoMoving = false;
         }
     }
@@ -164,7 +164,7 @@ abstract class MasterTeleOp extends Master
             }
             if(!catapultButton.isPressed())
             {
-                catapultZero = motorCatapult.getCurrentPosition();
+                catapultZero = motorCatapult.getCurrentPosition() + 1000;
                 motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 motorCatapult.setTargetPosition(catapultZero);
             }
