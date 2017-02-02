@@ -48,7 +48,7 @@ public class AutonomousCompetition extends MasterAutonomous
                     parkOnObjective(Objectives.PARK_CENTER);
                     break;
                 case SHOOT_CENTER:
-                    shootInCenter();
+                    shootInCenter(numberOfShots);
                     break;
             }
         }
@@ -240,10 +240,10 @@ public class AutonomousCompetition extends MasterAutonomous
 
     // TODO: Test me
     // Shoots balls into the center vortex
-    private void shootInCenter() throws InterruptedException
+    private void shootInCenter(int numberOfShots) throws InterruptedException
     {
         // Distance from the goal at which the robot shoots
-        double shootingDistance = 1000;
+        double shootingDistance = 700;
 
         double goalX;
         double goalY;
@@ -279,16 +279,23 @@ public class AutonomousCompetition extends MasterAutonomous
         // Go to shooting location
         turnAndDrive(shootPosX, shootPosY);
 
-        // Catapult shoots 90 degrees from front of robot
-        turnToAngle(angleToGoal - 90);
+        // Catapult shoots a bit over 90 degrees from front of robot
+        turnToAngle(angleToGoal - 100);
 
         // Drop collector so the hopper isn't blocked
         servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_UP.pos);
 
         zeroCatapult();
-        armCatapult();
-        loadCatapult();
+
         fireCatapult();
+
+        if(numberOfShots > 1)
+        {
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+            armCatapult();
+            //loadCatapult();
+            fireCatapult();
+        }
     }
 
     // Drives robot with coordinates relative to beacon. Parameters are coordinates intrinsic to

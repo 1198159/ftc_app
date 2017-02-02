@@ -89,6 +89,7 @@ abstract class MasterAutonomous extends Master
     private StartLocations startLocation = StartLocations.LEFT;
     Alliance alliance = Alliance.RED;
     int delayTime = 0; // In seconds
+    int numberOfShots = 0; // Number of shots in the center vortex
 
     void setUpRoutine()
     {
@@ -98,6 +99,7 @@ abstract class MasterAutonomous extends Master
         telemetry.log().add("Delay Time Up/Down: D-Pad Up/Down");
         telemetry.log().add("Beacon Left/Right: Bumper Left/Right");
         telemetry.log().add("Park Ramp/Center: Y/A");
+        telemetry.log().add("Shoot in center vortex: Center / Guide button");
         telemetry.log().add("Reset Routine: Back");
         telemetry.log().add("");
         telemetry.log().add("After routine is complete and robot is on field, press Start");
@@ -134,12 +136,19 @@ abstract class MasterAutonomous extends Master
             else if(gamepad1.a)
                 routine.add(Objectives.PARK_CENTER);
             else if(gamepad1.guide)
-                routine.add(Objectives.SHOOT_CENTER);
+            {
+                if (numberOfShots == 0)
+                    routine.add(Objectives.SHOOT_CENTER);
+                if (numberOfShots < 2)
+                    numberOfShots++;
+            }
 
             // Clear objectives if a mistake was made
             else if(gamepad1.back)
+            {
                 routine.clear();
-
+                numberOfShots = 0;
+            }
             // Finish setup and initialization. Should only be run when robot has been placed
             // in starting location, because the encoders and IMU need to initialize there
             else if(gamepad1.start)
@@ -160,6 +169,7 @@ abstract class MasterAutonomous extends Master
             telemetry.addData("Alliance", alliance.name());
             telemetry.addData("Start Location", startLocation.name());
             telemetry.addData("Delay Seconds", delayTime);
+            telemetry.addData("Number of shots in center", numberOfShots);
             // Get the next objective in the routine, and add to telemetry
             // The + 1 is to shift from 0 index to 1 index for display
             if(routine != null)
@@ -477,12 +487,12 @@ abstract class MasterAutonomous extends Master
         telemetry.log().add("Zeroing Catapult: " + getRuntime());
         motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorCatapult.setPower(1.0);
-        while(!catapultButton.isPressed())
+        while(catapultButton.isPressed())
         {
             sendTelemetry();
             idle();
         }
-        catapultZero = motorCatapult.getCurrentPosition();
+        catapultZero = motorCatapult.getCurrentPosition() + 1000;
         motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorCatapult.setPower(0.0);
     }
