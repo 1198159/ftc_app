@@ -432,7 +432,7 @@ abstract class MasterAutonomous extends Master
 
             // Convert to mm. X is divided by root 2 because the rollers turn when going sideways.
             // They do not turn when going forwards, so y doesn't need the division
-            deltaX *= MM_PER_TICK / Math.sqrt(2);
+            deltaX *= MM_PER_TICK /* Math.sqrt(2)*/;
             deltaY *= MM_PER_TICK;
 
             /*
@@ -538,7 +538,7 @@ abstract class MasterAutonomous extends Master
         // Wait for servo to move
         sleep(1000);
         // Move servo back
-        servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
+        servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
     }
 
     // If you subtract 359 degrees from 0, you would get -359 instead of 1. This method handles
