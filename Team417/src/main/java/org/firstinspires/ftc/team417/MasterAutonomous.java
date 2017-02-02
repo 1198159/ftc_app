@@ -954,7 +954,7 @@ abstract class MasterAutonomous extends MasterOpMode
         }
         else
         {
-            pivot(50, 0.8);
+            pivot(55, 0.8);
         }
         move(0, -420, 0.6, 2);
 

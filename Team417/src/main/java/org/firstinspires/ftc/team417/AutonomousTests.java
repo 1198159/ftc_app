@@ -173,13 +173,13 @@ public class AutonomousTests extends MasterAutonomous
         pivot(pivotAngle, 0.7); // make sure IMU is on
         pause(200);
 
-        // setting for scan
-        TOL = 30;
+        TOL = 60;
         VUFORIA_TOL = 50;
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
-        VUFORIA_TOL_ANGLE = 3.0;
-        Kmove = 1.0/1200.0;
-        Kpivot = 1.0/140.0;
+        VUFORIA_TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
+        Kmove = 1.0/1000.0;
+        Kpivot = 1.0/100.0;
+        MINSPEED = 0.3;
 
         telemetry.addData("Path", "scanning for target");
         telemetry.update();
@@ -195,10 +195,10 @@ public class AutonomousTests extends MasterAutonomous
         alignPivotVuforia(0.6, 0, 600, 4);
         pause(50);
 
-        MINSPEED = 0.25;
         // setting for pivot Vuforia
         TOL_ANGLE = 2.0;
         VUFORIA_TOL_ANGLE = 2.0;
+        Kpivot = 1.0/200.0;
         telemetry.addData("Path", "pivotVuforia");
         telemetry.update();
         pivotVuforia(targetAngle, 0.5);
@@ -220,8 +220,8 @@ public class AutonomousTests extends MasterAutonomous
             telemetry.log().add(String.format("team red"));
         }
         else
-        {telemetry.log().add(String.format("team blue"));
-
+        {
+            telemetry.log().add(String.format("team blue"));
         }
         telemetry.update();
 
@@ -345,31 +345,28 @@ public class AutonomousTests extends MasterAutonomous
         }
         pause(200);
 
-        TOL = 30;
+        TOL = 60;
         VUFORIA_TOL = 50;
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
-        VUFORIA_TOL_ANGLE = 3.0;
-        Kmove = 1.0/1200.0;
-        Kpivot = 1.0/140.0;
+        VUFORIA_TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
+        Kmove = 1.0/1000.0;
+        Kpivot = 1.0/100.0;
+        MINSPEED = 0.3;
 
         telemetry.addData("Path", "scanning for target");
         telemetry.update();
         pivotDetectTarget(30, 5);
-
-        // setting for align pivot Vuforia
-        TOL_ANGLE = 3.0;
-        VUFORIA_TOL_ANGLE = 3.0;
-        MINSPEED = 0.35;
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
         alignPivotVuforia(0.6, 0, 600, 4);
         pause(50);
 
-        MINSPEED = 0.25;
         // setting for pivot Vuforia
         TOL_ANGLE = 2.0;
         VUFORIA_TOL_ANGLE = 2.0;
+        MINSPEED = 0.25;
+        Kpivot = 1.0/200.0;
         telemetry.addData("Path", "pivotVuforia");
         telemetry.update();
         pivotVuforia(targetAngle, 0.5);
