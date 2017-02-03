@@ -287,6 +287,8 @@ abstract class MasterAutonomous extends Master
     // Makes robot drive to a point on the field
     void driveToPoint(double targetX, double targetY, double targetAngle, double maxPower) throws InterruptedException
     {
+        telemetry.log().add("Target X " +targetX + "  Y " + targetY);
+
         updateRobotLocation();
 
         // Calculate how far we are from target point
@@ -432,8 +434,14 @@ abstract class MasterAutonomous extends Master
 
             // Convert to mm. X is divided by root 2 because the rollers turn when going sideways.
             // They do not turn when going forwards, so y doesn't need the division
-            deltaX *= MM_PER_TICK /* Math.sqrt(2)*/;
+            deltaX *= MM_PER_TICK;
             deltaY *= MM_PER_TICK;
+
+            // TODO: Figure out why this is funky and fix it
+            // This is a temporary hack. For some reason, the robot doesn't drive far enough
+            // sideways when on the blue alliance only. Don't know why, but it works.
+            if(alliance == Alliance.BLUE)
+                deltaX /= Math.sqrt(2);
 
             /*
              * Delta x and y are intrinsic to the robot, so they need to be converted to extrinsic.
