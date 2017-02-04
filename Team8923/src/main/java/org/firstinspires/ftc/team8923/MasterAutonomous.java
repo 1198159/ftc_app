@@ -310,7 +310,7 @@ abstract class MasterAutonomous extends Master
 
             // In case the robot turns while driving
             deltaAngle = subtractAngles(targetAngle, robotAngle);
-            double turnPower = deltaAngle * TURN_POWER_CONSTANT;
+            double turnPower = deltaAngle / 65.0;
 
             // Set drive motor powers
             driveMecanum(driveAngle, drivePower, turnPower);
@@ -359,6 +359,10 @@ abstract class MasterAutonomous extends Master
         // Turn until target is found or timer runs out
         while(!(vuforiaLocator.isTracking() && !trackingOtherAllianceTarget) && opModeIsActive())
         {
+            //Failed to find vision target in time
+            if(timer.seconds() > maxSearchTime)
+                return false;
+
             // Increases search angle by delta angle each loop
             count++;
             double targetAngle = count * deltaAngle;
@@ -375,10 +379,6 @@ abstract class MasterAutonomous extends Master
 
             // Give Vuforia a chance to find the vision target
             sleep(500);
-
-            //Failed to find vision target in time
-            if(timer.seconds() > maxSearchTime)
-                return false;
 
             // Update target names to ensure we don't look at the wrong ones
             if(alliance == Alliance.RED)
@@ -441,7 +441,7 @@ abstract class MasterAutonomous extends Master
             // This is a temporary hack. For some reason, the robot doesn't drive far enough
             // sideways when on the blue alliance only. Don't know why, but it works.
             if(alliance == Alliance.BLUE)
-                deltaX /= Math.sqrt(2);
+                deltaX /= 1.2;
 
             /*
              * Delta x and y are intrinsic to the robot, so they need to be converted to extrinsic.
