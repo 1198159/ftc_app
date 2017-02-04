@@ -546,6 +546,161 @@ abstract class MasterAutonomous extends MasterOpMode
         motorBackRight.setPower(0);
     }
 
+    // a combination of both the align and pivot function (WITHOUT VUFORIA)
+    // angle has to be small otherwise won't work, this function moves and pivots robot
+    // TOL must be set to > 5
+    public void pivotMove2(double x, double y, double pivotAngle, double speed, double timeout)
+    {
+        // run with encoder mode
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        int newTargetFL;
+        int newTargetBL;
+        int newTargetFR;
+        int newTargetBR;
+
+        int errorFL;
+        int errorFR;
+        int errorBL;
+        int errorBR;
+
+        double speedFL;
+        double speedFR;
+        double speedBL;
+        double speedBR;
+
+        double speedAbsFL;
+        double speedAbsFR;
+        double speedAbsBL;
+        double speedAbsBR;
+
+        double startAngle;
+        double curTurnAngle;
+        double pivotSpeed;
+        double errorAngle;
+
+        int pivotDst;
+        final double ROBOT_DIAMETER_MM = 27.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
+
+        // pivotDst is added with movement positions
+        pivotDst = (int) ((pivotAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
+
+        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
+                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
+        newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
+                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
+        newTargetBL = motorBackLeft.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
+                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
+        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
+                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
+
+        runtime.reset(); // reset timer, which is used for loop timeout below
+
+        // read starting angle
+        startAngle = imu.getAngularOrientation().firstAngle;
+
+        // wait until the motors reach the position
+        // adjust robot angle during movement by adjusting speed of motors
+        do
+        {
+            curTurnAngle = imu.getAngularOrientation().firstAngle - startAngle;
+            curTurnAngle = adjustAngles(curTurnAngle);
+            errorAngle =  pivotAngle - curTurnAngle;
+
+            if (Math.abs(errorAngle) < TOL_ANGLE)
+            {
+                pivotSpeed = 0.0;
+            }
+            else
+            {
+                pivotSpeed = errorAngle * Kpivot;   // speed proportional to error
+                pivotSpeed = Math.abs(pivotSpeed);
+                pivotSpeed = Range.clip(pivotSpeed, 0.2, 0.5);  // clip magnitude
+                pivotSpeed = pivotSpeed * Math.signum(pivotSpeed);  // set sign
+            }
+            // pivotSpeed is added to each motor's movement speed
+
+            errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
+            if (Math.abs(errorFL) < (TOL - 5) )
+            {
+                speedFL = 0.0;
+            }
+            else
+            {
+                speedFL = Kmove * errorFL;  // movement speed proportional to error
+                speedAbsFL = Math.abs(speedFL);
+                speedAbsFL = Range.clip(speedAbsFL, MINSPEED, speed);  // clip abs(speed)
+                speedFL = speedAbsFL * Math.signum(speedFL);  // set sign of speed
+            }
+            speedFL += pivotSpeed;  // combine movement and pivot speeds
+
+            errorFR = newTargetFR - motorFrontRight.getCurrentPosition();
+            if (Math.abs(errorFR) < (TOL - 5) )
+            {
+                speedFR = 0.0;
+            }
+            else
+            {
+                speedFR = Kmove * errorFR;
+                speedAbsFR = Math.abs(speedFR);
+                speedAbsFR = Range.clip(speedAbsFR, MINSPEED, speed);  // clip abs(speed)
+                speedFR = speedAbsFR * Math.signum(speedFR);
+            }
+
+            speedFR -= pivotSpeed;  // combine movement and pivot speeds
+
+            errorBL = newTargetBL - motorBackLeft.getCurrentPosition();
+            if (Math.abs(errorBL) < (TOL - 5) )
+            {
+                speedBL = 0.0;
+            }
+            else
+            {
+                speedBL = Kmove * errorBL;
+                speedAbsBL = Math.abs(speedBL);
+                speedAbsBL = Range.clip(speedAbsBL, MINSPEED, speed);  // clip abs(speed)
+                speedBL = speedAbsBL * Math.signum(speedBL);
+            }
+            speedBL += pivotSpeed;  // combine movement and pivot speeds
+
+            errorBR = newTargetBR - motorBackRight.getCurrentPosition();
+            if (Math.abs(errorBR) < (TOL - 5) )
+            {
+                speedBR = 0.0;
+            }
+            else
+            {
+                speedBR = Kmove * errorBR;
+                speedAbsBR = Math.abs(speedBR);
+                speedAbsBR = Range.clip(speedAbsBR, MINSPEED, speed);
+                speedBR = speedAbsBR * Math.signum(speedBR);
+            }
+            speedBR -= pivotSpeed;  // combine movement and pivot speeds
+
+            motorFrontLeft.setPower(speedFL);
+            motorFrontRight.setPower(speedFR);
+            motorBackLeft.setPower(speedBL);
+            motorBackRight.setPower(speedBR);
+
+            idle();
+        }
+        while ( (opModeIsActive()) &&
+                (runtime.seconds() < timeout) &&
+                (
+                        (Math.abs(errorFL) > TOL) || (Math.abs(errorFR) > TOL) || (Math.abs(errorBL) > TOL) || (Math.abs(errorBR) > TOL) ||
+                                (Math.abs(errorAngle) > TOL_ANGLE)
+                )
+                );
+
+        // stop the motors
+        motorFrontLeft.setPower(0);
+        motorFrontRight.setPower(0);
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+    }
 
     // a combination of both the align and pivot function (WITHOUT VUFORIA)
     // angle has to be small otherwise won't work, this function moves and pivots robot
@@ -941,7 +1096,6 @@ abstract class MasterAutonomous extends MasterOpMode
 
     public void shootParticlesAfterBeacons() throws InterruptedException
     {
-
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
         Kpivot = 1/100.0;
@@ -950,7 +1104,7 @@ abstract class MasterAutonomous extends MasterOpMode
         motorLauncher.setPower(0.85);
         if (isRedTeam)
         {
-            pivot(-47, 0.8);
+            pivot(-44, 0.8);
         }
         else
         {
@@ -958,6 +1112,7 @@ abstract class MasterAutonomous extends MasterOpMode
         }
         move(0, -420, 0.6, 2);
 
+        motorCollector.setPower(1.0);
         servoParticle.setPosition(0.8);
         pause(300);
         servoParticle.setPosition(0.0);
@@ -967,6 +1122,34 @@ abstract class MasterAutonomous extends MasterOpMode
         servoParticle.setPosition(0.0);
         pause(300);
         motorLauncher.setPower(0.0);
+        motorCollector.setPower(0.0);
+    }
+
+    public void shootParticlesAfterBeacons2(double backUp, double turnToShoot, double toVortex) throws InterruptedException
+    {
+        TOL_ANGLE = 3.0;
+        VUFORIA_TOL_ANGLE = 3.0;
+        Kpivot = 1/100.0;
+        MINSPEED = 0.35;
+
+        move(0, backUp, 0.6, 2);
+
+        motorLauncher.setPower(0.85);
+        pivot(turnToShoot, 0.8);
+
+        move(0, toVortex, 0.6, 2); // used to be -420mm
+
+        motorCollector.setPower(1.0);
+        servoParticle.setPosition(0.8);
+        pause(300);
+        servoParticle.setPosition(0.0);
+        pause(1500);
+        servoParticle.setPosition(0.8);
+        pause(300);
+        servoParticle.setPosition(0.0);
+        pause(300);
+        motorLauncher.setPower(0.0);
+        motorCollector.setPower(0.0);
     }
 
     public void PushButton() throws InterruptedException

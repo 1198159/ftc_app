@@ -136,29 +136,13 @@ public class AutonomousTests extends MasterAutonomous
 
         //pause(delay);
 
-        /*
-        while (opModeIsActive()) {
-
-            VuforiaNav.getLocation();
-            telemetry.addData("tracking ", VuforiaNav.isVisible() ? "Visible" : "Not Visible");
-            if (VuforiaNav.lastLocation != null)
-            {
-                telemetry.addData("location ", format(VuforiaNav.lastLocation));
-            }
-
-            telemetry.update();
-            //pause(500);
-        }
-        */
-
-
 // START OF AUTONOMOUS
 
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
         TOL = 60;
         Kmove = 1.0/1200.0;
-        Kpivot = 1/140.0;
+        Kpivot = 1/120.0;
         MINSPEED = 0.35;
 
         telemetry.addData("Path", "start forwards");
@@ -170,7 +154,7 @@ public class AutonomousTests extends MasterAutonomous
         telemetry.addData("Path", "pivot 70");
         telemetry.update();
         // pivot to face target
-        pivot(pivotAngle, 0.7); // make sure IMU is on
+        pivot(pivotAngle, 0.9); // make sure IMU is on
         pause(200);
 
         TOL = 60;
@@ -188,7 +172,7 @@ public class AutonomousTests extends MasterAutonomous
         // setting for align pivot Vuforia
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
-        MINSPEED = 0.3;
+        MINSPEED = 0.35;
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
@@ -199,6 +183,7 @@ public class AutonomousTests extends MasterAutonomous
         TOL_ANGLE = 2.0;
         VUFORIA_TOL_ANGLE = 2.0;
         Kpivot = 1.0/200.0;
+        MINSPEED = 0.3;
         telemetry.addData("Path", "pivotVuforia");
         telemetry.update();
         pivotVuforia(targetAngle, 0.5);
@@ -324,10 +309,10 @@ public class AutonomousTests extends MasterAutonomous
                 //pivotMove(1125, 65, 0, 0.7, 4); // 3 inches shorter
                 moveAverage(1125, 0, 0, 0.7, 4);
             }
-            else // move longer
+            else // move shorter
             {
                 //pivotMove(-1220, 65, 0, 0.7, 4);
-                moveAverage(-1220, 0, 0, 0.7, 4);
+                moveAverage(-1125, 0, 0, 0.7, 4);
             }
         }
         else if (beaconColor == 1) // if left side red
@@ -337,10 +322,10 @@ public class AutonomousTests extends MasterAutonomous
                 //pivotMove(1220, 65, 0, 0.7, 4);
                 moveAverage(1220, 0, 0, 0.7, 4);
             }
-            else // move shorter
+            else // move longer
             {
                 //pivotMove(-1125, 65, 0, 0.7, 4);
-                moveAverage(-1125, 0, 0, 0.7, 4);
+                moveAverage(-1220, 0, 0, 0.7, 4);
             }
         }
         pause(200);
@@ -351,7 +336,7 @@ public class AutonomousTests extends MasterAutonomous
         VUFORIA_TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         Kmove = 1.0/1000.0;
         Kpivot = 1.0/100.0;
-        MINSPEED = 0.3;
+        MINSPEED = 0.35;
 
         telemetry.addData("Path", "scanning for target");
         telemetry.update();
@@ -365,7 +350,7 @@ public class AutonomousTests extends MasterAutonomous
         // setting for pivot Vuforia
         TOL_ANGLE = 2.0;
         VUFORIA_TOL_ANGLE = 2.0;
-        MINSPEED = 0.25;
+        MINSPEED = 0.3;
         Kpivot = 1.0/200.0;
         telemetry.addData("Path", "pivotVuforia");
         telemetry.update();
