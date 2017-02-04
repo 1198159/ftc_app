@@ -219,7 +219,7 @@ abstract class MasterTeleOp extends Master
             // Run motor forward a bit to launch particle
             else if(gamepad2.right_bumper)
             {
-                int targetPosition = motorCatapult.getCurrentPosition() + 3000;
+                int targetPosition = catapultZero + 3000;
                 motorCatapult.setTargetPosition(targetPosition);
             }
         }
@@ -239,6 +239,10 @@ abstract class MasterTeleOp extends Master
             // Motor will need power to move to next target when it's requested, but won't move yet
             // because it's already at the target (zero location)
             motorCatapult.setPower(1.0);
+            // If the driver rotates for more than 2 cycles then pressed a button, the motor
+            // will run backwards, which is bad. So we unset the zero, which the driver
+            // will reset with the button again.
+            catapultZero = 0;
         }
     }
 }

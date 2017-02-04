@@ -93,7 +93,6 @@ abstract class MasterAutonomous extends Master
 
     void setUpRoutine()
     {
-        telemetry.log().add("");
         telemetry.log().add("Alliance Blue/Red: X/B");
         telemetry.log().add("Starting Position Left/Right: D-Pad Left/Right");
         telemetry.log().add("Delay Time Up/Down: D-Pad Up/Down");
@@ -170,11 +169,13 @@ abstract class MasterAutonomous extends Master
             telemetry.addData("Start Location", startLocation.name());
             telemetry.addData("Delay Seconds", delayTime);
             telemetry.addData("Number of shots in center", numberOfShots);
+            telemetry.addData("", "");
             // Get the next objective in the routine, and add to telemetry
             // The + 1 is to shift from 0 index to 1 index for display
             if(routine != null)
                 for(Objectives objective : routine)
                     telemetry.addData("Objective " + (routine.indexOf(objective) + 1), objective.name());
+            telemetry.addData("", "");
 
             telemetry.update();
             idle();
