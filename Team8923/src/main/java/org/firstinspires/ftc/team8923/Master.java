@@ -146,6 +146,8 @@ abstract class Master extends LinearOpMode
         telemetry.addData("Catapult Busy", motorCatapult.isBusy());
         telemetry.addData("Catapult Button", catapultButton.isPressed());
 
+        telemetry.addData("Lift Encoder", motorLift.getCurrentPosition());
+
         // Drive motor info
         telemetry.addData("Reversed", reverseDrive);
 

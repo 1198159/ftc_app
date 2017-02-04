@@ -87,23 +87,58 @@ abstract class MasterTeleOp extends Master
         else if(gamepad2.dpad_down)
             motorLift.setPower(-1.0);
         // If no button is pressed, stop!
-        else
+        else if(!liftDeploying)
             motorLift.setPower(0);
 
-        // TODO: Test
-        // Deploy lift semi-autonomously
+        // Code below is for auto lift deployment. It is written as a state machine to allow
+        // drivers to continue operating robot
+
+        // Start auto deployment when requested
         if(gamepad1.b)
         {
+            liftState = 0;
+            liftDeploying = true;
+            liftTimer.reset();
+        }
+
+        int liftTolerance = 50;
+
+        // Move beacon pusher servo down to ensure it's out of the way
+        if(liftState == 0 && liftDeploying)
+        {
+            liftState++;
             servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
-            sleep(250);
+        }
+        // Raise the lift to make it deploy
+        else if(liftState == 1 && liftTimer.milliseconds() > 500)
+        {
+            liftState++;
+            motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            liftZero = motorLift.getCurrentPosition();
+            motorLift.setTargetPosition(liftZero + 600);
             motorLift.setPower(1.0);
-            sleep(250);
-            motorLift.setPower(-1.0);
-            sleep(500);
+        }
+        // Lower the lift once it's deployed
+        else if(liftState == 2 && Math.abs(motorLift.getCurrentPosition() - motorLift.getTargetPosition()) < liftTolerance)
+        {
+            liftState++;
+            motorLift.setTargetPosition(liftZero);
+        }
+        // Stop moving the lift and return control to driver
+        else if(liftState == 3 && Math.abs(motorLift.getCurrentPosition() - motorLift.getTargetPosition()) < liftTolerance)
+        {
+            liftState++;
             motorLift.setPower(0.0);
+            motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
+            liftDeploying = false;
         }
     }
+
+    int liftState = 0;
+    int liftZero = 0;
+    boolean liftDeploying = false;
+    ElapsedTime liftTimer = new ElapsedTime();
 
     // Runs collector. Can be run forwards and backwards
     void runCollector()
