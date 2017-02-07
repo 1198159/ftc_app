@@ -208,7 +208,9 @@ abstract class MasterAutonomous extends MasterOpMode
         {
             VuforiaNav.getLocation(targetIndex); // update target location and angle
             //CodeReview: sometimes getLocation returns null. Sometimes Vuforia.lastLocation might be null. Does your code handle that case gracefully?
+            //CodeReview: the code review comment above is still true ;) and hasn't been addressed yet.
 
+            //CodeReview: will this block spin forever if the vuforia target isn't visible? I think it might.
             do
             {
                 VuforiaNav.getLocation(targetIndex); // update target location and angle
@@ -257,6 +259,7 @@ abstract class MasterAutonomous extends MasterOpMode
     // move the robot hori. sideways to align with image target
     public void alignVuforia (double speed, double distAway, double timeout)
     {
+        //CodeReview: this is a bug. you should use 1.0/600 or you will get integer division and the result will be 0
         final float Kp = 1/600; // speed is proportional to error
 
         final float TOL = 10;
@@ -439,6 +442,8 @@ abstract class MasterAutonomous extends MasterOpMode
         double errorAngle;
 
         int pivotDst;
+        //CodeReview: these constants never change and could be declared once at the top of your class,
+        //  so they don't have to be calculated each time this method is run.
         final double ROBOT_DIAMETER_MM = 27.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
         pivotDst = (int) ((pivotAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
@@ -453,6 +458,11 @@ abstract class MasterAutonomous extends MasterOpMode
                 + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
 */
 
+        //CodeReview: your code will be a bit faster if you store the following two things in local variables
+        // and then reuse them. Your current code calculates the same values 4 times (each).
+        // int xTarget = (int) Math.round(COUNTS_PER_MM * (x * 1.1)
+        // int yTarget = (int) Math.round(COUNTS_PER_MM * (y)
+        // Also: pleaes make the 1.1 a defined constant instead of a magic number here in your code.
         newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
                 + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
         newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
@@ -738,6 +748,8 @@ abstract class MasterAutonomous extends MasterOpMode
         double errorAngle;
 
         int pivotDst;
+        //CodeReview: these constants can be defined at the top of your class,
+        //  so they aren't calculated each time this method runs.
         final double ROBOT_DIAMETER_MM = 27.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
         pivotDst = (int) ((pivotAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
