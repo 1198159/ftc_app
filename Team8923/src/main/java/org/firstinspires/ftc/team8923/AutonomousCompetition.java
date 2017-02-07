@@ -152,22 +152,22 @@ public class AutonomousCompetition extends MasterAutonomous
         // Distance from which we look at the vision target and beacon in mm
         double observationDistance = 400;
 
-        driveRelativeToBeacon(0.0, observationDistance);
-        /*
         // Drive in front of the beacon, then face vision target
         switch(alliance)
         {
+            // For some reason, different movements work better for different sides
             case RED:
-                turnAndDrive(beaconX, beaconY - observationDistance);
-                turnToAngle(90.0);
+                driveRelativeToBeacon(0.0, observationDistance);
+                //turnAndDrive(beaconX - 180, beaconY - observationDistance);
+                //turnToAngle(90.0);
                 break;
             case BLUE:
-                turnAndDrive(beaconX - observationDistance, beaconY);
+                turnAndDrive(beaconX - observationDistance, beaconY + 180);
                 turnToAngle(0.0);
                 break;
             // Something is a bogus value, so run away
             default: return;
-        }*/
+        }
 
         // Give Vuforia a chance to start tracking the target
         sleep(500);

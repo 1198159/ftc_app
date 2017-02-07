@@ -42,8 +42,8 @@ public class MasterTeleOp extends MasterOpMode
     double motorLauncherSetSpeed = 0;
     double driveSpeed = 0;
 
-    double jx2;
-    double jy2;
+    double jx2;  //CodeReview: This variable is only used in the MecanumDrive method. It should be declared inside that method
+    double jy2;  //CodeReview: (same comment as above)
     double turn;
 
 
@@ -106,6 +106,17 @@ public class MasterTeleOp extends MasterOpMode
            }
       */
 
+
+
+           //CodeReview: Jarrod mentioned that your robot drives sluggishly. That might suggest
+           //  that your main loop should be more efficient. To test that theory, you might try adding
+           //  a timer + some telemetry to show you how long your main loop takes to execute on average.
+           //  If it seems like it's taking a long time per loop, you could look for ways to optimize.
+           //  E.g. you might be spending a lot of time updating your filter, or doing the Math.pow(x,2) command.
+           //  You could comment out various parts of your code to see how it affects the loop time.
+
+
+
            if (gamepad2.a)
            {
                motorLift.setPower(-gamepad2.left_stick_y);
@@ -127,9 +138,13 @@ public class MasterTeleOp extends MasterOpMode
            else if (gamepad2.left_trigger > 0.5) motorLauncherSetSpeed = 0.6;
            else motorLauncherSetSpeed = 0;
 
+           //CodeReview: come talk with me about the following block of code.
+           // There's almost certainly a bug here, or something unintended,
+           // and there might be a simpler way to do this.
            if (runtime.milliseconds() > 100)
            {
-               resetStartTime();
+               resetStartTime(); //CodeReview: Come talk with me. I think this method is doing something other than what you want.
+                                 // It's very unlikely that you would really want to call this method in your opmode.
                if (motorLauncherSpeed < motorLauncherSetSpeed)
                {
                    motorLauncherSpeed += 0.1;
@@ -155,6 +170,9 @@ public class MasterTeleOp extends MasterOpMode
 
 
 // Adagio Legato Mode!
+           //CodeReview: you don't process the buttons that turn this mode on until later down,
+           //  which means that the response to turning on LegatoMode is delayed by one loop.
+           //  If you move that code above this block, it will be more responsive.
            if (isLegatoMode) // if mode activated, reduce constants and filter input
            {
                mecanumDrive(0.3, 0.3);
@@ -221,6 +239,9 @@ public class MasterTeleOp extends MasterOpMode
         turn = modJoyStickInput(lx);
         turn = Range.clip(turn, -1, 1);
 
+        //CodeReview: put this next line inside the (isLegatoMode) block below,
+        //  so you only pay for updating the filter when you're actually using it.
+        //  (I *think* you're only using it in legato mode...)
         filterJoyStickInput.appendInput(jx2, jy2, turn);
 
         if (isLegatoMode)
@@ -273,6 +294,10 @@ public class MasterTeleOp extends MasterOpMode
         return Math.pow(x,2) * Math.signum(x);
     }
 
+
+    //CodeReview: it's good to remove dead code that you're no longer using.
+    //  You can always get back to any previous version of your file using SourceTree,
+    //  so the deleted code won't really be lost if you need it.
     /*
     public void avgJoyStickInput()
     {

@@ -134,9 +134,16 @@ abstract public class MasterOpMode extends LinearOpMode
         // and named "imu".
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+
         //CodeReview: just curious why you are getting the heading 3 times during your initialization routine. Doesn't seem necessary.
         float angle;
         for (int i = 0; i < 3; i++) {
+            //CodeReview: In the past we recommended not using sleep() because it causes
+            //  your thread to stop, which (we think) means the FTC framework isn't getting work done either.
+            //  Instead, we have recommended using your pause() method, because it calls idle(), which
+            //  lets the FTC framework get some work done.
+            //  However, this might be a good question to ask Bob about, because maybe sleep() is fine.
+            //  By the way, I noticed you also use sleep() in TeleOpTests and a few other opmodes. Do a global search/replace. 
             sleep(100);
             angle = imu.getAngularOrientation().firstAngle;
         }
