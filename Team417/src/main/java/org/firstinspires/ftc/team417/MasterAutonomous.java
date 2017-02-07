@@ -818,7 +818,7 @@ abstract class MasterAutonomous extends MasterOpMode
 
 
     // a combination of both the align and pivot function (WITH VUFORIA) using pivot move
-    public void alignPivotVuforia(double speed, double distAwayX, double distAwayY, double timeout)
+    public void alignPivotVuforia(double speed, double distAwayX, double distAwayY, double timeout) throws InterruptedException
     {
         float xPos;
         float yPos;
@@ -870,6 +870,14 @@ abstract class MasterAutonomous extends MasterOpMode
             telemetry.update();
 // calls pivot move function here
             pivotMove(robotErrorX, robotErrorY, errorAngle, speed, timeout); // speed, 3 second timeout
+            /*
+            MINSPEED = 0.3;
+            pivot(errorAngle, 0.5);
+            move(0.0, robotErrorY, 0.3, 3);
+            MINSPEED = 0.35;
+            move(robotErrorX, 0, 0.5, 3);
+            MINSPEED = 0.3;
+            */
             //moveAverage(robotErrorX, robotErrorY, errorAngle, speed, timeout); // speed, 3 second timeout
             telemetry.log().add("done");
             telemetry.update();
@@ -1104,13 +1112,13 @@ abstract class MasterAutonomous extends MasterOpMode
         motorLauncher.setPower(0.85);
         if (isRedTeam)
         {
-            pivot(-44, 0.8);
+            pivot(-45, 0.8);
         }
         else
         {
             pivot(55, 0.8);
         }
-        move(0, -420, 0.6, 2);
+        move(0, -100, 0.6, 2);
 
         motorCollector.setPower(1.0);
         servoParticle.setPosition(0.8);
