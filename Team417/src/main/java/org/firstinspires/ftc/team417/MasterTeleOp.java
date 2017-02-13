@@ -38,6 +38,12 @@ public class MasterTeleOp extends MasterOpMode
     double imuAngle;
     final double LIFT_POWER = 1.0;
 
+    int liftState = 0;
+    boolean isLiftRunning = false;
+    int liftZero = 0;
+    int liftZero2 = 0;
+    ElapsedTime liftTimer = new ElapsedTime();
+
     double motorLauncherSpeed = 0;
     double motorLauncherSetSpeed = 0;
     double driveSpeed = 0;
@@ -65,48 +71,6 @@ public class MasterTeleOp extends MasterOpMode
         // Main loop
         while (opModeIsActive())
        {
-           /*
-           imuAngle = imu.getAngularOrientation().firstAngle;
-           currentAngle = imuAngle - startAngle;
-           currentAngle = adjustAngles(currentAngle);
-           */
-
-   /*
-           isSwitchPressed = liftSwitch.getState();    //  Read the input pin
-
-           if (gamepad2.b && !isBButtonPressed)
-           {
-                isBButtonPressed = true;
-                isLiftActivated = !isLiftActivated;
-           }
-            isBButtonPressed = gamepad2.b;
-
-           if (isLiftActivated && !isSwitchPressed) // if the switch is NOT pressed
-           {
-               if (gamepad2.dpad_up)
-               {
-                    motorLift.setPower(LIFT_POWER);
-                    motorLift2.setPower(LIFT_POWER);
-               }
-               else if (gamepad2.dpad_down)
-               {
-                    motorLift.setPower(-LIFT_POWER / 2.0);
-                    motorLift2.setPower(-LIFT_POWER / 2.0);
-               }
-               else
-               {
-                    motorLift.setPower(0);
-                    motorLift2.setPower(0);
-               }
-           }
-           else
-           {
-               motorLift.setPower(0);
-               motorLift2.setPower(0);
-           }
-      */
-
-
 
            //CodeReview: Jarrod mentioned that your robot drives sluggishly. That might suggest
            //  that your main loop should be more efficient. To test that theory, you might try adding
@@ -115,19 +79,86 @@ public class MasterTeleOp extends MasterOpMode
            //  E.g. you might be spending a lot of time updating your filter, or doing the Math.pow(x,2) command.
            //  You could comment out various parts of your code to see how it affects the loop time.
 
-
-
            if (gamepad2.a)
            {
                motorLift.setPower(-gamepad2.left_stick_y);
                motorLift2.setPower(-gamepad2.left_stick_y);
            }
-           else
+           else if(!isLiftRunning)
            {
                motorLift.setPower(0);
                motorLift2.setPower(0);
-
            }
+
+
+           if (gamepad2.b && gamepad2.left_bumper)
+           {
+               liftState = 0;
+               isLiftRunning = true;
+           }
+
+           if (liftState == 0 && isLiftRunning)
+           {
+               motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+               motorLift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+               liftZero = motorLift.getCurrentPosition();
+               liftZero2 = motorLift2.getCurrentPosition();
+               motorLift.setTargetPosition(liftZero + (int) (1.0 * COUNTS_PER_LIFT_MOTOR_REV));
+               motorLift2.setTargetPosition(liftZero2 + (int) (1.0 * COUNTS_PER_LIFT_MOTOR_REV));
+               motorLift.setPower(0.8);
+               motorLift2.setPower(0.8);
+               liftState++;
+               idle();
+           }
+           else if (liftState == 1 && isLiftRunning)
+           {
+               telemetry.addData("Motor lift busy: %b", motorLift.isBusy());
+               telemetry.addData("lift running: %b", isLiftRunning);
+               telemetry.addData("lift cur pos: %d", motorLift.getCurrentPosition());
+               telemetry.addData("lift tar pos: %d", motorLift.getTargetPosition());
+               telemetry.addData("lift tar pos: %f", motorLift.getPower());
+
+               if (!motorLift.isBusy() && !motorLift2.isBusy())
+               {
+                   motorLift.setPower(0);
+                   motorLift2.setPower(0);
+                   liftTimer.reset();
+                   liftState++;
+               }
+               idle();
+           }
+           else if (liftState == 2 && isLiftRunning)
+           {
+               if (liftTimer.milliseconds() > 600)
+               {
+                   liftState++;
+               }
+               idle();
+           }
+           else if (liftState == 3 && isLiftRunning)
+           {
+               motorLift.setTargetPosition(liftZero);
+               motorLift2.setTargetPosition(liftZero2);
+               motorLift.setPower(0.8);
+               motorLift2.setPower(0.8);
+               liftState++;
+               idle();
+           }
+           else if (liftState == 4 && isLiftRunning)
+           {
+               if (!motorLift.isBusy() && !motorLift2.isBusy())
+               {
+                   motorLift.setPower(0);
+                   motorLift2.setPower(0);
+                   motorLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                   motorLift2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                   isLiftRunning = false;
+                   liftState++;
+               }
+               idle();
+           }
+
+
 
 // move particle servo
            servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.7));
@@ -294,39 +325,6 @@ public class MasterTeleOp extends MasterOpMode
         return Math.pow(x,2) * Math.signum(x);
     }
 
-
-    //CodeReview: it's good to remove dead code that you're no longer using.
-    //  You can always get back to any previous version of your file using SourceTree,
-    //  so the deleted code won't really be lost if you need it.
-    /*
-    public void avgJoyStickInput()
-    {
-        jx[0] = jx2;
-        jy[0] = jy2;
-        jPivot[0] = turn;
-        // shift of values
-        for (int i = 1; i < jx.length; i++) // change numAvg later, has to be less than jx.length
-        {
-            jx[i] = jx[i - 1];
-            jy[i] = jy[i - 1];
-            jPivot[i] = jPivot[i - 1];
-        }
-        avgX = 0.0;
-        avgY = 0.0;
-        avgPivot = 0.0;
-        // sum of values
-        for (int i = 0; i < jx.length; i++)
-        {
-            avgX += jx[i];
-            avgY += jx[i];
-            avgPivot += jx[i];
-        }
-        avgX = avgX / (double) jx.length;
-        avgY = avgY / (double) jy.length;
-        avgPivot = avgPivot / (double) jPivot.length;
-    }
-    */
-
     public void initializeRobot()
     {
         // Initialize motors to be the hardware motors
@@ -375,6 +373,12 @@ public class MasterTeleOp extends MasterOpMode
         }
     }
 
+    public void RunDistance (double speed, double distInches, double timeout) throws InterruptedException
+    {
+        int newTarget;
+
+    }
+
 
     public void configureDashboard()
     {
@@ -397,6 +401,11 @@ public class MasterTeleOp extends MasterOpMode
                 .addData("Power | BackRight: ", new Func<String>() {
                     @Override public String value() {
                         return formatNumber(motorBackRight.getPower());
+                    }
+                })
+                .addData("Lift | State: ", new Func<String>() {
+                    @Override public String value() {
+                        return formatNumber(liftState);
                     }
                 });
     }

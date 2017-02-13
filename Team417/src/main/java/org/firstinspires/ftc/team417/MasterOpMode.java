@@ -43,6 +43,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     // Declare constants
     static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: TETRIX Motor Encoder, this was changed when we switched to 40:1 motors
+    static final double COUNTS_PER_LIFT_MOTOR_REV = 1120;
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     // static final double DRIVE_GEAR_REDUCTION = 0.25;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 6.0;     // For figuring circumference
@@ -100,6 +101,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBackRight.setMaxSpeed(MAX_SPEED);
 
         motorLauncher.setMaxSpeed(1157); // this is a different type of motor, 1157 ticks per second
+        motorLift.setMaxSpeed(MAX_SPEED);
+        motorLift2.setMaxSpeed(MAX_SPEED);
 
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
