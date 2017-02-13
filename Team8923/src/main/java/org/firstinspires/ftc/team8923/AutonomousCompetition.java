@@ -221,13 +221,6 @@ public class AutonomousCompetition extends MasterAutonomous
         driveRelativeToBeacon(buttonDistance, 200);
 
         // If color isn't correct, abort
-        if(!correctColor())
-        {
-            // Retract pusher to prevent damage or anything else bad
-            // Back away from beacon
-            driveRelativeToBeacon(buttonDistance, observationDistance);
-            return;
-        }
 
         // Move forward to press button
         driveRelativeToBeacon(buttonDistance, 100);

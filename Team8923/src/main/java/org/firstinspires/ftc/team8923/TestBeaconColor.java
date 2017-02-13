@@ -46,12 +46,12 @@ public class TestBeaconColor extends MasterAutonomous
             telemetry.addData("", "");
 
             // Color sensor data
-            int colorSensorColor = colorSensor.argb();
+            int colorSensorColor = colorSensorLeft.argb();
             float[] colorSensorHSV = new float[3];
 
-            int red = colorSensor.red();
-            int green = colorSensor.green();
-            int blue = colorSensor.blue();
+            int red = colorSensorLeft.red();
+            int green = colorSensorLeft.green();
+            int blue = colorSensorLeft.blue();
 
             double scalar = Math.max(red, Math.max(green, blue));
 
