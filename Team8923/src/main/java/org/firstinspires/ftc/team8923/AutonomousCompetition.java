@@ -177,16 +177,34 @@ public class AutonomousCompetition extends MasterAutonomous
             // Vision target wasn't found, so abort
             return;
 
-        // Reposition after tracking target
-        driveRelativeToBeacon(0.0, observationDistance);
+        // Once we find the target, go right in front of the beacon to get the colors
+        driveRelativeToBeacon(0.0, 200);
 
-        // Get colors of both sides of beacon. Parameters are in mm from center of vision target
-        // Sample location is lowest inside corner of beacon's colored regions
-        // Float arrays are in HSV format, where 0 index is hue (which we care about)
+        // Extend pusher to position color sensors in front of beacon
+        servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_EXTEND.pos);
+
+        // Wait for servo to move
+        sleep(500);
+
+        /*
+         * Here is where we compare the colors of each side of the beacon. The color sensors give
+         * us information in an rgb format. We could just directly compare the red and blue values,
+         * but we haven't had reliable results with that approach. Instead, we convert it to an hsv
+         * format and use the hue for comparisons. From a hue color wheel, the blue value is at 240
+         * degrees, and red is at 360/0. The color class converts the rgb values from the color
+         * sensor (all of the values are stored in a single integer) to hsv as a float array with
+         * the 0 index being the hue.
+         */
         float[] colorLeft = new float[3];
         float[] colorRight = new float[3];
-        Color.colorToHSV(vuforiaLocator.getPixelColor(-40, 170, 30), colorLeft);
-        Color.colorToHSV(vuforiaLocator.getPixelColor(40, 170, 30), colorRight);
+
+        // We don't care about the green value, and it sometimes messes us up, so remove it
+        int argbLeft = colorSensorLeft.argb();
+        int argbRight = colorSensorLeft.argb();
+        argbLeft = Color.argb(0, Color.red(argbLeft), 0, Color.blue(argbLeft));
+        argbRight = Color.argb(0, Color.red(argbRight), 0, Color.blue(argbRight));
+        Color.colorToHSV(argbLeft, colorLeft);
+        Color.colorToHSV(argbRight, colorRight);
 
         // Red value will sometimes be near 0 rather than 360. If so, make it above 360
         // We never get any values near 90 degrees, so anything lower must be red
@@ -198,41 +216,31 @@ public class AutonomousCompetition extends MasterAutonomous
         telemetry.log().add("Left hue: " + colorLeft[0]);
         telemetry.log().add("Right hue: " + colorRight[0]);
 
-        // Buttons on beacon are 65mm from center
-        double buttonDistance = 65;
+        // Figure out on which side the beacon pusher needs to be depending on beacon and alliance colors
+        boolean leftSide = false;
+        if(colorLeft[0] > colorRight[0])
+            leftSide = !leftSide;
+        else if(alliance == Alliance.BLUE)
+            leftSide = !leftSide;
+        // Move the servo to the desired side
+        if(leftSide)
+            servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_LEFT.pos);
+        else
+            servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_RIGHT.pos);
 
-        /*
-         * Compare the hues of each side. The hue color wheel has red at 360 degrees, and blue at
-         * 240 degrees. Subtracting the angles from each other results in some positive or negative
-         * number. The sign can tell us which side is red and blue. In this case, the left hue is
-         * subtracted from the right hue; a positive sign means left is red, negative mean right.
-         */
-        // Make button distance negative if we need to go to the other side
-        if(colorLeft[0] - colorRight[0] > 0)
-            buttonDistance *= -1;
-        if(alliance == Alliance.BLUE)
-            buttonDistance *= -1;
-
-        // Extend pusher to press button
-
-        // Line up with button
-        driveRelativeToBeacon(buttonDistance, observationDistance);
-        // Move in front of button to double check color
-        driveRelativeToBeacon(buttonDistance, 200);
-
-        // If color isn't correct, abort
+        // Wait for servo to move
+        sleep(500);
 
         // Move forward to press button
-        driveRelativeToBeacon(buttonDistance, 100);
+        driveRelativeToBeacon(0.0, 100);
         // Back away from beacon
-        driveRelativeToBeacon(buttonDistance, observationDistance);
+        driveRelativeToBeacon(0.0, observationDistance);
 
         // Retract and center pusher to prevent damage or anything else bad
         servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_CENTER.pos);
         servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
     }
 
-    // TODO: Test me
     // Shoots balls into the center vortex
     private void shootInCenter(int numberOfShots) throws InterruptedException
     {
