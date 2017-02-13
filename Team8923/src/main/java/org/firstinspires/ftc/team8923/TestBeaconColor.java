@@ -19,7 +19,7 @@ public class TestBeaconColor extends MasterAutonomous
 
         vuforiaLocator.startTracking();
 
-        servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
+        servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_EXTEND.pos);
 
         while(opModeIsActive())
         {

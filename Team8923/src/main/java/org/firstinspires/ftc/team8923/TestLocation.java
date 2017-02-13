@@ -49,9 +49,9 @@ public class TestLocation extends MasterAutonomous
             }
 
             if(gamepad1.x)
-                servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
+                servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_EXTEND.pos);
             else if(gamepad1.y)
-                servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
+                servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
 
             updateRobotLocation();
 

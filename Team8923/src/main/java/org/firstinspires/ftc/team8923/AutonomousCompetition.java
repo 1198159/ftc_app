@@ -214,7 +214,6 @@ public class AutonomousCompetition extends MasterAutonomous
             buttonDistance *= -1;
 
         // Extend pusher to press button
-        servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
 
         // Line up with button
         driveRelativeToBeacon(buttonDistance, observationDistance);
@@ -225,7 +224,6 @@ public class AutonomousCompetition extends MasterAutonomous
         if(!correctColor())
         {
             // Retract pusher to prevent damage or anything else bad
-            servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
             // Back away from beacon
             driveRelativeToBeacon(buttonDistance, observationDistance);
             return;
@@ -236,8 +234,9 @@ public class AutonomousCompetition extends MasterAutonomous
         // Back away from beacon
         driveRelativeToBeacon(buttonDistance, observationDistance);
 
-        // Retract pusher to prevent damage or anything else bad
-        servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
+        // Retract and center pusher to prevent damage or anything else bad
+        servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_CENTER.pos);
+        servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
     }
 
     // TODO: Test me

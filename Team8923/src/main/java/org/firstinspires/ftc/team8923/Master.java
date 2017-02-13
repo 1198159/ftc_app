@@ -20,7 +20,8 @@ abstract class Master extends LinearOpMode
     DcMotor motorCollector = null;
     DcMotor motorCatapult = null;
 
-    Servo servoBeaconPusher = null;
+    Servo servoBeaconPusherDeploy = null;
+    Servo servoBeaconPusherSwing = null;
     Servo servoCapBallHolder = null;
     Servo servoHopperSweeper = null;
     Servo servoCollectorHolder = null;
@@ -50,6 +51,9 @@ abstract class Master extends LinearOpMode
     {
         BEACON_RETRACT(0.80),
         BEACON_EXTEND(0.15),
+        BEACON_RIGHT(0.4),
+        BEACON_LEFT(0.6),
+        BEACON_CENTER(0.5),
         CAP_BALL_HOLD(1.0),
         CAP_BALL_RELEASE(0.0),
         HOPPER_SWEEP_BACK(0.15),
@@ -96,12 +100,14 @@ abstract class Master extends LinearOpMode
         motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorCatapult.setDirection(DcMotor.Direction.REVERSE);
 
-        servoBeaconPusher = hardwareMap.servo.get("servoBeaconPusher");
+        servoBeaconPusherDeploy = hardwareMap.servo.get("servoBeaconPusherDeploy");
+        servoBeaconPusherSwing = hardwareMap.servo.get("servoBeaconPusherSwing");
         servoCapBallHolder = hardwareMap.servo.get("servoCapBallHolder");
         servoHopperSweeper = hardwareMap.servo.get("servoHopperSweeper");
         servoCollectorHolder = hardwareMap.servo.get("servoCollectorHolder");
 
-        servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
+        servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
+        servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_CENTER.pos);
         servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_RELEASE.pos);
         servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
         servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_DOWN.pos);

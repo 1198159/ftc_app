@@ -65,9 +65,13 @@ abstract class MasterTeleOp extends Master
     void controlBeaconPusher()
     {
         if(gamepad1.a)
-            servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
+            servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_EXTEND.pos);
         else if(gamepad1.x)
-            servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
+            servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
+        if(gamepad1.dpad_left)
+            servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_LEFT.pos);
+        else if(gamepad1.dpad_right)
+            servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_RIGHT.pos);
     }
 
     // Runs lift up and down
@@ -107,7 +111,8 @@ abstract class MasterTeleOp extends Master
         if(liftState == 0 && liftDeploying)
         {
             liftState++;
-            servoBeaconPusher.setPosition(ServoPositions.BEACON_EXTEND.pos);
+            servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
+            servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_CENTER.pos);
         }
         // Raise the lift to make it deploy
         else if(liftState == 1 && liftTimer.milliseconds() > 500)
@@ -130,7 +135,6 @@ abstract class MasterTeleOp extends Master
             liftState++;
             motorLift.setPower(0.0);
             motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            servoBeaconPusher.setPosition(ServoPositions.BEACON_RETRACT.pos);
             liftDeploying = false;
         }
     }
