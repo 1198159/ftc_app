@@ -9,8 +9,16 @@ import com.qualcomm.robotcore.util.Range;
  */
 abstract class MasterTeleOp extends Master
 {
+    // Variables used for hopper control
     private ElapsedTime hopperTimer = new ElapsedTime();
     private boolean hopperServoMoving = false;
+
+    // Variables used for semi-auto lift deployment
+    int liftState = 0;
+    int liftZero = 0;
+    boolean liftDeploying = false;
+    boolean liftDeployed = false;
+    ElapsedTime liftTimer = new ElapsedTime();
 
     void driveMecanumTeleOp()
     {
@@ -64,6 +72,10 @@ abstract class MasterTeleOp extends Master
     // Extends and retracts beacon pusher
     void controlBeaconPusher()
     {
+        // Don't give control to the beacon pusher after lift has been deployed
+        if(liftDeployed)
+            return;
+
         if(gamepad1.a)
             servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_EXTEND.pos);
         else if(gamepad1.x)
@@ -97,18 +109,18 @@ abstract class MasterTeleOp extends Master
         // Code below is for auto lift deployment. It is written as a state machine to allow
         // drivers to continue operating robot
 
+        int liftTolerance = 50;
+
         // Start auto deployment when requested
         if(gamepad1.b)
         {
             liftState = 0;
             liftDeploying = true;
+            liftDeployed = true;
             liftTimer.reset();
         }
-
-        int liftTolerance = 50;
-
-        // Move beacon pusher servo down to ensure it's out of the way
-        if(liftState == 0 && liftDeploying)
+        // Move beacon pusher servos to ensure they're out of the way
+        else if(liftState == 0 && liftDeploying)
         {
             liftState++;
             servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
@@ -138,11 +150,6 @@ abstract class MasterTeleOp extends Master
             liftDeploying = false;
         }
     }
-
-    int liftState = 0;
-    int liftZero = 0;
-    boolean liftDeploying = false;
-    ElapsedTime liftTimer = new ElapsedTime();
 
     // Runs collector. Can be run forwards and backwards
     void runCollector()
