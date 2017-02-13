@@ -880,17 +880,23 @@ abstract class MasterAutonomous extends MasterOpMode
 
             telemetry.log().add("executing");
             telemetry.update();
+
 // calls pivot move function here
-            pivotMove(robotErrorX, robotErrorY, errorAngle, speed, timeout); // speed, 3 second timeout
-            /*
+            //pivotMove(robotErrorX, robotErrorY, errorAngle, speed, timeout); // speed, 3 second timeout
+
             MINSPEED = 0.3;
+            Kpivot = 140.0;
+            Kmove = 1.0/1200.0;
             pivot(errorAngle, 0.5);
+
+            Kpivot = 50.0;
             move(0.0, robotErrorY, 0.3, 3);
+
             MINSPEED = 0.35;
+            Kmove = 1.0/1500.0;
             move(robotErrorX, 0, 0.5, 3);
             MINSPEED = 0.3;
-            */
-            //moveAverage(robotErrorX, robotErrorY, errorAngle, speed, timeout); // speed, 3 second timeout
+
             telemetry.log().add("done");
             telemetry.update();
 
