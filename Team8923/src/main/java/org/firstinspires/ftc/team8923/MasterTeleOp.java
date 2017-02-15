@@ -89,18 +89,18 @@ abstract class MasterTeleOp extends Master
     // Runs lift up and down
     void runLift()
     {
-        if(gamepad2.x && liftDeployed)
+        if(gamepad2.x)
             servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
 
         // Run lift up
-        if(gamepad2.dpad_up&& liftDeployed)
+        if(gamepad2.dpad_up)
         {
             motorLift.setPower(1.0);
             // Retract cap ball holder when raising
             servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_RELEASE.pos);
         }
         // Run lift down
-        else if(gamepad2.dpad_down && liftDeployed)
+        else if(gamepad2.dpad_down)
             motorLift.setPower(-1.0);
         // If no button is pressed, stop!
         else if(!liftDeploying)
