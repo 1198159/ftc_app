@@ -89,22 +89,25 @@ abstract class MasterTeleOp extends Master
     // Runs lift up and down
     void runLift()
     {
-        if(gamepad2.x)
-            servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
-
-        // Run lift up
-        if(gamepad2.dpad_up)
+        if(liftDeployed)
         {
-            motorLift.setPower(1.0);
-            // Retract cap ball holder when raising
-            servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_RELEASE.pos);
+            if (gamepad2.x)
+                servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
+
+            // Run lift up
+            if (gamepad2.dpad_up) {
+                motorLift.setPower(1.0);
+                // Retract cap ball holder when raising
+                servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_RELEASE.pos);
+            }
+            // Run lift down
+            else if (gamepad2.dpad_down)
+                motorLift.setPower(-1.0);
+                // If no button is pressed, stop!
+            else
+                motorLift.setPower(0);
         }
-        // Run lift down
-        else if(gamepad2.dpad_down)
-            motorLift.setPower(-1.0);
-        // If no button is pressed, stop!
-        else if(!liftDeploying)
-            motorLift.setPower(0);
+
 
         // Code below is for auto lift deployment. It is written as a state machine to allow
         // drivers to continue operating robot
@@ -116,7 +119,6 @@ abstract class MasterTeleOp extends Master
         {
             liftState = 0;
             liftDeploying = true;
-            liftDeployed = true;
             liftTimer.reset();
         }
         // Move beacon pusher servos to ensure they're out of the way
@@ -148,6 +150,7 @@ abstract class MasterTeleOp extends Master
             motorLift.setPower(0.0);
             motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             liftDeploying = false;
+            liftDeployed = true;
         }
     }
 
