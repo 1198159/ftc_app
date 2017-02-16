@@ -83,7 +83,7 @@ abstract class Master extends LinearOpMode
         // Set drive motor directions
         reverseDrive(false);
         // Some hardware person got the wiring backwards...
-        motorLift.setDirection(DcMotor.Direction.REVERSE);
+        motorLift.setDirection(DcMotor.Direction.FORWARD); // changed due to chain replacing our old gear system for driving the lift
         motorCollector.setDirection(DcMotor.Direction.REVERSE);
 
         // Our drive motors seem to run at this speed
@@ -128,8 +128,8 @@ abstract class Master extends LinearOpMode
         if(!reverse)
         {
             reverseDrive = false;
-            motorFL.setDirection(DcMotor.Direction.REVERSE);
-            motorFR.setDirection(DcMotor.Direction.FORWARD);
+            motorFL.setDirection(DcMotor.Direction.FORWARD);
+            motorFR.setDirection(DcMotor.Direction.REVERSE);
             motorBL.setDirection(DcMotor.Direction.FORWARD);
             motorBR.setDirection(DcMotor.Direction.REVERSE);
             return;
@@ -137,8 +137,8 @@ abstract class Master extends LinearOpMode
 
         // Reverse
         reverseDrive = true;
-        motorFL.setDirection(DcMotor.Direction.FORWARD);
-        motorFR.setDirection(DcMotor.Direction.REVERSE);
+        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
     }
