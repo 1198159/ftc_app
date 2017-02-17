@@ -473,7 +473,7 @@ abstract class MasterAutonomous extends Master
             sendTelemetry();
             idle();
         }
-        catapultZero = motorCatapult.getCurrentPosition() + 1000;
+        catapultZero = motorCatapult.getCurrentPosition() + CATAPULT_TICKS_PER_CYCLE / 5;
         motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorCatapult.setPower(0.0);
     }
@@ -498,7 +498,7 @@ abstract class MasterAutonomous extends Master
     void fireCatapult()
     {
         telemetry.log().add("Firing Catapult: " + getRuntime());
-        motorCatapult.setTargetPosition(catapultZero + 3000);
+        motorCatapult.setTargetPosition(catapultZero + CATAPULT_TICKS_PER_CYCLE * 3 / 5);
         motorCatapult.setPower(1.0);
         // Wait until the catapult finishes moving
         while(!catapultIsAtTarget())

@@ -233,7 +233,7 @@ abstract class MasterTeleOp extends Master
             // Run motor forward a bit to launch particle
             else if(gamepad2.right_bumper)
             {
-                int targetPosition = catapultZero + 3000;
+                int targetPosition = catapultZero + CATAPULT_TICKS_PER_CYCLE * 3 / 5;
                 motorCatapult.setTargetPosition(targetPosition);
             }
         }
