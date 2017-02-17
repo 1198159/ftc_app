@@ -16,7 +16,7 @@ import java.util.ArrayList;
 abstract class MasterAutonomous extends Master
 {
     // These are not in Master, because they take longer to initialize, which slows down TeleOp
-    ColorSensor colorSensorLeft;
+    //ColorSensor colorSensorLeft;
     ColorSensor colorSensorRight;
     BNO055IMU imu;
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -230,7 +230,7 @@ abstract class MasterAutonomous extends Master
         lastEncoderBL = motorBL.getCurrentPosition();
         lastEncoderBR = motorBR.getCurrentPosition();
 
-        colorSensorLeft = hardwareMap.colorSensor.get("colorSensorLeft");
+        //colorSensorLeft = hardwareMap.colorSensor.get("colorSensorLeft");
         colorSensorRight = hardwareMap.colorSensor.get("colorSensorRight");
 
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
