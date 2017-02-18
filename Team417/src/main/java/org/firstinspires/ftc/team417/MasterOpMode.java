@@ -122,15 +122,9 @@ abstract public class MasterOpMode extends LinearOpMode
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        //parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
-        //CodeReview: have you run the calibration sample opmode and created this file? You should ensure this file exists
-        //            if you are going to reference it here. Otherwise you should not set this variable (it's not required).
+
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
-        //parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        //CodeReview: I believe it's optional to have an accelerationIntegrationAlgorithm and you don't need to specify it here.
-        //            This particular one doesn't seem to be providing your robot any benefit other than adding to logs.
-
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
@@ -138,15 +132,10 @@ abstract public class MasterOpMode extends LinearOpMode
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
-        //CodeReview: just curious why you are getting the heading 3 times during your initialization routine. Doesn't seem necessary.
+        // get the heading 3 times because first readings aren't accurate (this was tested)
         float angle;
         for (int i = 0; i < 3; i++) {
-            //CodeReview: In the past we recommended not using sleep() because it causes
-            //  your thread to stop, which (we think) means the FTC framework isn't getting work done either.
-            //  Instead, we have recommended using your pause() method, because it calls idle(), which
-            //  lets the FTC framework get some work done.
-            //  However, this might be a good question to ask Bob about, because maybe sleep() is fine.
-            //  By the way, I noticed you also use sleep() in TeleOpTests and a few other opmodes. Do a global search/replace. 
+            //pause(100);
             sleep(100);
             angle = imu.getAngularOrientation().firstAngle;
         }

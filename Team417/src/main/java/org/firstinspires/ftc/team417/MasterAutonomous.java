@@ -447,17 +447,6 @@ abstract class MasterAutonomous extends MasterOpMode
         final double ROBOT_DIAMETER_MM = 27.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
         pivotDst = (int) ((pivotAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
-/*
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
-                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.414))
-                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
-        newTargetBL = motorBackLeft.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.414))
-                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.414))
-                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
-*/
-
         //CodeReview: your code will be a bit faster if you store the following two things in local variables
         // and then reuse them. Your current code calculates the same values 4 times (each).
         // int xTarget = (int) Math.round(COUNTS_PER_MM * (x * 1.1)
@@ -884,18 +873,21 @@ abstract class MasterAutonomous extends MasterOpMode
 // calls pivot move function here
             //pivotMove(robotErrorX, robotErrorY, errorAngle, speed, timeout); // speed, 3 second timeout
 
+
             MINSPEED = 0.3;
-            Kpivot = 140.0;
+            Kpivot = 1.0/140.0;
             Kmove = 1.0/1200.0;
+            TOL_ANGLE = 2.0;
             pivot(errorAngle, 0.5);
 
-            Kpivot = 50.0;
+            Kpivot = 1.0/50.0;
+            TOL_ANGLE = 3.0;
             move(0.0, robotErrorY, 0.3, 3);
 
             MINSPEED = 0.35;
-            Kmove = 1.0/1500.0;
+            Kmove = 1.0/1200.0;
             move(robotErrorX, 0, 0.5, 3);
-            MINSPEED = 0.3;
+
 
             telemetry.log().add("done");
             telemetry.update();
@@ -910,7 +902,7 @@ abstract class MasterAutonomous extends MasterOpMode
             motorFrontRight.setPower(0);
             motorBackLeft.setPower(0);
             motorBackRight.setPower(0);
-            sleep(200);
+            pause(200);
 
             // error is in mm
         } while ( opModeIsActive() && ( Math.abs(robotErrorX) > VUFORIA_TOL || Math.abs(robotErrorY) > VUFORIA_TOL

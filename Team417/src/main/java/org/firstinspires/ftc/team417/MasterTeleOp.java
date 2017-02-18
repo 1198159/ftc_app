@@ -48,10 +48,6 @@ public class MasterTeleOp extends MasterOpMode
     double motorLauncherSetSpeed = 0;
     double driveSpeed = 0;
 
-    double jx2;  //CodeReview: This variable is only used in the MecanumDrive method. It should be declared inside that method
-    double jy2;  //CodeReview: (same comment as above)
-    double turn;
-
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -174,8 +170,8 @@ public class MasterTeleOp extends MasterOpMode
            // and there might be a simpler way to do this.
            if (runtime.milliseconds() > 100)
            {
-               resetStartTime(); //CodeReview: Come talk with me. I think this method is doing something other than what you want.
-                                 // It's very unlikely that you would really want to call this method in your opmode.
+               runtime.reset();
+
                if (motorLauncherSpeed < motorLauncherSetSpeed)
                {
                    motorLauncherSpeed += 0.1;
@@ -251,6 +247,10 @@ public class MasterTeleOp extends MasterOpMode
 
     public void mecanumDrive(double kDrive, double kPivot)
     {
+        double jx2;
+        double jy2;
+        double turn;
+
         double avgX;
         double avgY;
         double avgPivot;
@@ -270,9 +270,7 @@ public class MasterTeleOp extends MasterOpMode
         turn = modJoyStickInput(lx);
         turn = Range.clip(turn, -1, 1);
 
-        //CodeReview: put this next line inside the (isLegatoMode) block below,
-        //  so you only pay for updating the filter when you're actually using it.
-        //  (I *think* you're only using it in legato mode...)
+        // used in all modes including adagio legato mode
         filterJoyStickInput.appendInput(jx2, jy2, turn);
 
         if (isLegatoMode)
@@ -290,10 +288,6 @@ public class MasterTeleOp extends MasterOpMode
 
         if (isModeReversed)
         {
-            /*
-            jx2 = -jx2;
-            jy2 = -jy2;
-            */
             avgX = -avgX;
             avgY = -avgY;
         }

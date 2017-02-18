@@ -162,17 +162,17 @@ public class AutonomousTests extends MasterAutonomous
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         VUFORIA_TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         Kmove = 1.0/1000.0;
-        Kpivot = 1.0/100.0;
+        Kpivot = 1.0/150.0;
         MINSPEED = 0.3;
 
-        telemetry.addData("Path", "scanning for target");
+        telemetry.addData("Path", "scanning for first target");
         telemetry.update();
         pivotDetectTarget(30, 5);
 
         // setting for align pivot Vuforia
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
-        MINSPEED = 0.35;
+        MINSPEED = 0.3;
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
@@ -296,36 +296,46 @@ public class AutonomousTests extends MasterAutonomous
 
         // for big move left or right
         TOL = 40;
-        TOL_ANGLE = 1.0;
+        TOL_ANGLE = 3.0;
         Kmove = 1.0/2000.0;
-        Kpivot = 1.0/50.0;
+        Kpivot = 1.0/100.0;
 // shift to new target!!
         telemetry.addData("Path", "shift to new target");
         telemetry.update();
+
+
         if (beaconColor == 0) // if left side blue
         {
             if (isRedTeam) // move shorter
             {
-                //pivotMove(1125, 65, 0, 0.7, 4); // 3 inches shorter
-                moveAverage(1125, 0, 0, 0.7, 4);
+                //moveAverage(1125, 0, 0, 0.7, 4);
+                pivot(-90, 0.7);
+                moveAverage(0, 1220, 0, 0.8, 3);
+                pivot(90, 0.7);
             }
             else // move shorter
             {
-                //pivotMove(-1220, 65, 0, 0.7, 4);
-                moveAverage(-1125, 0, 0, 0.7, 4);
+                //moveAverage(-1125, 0, 0, 0.7, 4);
+                pivot(90, 0.7);
+                moveAverage(0, 1220, 0, 0.8, 3);
+                pivot(-90, 0.7);
             }
         }
         else if (beaconColor == 1) // if left side red
         {
             if (isRedTeam) // move longer
             {
-                //pivotMove(1220, 65, 0, 0.7, 4);
-                moveAverage(1220, 0, 0, 0.7, 4);
+                //moveAverage(1220, 0, 0, 0.7, 4);
+                pivot(-90, 0.7);
+                moveAverage(0, 1300, 0, 0.8, 3);
+                pivot(90, 0.7);
             }
             else // move longer
             {
-                //pivotMove(-1125, 65, 0, 0.7, 4);
-                moveAverage(-1220, 0, 0, 0.7, 4);
+                //moveAverage(-1220, 0, 0, 0.7, 4);
+                pivot(90, 0.7);
+                moveAverage(0, 1300, 0, 0.8, 3);
+                pivot(-90, 0.7);
             }
         }
         pause(200);
@@ -335,8 +345,8 @@ public class AutonomousTests extends MasterAutonomous
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         VUFORIA_TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         Kmove = 1.0/1000.0;
-        Kpivot = 1.0/100.0;
-        MINSPEED = 0.35;
+        Kpivot = 1.0/150.0;
+        MINSPEED = 0.3;
 
         telemetry.addData("Path", "scanning for target");
         telemetry.update();
@@ -420,11 +430,63 @@ public class AutonomousTests extends MasterAutonomous
         Kpivot = 1/140.0;
         MINSPEED = 0.35;
 
-        move(0, -300, 0.5, 3); // back up
+        move(0, -150, 0.5, 3); // back up
 
         if (autoRuntime.milliseconds() < 28000)
         {
-            shootParticlesAfterBeacons();
+            TOL_ANGLE = 3.0;
+            VUFORIA_TOL_ANGLE = 3.0;
+            Kpivot = 1/100.0;
+            MINSPEED = 0.35;
+
+            motorLauncher.setPower(0.85);
+
+            if (isRedTeam) // RED
+            {
+                if (beaconColor == 0)
+                {
+                    // if red team, right side
+                    move(0, -100, 0.5, 3); // back up less
+                    pivot(-45, 0.8);
+                    move(0, -300, 0.6, 2); // come closer more
+                }
+                else
+                {
+                    // if red team, left side
+                    move(0, -200, 0.5, 3); // back up more
+                    pivot(-45, 0.8);
+                    move(0, -200, 0.6, 2); // come closer less
+                }
+            }
+            else // BLUE
+            {
+                if (beaconColor == 0)
+                {
+                    // if blue team, left side
+                    move(0, -100, 0.5, 3); // back up less
+                    pivot(55, 0.8);
+                    move(0, -300, 0.6, 2); // come closer more
+                }
+                else
+                {
+                    // if blue team, right side
+                    move(0, -200, 0.5, 3); // back up more
+                    pivot(55, 0.8);
+                    move(0, -200, 0.6, 2); // come closer less
+                }
+            }
+
+            motorCollector.setPower(1.0);
+            servoParticle.setPosition(0.8);
+            pause(300);
+            servoParticle.setPosition(0.0);
+            pause(1500);
+            servoParticle.setPosition(0.8);
+            pause(300);
+            servoParticle.setPosition(0.0);
+            pause(300);
+            motorLauncher.setPower(0.0);
+            motorCollector.setPower(0.0);
         }
 
         telemetry.addData("Path", "Complete");
