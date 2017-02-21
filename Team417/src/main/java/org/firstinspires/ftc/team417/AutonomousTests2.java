@@ -134,7 +134,9 @@ public class AutonomousTests2 extends MasterAutonomous
 
 // GO FOR, SHOOT, FOR AGAIN
 
-        move(0, -600, 0.6, 3);
+        Kmove = 1.0/2000.0;
+
+        move(0, -550, 0.5 , 3);
 
         /*
         // shoot twice
@@ -167,7 +169,7 @@ public class AutonomousTests2 extends MasterAutonomous
         pause(20000);
 
         //move(0, -1166.8, 0.7, 4);
-        move(0, -868, 0.7, 4);
+        move(0, -868, 0.5, 4);
         pause(500);
         move(0, -50, 0.4, 3);
 
