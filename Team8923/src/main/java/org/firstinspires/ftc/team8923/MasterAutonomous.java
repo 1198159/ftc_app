@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team8923;
 
+import android.graphics.Color;
+
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -520,6 +522,34 @@ abstract class MasterAutonomous extends Master
         sleep(1000);
         // Move servo back
         servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+    }
+
+    // The Adafruit color sensors give 2 byte RGB values, but Java's built in Color class expects
+    // only 1, which causes overflow issues. Since we only really want the hue from the color
+    // sensors, this method scales the sensor's rgb values to 1 byte and returns the hue
+    float getHueFromSensor(ColorSensor sensor)
+    {
+        // We use doubles because we need to divide the numbers with floating point division. We
+        // also don't care about the green value, and it causes some issues, so it's not used
+        double red = sensor.red();
+        double blue = sensor.blue();
+
+        // Find the max value and use it to rescale each value to 0-255
+        double max = Math.max(red, blue);
+        red *= 255 / max;
+        blue *= 255 / max;
+
+        // Convert to a hue
+        int argb = Color.argb(0, (int) red, 0, (int) blue);
+        float[] hsv = new float[3];
+        Color.colorToHSV(argb, hsv);
+
+        // Red values can sometimes go near 0 rather than 360. We need it to be near 360 for our
+        // comparisons, so if it's below 90 (greenish, which we never expect to get), add 360
+        if(hsv[0] < 90)
+            hsv[0] += 360;
+
+        return hsv[0];
     }
 
     // If you subtract 359 degrees from 0, you would get -359 instead of 1. This method handles
