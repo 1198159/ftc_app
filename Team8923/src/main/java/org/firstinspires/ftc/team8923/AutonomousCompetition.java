@@ -201,17 +201,25 @@ public class AutonomousCompetition extends MasterAutonomous
         telemetry.log().add("Left hue: " + leftHue);
         telemetry.log().add("Right hue: " + rightHue);
 
-        // Figure out on which side the beacon pusher needs to be depending on beacon and alliance colors
+        // Figure out on which side the beacon pusher needs to be depending on beacon and alliance
+        // colors. The robot assumes it's on the red alliance, then goes to the other side if not
+        boolean leftSideIsRed = leftHue > rightHue;
         boolean leftSide = false;
-        if(leftHue > rightHue)
-            leftSide = !leftSide;
-        else if(alliance == Alliance.BLUE)
+        if(leftSideIsRed)
+            leftSide = true;
+        if(alliance == Alliance.BLUE)
             leftSide = !leftSide;
         // Move the servo to the desired side
         if(leftSide)
+        {
             servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_LEFT.pos);
+            telemetry.log().add("Choosing Left");
+        }
         else
+        {
             servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_RIGHT.pos);
+            telemetry.log().add("Choosing Right");
+        }
 
         // Wait for servo to move
         sleep(500);
