@@ -195,30 +195,30 @@ public class AutonomousCompetition extends MasterAutonomous
          * sensor (all of the values are stored in a single integer) to hsv as a float array with
          * the 0 index being the hue.
          */
-        //float[] colorLeft = new float[3];
+        float[] colorLeft = new float[3];
         float[] colorRight = new float[3];
 
         // We don't care about the green value, and it sometimes messes us up, so remove it
-        //int argbLeft = colorSensorLeft.argb();
-        int argbRight = colorSensorRight.argb();
-        //argbLeft = Color.argb(0, Color.red(argbLeft), 0, Color.blue(argbLeft));
+        int argbLeft = colorSensorLeft.argb();
+        int argbRight = colorSensorLeft.argb();
+        argbLeft = Color.argb(0, Color.red(argbLeft), 0, Color.blue(argbLeft));
         argbRight = Color.argb(0, Color.red(argbRight), 0, Color.blue(argbRight));
-        //Color.colorToHSV(argbLeft, colorLeft);
+        Color.colorToHSV(argbLeft, colorLeft);
         Color.colorToHSV(argbRight, colorRight);
 
         // Red value will sometimes be near 0 rather than 360. If so, make it above 360
         // We never get any values near 90 degrees, so anything lower must be red
-        //if(colorLeft[0] < 90)
-            //colorLeft[0] += 360;
+        if(colorLeft[0] < 90)
+            colorLeft[0] += 360;
         if(colorRight[0] < 90)
             colorRight[0] += 360;
 
-        //telemetry.log().add("Left hue: " + colorLeft[0]);
+        telemetry.log().add("Left hue: " + colorLeft[0]);
         telemetry.log().add("Right hue: " + colorRight[0]);
 
         // Figure out on which side the beacon pusher needs to be depending on beacon and alliance colors
         boolean leftSide = false;
-        if(/*colorLeft[0] > */colorRight[0] <= 300)
+        if(colorLeft[0] > colorRight[0])
             leftSide = !leftSide;
         else if(alliance == Alliance.BLUE)
             leftSide = !leftSide;
