@@ -51,8 +51,8 @@ abstract class Master extends LinearOpMode
     {
         BEACON_RETRACT(0.80),
         BEACON_EXTEND(0.15),
-        BEACON_RIGHT(0.4),
-        BEACON_LEFT(0.6),
+        BEACON_RIGHT(0.05),
+        BEACON_LEFT(0.7),
         BEACON_CENTER(0.5),
         CAP_BALL_HOLD(1.0),
         CAP_BALL_RELEASE(0.0),

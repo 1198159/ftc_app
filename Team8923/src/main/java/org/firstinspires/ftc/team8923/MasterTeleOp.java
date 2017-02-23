@@ -79,7 +79,10 @@ abstract class MasterTeleOp extends Master
         if(gamepad1.a)
             servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_EXTEND.pos);
         else if(gamepad1.x)
+        {
             servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
+            servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_CENTER.pos);
+        }
         if(gamepad1.dpad_left)
             servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_LEFT.pos);
         else if(gamepad1.dpad_right)
@@ -120,6 +123,7 @@ abstract class MasterTeleOp extends Master
             liftState = 0;
             liftDeploying = true;
             liftTimer.reset();
+            telemetry.log().add("Starting Lift Deployment");
         }
         // Move beacon pusher servos to ensure they're out of the way
         else if(liftState == 0 && liftDeploying)
@@ -127,6 +131,7 @@ abstract class MasterTeleOp extends Master
             liftState++;
             servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
             servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_CENTER.pos);
+            telemetry.log().add("Moving Beacon Pusher");
         }
         // Raise the lift to make it deploy
         else if(liftState == 1 && liftTimer.milliseconds() > 500)
@@ -136,12 +141,14 @@ abstract class MasterTeleOp extends Master
             liftZero = motorLift.getCurrentPosition();
             motorLift.setTargetPosition(liftZero + 600);
             motorLift.setPower(1.0);
+            telemetry.log().add("Raising Lift");
         }
         // Lower the lift once it's deployed
         else if(liftState == 2 && Math.abs(motorLift.getCurrentPosition() - motorLift.getTargetPosition()) < liftTolerance)
         {
             liftState++;
             motorLift.setTargetPosition(liftZero);
+            telemetry.log().add("Lowering Lift");
         }
         // Stop moving the lift and return control to driver
         else if(liftState == 3 && Math.abs(motorLift.getCurrentPosition() - motorLift.getTargetPosition()) < liftTolerance)
@@ -151,6 +158,7 @@ abstract class MasterTeleOp extends Master
             motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             liftDeploying = false;
             liftDeployed = true;
+            telemetry.log().add("Lift Done Deploying");
         }
     }
 
