@@ -11,10 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name = "Auto Competition", group = "Competition")
 public class AutonomousCompetition extends MasterAutonomous
 {
-    private double beaconX;
-    private double beaconY;
-    private double beaconAngle;
-
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -291,23 +287,5 @@ public class AutonomousCompetition extends MasterAutonomous
             //loadCatapult();
             fireCatapult();
         }
-    }
-
-    // Drives robot with coordinates relative to beacon. Parameters are coordinates intrinsic to
-    // beacon, which are then converted to extrinsic coordinates to which the robot drives
-    private void driveRelativeToBeacon(double targetX, double targetY) throws InterruptedException
-    {
-        // Beacon pusher and phone camera are offset from center of robot
-        targetX += 40;
-        targetY += 160;
-
-        // Y input is always positive, but we need it to be negative for the math
-        targetY *= -1;
-
-        // Convert intrinsic values to extrinsic
-        double relativeX = targetX * Math.sin(Math.toRadians(beaconAngle)) + targetY * Math.cos(Math.toRadians(beaconAngle));
-        double relativeY = targetX * -Math.cos(Math.toRadians(beaconAngle)) + targetY * Math.sin(Math.toRadians(beaconAngle));
-
-        driveToPoint(beaconX + relativeX, beaconY + relativeY, beaconAngle);
     }
 }

@@ -340,6 +340,29 @@ abstract class MasterAutonomous extends Master
         driveToPoint(x, y, driveAngle);
     }
 
+    // Used to
+    double beaconX;
+    double beaconY;
+    double beaconAngle;
+
+    // Drives robot with coordinates relative to beacon. Parameters are coordinates intrinsic to
+    // beacon, which are then converted to extrinsic coordinates to which the robot drives
+    void driveRelativeToBeacon(double targetX, double targetY) throws InterruptedException
+    {
+        // Beacon pusher and phone camera are offset from center of robot
+        targetX += 40;
+        targetY += 160;
+
+        // Y input is always positive, but we need it to be negative for the math
+        targetY *= -1;
+
+        // Convert intrinsic values to extrinsic
+        double relativeX = targetX * Math.sin(Math.toRadians(beaconAngle)) + targetY * Math.cos(Math.toRadians(beaconAngle));
+        double relativeY = targetX * -Math.cos(Math.toRadians(beaconAngle)) + targetY * Math.sin(Math.toRadians(beaconAngle));
+
+        driveToPoint(beaconX + relativeX, beaconY + relativeY, beaconAngle);
+    }
+
     // Robot sometimes won't see the vision targets when it should. This is to be used in places
     // where we need to be sure that we're tracking the target
     boolean lookForVisionTarget() throws InterruptedException
