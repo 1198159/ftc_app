@@ -173,15 +173,13 @@ public class AutonomousCompetition extends MasterAutonomous
             // Vision target wasn't found, so abort
             return;
 
-        // Once we find the target, go right in front of the beacon to get the colors
-        driveRelativeToBeacon(0.0, 200);
-
         // Extend pusher to position color sensors in front of beacon
         servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_EXTEND.pos);
 
-        // Wait for servo to move
-        sleep(500);
+        // Once we find the target, go right in front of the beacon to get the colors
+        driveRelativeToBeacon(0.0, 250);
 
+        sleep(250);
         /*
          * Here is where we compare the colors of each side of the beacon. The color sensors give
          * us information in an rgb format. We could just directly compare the red and blue values,
@@ -221,7 +219,7 @@ public class AutonomousCompetition extends MasterAutonomous
         sleep(500);
 
         // Move forward to press button
-        driveRelativeToBeacon(0.0, 100);
+        driveRelativeToBeacon(0.0, 110);
         // Back away from beacon
         driveRelativeToBeacon(0.0, observationDistance);
 

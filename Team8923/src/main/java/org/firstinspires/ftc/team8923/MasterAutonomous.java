@@ -291,8 +291,6 @@ abstract class MasterAutonomous extends Master
     // Makes robot drive to a point on the field
     void driveToPoint(double targetX, double targetY, double targetAngle, double maxPower) throws InterruptedException
     {
-        telemetry.log().add("Target X " +targetX + "  Y " + targetY);
-
         updateRobotLocation();
 
         // Calculate how far we are from target point
