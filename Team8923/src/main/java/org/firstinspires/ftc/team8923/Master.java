@@ -236,10 +236,11 @@ abstract class Master extends LinearOpMode
         motorBR.setPower(0.0);
     }
 
-    boolean catapultIsAtTarget()
+    // This is used as a replacement for the isBusy() method of motors, as it's unreliable
+    boolean motorIsAtTarget(DcMotor motor)
     {
         int tolerance = 100;
-        return Math.abs(motorCatapult.getCurrentPosition() - motorCatapult.getTargetPosition()) < tolerance;
+        return Math.abs(motor.getCurrentPosition() - motor.getTargetPosition()) < tolerance;
     }
 
     // Truncates numbers to fit displays better. Not recommended for numbers that span many
