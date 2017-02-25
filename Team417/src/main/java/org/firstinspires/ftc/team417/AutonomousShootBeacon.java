@@ -2,7 +2,7 @@ package org.firstinspires.ftc.team417;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Autonomous Tests", group = "Swerve")
+@Autonomous(name="ShootThenBeacons", group = "Swerve")
 // @Disabled
 
 public class AutonomousShootBeacon extends MasterAutonomous
@@ -73,7 +73,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
             {
                 // OPTION RED ONE (TOOLS)
                 startDelay = 2000;
-                pivotAngle = 55; // pivot this amount before acquiring target
+                pivotAngle = 30; // pivot this amount before acquiring target
                 targetAngle = 0; // Vuforia angle
                 startDist = 2286;
                 targetIndex = 1;
@@ -85,7 +85,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
             {
                 // OPTION RED TWO (GEARS)
                 startDelay = 0;
-                pivotAngle = 55; // pivot this amount before acquiring target
+                pivotAngle = 30; // pivot this amount before acquiring target
                 targetAngle = 0; // Vuforia angle
                 startDist = 1397;
                 targetIndex = 3;
@@ -101,7 +101,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
             {
                 // OPTION BLUE ONE (LEGOS)
                 startDelay = 2000;
-                pivotAngle = -55; // recalc pivot?? also for red one??
+                pivotAngle = -30; // recalc pivot?? also for red one??
                 targetAngle = -90;
                 startDist = 2286;
                 targetIndex = 2;
@@ -113,7 +113,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
             {
                 // OPTION BLUE TWO (WHEELS)
                 startDelay = 0;
-                pivotAngle = -55;
+                pivotAngle = -30;
                 targetAngle = -90;
                 startDist = 1397;
                 targetIndex = 0;
@@ -138,22 +138,60 @@ public class AutonomousShootBeacon extends MasterAutonomous
 
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
+        Kpivot = 1/100.0;
+        MINSPEED = 0.35;
+        TOL = 60;
+        Kmove = 1.0/1200.0;
+
+        motorLauncher.setPower(0.85);
+
+        telemetry.addData("Path", "start forwards");
+        telemetry.update();
+        // go towards center vortex
+        moveAverage(0, -550, 0, 0.7, 3);
+        pause(100);
+
+        // shoot up to two particles
+        motorCollector.setPower(1.0);
+        servoParticle.setPosition(0.8);
+        pause(300);
+        servoParticle.setPosition(0.0);
+        pause(1500);
+        servoParticle.setPosition(0.8);
+        pause(300);
+        servoParticle.setPosition(0.0);
+        pause(300);
+        motorLauncher.setPower(0.0);
+        motorCollector.setPower(0.0);
+
+        telemetry.addData("Path", "pivot 30");
+        telemetry.update();
+        // pivot to face target
+        pivot(pivotAngle, 0.9); // make sure IMU is on
+        pause(200);
+
+        TOL_ANGLE = 3.0;
+        VUFORIA_TOL_ANGLE = 3.0;
         TOL = 60;
         Kmove = 1.0/1200.0;
         Kpivot = 1/120.0;
         MINSPEED = 0.35;
 
-        telemetry.addData("Path", "start forwards");
+        telemetry.addData("Path", "to beacon one");
         telemetry.update();
         // go towards target
-        moveAverage(0, startDist, 0, 0.7, 3);
+        moveAverage(0, 1400, 0, 0.7, 3);
         pause(100);
+// TODO: check this later!!
+        // check for ten seconds
+        //WaitForTime(10000);
 
-        telemetry.addData("Path", "pivot 70");
+        telemetry.addData("Path", "pivot to face beacon");
         telemetry.update();
-        // pivot to face target
-        pivot(pivotAngle, 0.9); // make sure IMU is on
-        pause(200);
+        if (isRedTeam) pivot(90, 0.7);
+        else pivot(-90, 0.7);
+
+        // NOW AT FIRST BEACON!
 
         TOL = 60;
         VUFORIA_TOL = 50;
@@ -275,22 +313,20 @@ public class AutonomousShootBeacon extends MasterAutonomous
         // determine next beacon target
         if (isRedTeam) // if team RED
         {
-            // OPTION RED ONE (TOOLS)
-            targetIndex = 1;
-            targetPos[0] = 2743.2f;
+            // OPTION RED TWO (GEARS)
+            targetIndex = 3;
+            targetPos[0] = 1524;
             targetPos[1] = mmFTCFieldWidth;
             //telemetry.addData("Team: ", "Red 1"); // display what team we're on after choosing with the buttons
         }
         else // if team BLUE
         {
-            // OPTION BLUE ONE (LEGOS)
-            targetIndex = 2;
+            // OPTION BLUE TWO (WHEELS)
+            targetIndex = 0;
             targetPos[0] = mmFTCFieldWidth;
-            targetPos[1] = 2743.2f;
+            targetPos[1] = 1524;
             //telemetry.addData("Team: ", "Blue 1");
         }
-
-
 
         // for big move left or right
         TOL = 40;
@@ -307,16 +343,16 @@ public class AutonomousShootBeacon extends MasterAutonomous
             if (isRedTeam) // move shorter
             {
                 //moveAverage(1125, 0, 0, 0.7, 4);
-                pivot(-90, 0.7);
-                moveAverage(0, 1220, 0, 0.8, 3);
                 pivot(90, 0.7);
+                moveAverage(0, 1220, 0, 0.8, 3);
+                pivot(-90, 0.7);
             }
             else // move shorter
             {
                 //moveAverage(-1125, 0, 0, 0.7, 4);
-                pivot(90, 0.7);
-                moveAverage(0, 1220, 0, 0.8, 3);
                 pivot(-90, 0.7);
+                moveAverage(0, 1220, 0, 0.8, 3);
+                pivot(90, 0.7);
             }
         }
         else if (beaconColor == 1) // if left side red
@@ -324,16 +360,16 @@ public class AutonomousShootBeacon extends MasterAutonomous
             if (isRedTeam) // move longer
             {
                 //moveAverage(1220, 0, 0, 0.7, 4);
-                pivot(-90, 0.7);
-                moveAverage(0, 1300, 0, 0.8, 3);
                 pivot(90, 0.7);
+                moveAverage(0, 1300, 0, 0.8, 3);
+                pivot(-90, 0.7);
             }
             else // move longer
             {
                 //moveAverage(-1220, 0, 0, 0.7, 4);
-                pivot(90, 0.7);
-                moveAverage(0, 1300, 0, 0.8, 3);
                 pivot(-90, 0.7);
+                moveAverage(0, 1300, 0, 0.8, 3);
+                pivot(90, 0.7);
             }
         }
         pause(200);
