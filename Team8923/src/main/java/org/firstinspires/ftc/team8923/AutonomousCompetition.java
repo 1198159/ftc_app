@@ -232,7 +232,7 @@ public class AutonomousCompetition extends MasterAutonomous
     private void shootInCenter(int numberOfShots) throws InterruptedException
     {
         // Distance from the goal at which the robot shoots
-        double shootingDistance = 700;
+        double shootingDistance = 500;
 
         double goalX;
         double goalY;
@@ -268,21 +268,32 @@ public class AutonomousCompetition extends MasterAutonomous
         // Go to shooting location
         turnAndDrive(shootPosX, shootPosY);
 
-        // Catapult shoots a bit over 90 degrees from front of robot
-        turnToAngle(angleToGoal - 100);
+        // Catapult shoots to the side of the robot
+        turnToAngle(angleToGoal - 90);
 
-        // Drop collector so the hopper isn't blocked
-        servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_UP.pos);
+        armCatapult();
 
-        zeroCatapult();
-
-        fireCatapult();
-
-        if(numberOfShots > 1)
+        if(numberOfShots == 1)
         {
+            fireCatapult();
+        }
+        else
+        {
+            // Drop collector so the hopper isn't blocked and run the collector backwards to help
+            servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_UP.pos);
+            motorCollector.setPower(-0.5);
+            // Start pushing the second particle into the catapult, because it takes time
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+            // Fire the first particle
             armCatapult();
-            //loadCatapult();
+            // Stop the collector
+            motorCollector.setPower(0.0);
+
+            // Wait for things second particle to settle
+            sleep(500);
+            // Put the sweeper servo back
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+            // Launch second particle
             fireCatapult();
         }
     }

@@ -30,8 +30,8 @@ abstract class Master extends LinearOpMode
 
     double headingOffset = 0.0;
 
-    // Also used as the arming location of the catapult
-    int catapultZero = 0;
+    boolean catapultArming = false;
+    boolean catapultButtonLast = false;
 
     // Constants to be used in code. Measurements in millimeters
     private static final double GEAR_RATIO = 1.5; // Ratio of driven gear to driving gear

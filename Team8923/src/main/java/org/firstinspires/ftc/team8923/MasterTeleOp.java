@@ -248,39 +248,33 @@ abstract class MasterTeleOp extends Master
          * that means that it hasn't yet been set. So we keep checking until the touch sensor stops
          * being depressed, and use that as the zero location.
          */
-        if(catapultZero == 0)
+
+        // Only control the catapult if it's done moving
+        if(motorIsAtTarget(motorCatapult))
         {
             if(gamepad2.left_bumper)
             {
+                catapultArming = true;
                 motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 motorCatapult.setPower(1.0);
             }
-            if(!catapultButton.isPressed())
-            {
-                catapultZero = motorCatapult.getCurrentPosition() + 1000;
-                motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motorCatapult.setTargetPosition(catapultZero);
-            }
-            // Don't run any other code until the armed location has been set
-            return;
-        }
-
-        // Only control the catapult if it's done moving
-        if(catapultIsAtTarget())
-        {
-            // Go to next arming location
-            if(gamepad2.left_bumper)
-            {
-                catapultZero += CATAPULT_TICKS_PER_CYCLE;
-                motorCatapult.setTargetPosition(catapultZero);
-            }
-            // Run motor forward a bit to launch particle
             else if(gamepad2.right_bumper)
             {
-                int targetPosition = catapultZero + CATAPULT_TICKS_PER_CYCLE * 3 / 5;
-                motorCatapult.setTargetPosition(targetPosition);
+                motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition() + CATAPULT_TICKS_PER_CYCLE / 2);
+                motorCatapult.setPower(1.0);
             }
         }
+
+        if(catapultArming && !catapultButton.isPressed() && catapultButtonLast)
+        {
+            catapultArming = false;
+            motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
+            motorCatapult.setPower(1.0);
+        }
+
+        catapultButtonLast = catapultButton.isPressed();
 
         // Give manual control to driver if necessary
         if(Math.abs(gamepad2.right_stick_y) > 0.1)
@@ -289,7 +283,7 @@ abstract class MasterTeleOp extends Master
             motorCatapult.setPower(-gamepad2.right_stick_y); // Y axis is flipped
         }
         // Return control to motor controller
-        else if(motorCatapult.getMode() == DcMotor.RunMode.RUN_USING_ENCODER)
+        else if(motorCatapult.getMode() == DcMotor.RunMode.RUN_USING_ENCODER && !catapultArming)
         {
             // Keep the motor here
             motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
@@ -297,10 +291,6 @@ abstract class MasterTeleOp extends Master
             // Motor will need power to move to next target when it's requested, but won't move yet
             // because it's already at the target (zero location)
             motorCatapult.setPower(1.0);
-            // If the driver rotates for more than 2 cycles then pressed a button, the motor
-            // will run backwards, which is bad. So we unset the zero, which the driver
-            // will reset with the button again.
-            catapultZero = 0;
         }
     }
 }

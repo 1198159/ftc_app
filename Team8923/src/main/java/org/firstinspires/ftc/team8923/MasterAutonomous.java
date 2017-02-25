@@ -485,43 +485,31 @@ abstract class MasterAutonomous extends Master
         lastEncoderBR = motorBR.getCurrentPosition();
     }
 
-    // Runs the catapult forward to find the zero location using the touch sensor
-    void zeroCatapult()
+    // Move catapult forward to the armed state just before it fires
+    void armCatapult()
     {
-        telemetry.log().add("Zeroing Catapult: " + getRuntime());
+        telemetry.log().add("Arming Catapult: " + getRuntime());
         motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorCatapult.setPower(1.0);
+
+        // Wait until the catapult finishes moving
         while(catapultButton.isPressed())
         {
             sendTelemetry();
             idle();
         }
-        catapultZero = motorCatapult.getCurrentPosition() + CATAPULT_TICKS_PER_CYCLE / 5;
-        motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorCatapult.setPower(0.0);
-    }
 
-    // Move catapult forward to the armed state just before it fires
-    void armCatapult()
-    {
-        telemetry.log().add("Arming Catapult: " + getRuntime());
-        catapultZero += CATAPULT_TICKS_PER_CYCLE;
-        motorCatapult.setTargetPosition(catapultZero);
+        motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
         motorCatapult.setPower(1.0);
-        // Wait until the catapult finishes moving
-        while(!motorIsAtTarget(motorCatapult))
-        {
-            sendTelemetry();
-            idle();
-        }
-        motorCatapult.setPower(0.0);
     }
 
     // Moves the catapult forward a bit from the armed position to launch a particle
     void fireCatapult()
     {
         telemetry.log().add("Firing Catapult: " + getRuntime());
-        motorCatapult.setTargetPosition(catapultZero + CATAPULT_TICKS_PER_CYCLE * 3 / 5);
+        motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition() + CATAPULT_TICKS_PER_CYCLE / 2);
         motorCatapult.setPower(1.0);
         // Wait until the catapult finishes moving
         while(!motorIsAtTarget(motorCatapult))
@@ -531,18 +519,6 @@ abstract class MasterAutonomous extends Master
         }
         // Turn off motor
         motorCatapult.setPower(0.0);
-    }
-
-    // Moves sweeper servo to load another particle into the catapult cup
-    void loadCatapult()
-    {
-        telemetry.log().add("Loading Particle: " + getRuntime());
-        // Move servo to push particle into cup
-        servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
-        // Wait for servo to move
-        sleep(1000);
-        // Move servo back
-        servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
     }
 
     // The Adafruit color sensors give 2 byte RGB values, but Java's built in Color class expects
