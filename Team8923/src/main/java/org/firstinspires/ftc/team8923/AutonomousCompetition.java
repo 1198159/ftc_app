@@ -153,9 +153,9 @@ public class AutonomousCompetition extends MasterAutonomous
         {
             // For some reason, different movements work better for different sides
             case RED:
-                driveRelativeToBeacon(0.0, observationDistance);
-                //turnAndDrive(beaconX - 180, beaconY - observationDistance);
-                //turnToAngle(90.0);
+                //driveRelativeToBeacon(0.0, observationDistance);
+                turnAndDrive(beaconX - 180, beaconY - observationDistance);
+                turnToAngle(90.0);
                 break;
             case BLUE:
                 turnAndDrive(beaconX - observationDistance, beaconY + 180);
@@ -166,7 +166,7 @@ public class AutonomousCompetition extends MasterAutonomous
         }
 
         // Give Vuforia a chance to start tracking the target
-        sleep(500);
+        sleep(750);
 
         // Only actually looks if vision target isn't visible
         if(!lookForVisionTarget())
@@ -179,7 +179,7 @@ public class AutonomousCompetition extends MasterAutonomous
         // Once we find the target, go right in front of the beacon to get the colors
         driveRelativeToBeacon(0.0, 250);
 
-        sleep(250);
+        sleep(500);
         /*
          * Here is where we compare the colors of each side of the beacon. The color sensors give
          * us information in an rgb format. We could just directly compare the red and blue values,
@@ -216,7 +216,7 @@ public class AutonomousCompetition extends MasterAutonomous
         }
 
         // Wait for servo to move
-        sleep(500);
+        sleep(250);
 
         // Move forward to press button
         driveRelativeToBeacon(0.0, 110);
