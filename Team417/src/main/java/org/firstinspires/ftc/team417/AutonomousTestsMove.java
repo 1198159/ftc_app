@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class AutonomousTestsMove extends MasterAutonomous
 {
     double speed;
+    double startAngle;
 
     public void runOpMode() throws InterruptedException
     {
@@ -124,11 +125,6 @@ public class AutonomousTestsMove extends MasterAutonomous
             }
         }
 
-        if (gamepad1.a) speed = 0.5;
-        if (gamepad1.b) speed = 0.7;
-        if (gamepad1.x) TOL_ANGLE = 3;
-        if (gamepad1.y) TOL_ANGLE = 1;
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
@@ -136,58 +132,68 @@ public class AutonomousTestsMove extends MasterAutonomous
         //     pause(startDelay);
         VuforiaNav.getLocation(targetIndex);
 
+
+
 /*
-        // setting for pivot Vuforia
+        startAngle = imu.getAngularOrientation().firstAngle;
+
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
-        TOL = 40;
+        Kpivot = 1/100.0;
+        MINSPEED = 0.35;
+        TOL = 60;
         Kmove = 1.0/1200.0;
-        Kpivot = 1/50.0;
+
+        motorLauncher.setPower(0.85);
+
+        telemetry.addData("Path", "start forwards");
+        telemetry.update();
+        // go towards center vortex
+        moveAverage(0, -200, 0, 0.7, 3);
+        pause(100);
+
+        // shoot up to two particles
+        motorCollector.setPower(1.0);
+        servoParticle.setPosition(0.8);
+        pause(300);
+        servoParticle.setPosition(0.0);
+        pause(1500);
+        servoParticle.setPosition(0.8);
+        pause(300);
+        servoParticle.setPosition(0.0);
+        pause(300);
+        motorLauncher.setPower(0.0);
+        motorCollector.setPower(0.0);
+
+        telemetry.addData("Path", "pivot 25");
+        telemetry.update();
+        // pivot to face target
+        pivot(-25, 0.9); // make sure IMU is on
+        pause(200);
+
+    */
+
+
+        TOL_ANGLE = 3.0;
+        VUFORIA_TOL_ANGLE = 3.0;
+        TOL = 60;
+        Kmove = 1.0/1200.0;
+        Kpivot = 1/120.0;
         MINSPEED = 0.35;
 
-        // big move
-        moveAverage(-100, 0, 0, 0.5, 3);
-        pause(3000);
-        moveAverage(-100, 0, 0, 0.6, 3);
-        pause(3000);
-        moveAverage(-100, 0, 0, 0.7, 3);
-        //move(100, 0, 0.7, 3);
-*/
-
-
-
-
-        TOL = 60;
-        VUFORIA_TOL = 50;
-        TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
-        VUFORIA_TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
-        Kmove = 1.0/1000.0;
-        Kpivot = 1.0/100.0;
-        MINSPEED = 0.3;
-
-        telemetry.addData("Path", "scanning for target");
+        telemetry.addData("Path", "to beacon one");
         telemetry.update();
-        pivotDetectTarget(30, 5);
-
-        // setting for align pivot Vuforia
-        TOL_ANGLE = 3.0;
-        VUFORIA_TOL_ANGLE = 3.0;
-        Kpivot = 1.0/200.0;
-
-        telemetry.addData("Path", "align pivot vuf");
-        telemetry.update();
-        alignPivotVuforia(0.6, 0, 600, 4);
-        pause(50);
+        // go towards target
+        moveAverage(0, -1524, 0, 0.8, 3);
+        pause(100);
 
         /*
-        // setting for pivot Vuforia
-        TOL_ANGLE = 2.0;
-        VUFORIA_TOL_ANGLE = 2.0;
-        telemetry.addData("Path", "pivotVuforia");
+        telemetry.addData("Path", "pivot to face other side");
         telemetry.update();
-        pivotVuforia(targetAngle, 0.3);
+        // pivot to face target
+        pivot(startAngle, 0.9); // make sure IMU is on
+        pause(200);
         */
-
 
 
 

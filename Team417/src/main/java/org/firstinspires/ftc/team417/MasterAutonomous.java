@@ -1015,6 +1015,11 @@ abstract class MasterAutonomous extends MasterOpMode
         }
     }
 
+    public void WaitUntilTime(int milliseconds) throws InterruptedException
+    {
+        while (autoRuntime.milliseconds() < milliseconds) idle();
+    }
+
 
     public void CornerVortexOption() throws InterruptedException
     {
