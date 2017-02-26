@@ -282,15 +282,15 @@ public class AutonomousCompetition extends MasterAutonomous
             // Drop collector so the hopper isn't blocked and run the collector backwards to help
             servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_UP.pos);
             motorCollector.setPower(-0.5);
-            // Start pushing the second particle into the catapult, because it takes time
-            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
             // Fire the first particle
             armCatapult();
+            // Push second particle into the catapult
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
             // Stop the collector
             motorCollector.setPower(0.0);
 
-            // Wait for things second particle to settle
-            sleep(500);
+            // Wait for the second particle to settle
+            sleep(750);
             // Put the sweeper servo back
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
             // Launch second particle

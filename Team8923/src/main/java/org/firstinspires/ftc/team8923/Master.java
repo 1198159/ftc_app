@@ -42,7 +42,7 @@ abstract class Master extends LinearOpMode
     static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION;
 
     // NeveRest 20 has 560 ticks per revolution, which is geared 3:1
-    static final int CATAPULT_TICKS_PER_CYCLE = 560 * 3;
+    static final int CATAPULT_TICKS_PER_CYCLE = 1120 * 3;
 
     double slowModeDivisor = 1.0;
     private boolean reverseDrive = false;
@@ -99,7 +99,7 @@ abstract class Master extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorCatapult.setDirection(DcMotor.Direction.FORWARD);
+        motorCatapult.setDirection(DcMotor.Direction.REVERSE);
 
         servoBeaconPusherDeploy = hardwareMap.servo.get("servoBeaconPusherDeploy");
         servoBeaconPusherSwing = hardwareMap.servo.get("servoBeaconPusherSwing");
