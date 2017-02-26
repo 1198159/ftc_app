@@ -39,7 +39,8 @@ abstract class Master extends LinearOpMode
     private static final double TICKS_PER_WHEEL_REVOLUTION = TICKS_PER_MOTOR_REVOLUTION / GEAR_RATIO;
     private static final double WHEEL_DIAMETER = 4 * 25.4; // 4 inch diameter
     private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
-    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION;
+    private static final double CORRECTION_FACTOR = 0.92;
+    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION * CORRECTION_FACTOR;
 
     // NeveRest 20 has 560 ticks per revolution, which is geared 3:1
     static final int CATAPULT_TICKS_PER_CYCLE = 1120 * 3;
