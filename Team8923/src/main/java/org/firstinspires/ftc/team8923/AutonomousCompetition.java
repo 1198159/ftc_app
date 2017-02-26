@@ -3,6 +3,8 @@ package org.firstinspires.ftc.team8923;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 /*
  *  Autonomous OpMode for both alliances. The OpMode is setup with a gamepad during initialization,
@@ -148,7 +150,7 @@ public class AutonomousCompetition extends MasterAutonomous
     private void pressBeacon() throws InterruptedException
     {
         // Distance from which we look at the vision target and beacon in mm
-        double observationDistance = 400;
+        double observationDistance = 500;
         useVuforia = true;
 
         // Drive in front of the beacon, then face vision target
@@ -178,11 +180,13 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // Extend pusher to position color sensors in front of beacon
         servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_EXTEND.pos);
+        ElapsedTime servoTimer = new ElapsedTime();
 
         // Once we find the target, go right in front of the beacon to get the colors
         driveRelativeToBeacon(0.0, 250);
 
-        sleep(500);
+        // Give time for beacon pusher to fall down if no correction is needed. Otherwise don't wait
+        sleep((long) Range.clip(1000 - servoTimer.milliseconds(), 0, 1000));
         /*
          * Here is where we compare the colors of each side of the beacon. The color sensors give
          * us information in an rgb format. We could just directly compare the red and blue values,
