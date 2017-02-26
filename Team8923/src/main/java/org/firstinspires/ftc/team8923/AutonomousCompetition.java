@@ -23,6 +23,8 @@ public class AutonomousCompetition extends MasterAutonomous
         sleep(delayTime * 1000);
 
         vuforiaLocator.startTracking();
+        // We only want to use Vuforia with the beacons for reliability concerns
+        useVuforia = false;
 
         // Completes each objective in the routine in order
         for(Objectives objective : routine)
@@ -147,6 +149,7 @@ public class AutonomousCompetition extends MasterAutonomous
     {
         // Distance from which we look at the vision target and beacon in mm
         double observationDistance = 400;
+        useVuforia = true;
 
         // Drive in front of the beacon, then face vision target
         switch(alliance)
@@ -220,6 +223,7 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // Move forward to press button
         driveRelativeToBeacon(0.0, 110);
+        useVuforia = false;
         // Back away from beacon
         driveRelativeToBeacon(0.0, observationDistance);
 

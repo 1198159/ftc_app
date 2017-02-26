@@ -23,6 +23,9 @@ abstract class MasterAutonomous extends Master
     BNO055IMU imu;
     private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
+    // We sometimes don't want to use Vuforia even if we see the vision targets
+    boolean useVuforia = true;
+
     enum Alliance
     {
         BLUE,
@@ -348,7 +351,7 @@ abstract class MasterAutonomous extends Master
     void driveRelativeToBeacon(double targetX, double targetY) throws InterruptedException
     {
         // Beacon pusher and phone camera are offset from center of robot
-        targetX += 40;
+        targetX -= 140;
         targetY += 160;
 
         // Y input is always positive, but we need it to be negative for the math
@@ -431,7 +434,7 @@ abstract class MasterAutonomous extends Master
                     || vuforiaLocator.getTargetName().equals("Target Red Right");
 
         // Use Vuforia if a it's tracking something
-        if(vuforiaLocator.isTracking() && !trackingOtherAllianceTarget)
+        if(vuforiaLocator.isTracking() && !trackingOtherAllianceTarget && useVuforia)
         {
             float[] location = vuforiaLocator.getRobotLocation();
 
