@@ -114,7 +114,7 @@ class VuforiaLocator
 
         // TODO: Phone shouldn't be rotated around y-axis, should it?
         // Set phone location on robot. Center of the robot is the origin
-        phoneLocation = createMatrix(180, 180, 0, 90, -90, -90);
+        phoneLocation = createMatrix(180, -180, 0, 90, 0, -90);
 
         // Setup listeners
         for(int i = 0; i < targets.length; i++)

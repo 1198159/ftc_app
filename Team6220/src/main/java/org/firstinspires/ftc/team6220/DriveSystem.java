@@ -156,7 +156,7 @@ public class DriveSystem implements ConcurrentOperation
         double[] rawPowers = new double[]{0.0,0.0,0.0,0.0};
 
         //TODO see beginning of MasterOpMode
-        //calculate motor powers proportionally
+        //calculates motor powers proportionally
         for (int corner = 0; corner < 4; corner++)
         {
             rawPowers[corner] =

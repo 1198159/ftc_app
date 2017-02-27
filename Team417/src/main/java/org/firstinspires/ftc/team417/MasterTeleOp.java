@@ -99,8 +99,8 @@ public class MasterTeleOp extends MasterOpMode
                motorLift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                liftZero = motorLift.getCurrentPosition();
                liftZero2 = motorLift2.getCurrentPosition();
-               motorLift.setTargetPosition(liftZero + (int) (1.0 * COUNTS_PER_LIFT_MOTOR_REV));
-               motorLift2.setTargetPosition(liftZero2 + (int) (1.0 * COUNTS_PER_LIFT_MOTOR_REV));
+               motorLift.setTargetPosition(liftZero + (int) (1.1 * COUNTS_PER_LIFT_MOTOR_REV));
+               motorLift2.setTargetPosition(liftZero2 + (int) (1.1 * COUNTS_PER_LIFT_MOTOR_REV));
                motorLift.setPower(0.8);
                motorLift2.setPower(0.8);
                liftState++;
