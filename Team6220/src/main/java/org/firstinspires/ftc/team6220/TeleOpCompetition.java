@@ -31,6 +31,9 @@ public class TeleOpCompetition extends MasterTeleOp
 
         while (opModeIsActive())
         {
+            double eTime = timer.seconds() - lTime;
+            lTime = timer.seconds();
+
             //allows driver to pick front of robot based on whether he is launching or driving around
             if(driver1.isButtonPressed(Button.DPAD_LEFT))
             {
@@ -109,6 +112,10 @@ public class TeleOpCompetition extends MasterTeleOp
                 launcher.pullBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
+
+            telemetry.addData("eTime:", eTime);
+            updateCallback(eTime);
+            telemetry.update();
             idle();
         }
     }

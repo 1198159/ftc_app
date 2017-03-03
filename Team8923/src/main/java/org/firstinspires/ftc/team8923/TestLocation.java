@@ -47,6 +47,12 @@ public class TestLocation extends MasterAutonomous
                 turnToAngle(0);
                 sleep(2000);
             }
+            else if(gamepad1.dpad_up)
+            {
+                useVuforia = false;
+                driveToPoint(8 * 12 * 25.4, 0, 0);
+                useVuforia = true;
+            }
 
             if(gamepad1.x)
                 servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_EXTEND.pos);

@@ -30,8 +30,8 @@ abstract class Master extends LinearOpMode
 
     double headingOffset = 0.0;
 
-    // Also used as the arming location of the catapult
-    int catapultZero = 0;
+    boolean catapultArming = false;
+    boolean catapultButtonLast = false;
 
     // Constants to be used in code. Measurements in millimeters
     private static final double GEAR_RATIO = 1.5; // Ratio of driven gear to driving gear
@@ -39,10 +39,11 @@ abstract class Master extends LinearOpMode
     private static final double TICKS_PER_WHEEL_REVOLUTION = TICKS_PER_MOTOR_REVOLUTION / GEAR_RATIO;
     private static final double WHEEL_DIAMETER = 4 * 25.4; // 4 inch diameter
     private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
-    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION;
+    //private static final double CORRECTION_FACTOR = 0.92;
+    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/;
 
     // NeveRest 20 has 560 ticks per revolution, which is geared 3:1
-    static final int CATAPULT_TICKS_PER_CYCLE = 560 * 3;
+    static final int CATAPULT_TICKS_PER_CYCLE = 1120 * 3;
 
     double slowModeDivisor = 1.0;
     private boolean reverseDrive = false;
@@ -55,6 +56,7 @@ abstract class Master extends LinearOpMode
         BEACON_LEFT(0.7),
         BEACON_CENTER(0.5),
         CAP_BALL_HOLD(1.0),
+        CAP_BALL_UP(0.3),
         CAP_BALL_RELEASE(0.0),
         HOPPER_SWEEP_BACK(0.15),
         HOPPER_SWEEP_PUSH_FIRST(0.7),
@@ -98,7 +100,7 @@ abstract class Master extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorCatapult.setDirection(DcMotor.Direction.FORWARD);
+        motorCatapult.setDirection(DcMotor.Direction.REVERSE);
 
         servoBeaconPusherDeploy = hardwareMap.servo.get("servoBeaconPusherDeploy");
         servoBeaconPusherSwing = hardwareMap.servo.get("servoBeaconPusherSwing");
@@ -236,10 +238,11 @@ abstract class Master extends LinearOpMode
         motorBR.setPower(0.0);
     }
 
-    boolean catapultIsAtTarget()
+    // This is used as a replacement for the isBusy() method of motors, as it's unreliable
+    boolean motorIsAtTarget(DcMotor motor)
     {
         int tolerance = 100;
-        return Math.abs(motorCatapult.getCurrentPosition() - motorCatapult.getTargetPosition()) < tolerance;
+        return Math.abs(motor.getCurrentPosition() - motor.getTargetPosition()) < tolerance;
     }
 
     // Truncates numbers to fit displays better. Not recommended for numbers that span many

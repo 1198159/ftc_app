@@ -18,6 +18,7 @@ abstract class MasterTeleOp extends Master
     int liftZero = 0;
     boolean liftDeploying = false;
     boolean liftDeployed = false;
+    boolean liftRecovered = false;
     ElapsedTime liftTimer = new ElapsedTime();
 
     void driveMecanumTeleOp()
@@ -89,33 +90,37 @@ abstract class MasterTeleOp extends Master
             servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_RIGHT.pos);
     }
 
-    // Runs lift up and down
+    // Contains controls for the lift and it's automatic routines, and cap ball holder arm
     void runLift()
     {
-        if (gamepad2.x)
-            servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
-
-        if(liftDeployed)
+        // Don't allow driver to move the lift once the arms have been recovered
+        if(!liftRecovered)
         {
-            // Run lift up
-            if (gamepad2.dpad_up) {
-                motorLift.setPower(1.0);
-                // Retract cap ball holder when raising
+            // Move cap ball holder arm to hold the cap ball
+            if(gamepad2.x)
+                servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
+            // Move cap ball holder arm to release the cap ball. This is on the dpad to ensure it's
+            // out of the way when the lift is raised
+            else if(gamepad2.dpad_up)
                 servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_RELEASE.pos);
-            }
-            // Run lift down
-            else if (gamepad2.dpad_down)
-                motorLift.setPower(-1.0);
+
+            // Give lift control to driver only after lift deployment
+            if(liftDeployed)
+            {
+                // Run lift up
+                if(gamepad2.dpad_up)
+                    motorLift.setPower(1.0);
+                // Run lift down
+                else if(gamepad2.dpad_down)
+                    motorLift.setPower(-1.0);
                 // If no button is pressed, stop!
-            else
-                motorLift.setPower(0);
+                else
+                    motorLift.setPower(0);
+            }
         }
 
-
-        // Code below is for auto lift deployment. It is written as a state machine to allow
-        // drivers to continue operating robot
-
-        int liftTolerance = 50;
+        // Code below is for auto lift deployment and arm recovery. They are written as state
+        // machine loops to allow drivers to continue operating robot
 
         // Start auto deployment when requested
         if(gamepad1.b)
@@ -124,17 +129,14 @@ abstract class MasterTeleOp extends Master
             liftDeploying = true;
             liftTimer.reset();
             telemetry.log().add("Starting Lift Deployment");
-        }
-        // Move beacon pusher servos to ensure they're out of the way
-        else if(liftState == 0 && liftDeploying)
-        {
-            liftState++;
+
+            // Move beacon pusher servos to ensure they're out of the way
             servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
             servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_CENTER.pos);
             telemetry.log().add("Moving Beacon Pusher");
         }
         // Raise the lift to make it deploy
-        else if(liftState == 1 && liftTimer.milliseconds() > 500)
+        else if(liftDeploying && liftState == 0 && liftTimer.milliseconds() > 500)
         {
             liftState++;
             motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -144,14 +146,14 @@ abstract class MasterTeleOp extends Master
             telemetry.log().add("Raising Lift");
         }
         // Lower the lift once it's deployed
-        else if(liftState == 2 && Math.abs(motorLift.getCurrentPosition() - motorLift.getTargetPosition()) < liftTolerance)
+        else if(liftDeploying && liftState == 1 && motorIsAtTarget(motorLift))
         {
             liftState++;
             motorLift.setTargetPosition(liftZero);
             telemetry.log().add("Lowering Lift");
         }
         // Stop moving the lift and return control to driver
-        else if(liftState == 3 && Math.abs(motorLift.getCurrentPosition() - motorLift.getTargetPosition()) < liftTolerance)
+        else if(liftDeploying && liftState == 2 && motorIsAtTarget(motorLift))
         {
             liftState++;
             motorLift.setPower(0.0);
@@ -159,6 +161,40 @@ abstract class MasterTeleOp extends Master
             liftDeploying = false;
             liftDeployed = true;
             telemetry.log().add("Lift Done Deploying");
+        }
+
+        // Start auto arm recovery when requested only after lift has been deployed
+        if(gamepad2.y && liftDeployed)
+        {
+            liftState = 0;
+            liftRecovered = true;
+            liftTimer.reset();
+            telemetry.log().add("Starting Lift Recovery");
+
+            // Raise the lift to make it deploy
+            motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorLift.setTargetPosition(liftZero + 1300);
+            motorLift.setPower(1.0);
+            telemetry.log().add("Positioning Lift");
+        }
+        // Lower the lift once it's deployed
+        else if(liftRecovered && liftState == 0 && motorIsAtTarget(motorLift))
+        {
+            liftState++;
+            servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
+            liftTimer.reset();
+            telemetry.log().add("Moving Arm Servo");
+        }
+        // Stop moving the lift and return control to driver
+        else if(liftRecovered && liftState == 1 && liftTimer.milliseconds() > 1000)
+        {
+            liftState++;
+            servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_UP.pos);
+            motorLift.setPower(0.0);
+            motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            liftRecovered = false;
+            liftRecovered = true;
+            telemetry.log().add("Recovering Lift Arms");
         }
     }
 
@@ -212,39 +248,33 @@ abstract class MasterTeleOp extends Master
          * that means that it hasn't yet been set. So we keep checking until the touch sensor stops
          * being depressed, and use that as the zero location.
          */
-        if(catapultZero == 0)
+
+        // Only control the catapult if it's done moving
+        if(motorIsAtTarget(motorCatapult))
         {
             if(gamepad2.left_bumper)
             {
+                catapultArming = true;
                 motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 motorCatapult.setPower(1.0);
             }
-            if(!catapultButton.isPressed())
-            {
-                catapultZero = motorCatapult.getCurrentPosition() + 1000;
-                motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motorCatapult.setTargetPosition(catapultZero);
-            }
-            // Don't run any other code until the armed location has been set
-            return;
-        }
-
-        // Only control the catapult if it's done moving
-        if(catapultIsAtTarget())
-        {
-            // Go to next arming location
-            if(gamepad2.left_bumper)
-            {
-                catapultZero += CATAPULT_TICKS_PER_CYCLE;
-                motorCatapult.setTargetPosition(catapultZero);
-            }
-            // Run motor forward a bit to launch particle
             else if(gamepad2.right_bumper)
             {
-                int targetPosition = catapultZero + CATAPULT_TICKS_PER_CYCLE * 3 / 5;
-                motorCatapult.setTargetPosition(targetPosition);
+                motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition() + CATAPULT_TICKS_PER_CYCLE / 2);
+                motorCatapult.setPower(1.0);
             }
         }
+
+        if(catapultArming && !catapultButton.isPressed() && catapultButtonLast)
+        {
+            catapultArming = false;
+            motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
+            motorCatapult.setPower(1.0);
+        }
+
+        catapultButtonLast = catapultButton.isPressed();
 
         // Give manual control to driver if necessary
         if(Math.abs(gamepad2.right_stick_y) > 0.1)
@@ -253,7 +283,7 @@ abstract class MasterTeleOp extends Master
             motorCatapult.setPower(-gamepad2.right_stick_y); // Y axis is flipped
         }
         // Return control to motor controller
-        else if(motorCatapult.getMode() == DcMotor.RunMode.RUN_USING_ENCODER)
+        else if(motorCatapult.getMode() == DcMotor.RunMode.RUN_USING_ENCODER && !catapultArming)
         {
             // Keep the motor here
             motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
@@ -261,10 +291,6 @@ abstract class MasterTeleOp extends Master
             // Motor will need power to move to next target when it's requested, but won't move yet
             // because it's already at the target (zero location)
             motorCatapult.setPower(1.0);
-            // If the driver rotates for more than 2 cycles then pressed a button, the motor
-            // will run backwards, which is bad. So we unset the zero, which the driver
-            // will reset with the button again.
-            catapultZero = 0;
         }
     }
 }

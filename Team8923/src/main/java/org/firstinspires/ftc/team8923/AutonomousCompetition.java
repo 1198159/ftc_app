@@ -3,6 +3,8 @@ package org.firstinspires.ftc.team8923;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 /*
  *  Autonomous OpMode for both alliances. The OpMode is setup with a gamepad during initialization,
@@ -23,6 +25,8 @@ public class AutonomousCompetition extends MasterAutonomous
         sleep(delayTime * 1000);
 
         vuforiaLocator.startTracking();
+        // We only want to use Vuforia with the beacons for reliability concerns
+        useVuforia = false;
 
         // Completes each objective in the routine in order
         for(Objectives objective : routine)
@@ -146,16 +150,17 @@ public class AutonomousCompetition extends MasterAutonomous
     private void pressBeacon() throws InterruptedException
     {
         // Distance from which we look at the vision target and beacon in mm
-        double observationDistance = 400;
+        double observationDistance = 500;
+        useVuforia = true;
 
         // Drive in front of the beacon, then face vision target
         switch(alliance)
         {
             // For some reason, different movements work better for different sides
             case RED:
-                driveRelativeToBeacon(0.0, observationDistance);
-                //turnAndDrive(beaconX - 180, beaconY - observationDistance);
-                //turnToAngle(90.0);
+                //driveRelativeToBeacon(0.0, observationDistance);
+                turnAndDrive(beaconX - 180, beaconY - observationDistance);
+                turnToAngle(90.0);
                 break;
             case BLUE:
                 turnAndDrive(beaconX - observationDistance, beaconY + 180);
@@ -166,7 +171,7 @@ public class AutonomousCompetition extends MasterAutonomous
         }
 
         // Give Vuforia a chance to start tracking the target
-        sleep(500);
+        sleep(750);
 
         // Only actually looks if vision target isn't visible
         if(!lookForVisionTarget())
@@ -175,11 +180,13 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // Extend pusher to position color sensors in front of beacon
         servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_EXTEND.pos);
+        ElapsedTime servoTimer = new ElapsedTime();
 
         // Once we find the target, go right in front of the beacon to get the colors
         driveRelativeToBeacon(0.0, 250);
 
-        sleep(250);
+        // Give time for beacon pusher to fall down if no correction is needed. Otherwise don't wait
+        sleep((long) Range.clip(1000 - servoTimer.milliseconds(), 0, 1000));
         /*
          * Here is where we compare the colors of each side of the beacon. The color sensors give
          * us information in an rgb format. We could just directly compare the red and blue values,
@@ -216,10 +223,11 @@ public class AutonomousCompetition extends MasterAutonomous
         }
 
         // Wait for servo to move
-        sleep(500);
+        sleep(250);
 
         // Move forward to press button
         driveRelativeToBeacon(0.0, 110);
+        useVuforia = false;
         // Back away from beacon
         driveRelativeToBeacon(0.0, observationDistance);
 
@@ -232,7 +240,7 @@ public class AutonomousCompetition extends MasterAutonomous
     private void shootInCenter(int numberOfShots) throws InterruptedException
     {
         // Distance from the goal at which the robot shoots
-        double shootingDistance = 700;
+        double shootingDistance = 500;
 
         double goalX;
         double goalY;
@@ -268,21 +276,32 @@ public class AutonomousCompetition extends MasterAutonomous
         // Go to shooting location
         turnAndDrive(shootPosX, shootPosY);
 
-        // Catapult shoots a bit over 90 degrees from front of robot
-        turnToAngle(angleToGoal - 100);
+        // Catapult shoots to the side of the robot
+        turnToAngle(angleToGoal - 90);
 
-        // Drop collector so the hopper isn't blocked
-        servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_UP.pos);
+        armCatapult();
 
-        zeroCatapult();
-
-        fireCatapult();
-
-        if(numberOfShots > 1)
+        if(numberOfShots == 1)
         {
-            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+            fireCatapult();
+        }
+        else
+        {
+            // Drop collector so the hopper isn't blocked and run the collector backwards to help
+            servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_UP.pos);
+            motorCollector.setPower(-0.5);
+            // Fire the first particle
             armCatapult();
-            //loadCatapult();
+            // Push second particle into the catapult
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+            // Stop the collector
+            motorCollector.setPower(0.0);
+
+            // Wait for the second particle to settle
+            sleep(750);
+            // Put the sweeper servo back
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+            // Launch second particle
             fireCatapult();
         }
     }
