@@ -947,8 +947,10 @@ abstract class MasterAutonomous extends MasterOpMode
             curTurnAngle = imu.getAngularOrientation().firstAngle - startAngle;
             curTurnAngle = adjustAngles(curTurnAngle);
             error =  turnAngle - curTurnAngle;
-            pivotSpeed = speed * Math.abs(error) * Kpivot;
-            pivotSpeed = Range.clip(pivotSpeed, 0.2, 0.7); // limit abs speed
+            //pivotSpeed = speed * Math.abs(error) * Kpivot;
+            //pivotSpeed = Range.clip(pivotSpeed, 0.2, 0.7); // limit abs speed
+            pivotSpeed = Math.abs(error) * Kpivot;
+            pivotSpeed = Range.clip(pivotSpeed, MINSPEED, speed); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
 
             // positive angle means CCW rotation

@@ -134,7 +134,6 @@ public class AutonomousTestsMove extends MasterAutonomous
 
 
 
-/*
         startAngle = imu.getAngularOrientation().firstAngle;
 
         TOL_ANGLE = 3.0;
@@ -143,7 +142,7 @@ public class AutonomousTestsMove extends MasterAutonomous
         MINSPEED = 0.35;
         TOL = 60;
         Kmove = 1.0/1200.0;
-
+/*
         motorLauncher.setPower(0.85);
 
         telemetry.addData("Path", "start forwards");
@@ -167,11 +166,11 @@ public class AutonomousTestsMove extends MasterAutonomous
 
         telemetry.addData("Path", "pivot 25");
         telemetry.update();
+        Kpivot = 1/100.0;
         // pivot to face target
-        pivot(-25, 0.9); // make sure IMU is on
+        pivot(140, 0.7); // make sure IMU is on
         pause(200);
 
-    */
 
 
         TOL_ANGLE = 3.0;
@@ -179,13 +178,21 @@ public class AutonomousTestsMove extends MasterAutonomous
         TOL = 60;
         Kmove = 1.0/1200.0;
         Kpivot = 1/120.0;
-        MINSPEED = 0.35;
+        MINSPEED = 0.25;
 
         telemetry.addData("Path", "to beacon one");
         telemetry.update();
         // go towards target
-        moveAverage(0, -1524, 0, 0.8, 3);
+        moveAverage(0, 1524, 0, 0.8, 3);
         pause(100);
+
+        pivot((180 + startAngle), 0.7);
+        pause(100);
+
+        moveAverage(0, 1000, 0, 0.8, 3);
+*/
+
+        pivotMove2(0, 1000, -45, 0.8, 3);
 
         /*
         telemetry.addData("Path", "pivot to face other side");
