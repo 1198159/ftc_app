@@ -100,6 +100,18 @@ public class AutonomousCompetition extends MasterAutonomous
             default: return;
         }
 
+        // Running into the cap ball with the lift can prematurely
+        // deploy the arms, so we prevent this by running into
+        // it with the other side of the robot
+        if(objective == Objectives.PARK_CENTER)
+        {
+            reverseDrive(false);
+            headingOffset += 180;
+            lastEncoderBL = motorBL.getCurrentPosition();
+            lastEncoderFL = motorFL.getCurrentPosition();
+            lastEncoderBR = motorBR.getCurrentPosition();
+            lastEncoderFR = motorFR.getCurrentPosition();
+        }
         turnAndDrive(locationX, locationY);
     }
 

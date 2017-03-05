@@ -82,10 +82,10 @@ abstract class MasterAutonomous extends Master
     double robotX = 0.0, robotY = 0.0, robotAngle = 0.0;
 
     // Used to calculate distance traveled between loops
-    private int lastEncoderFL = 0;
-    private int lastEncoderFR = 0;
-    private int lastEncoderBL = 0;
-    private int lastEncoderBR = 0;
+    int lastEncoderFL = 0;
+    int lastEncoderFR = 0;
+    int lastEncoderBL = 0;
+    int lastEncoderBR = 0;
 
     VuforiaLocator vuforiaLocator = new VuforiaLocator();
 
