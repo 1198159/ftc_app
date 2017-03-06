@@ -389,7 +389,7 @@ abstract class MasterAutonomous extends Master
         {
             // Back up before searching for target to help utilize the full field of view of the phone camera
             if(count == 0)
-                driveRelativeToBeacon(0, 500);
+                driveRelativeToBeacon(0, 650);
             //Failed to find vision target in time
             if(timer.seconds() > maxSearchTime)
                 return false;
