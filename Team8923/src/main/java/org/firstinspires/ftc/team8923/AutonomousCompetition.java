@@ -163,7 +163,6 @@ public class AutonomousCompetition extends MasterAutonomous
     {
         // Distance from which we look at the vision target and beacon in mm
         double observationDistance = 500;
-        useVuforia = true;
 
         // Drive in front of the beacon, then face vision target
         switch(alliance)
@@ -182,8 +181,17 @@ public class AutonomousCompetition extends MasterAutonomous
             default: return;
         }
 
+        // Start using data from vision targets
+        useVuforia = true;
+
         // Give Vuforia a chance to start tracking the target
-        sleep(750);
+        int targetLockTimeout = 750;
+        ElapsedTime targetTimer = new ElapsedTime();
+        while(!vuforiaLocator.isTracking() && targetTimer.milliseconds() < targetLockTimeout)
+        {
+            telemetry.update();
+            idle();
+        }
 
         // Only actually looks if vision target isn't visible
         if(!lookForVisionTarget())
