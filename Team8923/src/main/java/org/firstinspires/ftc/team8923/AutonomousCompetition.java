@@ -210,9 +210,9 @@ public class AutonomousCompetition extends MasterAutonomous
         driveRelativeToBeacon(0.0, 250);
 
         // Give time for beacon pusher to fall down if no correction is needed. Otherwise don't wait
-        sleep((long) Range.clip(500 - servoTimer.milliseconds(), 0, 500));
+        sleep((long) Range.clip(1500 - servoTimer.milliseconds(), 0, 1500));
 
-        sleep(500);
+        //sleep(500);
         /*
          * Here is where we compare the colors of each side of the beacon. The color sensors give
          * us information in an rgb format. We could just directly compare the red and blue values,
@@ -266,7 +266,7 @@ public class AutonomousCompetition extends MasterAutonomous
     private void shootInCenter(int numberOfShots) throws InterruptedException
     {
         // Distance from the goal at which the robot shoots
-        double shootingDistance = 700;
+        double shootingDistance = 600;
 
         double goalX;
         double goalY;
@@ -303,7 +303,7 @@ public class AutonomousCompetition extends MasterAutonomous
         turnAndDrive(shootPosX, shootPosY);
 
         // Catapult shoots to the side of the robot
-        turnToAngle(angleToGoal - 115);
+        turnToAngle(angleToGoal - 105);
 
         armCatapult();
 

@@ -158,6 +158,7 @@ abstract class MasterTeleOp extends Master
             liftState++;
             motorLift.setPower(0.0);
             motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_RIGHT.pos);
             liftDeploying = false;
             liftDeployed = true;
             telemetry.log().add("Lift Done Deploying");
