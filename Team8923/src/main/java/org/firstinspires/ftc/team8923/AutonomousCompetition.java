@@ -64,54 +64,58 @@ public class AutonomousCompetition extends MasterAutonomous
         double locationX;
         double locationY;
 
-        switch(alliance)
+        switch(objective)
         {
-            case RED:
-                switch(objective)
+            case PARK_CENTER:
+                switch(alliance)
                 {
-                    case PARK_RAMP:
-                        locationX = 600;
-                        locationY = 3300;
-                        break;
-                    case PARK_CENTER:
+                    case RED:
                         locationX = 1600;
                         locationY = 2100;
                         break;
-                    // Something is a bogus value, so run away
-                    default: return;
-                }
-                break;
-            case BLUE:
-                switch(objective)
-                {
-                    case PARK_RAMP:
-                        locationX = 3300;
-                        locationY = 600;
-                        break;
-                    case PARK_CENTER:
+                    case BLUE:
                         locationX = 2100;
                         locationY = 1600;
                         break;
                     // Something is a bogus value, so run away
                     default: return;
                 }
+                // Running into the cap ball with the lift can prematurely deploy the arms, so we
+                // prevent this by running into it with the other side of the robot. This requires
+                // us to flip the IMU direction and reset the last encoder values
+                reverseDrive(false);
+                headingOffset += 180;
+                lastEncoderBL = motorBL.getCurrentPosition();
+                lastEncoderFL = motorFL.getCurrentPosition();
+                lastEncoderBR = motorBR.getCurrentPosition();
+                lastEncoderFR = motorFR.getCurrentPosition();
                 break;
+
+            case PARK_RAMP:
+                // We first want to go in front of the ramp by this much in each direction
+                double displacement = 500;
+                switch(alliance)
+                {
+                    case RED:
+                        locationX = 400;
+                        locationY = 3500;
+                        break;
+                    case BLUE:
+                        locationX = 3500;
+                        locationY = 400;
+                        displacement *= -1;
+                        break;
+                    // Something is a bogus value, so run away
+                    default: return;
+                }
+                // First go in front of ramp
+                turnAndDrive(locationX + displacement, locationY - displacement);
+                break;
+
             // Something is a bogus value, so run away
             default: return;
         }
-
-        // Running into the cap ball with the lift can prematurely
-        // deploy the arms, so we prevent this by running into
-        // it with the other side of the robot
-        if(objective == Objectives.PARK_CENTER)
-        {
-            reverseDrive(false);
-            headingOffset += 180;
-            lastEncoderBL = motorBL.getCurrentPosition();
-            lastEncoderFL = motorFL.getCurrentPosition();
-            lastEncoderBR = motorBR.getCurrentPosition();
-            lastEncoderFR = motorFR.getCurrentPosition();
-        }
+        // Drive to the designated point
         turnAndDrive(locationX, locationY);
     }
 
