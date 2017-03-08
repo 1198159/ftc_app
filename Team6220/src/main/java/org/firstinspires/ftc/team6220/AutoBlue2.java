@@ -80,10 +80,9 @@ public class AutoBlue2 extends MasterAutonomous
 
         stopAllDriveMotors();
 
-        /*
         //presses beacon 1
-        pause(500);
-        vuforiaAlign(false, true, 1.524, 0.0);
+        //pause(500);
+        //vuforiaAlign(false, true, 1.524, 0.0);
 
         pause(500);
         AlignWithBeacon(false, 1.524);
@@ -91,8 +90,8 @@ public class AutoBlue2 extends MasterAutonomous
         drive.moveRobot(0.0, 0.1, 0.0);
         pause(2500);
 
-        stopAllDriveMotors();*/
-        //*/
+        stopAllDriveMotors();
+        //
 
     }
 }
