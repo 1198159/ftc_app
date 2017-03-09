@@ -174,7 +174,7 @@ abstract class MasterTeleOp extends Master
 
             // Raise the lift to make it deploy
             motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorLift.setTargetPosition(liftZero + 1300);
+            motorLift.setTargetPosition(liftZero + 1350);
             motorLift.setPower(1.0);
             telemetry.log().add("Positioning Lift");
         }

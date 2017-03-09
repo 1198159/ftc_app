@@ -212,7 +212,9 @@ public class AutonomousCompetition extends MasterAutonomous
         // Give time for beacon pusher to fall down if no correction is needed. Otherwise don't wait
         sleep((long) Range.clip(1500 - servoTimer.milliseconds(), 0, 1500));
 
-        //sleep(500);
+        // Color sensors have 500ms update interval, so wait for new values to come in before using
+        sleep(500);
+
         /*
          * Here is where we compare the colors of each side of the beacon. The color sensors give
          * us information in an rgb format. We could just directly compare the red and blue values,

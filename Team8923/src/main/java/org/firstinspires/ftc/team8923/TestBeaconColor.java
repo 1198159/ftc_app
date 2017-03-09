@@ -19,6 +19,8 @@ public class TestBeaconColor extends MasterAutonomous
 
         servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_EXTEND.pos);
 
+        telemetry.setMsTransmissionInterval(30);
+
         while(opModeIsActive())
         {
             // RGB values and hue from left sensor
@@ -43,6 +45,9 @@ public class TestBeaconColor extends MasterAutonomous
             telemetry.addData("Right Green", rightGreen);
             telemetry.addData("Right Blue", rightBlue);
             telemetry.addData("Right Hue: ", rightHue);
+
+            telemetry.addData("", "");
+            telemetry.addData("Timer", getRuntime());
 
             telemetry.update();
             idle();
