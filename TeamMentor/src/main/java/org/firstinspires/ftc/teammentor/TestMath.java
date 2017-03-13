@@ -26,7 +26,7 @@ import java.util.Random;
  *    Adding two doubles  1,000,000 times takes ~0.0053
  *    ...however, there seemed to be more variability in this number, it was occasionally 0.006 or even 0.009
  *
- *    At this point I'll note that the numbers do generallly have a little variability in them,
+ *    At this point I'll note that the numbers do generally have a little variability in them,
  *    and I'm reporting the value I see the most solidly in the telemetry output.
  *    Yes, I could calculate max, average, etc. and that would be more reliable,
  *    but since my goal is to get a general sense of how much calculations cost us,
