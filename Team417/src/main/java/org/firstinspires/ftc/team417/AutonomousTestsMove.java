@@ -133,15 +133,64 @@ public class AutonomousTestsMove extends MasterAutonomous
         VuforiaNav.getLocation(targetIndex);
 
 
-
-        startAngle = imu.getAngularOrientation().firstAngle;
+        double refAngle = imu.getAngularOrientation().firstAngle;
 
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
-        Kpivot = 1/100.0;
-        MINSPEED = 0.35;
-        TOL = 60;
+        Kpivot = 1.0/150.0;
+        MINSPEED = 0.2;
+        TOL = 50;
         Kmove = 1.0/1200.0;
+
+/*
+        pivot(90, 0.9);
+        pause(2000);
+        pivot(-90, 0.9);
+        pause(3000);
+        pivot(90, 0.8);
+        pause(2000);
+        pivot(-90, 0.8);
+        pause(3000);
+        pivot(90, 0.7);
+        pause(2000);
+        pivot(-90, 0.7);
+        pause(3000);
+        pivot(90, 0.6);
+        pause(2000);
+        pivot(-90, 0.6);
+*/
+
+        // setting for align pivot Vuforia
+        TOL_ANGLE = 3.0;
+        VUFORIA_TOL_ANGLE = 3.0;
+        VUFORIA_TOL = 60;
+        MINSPEED = 0.3;
+
+        telemetry.addData("Path", "align pivot vuf");
+        telemetry.update();
+        alignPivotVuforia(0.6, 0, 600, 4);
+        pause(50);
+
+        // setting for pivot Vuforia
+        TOL_ANGLE = 2.0;
+        VUFORIA_TOL_ANGLE = 2.0;
+        Kpivot = 1.0/200.0;
+        MINSPEED = 0.3;
+        //telemetry.addData("Path", "pivotVuforia");
+        //telemetry.update();
+        //pivotVuforia(targetAngle, 0.5);
+
+
+
+
+        /*
+        pivotWithReference(45, startAngle, 0.7);
+        pause(5000);
+        pivotWithReference(-90, startAngle, 0.7);
+        */
+
+
+
 /*
         motorLauncher.setPower(0.85);
 
@@ -164,47 +213,24 @@ public class AutonomousTestsMove extends MasterAutonomous
         motorLauncher.setPower(0.0);
         motorCollector.setPower(0.0);
 
-        telemetry.addData("Path", "pivot 25");
-        telemetry.update();
-        Kpivot = 1/100.0;
-        // pivot to face target
-        pivot(140, 0.7); // make sure IMU is on
-        pause(200);
-
-
-
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
+        Kpivot = 1.0/75.0;
+        MINSPEED = 0.3;
         TOL = 60;
-        Kmove = 1.0/1200.0;
-        Kpivot = 1/120.0;
-        MINSPEED = 0.25;
-
-        telemetry.addData("Path", "to beacon one");
+        Kmove = 1.0/2000.0;
+        telemetry.addData("Path", "pivot 25");
         telemetry.update();
-        // go towards target
-        moveAverage(0, 1524, 0, 0.8, 3);
-        pause(100);
-
-        pivot((180 + startAngle), 0.7);
-        pause(100);
-
-        moveAverage(0, 1000, 0, 0.8, 3);
-*/
-
-        pivotMove2(0, 1000, -45, 0.8, 3);
-
-        /*
-        telemetry.addData("Path", "pivot to face other side");
-        telemetry.update();
-        // pivot to face target
-        pivot(startAngle, 0.9); // make sure IMU is on
+        //pivotWithReference(-25, refAngle, 0.7); // make sure IMU is on
+        moveMaintainHeading(0, -1000, -25, refAngle, 0.9, 3);
         pause(200);
-        */
 
+        moveMaintainHeading(0, -1000, 0, refAngle, 0.9, 3);
+        pause(100);
 
-
-
+        MINSPEED = 0.25;
+        pivotWithReference(-90, refAngle, 0.7);
+*/
 //------------------------------------------------------------------------------
 
 
