@@ -179,24 +179,31 @@ public class DriveSystem implements ConcurrentOperation
 
     //todo: code duplicate; incorporate both getMotorPowers into a single function accounting for heading
     //ensures robot will drive straight while moving
-    public double[] getMotorPowersAccountingForHeading(Transform2D requestedMotion, double targetHeading)
+    //this assumes that requestedMotion.rot is ignored; it is calculated later
+    public double[] getMotorPowersAccountingForHeading(Transform2D requestedMotion, double targetOrientation)
     {
         double[] rawPowers = new double[]{0.0,0.0,0.0,0.0};
 
         double currentAngle = currentOpMode.getAngularOrientationWithOffset();
 
+        requestedMotion.rot = currentOpMode.normalizeRotationTarget(targetOrientation, currentAngle) / 180.0;
+
+        /*
         //ensures that the robot is driving at the correct heading
-        DriveStraightFilter.roll(currentOpMode.normalizeRotationTarget(targetHeading, currentAngle));
+        DriveStraightFilter.roll(currentOpMode.normalizeRotationTarget(targetOrientation, currentAngle));
         requestedMotion.rot =  DriveStraightFilter.getFilteredValue();
+        */
 
         if (Math.abs(requestedMotion.rot) > 1.0)
         {
             requestedMotion.rot = Math.signum(requestedMotion.rot);
         }
 
+        //requestedMotion.rot = 0;
+
         //data necessary for debugging
-        currentOpMode.telemetry.addData("PID Filter value: ", requestedMotion.rot);
-        currentOpMode.telemetry.addData("headingDiff: ", currentOpMode.normalizeRotationTarget(targetHeading, currentAngle));
+        currentOpMode.telemetry.addData("Rotation: ", requestedMotion.rot);
+        currentOpMode.telemetry.addData("headingDiff: ", currentOpMode.normalizeRotationTarget(targetOrientation, currentAngle));
 
         //todo: see beginning of MasterOpMode
         //calculate motor powers proportionally
@@ -204,7 +211,7 @@ public class DriveSystem implements ConcurrentOperation
         {
             rawPowers[corner] =
                     //todo: check to see if sign on requestedMotion.rot is correct
-                    -requestedMotion.rot
+                    (Math.pow(-1, corner) * requestedMotion.rot) +
                             + Math.signum(assemblies[corner].location.y) * requestedMotion.x         //assemblies[corner].location.y works as sine of the angle of each motor
                             + Math.signum(assemblies[corner].location.x) * requestedMotion.y         //assemblies[corner].location.x works as cosine of the angle of each motor
             ;
@@ -227,8 +234,10 @@ public class DriveSystem implements ConcurrentOperation
         for (int corner = 0; corner < 4; corner++)
         {
             double power = powers[corner];
+            //power = 0.25; // test value for debugging
             assemblies[corner].setPower(power);
-            //currentOpmode.telemetry.addData( corner + ": ", power);
+
+            currentOpMode.telemetry.addData( corner + ": ", power);
         }
     }
 
