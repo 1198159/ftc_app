@@ -58,6 +58,35 @@ abstract class MasterAutonomous extends MasterOpMode
     double MINSPEED = 0.25;
 
 
+    // VARIABLES FOR MOVE/ALIGN METHODS
+    int pivotDst;
+
+    int newTargetFL;
+    int newTargetBL;
+    int newTargetFR;
+    int newTargetBR;
+
+    int errorFL;
+    int errorFR;
+    int errorBL;
+    int errorBR;
+
+    double speedFL;
+    double speedFR;
+    double speedBL;
+    double speedBR;
+
+    double speedAbsFL;
+    double speedAbsFR;
+    double speedAbsBL;
+    double speedAbsBR;
+
+    double startAngle;
+    double curTurnAngle;
+    double pivotSpeed;
+    double errorAngle;
+
+
     public void initializeRobot()
     {
         super.initializeHardware(); // call master op mode's init method
@@ -94,42 +123,16 @@ abstract class MasterAutonomous extends MasterOpMode
         telemetry.log().setCapacity(4);
         //configureDashboard();
     }
-
     // drive forwards/backwards/horizontal left and right function
     public void move(double x, double y, double speed, double timeout) throws InterruptedException
     {
-        //MINSPEED = 0.25;
-        //Kmove = 1.0/1200.0;
-        //TOL = 20;
-
-        int newTargetFL;
-        int newTargetBL;
-        int newTargetFR;
-        int newTargetBR;
-
-        int errorFL;
-        int errorFR;
-        int errorBL;
-        int errorBR;
-
-        double speedFL;
-        double speedFR;
-        double speedBL;
-        double speedBR;
-
-        /*
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) + (int) Math.round(COUNTS_PER_MM * horiMm * 1.414);
-        newTargetFR = motorFrontRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) - (int) Math.round(COUNTS_PER_MM * horiMm * 1.414);
-        newTargetBL = motorBackLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) - (int) Math.round(COUNTS_PER_MM * horiMm * 1.414);
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * forwardMm) + (int) Math.round(COUNTS_PER_MM * horiMm * 1.414);
-        */
-
         newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) + (int) Math.round(COUNTS_PER_MM * x * 1.0);
         newTargetFR = motorFrontRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) - (int) Math.round(COUNTS_PER_MM * x * 1.0);
         newTargetBL = motorBackLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) - (int) Math.round(COUNTS_PER_MM * x * 1.0);
         newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) + (int) Math.round(COUNTS_PER_MM * x * 1.0);
 
-        runtime.reset(); // used for timeout
+
+    runtime.reset(); // used for timeout
 
         // wait until the motors reach the position
         do
@@ -153,25 +156,6 @@ abstract class MasterAutonomous extends MasterOpMode
             speedBR = Math.abs(errorBR * Kmove);
             speedBR = Range.clip(speedBR, MINSPEED, speed);
             speedBR = speedBR * Math.signum(errorBR);
-
- /*
-            if (Math.abs(errorFL) < TOL - 3)
-            {
-                speedFL = 0;
-            }
-            if (Math.abs(errorFR) < TOL - 3)
-            {
-                speedFR = 0;
-            }
-            if (Math.abs(errorBL) < TOL - 3)
-            {
-                speedBL = 0;
-            }
-            if (Math.abs(errorBR) < TOL - 3)
-            {
-                speedBR = 0;
-            }
-*/
 
             motorFrontLeft.setPower(speedFL);
             motorFrontRight.setPower(speedFR);
@@ -226,22 +210,7 @@ abstract class MasterAutonomous extends MasterOpMode
             pivotSpeed = Range.clip(pivotSpeed, MINSPEED, speed); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
 
-
             pivot(error, pivotSpeed);
-
-            /*
-            if (Math.abs(error) < 2)
-
-            {
-                pause(15);
-                // stop motors
-                motorFrontLeft.setPower(0);
-                motorFrontRight.setPower(0);
-                motorBackLeft.setPower(0);
-                motorBackRight.setPower(0);
-                pause(150);
-            }
-            */
 
             telemetry.log().add(String.format("CurAngle: %f, error: %f", curTurnAngle, error));
             idle();
@@ -255,160 +224,11 @@ abstract class MasterAutonomous extends MasterOpMode
         motorBackRight.setPower(0);
     }
 
-
-    // move the robot hori. sideways to align with image target
-    public void alignVuforia (double speed, double distAway, double timeout)
-    {
-        //CodeReview: this is a bug. you should use 1.0/600 or you will get integer division and the result will be 0
-        final float Kp = 1/600; // speed is proportional to error
-
-        final float TOL = 10;
-
-        float error;
-        float xPos;
-        float yPos;
-        float errorX;
-        float errorY;
-        double robotErrorX;
-        double robotErrorY;
-        int newTargetFL;
-        int newTargetBL;
-        int newTargetFR;
-        int newTargetBR;
-
-        int errorFL;
-        int errorFR;
-        int errorBL;
-        int errorBR;
-
-        double speedFL;
-        double speedFR;
-        double speedBL;
-        double speedBR;
-
-        // run with encoder mode
-        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        int loopCount = 0;
-        do
-        {
-            VuforiaNav.lastLocation = null;
-            do
-            {
-                VuforiaNav.getLocation(targetIndex); // update target location and angle
-                idle();
-            }
-            while (VuforiaNav.lastLocation == null);  //CodeReview: this will hang your robot while Vuforia can't get its location. That could be a long time.
-            idle();
-
-            xPos = VuforiaNav.lastLocation.getTranslation().getData()[0];
-            yPos = VuforiaNav.lastLocation.getTranslation().getData()[1];
-            errorX = targetPos[0] - xPos;
-            errorY = targetPos[1] - yPos;
-
-            // transform extrinsic to robot intrinsic
-            robotErrorX = errorX * Math.cos(Math.toRadians(targetAngle)) + errorY * Math.sin(Math.toRadians(targetAngle));
-            robotErrorY = -errorX * Math.sin(Math.toRadians(targetAngle)) + errorY * Math.cos(Math.toRadians(targetAngle));
-            // shift position back 25 inches away from target image
-            robotErrorY -= distAway;
-
-            //error = targetPos[targetDimX] - xPos;
-
-            // go sideways opposite of error
-            newTargetFL = motorFrontLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (robotErrorX * 1.414))
-                    + (int) (COUNTS_PER_MM * (robotErrorY));
-            newTargetFR = motorFrontRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (-robotErrorX * 1.414))
-                    + (int) (COUNTS_PER_MM * (robotErrorY));
-            newTargetBL = motorBackLeft.getCurrentPosition() + (int) (COUNTS_PER_MM * (-robotErrorX * 1.414))
-                    + (int) (COUNTS_PER_MM * (robotErrorY));
-            newTargetBR = motorBackRight.getCurrentPosition() + (int) (COUNTS_PER_MM * (robotErrorX * 1.414))
-                    + (int) (COUNTS_PER_MM * (robotErrorY));
-
-            motorFrontLeft.setTargetPosition(newTargetFL);
-            motorFrontRight.setTargetPosition(newTargetFR);
-            motorBackLeft.setTargetPosition(newTargetBL);
-            motorBackRight.setTargetPosition(newTargetBR);
-
-            // wait until the motors reach the position
-            do
-            {
-                errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
-                speedFL = Math.abs(errorFL * Kp); // make this a constant
-                speedFL = Range.clip(speedFL, 0.2, speed);
-                speedFL = speedFL * Math.signum(errorFL);
-
-                errorFR = newTargetFR - motorFrontRight.getCurrentPosition();
-                speedFR = Math.abs(errorFR * Kp);
-                speedFR = Range.clip(speedFR, 0.2, speed);
-                speedFR = speedFR * Math.signum(errorFR);
-
-                errorBL = newTargetBL - motorBackLeft.getCurrentPosition();
-                speedBL = Math.abs(errorBL * Kp);
-                speedBL = Range.clip(speedBL, 0.2, speed);
-                speedBL = speedBL * Math.signum(errorBL);
-
-                errorBR = newTargetBR - motorBackRight.getCurrentPosition();
-                speedBR = Math.abs(errorBR * Kp);
-                speedBR = Range.clip(speedBR, 0.2, speed);
-                speedBR = speedBR * Math.signum(errorBR);
-
-                if (Math.abs(errorFL) < TOL)
-                {
-                    speedFL = 0;
-                }
-                if (Math.abs(errorFR) < TOL)
-                {
-                    speedFR = 0;
-                }
-                if (Math.abs(errorBL) < TOL)
-                {
-                    speedBL = 0;
-                }
-                if (Math.abs(errorBR) < TOL)
-                {
-                    speedBR = 0;
-                }
-
-                motorFrontLeft.setPower(speedFL);
-                motorFrontRight.setPower(speedFR);
-                motorBackLeft.setPower(speedBL);
-                motorBackRight.setPower(speedBR);
-
-                idle();
-            }
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeout) &&
-                    (Math.abs(errorFL) > TOL || Math.abs(errorFR) > TOL || Math.abs(errorBL) > TOL || Math.abs(errorBR) > TOL));
-
-            runtime.reset();
-            telemetry.log().add(String.format("X pos: %f, Y Pos: %f, NewXPos: %f, loop: %d", xPos, yPos, robotErrorX, loopCount));
-            telemetry.update();
-            loopCount++;
-
-            // stop the motors
-            motorFrontLeft.setPower(0);
-            motorFrontRight.setPower(0);
-            motorBackLeft.setPower(0);
-            motorBackRight.setPower(0);
-
-            // error is in mm
-        } while (opModeIsActive() && (Math.abs(robotErrorX) > TOL));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
-
-        // stop motors
-        motorFrontLeft.setPower(0);
-        motorFrontRight.setPower(0);
-        motorBackLeft.setPower(0);
-        motorBackRight.setPower(0);
-    }
-
-
     // a combination of both the align and pivot function (WITHOUT VUFORIA)
     // angle has to be small otherwise won't work, this function moves and pivots robot
     public void pivotMove(double x, double y, double pivotAngle, double speed, double timeout)
     {
+        final double XSCALE = 1.1;
         MINSPEED = 0.35;
         // run with encoder mode
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -416,50 +236,15 @@ abstract class MasterAutonomous extends MasterOpMode
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        int newTargetFL;
-        int newTargetBL;
-        int newTargetFR;
-        int newTargetBR;
-
-        int errorFL;
-        int errorFR;
-        int errorBL;
-        int errorBR;
-
-        double speedFL;
-        double speedFR;
-        double speedBL;
-        double speedBR;
-
-        double speedAbsFL;
-        double speedAbsFR;
-        double speedAbsBL;
-        double speedAbsBR;
-
-        double startAngle;
-        double curTurnAngle;
-        double pivotSpeed;
-        double errorAngle;
-
-        int pivotDst;
-        //CodeReview: these constants never change and could be declared once at the top of your class,
-        //  so they don't have to be calculated each time this method is run.
         final double ROBOT_DIAMETER_MM = 27.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
         pivotDst = (int) ((pivotAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
-        //CodeReview: your code will be a bit faster if you store the following two things in local variables
-        // and then reuse them. Your current code calculates the same values 4 times (each).
-        // int xTarget = (int) Math.round(COUNTS_PER_MM * (x * 1.1)
-        // int yTarget = (int) Math.round(COUNTS_PER_MM * (y)
-        // Also: pleaes make the 1.1 a defined constant instead of a magic number here in your code.
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
-        newTargetBL = motorBackLeft.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
+        int xTarget = (int) Math.round(COUNTS_PER_MM * (x * XSCALE));
+        int yTarget = (int) Math.round(COUNTS_PER_MM * (y));
+        newTargetFL = motorFrontLeft.getCurrentPosition() + xTarget + yTarget + pivotDst;
+        newTargetFR = motorFrontRight.getCurrentPosition() - xTarget + yTarget - pivotDst;
+        newTargetBL = motorBackLeft.getCurrentPosition() - xTarget + yTarget + pivotDst;
+        newTargetBR = motorBackRight.getCurrentPosition() + xTarget + yTarget - pivotDst;
 
         runtime.reset(); // reset timer, which is used for loop timeout below
 
@@ -505,24 +290,6 @@ abstract class MasterAutonomous extends MasterOpMode
             speedAbsBR = Range.clip(speedAbsBR, MINSPEED, speed);
             speedBR = speedAbsBR * Math.signum(speedBR);
 
-/*
-            if (Math.abs(errorFL) < (TOL - 3) )
-            {
-                speedFL = 0;
-            }
-            if (Math.abs(errorFR) < (TOL - 3) )
-            {
-                speedFR = 0;
-            }
-            if (Math.abs(errorBL) < (TOL - 3) )
-            {
-                speedBL = 0;
-            }
-            if (Math.abs(errorBR) < (TOL - 3) )
-            {
-                speedBR = 0;
-            }
-*/
             motorFrontLeft.setPower(speedFL);
             motorFrontRight.setPower(speedFR);
             motorBackLeft.setPower(speedBL);
@@ -555,33 +322,6 @@ abstract class MasterAutonomous extends MasterOpMode
         motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        int newTargetFL;
-        int newTargetBL;
-        int newTargetFR;
-        int newTargetBR;
-
-        int errorFL;
-        int errorFR;
-        int errorBL;
-        int errorBR;
-
-        double speedFL;
-        double speedFR;
-        double speedBL;
-        double speedBR;
-
-        double speedAbsFL;
-        double speedAbsFR;
-        double speedAbsBL;
-        double speedAbsBR;
-
-        double startAngle;
-        double curTurnAngle;
-        double pivotSpeed;
-        double errorAngle;
-
-        int pivotDst;
         final double ROBOT_DIAMETER_MM = 27.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
 
         // pivotDst is added with movement positions
@@ -705,51 +445,21 @@ abstract class MasterAutonomous extends MasterOpMode
     // angle has to be small otherwise won't work, this function moves and pivots robot
     public void moveAverage(double x, double y, double pivotAngle, double speed, double timeout)
     {
+        final double XSCALE = 1.1;
         // run with encoder mode
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        int newTargetFL;
-        int newTargetBL;
-        int newTargetFR;
-        int newTargetBR;
-
-        int errorFL;
-        int errorFR;
-        int errorBL;
-        int errorBR;
-
-        double speedFL;
-        double speedFR;
-        double speedBL;
-        double speedBR;
-
-        double speedAbsFL;
-        double speedAbsFR;
-        double speedAbsBL;
-        double speedAbsBR;
-
-        double startAngle;
-        double curTurnAngle;
-        double pivotSpeed;
-        double errorAngle;
-
-        int pivotDst;
-        //CodeReview: these constants can be defined at the top of your class,
-        //  so they aren't calculated each time this method runs.
         final double ROBOT_DIAMETER_MM = 27.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
         pivotDst = (int) ((pivotAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
-        newTargetBL = motorBackLeft.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
+        int xTarget = (int) Math.round(COUNTS_PER_MM * (x * XSCALE));
+        int yTarget = (int) Math.round(COUNTS_PER_MM * (y));
+        newTargetFL = motorFrontLeft.getCurrentPosition() + xTarget + yTarget + pivotDst;
+        newTargetFR = motorFrontRight.getCurrentPosition() - xTarget + yTarget - pivotDst;
+        newTargetBL = motorBackLeft.getCurrentPosition() - xTarget + yTarget + pivotDst;
+        newTargetBR = motorBackRight.getCurrentPosition() + xTarget + yTarget - pivotDst;
 
         runtime.reset(); // reset timer, which is used for loop timeout below
 
@@ -828,45 +538,19 @@ abstract class MasterAutonomous extends MasterOpMode
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        int newTargetFL;
-        int newTargetBL;
-        int newTargetFR;
-        int newTargetBR;
-
-        int errorFL;
-        int errorFR;
-        int errorBL;
-        int errorBR;
-
-        double speedFL;
-        double speedFR;
-        double speedBL;
-        double speedBR;
-
-        double speedAbsFL;
-        double speedAbsFR;
-        double speedAbsBL;
-        double speedAbsBR;
-
-        double curTurnAngle;
-        double pivotSpeed;
-        double errorAngle;
         double avgDistError;
 
-        int pivotDst;
-        //CodeReview: these constants can be defined at the top of your class,
-        //  so they aren't calculated each time this method runs.
         final double ROBOT_DIAMETER_MM = 27.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
         pivotDst = (int) ((pivotAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
-        newTargetBL = motorBackLeft.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
+        final double XSCALE = 1.1;
+
+        int xTarget = (int) Math.round(COUNTS_PER_MM * (x * XSCALE));
+        int yTarget = (int) Math.round(COUNTS_PER_MM * (y));
+        newTargetFL = motorFrontLeft.getCurrentPosition() + xTarget + yTarget + pivotDst;
+        newTargetFR = motorFrontRight.getCurrentPosition() - xTarget + yTarget - pivotDst;
+        newTargetBL = motorBackLeft.getCurrentPosition() - xTarget + yTarget + pivotDst;
+        newTargetBR = motorBackRight.getCurrentPosition() + xTarget + yTarget - pivotDst;
 
         runtime.reset(); // reset timer, which is used for loop timeout below
 
@@ -1300,17 +984,14 @@ abstract class MasterAutonomous extends MasterOpMode
         // CENTER VORTEX OPTION
         if (isRedTeam) pivot(50, 0.6);
         else pivot(-50, 0.6);
-        //forwards(-30, 0, 0.6, 3);
         move(0, 762, 0.6, 3);
     }
 
     // pushes the cap ball and parks on the center vortex
     public void PushCapBall() throws InterruptedException
     {
-        //forwards(45, 0, 0.7, 3);
         move(0, 1143, 0.7, 3);
         pause(500);
-        //forwards(5, 0, 0.7, 3);
         move(0, 127, 0.7, 3);
     }
 
@@ -1318,16 +999,13 @@ abstract class MasterAutonomous extends MasterOpMode
     // parks parks on corner vortex
     public void parkCornerVortex() throws InterruptedException
     {
-        //forwards(30, 0, 0.7, 3);
         move(0, 762, 0.7, 3);
         if (isRedTeam)
         {
             move(-508, 0, 0.8, 3);
-            //forwards(0, -20, 0.8, 3); // horizontal left (20 inches)
         }
         else
         {
-            //forwards(0, 20, 0.8, 3); // horizontal right
             move(508, 0, 0.8, 3);
         }
     }

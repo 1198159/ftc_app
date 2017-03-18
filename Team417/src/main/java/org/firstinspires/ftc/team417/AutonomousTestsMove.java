@@ -103,7 +103,7 @@ public class AutonomousTestsMove extends MasterAutonomous
             {
                 // OPTION BLUE ONE (LEGOS)
                 startDelay = 2000;
-                pivotAngle = -55; // recalc pivot?? also for red one??
+                pivotAngle = -55;
                 targetAngle = -90;
                 startDist = 2286;
                 targetIndex = 2;
@@ -142,24 +142,7 @@ public class AutonomousTestsMove extends MasterAutonomous
         TOL = 50;
         Kmove = 1.0/1200.0;
 
-/*
-        pivot(90, 0.9);
-        pause(2000);
-        pivot(-90, 0.9);
-        pause(3000);
-        pivot(90, 0.8);
-        pause(2000);
-        pivot(-90, 0.8);
-        pause(3000);
-        pivot(90, 0.7);
-        pause(2000);
-        pivot(-90, 0.7);
-        pause(3000);
-        pivot(90, 0.6);
-        pause(2000);
-        pivot(-90, 0.6);
-*/
-
+        /*
         // setting for align pivot Vuforia
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
@@ -179,19 +162,9 @@ public class AutonomousTestsMove extends MasterAutonomous
         //telemetry.addData("Path", "pivotVuforia");
         //telemetry.update();
         //pivotVuforia(targetAngle, 0.5);
-
-
-
-
-        /*
-        pivotWithReference(45, startAngle, 0.7);
-        pause(5000);
-        pivotWithReference(-90, startAngle, 0.7);
         */
 
 
-
-/*
         motorLauncher.setPower(0.85);
 
         telemetry.addData("Path", "start forwards");
@@ -215,22 +188,29 @@ public class AutonomousTestsMove extends MasterAutonomous
 
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
-        Kpivot = 1.0/75.0;
-        MINSPEED = 0.3;
-        TOL = 60;
-        Kmove = 1.0/2000.0;
+        Kpivot = 1.0/100.0;
+        MINSPEED = 0.25;
+        TOL = 100;
+        Kmove = 1.0/1000.0;
         telemetry.addData("Path", "pivot 25");
         telemetry.update();
         //pivotWithReference(-25, refAngle, 0.7); // make sure IMU is on
-        moveMaintainHeading(0, -1000, -25, refAngle, 0.9, 3);
-        pause(200);
+        moveMaintainHeading(0, -1200, -30, refAngle, 0.9, 3);
+        pause(50);
+        moveMaintainHeading(0, -900, 10, refAngle, 0.9, 3);
+        pause(50);
+        moveMaintainHeading(0, -400, -12, refAngle, 0.9, 3);
+        pause(50);
+        MINSPEED = 0.25;
+        pivotWithReference(90, refAngle, 0.7);
 
-        moveMaintainHeading(0, -1000, 0, refAngle, 0.9, 3);
+        /*
+
         pause(100);
 
         MINSPEED = 0.25;
         pivotWithReference(-90, refAngle, 0.7);
-*/
+        */
 //------------------------------------------------------------------------------
 
 
