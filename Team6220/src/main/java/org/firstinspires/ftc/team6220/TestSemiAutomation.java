@@ -35,8 +35,8 @@ public class TestSemiAutomation extends MasterTeleOp
 
             if(gamepad1.right_bumper)
             {
-                //autonomously move to 0,0,0
-                drive.NavigateTo(new Transform2D(0,0,0));
+                //autonomously move to 0,0
+                drive.navigateTo(0.0, 0.0);
             }
 
             /*

@@ -1,11 +1,6 @@
 package org.firstinspires.ftc.team6220;
 
 import android.graphics.Color;
-import android.support.annotation.BoolRes;
-
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import java.util.concurrent.Delayed;
 
 /*
     Contains important methods for use in our autonomous programs
@@ -158,7 +153,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
 
             //moves the robot to the desired location
-            double[] m = drive.NavigateTo(targetX, targetY);
+            double[] m = drive.navigateTo(targetX, targetY);
 
             telemetry.addData("XRate:", m[0]);
             telemetry.addData("YRate:", m[1]);

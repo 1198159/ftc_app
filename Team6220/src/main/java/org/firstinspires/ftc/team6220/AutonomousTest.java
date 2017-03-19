@@ -5,10 +5,8 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.lang.annotation.Target;
-
 /*
-    TeleOp program used for testing functions such as turnTo and NavigateTo; extends MasterAutonomous to allow access to
+    TeleOp program used for testing functions such as turnTo and navigateTo; extends MasterAutonomous to allow access to
     turning and vuforia navigation
 */
 @TeleOp(name="Test Autonomous", group="6220")
@@ -53,7 +51,7 @@ public class AutonomousTest extends MasterAutonomous
             //navigation test for y direction (relative to the robot)
             if (gamepad2.left_stick_y < -0.1)
             {
-                vuforiaDriveToPosition(3.300, 1.500, 0.0);
+                vuforiaDriveToPosition(3.300, 1.500);
             }
 
             //navigation test for x direction (relative to the robot)
@@ -77,7 +75,7 @@ public class AutonomousTest extends MasterAutonomous
             }
             if(gamepad2.dpad_down)
             {
-                double a[] = drive.NavigateTo(new Transform2D(1.0, 0.0, 0.0));
+                double a[] = drive.navigateTo(1.0, 0.0);
                 telemetry.addData("Navigate To: ", a[0]);
                 telemetry.addData("Navigate To: ", a[1]);
                 telemetry.addData("Naviagte To: ", a[2]);

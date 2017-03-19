@@ -59,10 +59,10 @@ public class DriveSystem implements ConcurrentOperation
     //TODO add ability to use non "zig-zag" paths
     //PID-driven navigation to a point; call once per loop
     //IMPORTANT:  assumes robot position has already been updated
-    public double[] NavigateTo(double targetx, double targetY)
+    public double[] navigateTo(double targetX, double targetY)
     {
         //updates the error terms
-        LocationControlFilter[0].roll(targetx - robotLocation.x);
+        LocationControlFilter[0].roll(targetX - robotLocation.x);
         LocationControlFilter[1].roll(targetY - robotLocation.y);
         double xRate = 0.3 * LocationControlFilter[0].getFilteredValue();
         double yRate = 0.3 * LocationControlFilter[1].getFilteredValue();

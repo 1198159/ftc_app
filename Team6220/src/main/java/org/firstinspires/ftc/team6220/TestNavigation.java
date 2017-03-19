@@ -26,6 +26,6 @@ public class TestNavigation extends MasterAutonomous
         //Start tracking targets
         vuforiaHelper.startTracking();
 
-        vuforiaDriveToPosition(1.390, 3.000, 90.0);
+        vuforiaDriveToPosition(1.390, 3.000);
     }
 }
