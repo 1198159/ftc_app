@@ -59,17 +59,13 @@ public class DriveSystem implements ConcurrentOperation
     //TODO add ability to use non "zig-zag" paths
     //PID-driven navigation to a point; call once per loop
     //IMPORTANT:  assumes robot position has already been updated
-    public double[] NavigateTo(Transform2D target)
+    public double[] NavigateTo(double targetx, double targetY)
     {
         //updates the error terms
-        double angleDiff = currentOpMode.normalizeRotationTarget(target.rot, robotLocation.rot);
-        LocationControlFilter[0].roll(target.x - robotLocation.x);
-        LocationControlFilter[1].roll(target.y - robotLocation.y);
-        RotationControlFilter.roll(angleDiff);
-        currentOpMode.telemetry.addData("Angle diff: ", angleDiff);
+        LocationControlFilter[0].roll(targetx - robotLocation.x);
+        LocationControlFilter[1].roll(targetY - robotLocation.y);
         double xRate = 0.3 * LocationControlFilter[0].getFilteredValue();
         double yRate = 0.3 * LocationControlFilter[1].getFilteredValue();
-        double wRate = 0.3 * RotationControlFilter.getFilteredValue();
 
         //makes sure that none of our rates are too large
         if(Math.abs(xRate) > 0.3)
@@ -82,11 +78,6 @@ public class DriveSystem implements ConcurrentOperation
             yRate = 0.3 * Math.signum(yRate);
         }
 
-        if(Math.abs(wRate) > 0.3)
-        {
-            wRate = 0.3 * Math.signum(wRate);
-        }
-
         //Local and global orientation do not always match up.  For instance, if the robot is rotated
         //90 degrees, local x motion will result in global y motion.
         //This calculation corresponds to the new coordinates of a point rotated to an angle.  The 90
@@ -95,9 +86,9 @@ public class DriveSystem implements ConcurrentOperation
         double localXRate = xRate * Math.cos(currentOpMode.beaconActivationAngle - 90) - yRate * Math.sin(currentOpMode.beaconActivationAngle - 90);
         double localYRate = -xRate * Math.sin(currentOpMode.beaconActivationAngle - 90) - yRate * Math.cos(currentOpMode.beaconActivationAngle - 90);
 
-        writeToMotors(getMotorPowersFromMotion(new Transform2D(localXRate, localYRate, wRate)));
+        writeToMotors(getMotorPowersFromMotion(new Transform2D(localXRate, localYRate, 0.0)));
 
-        return new double[]{localXRate, localYRate, wRate};
+        return new double[]{localXRate, localYRate};
     }
 
     //@todo navigating in the y direction does not work
@@ -211,7 +202,7 @@ public class DriveSystem implements ConcurrentOperation
         {
             rawPowers[corner] =
                     //todo: check to see if sign on requestedMotion.rot is correct
-                    (Math.pow(-1, corner) * requestedMotion.rot) +
+                            -requestedMotion.rot +
                             + Math.signum(assemblies[corner].location.y) * requestedMotion.x         //assemblies[corner].location.y works as sine of the angle of each motor
                             + Math.signum(assemblies[corner].location.x) * requestedMotion.y         //assemblies[corner].location.x works as cosine of the angle of each motor
             ;

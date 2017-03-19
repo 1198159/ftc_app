@@ -29,35 +29,10 @@ public class AutoBlue2 extends MasterAutonomous
         //Start tracking targets
         vuforiaHelper.startTracking();
 
+        //TODO redo old code and place inside outline
+        /*
         //vuforia is not reliably available yet, so we must use encoders at first
         //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
-
-        //shoots ball 1
-        launcher.pullback();
-        pauseWhileUpdating(1.5);
-        launcher.launchParticle();
-        pauseWhileUpdating(2.0);
-        launcher.pullBackMotor.setPower(0.0);
-        //
-
-        //loads ball 2
-        collectorMotor.setPower(-1.0);
-        collectorServo.setPosition(0.0);
-        pause(1000);
-        collectorMotor.setPower(0.0);
-        collectorServo.setPosition(0.5);
-        pause(600);
-        //
-
-        //shoots ball 2
-        launcher.pullback();
-        pauseWhileUpdating(1.5);
-        launcher.loadParticle();
-        pauseWhileUpdating(1.0);
-        launcher.launchParticle();
-        pauseWhileUpdating(2.0);
-        launcher.pullBackMotor.setPower(0.0);
-        //
 
         pause(200);
         stopAllDriveMotors();
@@ -92,6 +67,63 @@ public class AutoBlue2 extends MasterAutonomous
 
         stopAllDriveMotors();
         //
+        */
+
+        //@TODO outline for new auto program
+        //1  launch 2 particles
+
+            //shoots ball 1
+            launcher.pullback();
+            pauseWhileUpdating(1.5);
+            launcher.launchParticle();
+            pauseWhileUpdating(2.0);
+            launcher.pullBackMotor.setPower(0.0);
+            //
+
+            //loads ball 2
+            collectorMotor.setPower(-1.0);
+            collectorServo.setPosition(0.0);
+            pause(1000);
+            collectorMotor.setPower(0.0);
+            collectorServo.setPosition(0.5);
+            pause(600);
+            //
+
+            //shoots ball 2
+            launcher.pullback();
+            pauseWhileUpdating(1.5);
+            launcher.loadParticle();
+            pauseWhileUpdating(1.0);
+            launcher.launchParticle();
+            pauseWhileUpdating(2.0);
+            launcher.pullBackMotor.setPower(0.0);
+            //
+
+        //2  drive forward until same y coordinate as beacon
+
+        //3  rotate 180 degrees so robot is facing beacon
+
+        //4  drive forward until close to beacon
+
+        //5  determine color of each side of beacon
+
+        //6  pivot servo based on beacon color
+
+        //7  ensure beacon is correct color
+
+        //8  back away from beacon 1
+
+        //9  drive to beacon 2
+
+        //10 drive forward until close to beacon
+
+        //11 determine color of each side of beacon
+
+        //12 pivot servo based on beacon color
+
+        //13 back away from beacon
+
+        //14 drive while rotating counterclockwise to knock cap ball and park
 
     }
 }
