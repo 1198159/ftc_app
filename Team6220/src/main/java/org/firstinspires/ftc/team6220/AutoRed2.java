@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
     Standard autonomous for red side
 */
 
-//todo: combine autonomous programs into one
 @Autonomous(name = "AutoRed2", group = "Autonomous")
 public class AutoRed2 extends MasterAutonomous
 {

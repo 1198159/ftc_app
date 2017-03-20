@@ -5,7 +5,7 @@ package org.firstinspires.ftc.team6220;
 */
 abstract public class MasterTeleOp extends MasterOpMode
 {
-    //TODO test and use FIR filtered input for drive
+    //TODO: test and use FIR filtered input for drive
     //                                                         y= 1/400x^2-x+100 @ x in {0,200}
     //                                                         Gradual smooth concave up curve
     //                                                         between 100 and 0.
@@ -42,7 +42,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         /*
         if ((Math.abs(pilotInputCurve.getOuput(rotationAxis) * rFactor) < Constants.MINIMUM_TURNING_POWER))
         {
-            //todo: make sure driving at constant heading works
+            //TODO: make sure driving at constant heading works
             drive.moveRobotAtConstantHeading(pilotInputCurve.getOuput(xMotionAxis) * tFactor,
                     pilotInputCurve.getOuput(yMotionAxis) * tFactor,
                     pilotInputCurve.getOuput(rotationAxis) * rFactor,

@@ -301,9 +301,9 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopAllDriveMotors();
     }
 
-    //todo check beaconServo activation angle
-    //todo adjust pause times to allow vuforia just enough time to determine the beacon color
-    //todo activateBeacon still has position inputs in commented out autonomous programs
+    //TODO: check beaconServo activation angle
+    //TODO: adjust pause times to allow vuforia just enough time to determine the beacon color
+    //TODO: activateBeacon still has position inputs in commented out autonomous programs
     //we use this function to determine the color of either side of the beacon and activate it for the proper side
     public void activateBeacon(boolean redSide /*, double position*/) throws InterruptedException
     {
@@ -324,7 +324,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             Color.colorToHSV(vuforiaHelper.getPixelColor(-127, 92, 0), colorLeftSide);
             Color.colorToHSV(vuforiaHelper.getPixelColor(127, 92, 0), colorRightSide);
 
-            //TODO implement sampling of many pixels
+            //TODO: implement sampling of many pixels
             /*for(int i = 1; i <=40; i++)
             {
                 for(int j = 1; j <= 40; j++)

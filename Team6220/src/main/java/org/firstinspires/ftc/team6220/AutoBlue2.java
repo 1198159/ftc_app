@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
     Standard autonomous for blue side
 */
 
-//todo: combine autonomous programs into one
-
 @Autonomous(name = "AutoBlue2", group = "Autonomous")
 public class AutoBlue2 extends MasterAutonomous
 {
@@ -27,7 +25,7 @@ public class AutoBlue2 extends MasterAutonomous
         //Start tracking targets
         vuforiaHelper.startTracking();
 
-        //TODO redo old code and place inside outline
+        //TODO: redo old code and place inside outline
         /*
         //vuforia is not reliably available yet, so we must use encoders at first
         //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
@@ -67,7 +65,6 @@ public class AutoBlue2 extends MasterAutonomous
         //
         */
 
-        //@TODO outline for new auto program
         //1  launch 2 particles
 
             //shoots ball 1

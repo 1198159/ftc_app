@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp(name="TeleOpCompetition", group="6220")
 public class TeleOpCompetition extends MasterTeleOp
 {
+    //useful for overriding launcher state machine when necessary
     boolean launcherManualControl = false;
 
     @Override

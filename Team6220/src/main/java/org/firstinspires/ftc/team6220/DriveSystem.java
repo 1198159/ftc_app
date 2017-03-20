@@ -30,7 +30,7 @@ public class DriveSystem implements ConcurrentOperation
     public Transform2D robotLocation;
     MasterOpMode currentOpMode; //provide access to current opmode so we can use telemetry commands
     VuforiaHelper vuforiaHelper;
-    //TODO add Kalman filter for position estimation
+    //TODO: add Kalman filter for position estimation
 
     public DriveSystem(MasterOpMode opmode, VuforiaHelper vuforia, DriveAssembly[] driveAssemblyArray, Transform2D initialLocation, PIDFilter[] filter)
     {
@@ -56,7 +56,7 @@ public class DriveSystem implements ConcurrentOperation
 
     }
 
-    //TODO add ability to use non "zig-zag" paths
+    //TODO: add ability to use non "zig-zag" paths
     //PID-driven navigation to a point; call once per loop
     //IMPORTANT:  assumes robot position has already been updated
     public double[] navigateTo(double targetX, double targetY)
@@ -139,14 +139,14 @@ public class DriveSystem implements ConcurrentOperation
         //return this.getMotorPowersFromMotion(new Transform2D(posRate, 0.0 , wRate));
     }
 
-    //TODO make assemblies.location represent their actual values
+    //TODO: make assemblies.location represent their actual values
     //returns an array with the motor powers for the requested motion
     //                                      horizontal vertical  rotation
     public double[] getMotorPowersFromMotion(Transform2D requestedMotion)
     {
         double[] rawPowers = new double[]{0.0,0.0,0.0,0.0};
 
-        //TODO see beginning of MasterOpMode
+        //TODO: see beginning of MasterOpMode
         //calculates motor powers proportionally
         for (int corner = 0; corner < 4; corner++)
         {
@@ -168,7 +168,7 @@ public class DriveSystem implements ConcurrentOperation
         return SequenceUtilities.scalarMultiply(rawPowers, 1/scalingFactor);
     }
 
-    //todo: code duplicate; incorporate both getMotorPowers into a single function accounting for heading
+    //TODO: code duplicate; incorporate both getMotorPowers into a single function accounting for heading
     //ensures robot will drive straight while moving
     //this assumes that requestedMotion.rot is ignored; it is calculated later
     public double[] getMotorPowersAccountingForHeading(Transform2D requestedMotion, double targetOrientation)
@@ -196,7 +196,7 @@ public class DriveSystem implements ConcurrentOperation
         currentOpMode.telemetry.addData("Rotation: ", requestedMotion.rot);
         currentOpMode.telemetry.addData("headingDiff: ", currentOpMode.normalizeRotationTarget(targetOrientation, currentAngle));
 
-        //todo: see beginning of MasterOpMode
+        //TODO: see beginning of MasterOpMode
         //calculate motor powers proportionally
         for (int corner = 0; corner < 4; corner++)
         {
@@ -246,7 +246,7 @@ public class DriveSystem implements ConcurrentOperation
         }
     }
 
-    //TODO see above
+    //TODO: remove w input when driving at constant heading
     //generate motor powers and write values to them; drives at an ideal angle
     public void moveRobotAtConstantHeading(double x, double y, double w, double targetHeading)
     {

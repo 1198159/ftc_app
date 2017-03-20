@@ -24,7 +24,7 @@ abstract public class MasterOpMode extends LinearOpMode
 {
     //Java Enums cannot act as integer indices as they do in other languages
     //To maintain compatabliity with with a FOR loop, we
-    //TODO find if java supports an order-independent loop for each member of an array
+    //TODO: find out if java supports an order-independent loop for each member of an array
     //e.g., in python that would be:   for assembly in driveAssemblies:
     //                                    assembly.doStuff()
     public final int FRONT_RIGHT = 0;
@@ -35,7 +35,7 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor collectorMotor;
     Servo gateServo;
     Servo collectorServo;
-    //TODO ENSURE BEACONSERVO IS ON HARDWAREMAP!
+    //TODO: ENSURE BEACONSERVO IS ON HARDWAREMAP!
     Servo beaconServo;
 
     private int EncoderFR = 0;
@@ -46,7 +46,7 @@ abstract public class MasterOpMode extends LinearOpMode
     double robotXPos = 0;
     double robotYPos = 0;
 
-    //TODO deal with angles at all starting positions
+    //TODO: deal with angles at all starting positions
     double currentAngle = 0.0;
 
     //used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
@@ -103,7 +103,7 @@ abstract public class MasterOpMode extends LinearOpMode
         collectorServo.setPosition(0.5);
         beaconServo.setPosition(0.0);
 
-        //TODO Must be disabled if motor encoders are not correctly reporting
+        //TODO: Must be disabled if motor encoders are not correctly reporting
         driveAssemblies[FRONT_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[FRONT_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         driveAssemblies[BACK_LEFT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -121,7 +121,7 @@ abstract public class MasterOpMode extends LinearOpMode
         */
 
 
-        //TODO remove "magic numbers"
+        //TODO: remove "magic numbers"
         //CodeReview: please don't use magic numbers (0.8). Instead use named constants and
         //            put a comment next to those names explaining where the value comes from (how you derived it)
         //                                          drive assemblies  initial loc:     x    y    w
@@ -165,7 +165,7 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
-    //TODO test encoder function; likely has errors
+    //TODO: test encoder function; likely has errors
     //keeps track of the robot's location on the field based on Encoders and IMU; make sure to call once each loop
     public Transform2D updateLocationUsingEncoders(double eTime)
     {

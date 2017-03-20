@@ -15,9 +15,6 @@ public class TestDriveStraight extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        //todo:  nullpointer exception
-        //runSetUp();
-        //initializeAuto();
         initializeHardware();
 
         //assumes blue alliance starting point
@@ -37,7 +34,7 @@ public class TestDriveStraight extends MasterAutonomous
 
         while (opModeIsActive() && (duration.seconds() < 5))
         {
-            //TODO - need to set the x,y,w values appropriately
+            //TODO: need to set the x,y,w values appropriately
             drive.moveRobotAtConstantHeading(0.0, 0.15, 0.0, orientation);
 
             telemetry.addData("heading", getAngularOrientationWithOffset());
