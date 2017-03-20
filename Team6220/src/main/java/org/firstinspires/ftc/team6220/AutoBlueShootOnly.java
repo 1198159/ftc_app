@@ -18,8 +18,6 @@ public class AutoBlueShootOnly extends MasterAutonomous
 
         setRobotStartingOrientation(180.0);
 
-        beaconActivationAngle = 0.0;
-
         drive.robotLocation = new Transform2D(2.395, 0.210, 180.0);
 
         waitForStart();

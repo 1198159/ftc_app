@@ -16,7 +16,6 @@ public class TestNavigation extends MasterAutonomous
 
         initializeAuto();
 
-        //this is used to add absolute orientation to each autonomous program
         setRobotStartingOrientation(90.0);
 
         drive.robotLocation = new Transform2D(1.500, 2.600, 90.0);

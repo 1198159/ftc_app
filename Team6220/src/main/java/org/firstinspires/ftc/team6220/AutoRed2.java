@@ -19,8 +19,6 @@ public class AutoRed2 extends MasterAutonomous
 
         setRobotStartingOrientation(90.0);
 
-        beaconActivationAngle = 90.0;
-
         drive.robotLocation = new Transform2D(0.210, 2.395, 90.0);
 
         waitForStart();

@@ -23,13 +23,11 @@ public class AutoCompetition extends MasterAutonomous
         {
             drive.robotLocation = new Transform2D(2.395, 0.210, 90.0);
             setRobotStartingOrientation(90.0);
-            beaconActivationAngle = 0.0;
         }
         else
         {
             drive.robotLocation = new Transform2D(0.210, 2.395, 0.0);
             setRobotStartingOrientation(0.0);
-            beaconActivationAngle = 90.0;
         }
 
         waitForStart();
@@ -40,6 +38,9 @@ public class AutoCompetition extends MasterAutonomous
         //Start tracking targets
         vuforiaHelper.startTracking();
 
+        //todo remove position parameters from activateBeacon
+        //not currently in use
+        /*
         if (alliance == Alliance.BLUE && routineOption == RoutineOption.LAUNCHANDBUTTONS)
         {
             drive.robotLocation = new Transform2D(0.210, 2.395, 180.0);
@@ -321,5 +322,6 @@ public class AutoCompetition extends MasterAutonomous
         {
 
         }
+        */
     }
 }

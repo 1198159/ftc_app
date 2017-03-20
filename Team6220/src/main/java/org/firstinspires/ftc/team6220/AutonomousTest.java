@@ -29,8 +29,6 @@ public class AutonomousTest extends MasterAutonomous
 
         setRobotStartingOrientation(0.0);
 
-        beaconActivationAngle = 0.0;
-
         waitForStart();
 
         //Start tracking vision targets
