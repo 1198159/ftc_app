@@ -60,7 +60,7 @@ public class AutoBlue2 extends MasterAutonomous
         //vuforiaAlign(false, true, 1.524, 0.0);
 
         pause(500);
-        AlignWithBeacon(false, 1.524);
+        activateBeacon(false, 1.524);
 
         drive.moveRobot(0.0, 0.1, 0.0);
         pause(2500);

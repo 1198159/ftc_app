@@ -78,20 +78,20 @@ public class DriveSystem implements ConcurrentOperation
             yRate = 0.3 * Math.signum(yRate);
         }
 
-        //Local and global orientation do not always match up.  For instance, if the robot is rotated
-        //90 degrees, local x motion will result in global y motion.
-        //This calculation corresponds to the new coordinates of a point rotated to an angle.  The 90
-        //subtracted from beaconActivationAngle has to do with how our robot's local orientation
-        //was defined
-        double localXRate = xRate * Math.cos(currentOpMode.beaconActivationAngle - 90) - yRate * Math.sin(currentOpMode.beaconActivationAngle - 90);
-        double localYRate = -xRate * Math.sin(currentOpMode.beaconActivationAngle - 90) - yRate * Math.cos(currentOpMode.beaconActivationAngle - 90);
+        //Local and global orientation do not always match up.  For instance, if the robot's x-axis
+        //of motion is rotated 90 degrees from the global x-axis, local x motion will result in
+        //global y motion.
+        //This calculation corresponds to finding the coordinates of a rotated point.  The 90
+        //degrees subtracted from the robot's global orientation has to do with what side of the
+        //robot was designated the front.
+        double localXRate = xRate * Math.cos(currentOpMode.getAngularOrientationWithOffset() - 90) - yRate * Math.sin(currentOpMode.getAngularOrientationWithOffset() - 90);
+        double localYRate = -xRate * Math.sin(currentOpMode.getAngularOrientationWithOffset() - 90) - yRate * Math.cos(currentOpMode.getAngularOrientationWithOffset() - 90);
 
         writeToMotors(getMotorPowersFromMotion(new Transform2D(localXRate, localYRate, 0.0)));
 
         return new double[]{localXRate, localYRate};
     }
 
-    //@todo navigating in the y direction does not work
     //used to navigate along a single axis instead of a zig-zag path
     //PID-driven navigation to a point; call once per loop
     //IMPORTANT:  assumes robot position has already been updated

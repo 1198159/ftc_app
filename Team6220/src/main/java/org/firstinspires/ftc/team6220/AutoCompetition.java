@@ -2,7 +2,6 @@ package org.firstinspires.ftc.team6220;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  *  Autonomous allowing driver to select its routine
@@ -82,7 +81,7 @@ public class AutoCompetition extends MasterAutonomous
             stopAllDriveMotors();
 
             pause(500);
-            AlignWithBeacon(false, 1.524);
+            activateBeacon(false, 1.524);
 
             drive.moveRobot(0.0, 0.1, 0.0);
             pause(2500);
@@ -106,7 +105,7 @@ public class AutoCompetition extends MasterAutonomous
 
             stopAllDriveMotors();
 
-            AlignWithBeacon(false, 2.700);
+            activateBeacon(false, 2.700);
 
             drive.moveRobot(0.0, 0.10, 0.0);
             pause(2000);
@@ -145,7 +144,7 @@ public class AutoCompetition extends MasterAutonomous
             stopAllDriveMotors();
 
             pause(500);
-            AlignWithBeacon(false, 1.524);
+            activateBeacon(false, 1.524);
 
             drive.moveRobot(0.0, 0.1, 0.0);
             pause(2500);
@@ -169,7 +168,7 @@ public class AutoCompetition extends MasterAutonomous
 
             stopAllDriveMotors();
 
-            AlignWithBeacon(false, 2.700);
+            activateBeacon(false, 2.700);
 
             drive.moveRobot(0.0, 0.10, 0.0);
             pause(2000);
@@ -225,7 +224,7 @@ public class AutoCompetition extends MasterAutonomous
             stopAllDriveMotors();
 
             pause(500);
-            AlignWithBeacon(true, 1.524);
+            activateBeacon(true, 1.524);
 
             drive.moveRobot(0.0, 0.1, 90.0);
             pause(2500);
@@ -247,7 +246,7 @@ public class AutoCompetition extends MasterAutonomous
 
             stopAllDriveMotors();
 
-            AlignWithBeacon(true, 2.700);
+            activateBeacon(true, 2.700);
 
             drive.moveRobot(0.0, 0.10, 90.0);
             pause(2000);
@@ -285,7 +284,7 @@ public class AutoCompetition extends MasterAutonomous
 
             stopAllDriveMotors();
 
-            AlignWithBeacon(true, 1.524);
+            activateBeacon(true, 1.524);
 
             drive.moveRobot(0.0, 0.1, 90.0);
             pause(2500);
@@ -307,7 +306,7 @@ public class AutoCompetition extends MasterAutonomous
 
             stopAllDriveMotors();
 
-            AlignWithBeacon(true, 2.700);
+            activateBeacon(true, 2.700);
 
             drive.moveRobot(0.0, 0.10, 90.0);
             pause(2000);

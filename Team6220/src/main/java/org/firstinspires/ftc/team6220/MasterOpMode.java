@@ -25,7 +25,7 @@ abstract public class MasterOpMode extends LinearOpMode
     //Java Enums cannot act as integer indices as they do in other languages
     //To maintain compatabliity with with a FOR loop, we
     //TODO find if java supports an order-independent loop for each member of an array
-    //e.g. in python that would be:   for assembly in driveAssemblies:
+    //e.g., in python that would be:   for assembly in driveAssemblies:
     //                                    assembly.doStuff()
     public final int FRONT_RIGHT = 0;
     public final int FRONT_LEFT  = 1;
@@ -35,6 +35,8 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor collectorMotor;
     Servo gateServo;
     Servo collectorServo;
+    //TODO ENSURE BEACONSERVO IS ON HARDWAREMAP!
+    Servo beaconServo;
 
     private int EncoderFR = 0;
     private int EncoderFL = 0;
@@ -99,8 +101,10 @@ abstract public class MasterOpMode extends LinearOpMode
         collectorMotor = hardwareMap.dcMotor.get("motorCollector");
         collectorServo = hardwareMap.servo.get("servoCollector");
         gateServo = hardwareMap.servo.get("servoCollectorGate");
+        beaconServo = hardwareMap.servo.get("servoBeaconActuator");
         gateServo.setPosition(Constants.GATE_SERVO_DEPLOYED_POSITION);
         collectorServo.setPosition(0.5);
+        beaconServo.setPosition(0.0);
 
         //TODO Must be disabled if motor encoders are not correctly reporting
         driveAssemblies[FRONT_RIGHT].motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

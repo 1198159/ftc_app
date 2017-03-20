@@ -83,7 +83,7 @@ public class AutoRedShootOnly extends MasterAutonomous
         vuforiaAlign(true, true, 1.524, 0.0);
 
         pause(500);
-        AlignWithBeacon(true, 1.524);
+        activateBeacon(true, 1.524);
 
         drive.moveRobot(0.0, 0.1, 0.0);
         pause(2500);

@@ -301,8 +301,11 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopAllDriveMotors();
     }
 
-    //once at a beacon, we use this function to align with it
-    public void AlignWithBeacon(boolean redSide, double position) throws InterruptedException
+    //todo check beaconServo activation angle
+    //todo adjust pause times to allow vuforia just enough time to determine the beacon color
+    //todo activateBeacon still has position inputs in commented out autonomous programs
+    //we use this function to determine the color of either side of the beacon and activate it for the proper side
+    public void activateBeacon(boolean redSide /*, double position*/) throws InterruptedException
     {
         if (redSide)
         {
@@ -315,11 +318,13 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             pause(1000);
 
+            //old beacon color sampling locations in comments
             //Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
             //Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
             Color.colorToHSV(vuforiaHelper.getPixelColor(-127, 92, 0), colorLeftSide);
             Color.colorToHSV(vuforiaHelper.getPixelColor(127, 92, 0), colorRightSide);
 
+            //TODO implement sampling of many pixels
             /*for(int i = 1; i <=40; i++)
             {
                 for(int j = 1; j <= 40; j++)
@@ -334,29 +339,31 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
             //value is always greater than the blue side's, thus creating a positive value when blue is
-            //subtracted from red and allowing the robot to drive to the correct side of the beacon
-            if(colorLeftSide[0] < 90)
+            //subtracted from red and allowing the robot to activate the correct side of the beacon
+            if(colorLeftSide[0] <= 90)
             {
                 colorLeftSide[0] += 360;
             }
-            if(colorRightSide[0] < 90)
+            if(colorRightSide[0] <= 90)
             {
                 colorRightSide[0] += 360;
             }
 
-            //picks a side and navigates based on the color of the beacon
-            if(colorLeftSide[0] - colorRightSide[0] < 0)
+            //picks a side and activates beacon based on the color of the beacon
+            if(colorLeftSide[0] - colorRightSide[0] < 0)  //if right side is red
             {
-                vuforiaAlign(true, true, position + Constants.BEACON_PRESS_OFFSET, 0.0);
+                //vuforiaAlign(true, true, position + Constants.BEACON_PRESS_OFFSET, 0.0);
+                beaconServo.setPosition(-0.5);
             }
-            else if(colorLeftSide[0] - colorRightSide[0] > 0)
+            else if(colorLeftSide[0] - colorRightSide[0] > 0)  //if left side is red
             {
-                vuforiaAlign(true, true, position - Constants.BEACON_PRESS_OFFSET, 0.0);
+                //vuforiaAlign(true, true, position - Constants.BEACON_PRESS_OFFSET, 0.0);
+                beaconServo.setPosition(0.5);
             }
             else
             {
                 //if vuforia didn't find the color of the beacon, it tries again
-                AlignWithBeacon(true, position);
+                activateBeacon(true);
             }
 
             stopAllDriveMotors();
@@ -389,28 +396,30 @@ abstract public class MasterAutonomous extends MasterOpMode
             //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
             //value is always greater than the blue side's, thus creating a positive value when blue is
             //subtracted from red and allowing the robot to drive to the correct side of the beacon
-            if(colorLeftSide[0] < 90)
+            if(colorLeftSide[0] <= 90)
             {
                 colorLeftSide[0] += 360;
             }
-            if(colorRightSide[0] < 90)
+            if(colorRightSide[0] <= 90)
             {
                 colorRightSide[0] += 360;
             }
 
             //picks a side and navigates based on the color of the beacon
-            if(colorLeftSide[0] - colorRightSide[0] < 0)
+            if(colorLeftSide[0] - colorRightSide[0] < 0)  //if right side is red
             {
-                vuforiaAlign(false, true, position + Constants.BEACON_PRESS_OFFSET, 0.0);
+                //vuforiaAlign(false, true, position + Constants.BEACON_PRESS_OFFSET, 0.0);
+                beaconServo.setPosition(0.5);
             }
-            else if(colorLeftSide[0] - colorRightSide[0] > 0)
+            else if(colorLeftSide[0] - colorRightSide[0] > 0)  //if left side is red
             {
-                vuforiaAlign(false, true, position - Constants.BEACON_PRESS_OFFSET, 0.0);
+                //vuforiaAlign(false, true, position - Constants.BEACON_PRESS_OFFSET, 0.0);
+                beaconServo.setPosition(-0.5);
             }
             else
             {
                 //if vuforia didn't find the color of the beacon, it tries again
-                AlignWithBeacon(false, position);
+                activateBeacon(false);
             }
 
             stopAllDriveMotors();
