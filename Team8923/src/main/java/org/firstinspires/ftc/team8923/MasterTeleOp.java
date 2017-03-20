@@ -18,6 +18,7 @@ abstract class MasterTeleOp extends Master
     int liftZero = 0;
     boolean liftDeploying = false;
     boolean liftDeployed = false;
+    boolean liftRecovering = false;
     boolean liftRecovered = false;
     ElapsedTime liftTimer = new ElapsedTime();
 
@@ -94,7 +95,7 @@ abstract class MasterTeleOp extends Master
     void runLift()
     {
         // Don't allow driver to move the lift once the arms have been recovered
-        if(!liftRecovered)
+        if(!liftRecovered && !liftRecovering)
         {
             // Move cap ball holder arm to hold the cap ball
             if(gamepad2.x)
@@ -103,20 +104,20 @@ abstract class MasterTeleOp extends Master
             // out of the way when the lift is raised
             else if(gamepad2.dpad_up)
                 servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_RELEASE.pos);
+        }
 
-            // Give lift control to driver only after lift deployment
-            if(liftDeployed)
-            {
-                // Run lift up
-                if(gamepad2.dpad_up)
-                    motorLift.setPower(1.0);
+        // Give lift control to driver only after lift deployment
+        if(liftDeployed && !liftRecovering)
+        {
+            // Run lift up
+            if(gamepad2.dpad_up)
+                motorLift.setPower(1.0);
                 // Run lift down
-                else if(gamepad2.dpad_down)
-                    motorLift.setPower(-1.0);
+            else if(gamepad2.dpad_down)
+                motorLift.setPower(-1.0);
                 // If no button is pressed, stop!
-                else
-                    motorLift.setPower(0);
-            }
+            else
+                motorLift.setPower(0);
         }
 
         // Code below is for auto lift deployment and arm recovery. They are written as state
@@ -169,18 +170,21 @@ abstract class MasterTeleOp extends Master
         if(gamepad2.y && liftDeployed)
         {
             liftState = 0;
-            liftRecovered = true;
+            liftRecovering = true;
             liftTimer.reset();
             telemetry.log().add("Starting Lift Recovery");
 
-            // Raise the lift to make it deploy
-            motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorLift.setTargetPosition(liftZero + 1350);
-            motorLift.setPower(1.0);
-            telemetry.log().add("Positioning Lift");
+            if(!liftRecovered)
+            {
+                // Raise the lift to make it deploy
+                motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorLift.setTargetPosition(liftZero + 1550);
+                motorLift.setPower(1.0);
+                telemetry.log().add("Positioning Lift");
+            }
         }
         // Lower the lift once it's deployed
-        else if(liftRecovered && liftState == 0 && motorIsAtTarget(motorLift))
+        else if(liftRecovering && liftState == 0 && motorIsAtTarget(motorLift) || (liftRecovered && liftState == 0))
         {
             liftState++;
             servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
@@ -188,13 +192,13 @@ abstract class MasterTeleOp extends Master
             telemetry.log().add("Moving Arm Servo");
         }
         // Stop moving the lift and return control to driver
-        else if(liftRecovered && liftState == 1 && liftTimer.milliseconds() > 1000)
+        else if(liftRecovering && liftState == 1 && liftTimer.milliseconds() > 1000)
         {
             liftState++;
             servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_UP.pos);
             motorLift.setPower(0.0);
             motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            liftRecovered = false;
+            liftRecovering = false;
             liftRecovered = true;
             telemetry.log().add("Recovering Lift Arms");
         }

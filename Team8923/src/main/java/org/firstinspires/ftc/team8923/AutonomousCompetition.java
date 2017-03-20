@@ -326,7 +326,7 @@ public class AutonomousCompetition extends MasterAutonomous
             motorCollector.setPower(0.0);
 
             // Wait for the second particle to settle
-            sleep(750);
+            sleep(1000);
             // Put the sweeper servo back
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
             // Launch second particle
