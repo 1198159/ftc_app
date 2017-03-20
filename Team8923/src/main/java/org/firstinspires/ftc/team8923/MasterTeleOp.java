@@ -133,6 +133,7 @@ abstract class MasterTeleOp extends Master
             // Move beacon pusher servos to ensure they're out of the way
             servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
             servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_CENTER.pos);
+            servoLiftHolder.setPosition(ServoPositions.LIFT_RELEASE.pos);
             telemetry.log().add("Moving Beacon Pusher");
         }
         // Raise the lift to make it deploy

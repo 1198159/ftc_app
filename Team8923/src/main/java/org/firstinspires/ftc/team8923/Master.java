@@ -25,6 +25,7 @@ abstract class Master extends LinearOpMode
     Servo servoCapBallHolder = null;
     Servo servoHopperSweeper = null;
     Servo servoCollectorHolder = null;
+    Servo servoLiftHolder = null;
 
     TouchSensor catapultButton;
 
@@ -62,7 +63,9 @@ abstract class Master extends LinearOpMode
         HOPPER_SWEEP_PUSH_FIRST(0.7),
         HOPPER_SWEEP_PUSH_SECOND(1.0),
         COLLECTOR_HOLDER_DOWN(0.65),
-        COLLECTOR_HOLDER_UP(0.0);
+        COLLECTOR_HOLDER_UP(0.0),
+        LIFT_HOLD(0.7 ),
+        LIFT_RELEASE(0.3);
 
         public double pos;
         ServoPositions(double i)
@@ -107,13 +110,14 @@ abstract class Master extends LinearOpMode
         servoCapBallHolder = hardwareMap.servo.get("servoCapBallHolder");
         servoHopperSweeper = hardwareMap.servo.get("servoHopperSweeper");
         servoCollectorHolder = hardwareMap.servo.get("servoCollectorHolder");
+        servoLiftHolder = hardwareMap.servo.get("servoLiftHolder");
 
         servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
         servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_CENTER.pos);
         servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_RELEASE.pos);
         servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
         servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_DOWN.pos);
-
+        servoLiftHolder.setPosition(ServoPositions.LIFT_HOLD.pos);
 
         catapultButton = hardwareMap.touchSensor.get("catapultButton");
 
