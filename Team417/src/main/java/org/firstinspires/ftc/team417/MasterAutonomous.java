@@ -49,7 +49,7 @@ abstract class MasterAutonomous extends MasterOpMode
     double Kmove = 1.0f/1200.0f; // speed is proportional to error
     double Kpivot = 1.0f/150.0f;
 
-    double TOL = 100;
+    double TOL = 100.0;
     double TOL_ANGLE = 5;
 
     double VUFORIA_TOL = 20;

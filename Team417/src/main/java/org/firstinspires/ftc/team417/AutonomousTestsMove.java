@@ -187,19 +187,19 @@ public class AutonomousTestsMove extends MasterAutonomous
         motorCollector.setPower(0.0);
 
         TOL_ANGLE = 3.0;
-        VUFORIA_TOL_ANGLE = 3.0;
         Kpivot = 1.0/100.0;
-        MINSPEED = 0.25;
-        TOL = 100;
-        Kmove = 1.0/1000.0;
+        MINSPEED = 0.3;
+        TOL = 1000.0;
+        Kmove = 1.0/1500.0;
         telemetry.addData("Path", "pivot 25");
         telemetry.update();
         //pivotWithReference(-25, refAngle, 0.7); // make sure IMU is on
-        moveMaintainHeading(0, -1200, -30, refAngle, 0.9, 3);
+        moveMaintainHeading(0, -1200, -30, refAngle, 0.9, 7);
         pause(50);
-        moveMaintainHeading(0, -900, 10, refAngle, 0.9, 3);
+        Kmove = 1.0/1500.0;
+        moveMaintainHeading(0, -900, 10, refAngle, 0.9, 7);
         pause(50);
-        moveMaintainHeading(0, -400, -12, refAngle, 0.9, 3);
+        moveMaintainHeading(0, -400, -12, refAngle, 0.9, 7);
         pause(50);
         MINSPEED = 0.25;
         pivotWithReference(90, refAngle, 0.7);
