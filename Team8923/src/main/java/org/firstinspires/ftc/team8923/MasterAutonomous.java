@@ -500,7 +500,7 @@ abstract class MasterAutonomous extends Master
         catapultButtonLast = catapultButton.isPressed();
 
         // Wait until the catapult finishes moving
-        while(!(!catapultButton.isPressed() && catapultButtonLast))
+        while(!(!catapultButton.isPressed() && catapultButtonLast) && opModeIsActive())
         {
             catapultButtonLast = catapultButton.isPressed();
             sendTelemetry();
@@ -520,7 +520,7 @@ abstract class MasterAutonomous extends Master
         motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition() + CATAPULT_TICKS_PER_CYCLE / 2);
         motorCatapult.setPower(1.0);
         // Wait until the catapult finishes moving
-        while(!motorIsAtTarget(motorCatapult))
+        while(!motorIsAtTarget(motorCatapult) && opModeIsActive())
         {
             sendTelemetry();
             idle();

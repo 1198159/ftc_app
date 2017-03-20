@@ -191,7 +191,7 @@ public class AutonomousCompetition extends MasterAutonomous
         // Give Vuforia a chance to start tracking the target
         int targetLockTimeout = 750;
         ElapsedTime targetTimer = new ElapsedTime();
-        while(!vuforiaLocator.isTracking() && targetTimer.milliseconds() < targetLockTimeout)
+        while(!vuforiaLocator.isTracking() && targetTimer.milliseconds() < targetLockTimeout && opModeIsActive())
         {
             telemetry.update();
             idle();
