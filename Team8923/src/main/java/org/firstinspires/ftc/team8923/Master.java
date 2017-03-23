@@ -57,7 +57,7 @@ abstract class Master extends LinearOpMode
         BEACON_LEFT(0.65),
         BEACON_CENTER(0.5),
         CAP_BALL_HOLD(1.0),
-        CAP_BALL_UP(0.3),
+        CAP_BALL_UP(0.2),
         CAP_BALL_RELEASE(0.0),
         HOPPER_SWEEP_BACK(0.15),
         HOPPER_SWEEP_PUSH_FIRST(0.7),
@@ -245,6 +245,10 @@ abstract class Master extends LinearOpMode
     // This is used as a replacement for the isBusy() method of motors, as it's unreliable
     boolean motorIsAtTarget(DcMotor motor)
     {
+        // Return false if the motor isn't in RTP mode
+        if(motor.getMode() != DcMotor.RunMode.RUN_TO_POSITION)
+            return false;
+
         int tolerance = 100;
         return Math.abs(motor.getCurrentPosition() - motor.getTargetPosition()) < tolerance;
     }

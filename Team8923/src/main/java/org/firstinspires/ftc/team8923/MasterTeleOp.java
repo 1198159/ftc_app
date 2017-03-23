@@ -14,16 +14,20 @@ abstract class MasterTeleOp extends Master
     private boolean hopperServoMoving = false;
 
     // Variables used for semi-auto lift deployment
-    int liftState = 0;
-    int shooterState = 0;
-    int liftZero = 0;
-    boolean catapultFiring = false;
-    boolean liftDeploying = false;
-    boolean liftDeployed = false;
-    boolean liftRecovering = false;
-    boolean liftRecovered = false;
-    ElapsedTime liftTimer = new ElapsedTime();
-    ElapsedTime shooterTimer = new ElapsedTime();
+    private int liftState = 0;
+    private int liftZero = 0;
+    private boolean liftDeploying = false;
+    private boolean liftDeployed = false;
+    private boolean liftRecovering = false;
+    private boolean liftRecovered = false;
+    private ElapsedTime liftTimer = new ElapsedTime();
+
+    // Variables used for semi-auto catapult shooting
+    private int catapultState = 0;
+    private int particlesToShoot = 0;
+    private boolean guideButtonLast = false;
+    private boolean catapultShooting = false;
+    ElapsedTime catapultTimer = new ElapsedTime();
 
     void driveMecanumTeleOp()
     {
@@ -213,6 +217,10 @@ abstract class MasterTeleOp extends Master
         // Full speed is too fast
         double speedFactor = 0.6;
 
+        // Don't control the collector when the catapult is firing
+        if(catapultShooting)
+            return;
+
         // Don't run collector while hopper sweeper is pushing particles
         if(hopperServoMoving)
         {
@@ -225,15 +233,8 @@ abstract class MasterTeleOp extends Master
 
     void controlHopper()
     {
-        // When the hopper has 2 particles, the servo doesn't need to move as far
-        if(gamepad2.back)
-        {
-            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
-            hopperTimer.reset();
-            hopperServoMoving = true;
-        }
         // When the hopper has 1 particle, the servo needs to move further
-        else if(gamepad2.start)
+        if(gamepad2.start)
         {
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
             hopperTimer.reset();
@@ -250,92 +251,190 @@ abstract class MasterTeleOp extends Master
 
     void controlCatapult()
     {
-        /*
-         * The catapult needs to know where the arm is at any point in time. We do this by defining
-         * a zero location, which is determined with a touch sensor. Then all movements are based
-         * on the encoder that references the zero value. When the zero location has a value of 0,
-         * that means that it hasn't yet been set. So we keep checking until the touch sensor stops
-         * being depressed, and use that as the zero location.
-         */
-
-        // Only control the catapult if it's done moving
-        if(motorIsAtTarget(motorCatapult))
+        if(catapultShooting)
         {
-            if(gamepad2.left_bumper)
+            if(particlesToShoot == 4)
             {
-                shooterState = 0;
-                shooterTimer.reset();
-                catapultFiring = true;
-                catapultArming = true;
-                armCatapult();
-                fireCatapult();
-                shooterState++;
-            }
-            else if(shooterState == 1 && motorIsAtTarget(motorCatapult) && !catapultArming)
-            {
-                catapultArming = true;
-                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
-                armCatapult();
-                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
-                fireCatapult();
-                shooterState++;
-            }
-            else if(shooterState == 2 && motorIsAtTarget(motorCatapult) && !catapultArming)
-            {
-                catapultArming = true;
-                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
-                armCatapult();
-                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
-                fireCatapult();
-                motorCollector.setPower(1);
-                shooterState++;
-            }
-            else if(shooterState == 3 && motorIsAtTarget(motorCatapult) && !catapultArming)
-            {
-                catapultArming = true;
-                liftTimer.reset();
-                if(liftTimer.milliseconds() < 300)
-                {
-                    servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+                // fire - wait
+                // hopper push first
+                // arm - wait
+                // hopper back
+                // start collecting
+                // particles--
+
+                if(catapultState == 0 && catapultButton.isPressed())
                     armCatapult();
+                if(catapultState == 0 && motorIsAtTarget(motorCatapult))
+                {
+                    // Shoot particle currently in cup
                     fireCatapult();
-                    shooterState = 0;
-                    catapultFiring = false;
+                    catapultState++;
+                }
+                // Wait until catapult finishes firing
+                else if(catapultState == 1 && motorIsAtTarget(motorCatapult))
+                {
+                    // Start pushing the first particle into the cup and arm the catapult
+                    servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
+                    armCatapult();
+                    catapultState++;
+                }
+                // Wait until catapult finishes arming
+                else if(catapultState == 2 && motorIsAtTarget(motorCatapult))
+                {
+                    // Move the sweeper servo back and collect the next ball into the hopper
+                    servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+                    motorCollector.setPower(1.0);
+                    catapultState = 0;
+                    particlesToShoot--;
                 }
             }
-            else if(gamepad2.right_bumper && !catapultFiring)
+            else if(particlesToShoot == 3)
+            {
+                // fire - wait
+                // stop collecting
+                // hopper push first
+                // arm - wait
+                // hopper back
+                // particles--
+
+                if(catapultState == 0 && catapultButton.isPressed())
+                    armCatapult();
+                if(catapultState == 0 && motorIsAtTarget(motorCatapult))
+                {
+                    // Shoot particle currently in cup
+                    fireCatapult();
+                    catapultState++;
+                }
+                // Wait until catapult finishes firing
+                else if(catapultState == 1 && motorIsAtTarget(motorCatapult))
+                {
+                    // Start pushing first particle into cup, stop collector, and arm catapult
+                    servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
+                    motorCollector.setPower(0.0);
+                    armCatapult();
+                    catapultState++;
+                }
+                // Wait until catapult finishes arming
+                else if(catapultState == 2 && motorIsAtTarget(motorCatapult))
+                {
+                    // Move the sweeper servo back
+                    servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+                    catapultState = 0;
+                    particlesToShoot--;
+                }
+            }
+            else if(particlesToShoot == 2)
+            {
+                // fire - wait
+                // hopper push second
+                // arm - wait
+                // hopper back
+                // particles--
+
+                if(catapultState == 0 && catapultButton.isPressed())
+                    armCatapult();
+                if(catapultState == 0 && motorIsAtTarget(motorCatapult))
+                {
+                    // Shoot particle currently in cup
+                    fireCatapult();
+                    catapultState++;
+                }
+                // Wait until catapult finishes firing
+                else if(catapultState == 1 && motorIsAtTarget(motorCatapult))
+                {
+                    // Start pushing the first particle into the cup and arm the catapult
+                    servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+                    armCatapult();
+                    catapultState++;
+                }
+                // Wait until catapult finishes arming
+                else if(catapultState == 2 && motorIsAtTarget(motorCatapult))
+                {
+                    // Move the sweeper servo back
+                    servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+                    catapultState = 0;
+                    particlesToShoot--;
+                }
+            }
+            else if(particlesToShoot == 1)
+            {
+                // fire - wait
+                // arm
+                // particles--
+
+                if(catapultState == 0 && catapultButton.isPressed())
+                    armCatapult();
+                if(catapultState == 0 && motorIsAtTarget(motorCatapult))
+                {
+                    // Shoot particle currently in cup
+                    fireCatapult();
+                    catapultState++;
+                }
+                // Wait until catapult finishes firing
+                else if(catapultState == 1 && motorIsAtTarget(motorCatapult))
+                {
+                    // Arm catapult for next time
+                    armCatapult();
+                    catapultState = 0;
+                    particlesToShoot--;
+                }
+            }
+            else if(particlesToShoot == 0)
+                catapultShooting = false;
+        }
+        else
+        {
+            // Que up particles to shoot
+            if(gamepad2.guide && !guideButtonLast && particlesToShoot < 4)
+                particlesToShoot++;
+            else if(gamepad2.back)
+                particlesToShoot = 0;
+
+            guideButtonLast = gamepad2.guide;
+
+            // Activate semi-auto shooting
+            if(gamepad2.left_bumper)
+                catapultShooting = true;
+        }
+
+        telemetry.addData("Particles to shoot", particlesToShoot);
+
+        // Only control the catapult if it's not shooting
+        if(!catapultShooting)
+        {
+            if(gamepad2.right_bumper && motorIsAtTarget(motorCatapult))
             {
                 motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition() + CATAPULT_TICKS_PER_CYCLE / 2);
                 motorCatapult.setPower(1.0);
             }
-        }
 
-        if(catapultArming && !catapultButton.isPressed() && catapultButtonLast)
-        {
-            catapultArming = false;
-            motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
-            motorCatapult.setPower(1.0);
-        }
+            if(catapultArming && !catapultButton.isPressed() && catapultButtonLast)
+            {
+                catapultArming = false;
+                motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
+                motorCatapult.setPower(1.0);
+            }
 
-        catapultButtonLast = catapultButton.isPressed();
+            catapultButtonLast = catapultButton.isPressed();
 
-        // Give manual control to driver if necessary
-        if(Math.abs(gamepad2.right_stick_y) > 0.1)
-        {
-            motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorCatapult.setPower(-gamepad2.right_stick_y); // Y axis is flipped
-        }
-        // Return control to motor controller
-        else if(motorCatapult.getMode() == DcMotor.RunMode.RUN_USING_ENCODER && !catapultArming)
-        {
-            // Keep the motor here
-            motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
-            motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            // Motor will need power to move to next target when it's requested, but won't move yet
-            // because it's already at the target (zero location)
-            motorCatapult.setPower(1.0);
+            // Give manual control to driver if necessary
+            if(Math.abs(gamepad2.right_stick_y) > 0.1)
+            {
+                motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                motorCatapult.setPower(-gamepad2.right_stick_y); // Y axis is flipped
+            }
+            // Return control to motor controller
+            else if(motorCatapult.getMode() == DcMotor.RunMode.RUN_USING_ENCODER && !catapultArming)
+            {
+                // Keep the motor here
+                motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
+                motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                // Motor will need power to move to next target when it's requested, but won't move yet
+                // because it's already at the target (zero location)
+                motorCatapult.setPower(1.0);
+            }
         }
     }
 }
