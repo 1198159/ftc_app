@@ -44,7 +44,7 @@ abstract class Master extends LinearOpMode
     static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/;
 
     // NeveRest 20 has 560 ticks per revolution, which is geared 3:1
-    static final int CATAPULT_TICKS_PER_CYCLE = 1120 * 3;
+    static final int CATAPULT_TICKS_PER_CYCLE = 560 * 3;
 
     double slowModeDivisor = 1.0;
     private boolean reverseDrive = false;
@@ -269,5 +269,43 @@ abstract class Master extends LinearOpMode
                 || pad.dpad_up || pad.dpad_down || pad.dpad_left || pad.dpad_right
                 || pad.left_stick_button || pad.right_stick_button
                 || pad.start || pad.back || pad.guide);
+    }
+
+    // Move catapult forward to the armed state just before it fires
+    void armCatapult()
+    {
+        telemetry.log().add("Arming Catapult: " + getRuntime());
+        motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorCatapult.setPower(1.0);
+        catapultButtonLast = catapultButton.isPressed();
+
+        // Wait until the catapult finishes moving
+        while(!(!catapultButton.isPressed() && catapultButtonLast) && opModeIsActive())
+        {
+            catapultButtonLast = catapultButton.isPressed();
+            sendTelemetry();
+            idle();
+        }
+
+        motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
+        motorCatapult.setPower(1.0);
+    }
+
+    // Moves the catapult forward a bit from the armed position to launch a particle
+    void fireCatapult()
+    {
+        telemetry.log().add("Firing Catapult: " + getRuntime());
+        motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition() + CATAPULT_TICKS_PER_CYCLE / 2);
+        motorCatapult.setPower(1.0);
+        // Wait until the catapult finishes moving
+        while(!motorIsAtTarget(motorCatapult) && opModeIsActive())
+        {
+            sendTelemetry();
+            idle();
+        }
+        // Turn off motor
+        motorCatapult.setPower(0.0);
     }
 }

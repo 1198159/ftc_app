@@ -29,20 +29,27 @@ public class TestLauncher extends MasterAutonomous
             //Load first particle from hopper
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
             armCatapult();
-            //sleep(500);
 
             //fire particle
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
             fireCatapult();
-            //sleep(500);
 
             //Load second particle from hopper
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
             armCatapult();
-            //sleep(500);
 
-            //Fire particle
+            //Fire particle, run the collector
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
             fireCatapult();
+            motorCollector.setPower(1);
+
+            //arm, load, and fire fourth particle
+            sleep(300);
+
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+            armCatapult();
+            fireCatapult();
+
 
             /*while(true)
             {

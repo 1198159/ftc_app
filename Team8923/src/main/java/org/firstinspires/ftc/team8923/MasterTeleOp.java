@@ -15,12 +15,15 @@ abstract class MasterTeleOp extends Master
 
     // Variables used for semi-auto lift deployment
     int liftState = 0;
+    int shooterState = 0;
     int liftZero = 0;
+    boolean catapultFiring = false;
     boolean liftDeploying = false;
     boolean liftDeployed = false;
     boolean liftRecovering = false;
     boolean liftRecovered = false;
     ElapsedTime liftTimer = new ElapsedTime();
+    ElapsedTime shooterTimer = new ElapsedTime();
 
     void driveMecanumTeleOp()
     {
@@ -260,11 +263,47 @@ abstract class MasterTeleOp extends Master
         {
             if(gamepad2.left_bumper)
             {
+                shooterState = 0;
+                shooterTimer.reset();
+                catapultFiring = true;
                 catapultArming = true;
-                motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                motorCatapult.setPower(1.0);
+                armCatapult();
+                fireCatapult();
+                shooterState++;
             }
-            else if(gamepad2.right_bumper)
+            else if(shooterState == 1 && motorIsAtTarget(motorCatapult) && !catapultArming)
+            {
+                catapultArming = true;
+                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
+                armCatapult();
+                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+                fireCatapult();
+                shooterState++;
+            }
+            else if(shooterState == 2 && motorIsAtTarget(motorCatapult) && !catapultArming)
+            {
+                catapultArming = true;
+                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+                armCatapult();
+                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+                fireCatapult();
+                motorCollector.setPower(1);
+                shooterState++;
+            }
+            else if(shooterState == 3 && motorIsAtTarget(motorCatapult) && !catapultArming)
+            {
+                catapultArming = true;
+                liftTimer.reset();
+                if(liftTimer.milliseconds() < 300)
+                {
+                    servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+                    armCatapult();
+                    fireCatapult();
+                    shooterState = 0;
+                    catapultFiring = false;
+                }
+            }
+            else if(gamepad2.right_bumper && !catapultFiring)
             {
                 motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition() + CATAPULT_TICKS_PER_CYCLE / 2);
