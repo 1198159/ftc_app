@@ -116,12 +116,15 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     //uses vuforia to move to a location
-    public void vuforiaDriveToPosition(double targetX, double targetY)
+    public void vuforiaDriveToPosition(double targetX, double targetY)throws InterruptedException
     {
         currentAngle = getAngularOrientationWithOffset();
 
         //used to determine whether the robot has come near enough to its target location
         double positionOffsetMagnitude = findDistance(targetX, targetY, drive.robotLocation.x, drive.robotLocation.y);
+
+        //TODO find most efficient wait
+        pause(300);
 
         while ((positionOffsetMagnitude > Constants.POSITION_TOLERANCE) && opModeIsActive())
         {
@@ -304,6 +307,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     //TODO: check beaconServo activation angle
     //TODO: adjust pause times to allow vuforia just enough time to determine the beacon color
     //TODO: activateBeacon still has position inputs in commented out autonomous programs
+    //TODO: add functionality for ensuring correct beacon was pressed
     //we use this function to determine the color of either side of the beacon and activate it for the proper side
     public void activateBeacon(boolean redSide /*, double position*/) throws InterruptedException
     {

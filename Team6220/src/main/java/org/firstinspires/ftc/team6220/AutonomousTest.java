@@ -10,8 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     turning and vuforia navigation
 */
 @TeleOp(name="Test Autonomous", group="6220")
-public class AutonomousTest extends MasterAutonomous
-{
+public class AutonomousTest extends MasterAutonomous {
     ElapsedTime timer = new ElapsedTime();
 
     //CodeReview: Define an enum for reading/writing the elements of your lastBtn array instead of using magic numbers in your code.
@@ -42,7 +41,7 @@ public class AutonomousTest extends MasterAutonomous
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
-            //TODO adjust encoder function
+            //TODO: adjust encoder function
             //values are displayed for testing purposes
             //updateLocationUsingEncoders(eTime);
 
@@ -51,27 +50,13 @@ public class AutonomousTest extends MasterAutonomous
             {
                 vuforiaDriveToPosition(3.300, 1.500);
             }
-
-            //navigation test for x direction (relative to the robot)
+            //button pressing test
             if (gamepad2.left_bumper)
             {
-                vuforiaAlign(false, true, 1.524, 0.0);
-
-                drive.moveRobot(0.0, 0.2, 0.0);
-
-                pause(1000);
-
-                stopAllDriveMotors();
-
-                AlignWithBeacon(1.524);
-
-                drive.moveRobot(0.0, 0.10, 0.0);
-
-                pause(2500);
-
-                stopAllDriveMotors();
+                vuforiaDriveToPosition(0.001 * Constants.MM_FIELD_SIZE - 0.176, 1.524);
+                activateBeacon(false);
             }
-            if(gamepad2.dpad_down)
+            if (gamepad2.dpad_down)
             {
                 double a[] = drive.navigateTo(1.0, 0.0);
                 telemetry.addData("Navigate To: ", a[0]);
@@ -79,19 +64,19 @@ public class AutonomousTest extends MasterAutonomous
                 telemetry.addData("Naviagte To: ", a[2]);
                 telemetry.update();
             }
-            if(gamepad2.a)
+            if (gamepad2.a)
             {
                 drive.moveRobot(0.0, 0.1, 0.0);
             }
-            if(gamepad2.y)
+            if (gamepad2.y)
             {
                 drive.moveRobot(0.0, -0.1, 0.0);
             }
-            if(gamepad2.b)
+            if (gamepad2.b)
             {
                 drive.moveRobot(0.1, 0.0, 0.0);
             }
-            if(gamepad2.x)
+            if (gamepad2.x)
             {
                 drive.moveRobot(-0.1, 0.0, 0.0);
             }
@@ -122,57 +107,129 @@ public class AutonomousTest extends MasterAutonomous
         }
     }
 
+    //HERE FOR AUTONOMOUS TESTING PURPOSES
     //CodeReview: This method is used in several autonomous opmodes. It should probably
     //            move into MasterAutonomous.
     //once at a beacon, we use this function to align with it
-    //HERE FOR AUTONOMOUS TESTING PURPOSES
-    public void AlignWithBeacon(double yPosition) throws InterruptedException
+    //we use this function to determine the color of either side of the beacon and activate it for the proper side
+    public void activateBeacon(boolean redSide /*, double position*/) throws InterruptedException
     {
-        //int colorLeftSide = vuforiaHelper.getPixelColor(-40, 230, 30);
-        //int colorRightSide = vuforiaHelper.getPixelColor(40, 230, 30);
-
-        pause(500);
-
-        turnTo(false, 0.0);
-
-        float[] colorLeftSide = new float[3];
-        float[] colorRightSide = new float[3];
-
-        pause(1000);
-
-        //Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
-        //Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
-        Color.colorToHSV(vuforiaHelper.getPixelColor(-127, 92, 0), colorLeftSide);
-        Color.colorToHSV(vuforiaHelper.getPixelColor(127, 92, 0), colorRightSide);
-
-
-        //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
-        //value is always greater than the blue side's, thus creating a positive value when blue is
-        //subtracted from red and allowing the robot to drive to the correct side of the beacon
-        if(colorLeftSide[0] < 90)
+        if (redSide)
         {
-            colorLeftSide[0] += 360;
-        }
-        if(colorRightSide[0] < 90)
-        {
-            colorRightSide[0] += 360;
-        }
+            pause(1000);
 
-        //picks a side and navigates based on the color of the beacon
-        if(colorLeftSide[0] - colorRightSide[0] < 0)
-        {
-            vuforiaAlign(false, true, yPosition + Constants.BEACON_PRESS_OFFSET, 0.0);
-        }
-        else if(colorLeftSide[0] - colorRightSide[0] > 0)
-        {
-            vuforiaAlign(false, true, yPosition - Constants.BEACON_PRESS_OFFSET, 0.0);
+            turnTo(true, 90.0);
+
+            float[] colorLeftSide = new float[]{0,0,0};
+            float[] colorRightSide = new float[]{0,0,0};
+
+            pause(1000);
+
+            //old beacon color sampling locations in comments
+            //Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
+            //Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
+            Color.colorToHSV(vuforiaHelper.getPixelColor(-127, 92, 0), colorLeftSide);
+            Color.colorToHSV(vuforiaHelper.getPixelColor(127, 92, 0), colorRightSide);
+
+            //TODO: implement sampling of many pixels
+            /*for(int i = 1; i <=40; i++)
+            {
+                for(int j = 1; j <= 40; j++)
+                {
+                    float[] tempColorLeft = new float[3];
+                    Color.colorToHSV(vuforiaHelper.getPixelColor(-127 - j, 92 -i, 0), tempColorLeft);
+                    Color.colorToHSV(vuforiaHelper.getPixelColor(127-j, 92-i, 0), colorRightSide);
+                    int weight = i + j;
+                    colorLeftSide[0] = ((colorLeftSide[0] * weight) + tempColorLeft[0]) / (weight + 1);
+                }
+            }*/
+
+            //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
+            //value is always greater than the blue side's, thus creating a positive value when blue is
+            //subtracted from red and allowing the robot to activate the correct side of the beacon
+            if(colorLeftSide[0] <= 90)
+            {
+                colorLeftSide[0] += 360;
+            }
+            if(colorRightSide[0] <= 90)
+            {
+                colorRightSide[0] += 360;
+            }
+
+            //picks a side and activates beacon based on the color of the beacon
+            if(colorLeftSide[0] - colorRightSide[0] < 0)  //if right side is red
+            {
+                //vuforiaAlign(true, true, position + Constants.BEACON_PRESS_OFFSET, 0.0);
+                beaconServo.setPosition(-0.5);
+            }
+            else if(colorLeftSide[0] - colorRightSide[0] > 0)  //if left side is red
+            {
+                //vuforiaAlign(true, true, position - Constants.BEACON_PRESS_OFFSET, 0.0);
+                beaconServo.setPosition(0.5);
+            }
+            else
+            {
+                //if vuforia didn't find the color of the beacon, it tries again
+                activateBeacon(true);
+            }
+
+            stopAllDriveMotors();
         }
         else
         {
-            //if vuforia didn't find the color of the beacon, it tries again
-            AlignWithBeacon(yPosition);
-        }
+            pause(1000);
 
-        stopAllDriveMotors();
+            turnTo(true, 0.0);
+
+            float[] colorLeftSide = new float[3];
+            float[] colorRightSide = new float[3];
+
+            pause(1000);
+
+            //Color.colorToHSV(vuforiaHelper.getPixelColor(-50, 185, 30), colorLeftSide);
+            //Color.colorToHSV(vuforiaHelper.getPixelColor(50, 185, 30), colorRightSide);
+            Color.colorToHSV(vuforiaHelper.getPixelColor(-127, 92, 0), colorLeftSide);
+            Color.colorToHSV(vuforiaHelper.getPixelColor(127, 92, 0), colorRightSide);
+
+            /*for(int i = 1; i <=40; i++)
+            {
+                for(int j = 1; j <= 40; j++)
+                {
+                    Color.colorToHSV(vuforiaHelper.getPixelColor(-127 - j, 92 -i, 0), colorLeftSide);
+                    Color.colorToHSV(vuforiaHelper.getPixelColor(127-j, 92-i, 0), colorRightSide);
+                }
+            }*/
+
+            //Red can be anywhere from 270 to 360 or 0 to 90.  Adding 360 ensures that the red side's
+            //value is always greater than the blue side's, thus creating a positive value when blue is
+            //subtracted from red and allowing the robot to drive to the correct side of the beacon
+            if(colorLeftSide[0] <= 90)
+            {
+                colorLeftSide[0] += 360;
+            }
+            if(colorRightSide[0] <= 90)
+            {
+                colorRightSide[0] += 360;
+            }
+
+            //picks a side and navigates based on the color of the beacon
+            if(colorLeftSide[0] - colorRightSide[0] < 0)  //if right side is red
+            {
+                //vuforiaAlign(false, true, position + Constants.BEACON_PRESS_OFFSET, 0.0);
+                beaconServo.setPosition(0.5);
+            }
+            else if(colorLeftSide[0] - colorRightSide[0] > 0)  //if left side is red
+            {
+                //vuforiaAlign(false, true, position - Constants.BEACON_PRESS_OFFSET, 0.0);
+                beaconServo.setPosition(-0.5);
+            }
+            else
+            {
+                //if vuforia didn't find the color of the beacon, it tries again
+                activateBeacon(false);
+            }
+
+            stopAllDriveMotors();
+        }
     }
 }

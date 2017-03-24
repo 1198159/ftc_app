@@ -24,8 +24,7 @@ public class AutoBlue2 extends MasterAutonomous
 
         //Start tracking targets
         vuforiaHelper.startTracking();
-
-        //TODO: redo old code and place inside outline
+        
         /*
         //vuforia is not reliably available yet, so we must use encoders at first
         //navigateUsingEncoders(new Transform2D(1.524, 2.600, 90.0 - headingOffset));
@@ -65,7 +64,7 @@ public class AutoBlue2 extends MasterAutonomous
         //
         */
 
-        //1  launch 2 particles
+        //1 launch 2 particles
 
             //shoots ball 1
             launcher.pullback();
@@ -94,31 +93,53 @@ public class AutoBlue2 extends MasterAutonomous
             launcher.pullBackMotor.setPower(0.0);
             //
 
-        //2  drive forward until same y coordinate as beacon
+        //2 drive forward until same y coordinate as beacon
 
-        //3  rotate 180 degrees so robot is facing beacon
+            drive.moveRobot(-1.0, 0.0, 0.0);
+            pause(2000);
 
-        //4  drive forward until close to beacon
+        //3 rotate 180 degrees so robot is facing beacon
 
-        //5  determine color of each side of beacon
+            turnTo(true, 0.0);
 
-        //6  pivot servo based on beacon color
+        //4 drive forward until close to beacon 1
 
-        //7  ensure beacon is correct color
+            vuforiaDriveToPosition(0.001 * Constants.MM_FIELD_SIZE - 0.176, 1.524);
 
-        //8  back away from beacon 1
+        //5 determine color of each side of beacon 1, then press button based on color
 
-        //9  drive to beacon 2
+            activateBeacon(false);
 
-        //10 drive forward until close to beacon
+        //6  back away from beacon 1
 
-        //11 determine color of each side of beacon
+            drive.moveRobot(0.0, 0.1, 0.0);
+            pause(2500);
 
-        //12 pivot servo based on beacon color
+        //7 drive to beacon 2
 
-        //13 back away from beacon
+            drive.moveRobot(-1.0, 0.0, 0.0);
+            pause(1800);
 
-        //14 drive while rotating counterclockwise to knock cap ball and park
+        //8 drive forward until close to beacon 2
 
+            vuforiaDriveToPosition(0.001 * Constants.MM_FIELD_SIZE - 0.176, 2.724);
+
+        //9 determine color of each side of beacon 2, then press button based on color
+
+            activateBeacon(false);
+
+        //10 back away from beacon 2
+
+            drive.moveRobot(0.0, 0.1, 0.0);
+            pause(2500);
+
+        //11 rotate 45 degrees counterclockwise to robot is facing cap ball
+
+            turnTo(true, 45);
+
+        //12 drive forward to knock cap ball and park
+
+            drive.moveRobot(0.0, -1.0, 0.0);
+            pause(2000);
     }
 }

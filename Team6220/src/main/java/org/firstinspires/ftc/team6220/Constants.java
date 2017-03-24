@@ -25,6 +25,5 @@ public class Constants
     public static final double GATE_SERVO_CLOSE_DELAY = 0.8;
 
     public static final double BEACON_PRESS_OFFSET = 0.100;
-
-
+    public static final float MM_FIELD_SIZE = 3657;
 }
