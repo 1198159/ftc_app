@@ -54,7 +54,8 @@ public class MasterTeleOp extends MasterOpMode
     {
         // Initialize hardware and other important things
         initializeRobot();
-        servoForks.setPosition(0);
+        servoLeftPusher.setPosition(0);
+        servoRightPusher.setPosition(0);
 
         telemetry.addData("Path", "InitDone");
         telemetry.update();
@@ -158,7 +159,12 @@ public class MasterTeleOp extends MasterOpMode
 
 // move particle servo
            servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.7));
-           servoForks.setPosition(gamepad2.left_stick_y);
+           //servoForks.setPosition(gamepad2.left_stick_y);
+
+           // add in "if button A is not pushed"
+           servoLeftPusher.setPosition(Range.clip(-gamepad2.left_stick_y, 0, 1));
+           servoRightPusher.setPosition(Range.clip(-gamepad2.left_stick_y, 0, 1));
+
 
            // HIGH SPEED FOR MOTOR LAUNCHER IS 0.7, LOW SPEED IS 0.4 (held at least half way down)
            if (gamepad2.right_trigger > 0.5) motorLauncherSetSpeed = 0.8;

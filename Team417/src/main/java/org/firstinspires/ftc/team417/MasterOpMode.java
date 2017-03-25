@@ -31,7 +31,8 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorLift = null;
     DcMotor motorLift2 = null;
     Servo servoParticle = null;
-    Servo servoForks = null;
+    Servo servoLeftPusher = null;
+    Servo servoRightPusher = null;
     DcMotor motorLauncher = null;
     DcMotor motorCollector = null;
     BNO055IMU imu;
@@ -65,7 +66,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorLift = hardwareMap.dcMotor.get("motorLift");
         motorLift2 = hardwareMap.dcMotor.get("motorLift2");
         servoParticle = hardwareMap.servo.get("servoParticle");
-        servoForks = hardwareMap.servo.get("servoForks");
+        servoLeftPusher = hardwareMap.servo.get("servoLeftPusher");
+        servoRightPusher = hardwareMap.servo.get("servoRightPusher");
         motorLauncher = hardwareMap.dcMotor.get("motorLauncher");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
 
@@ -109,7 +111,9 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
         servoParticle.setPosition(0);
-        servoForks.setPosition(0);
+        servoRightPusher.setDirection(Servo.Direction.REVERSE);
+        servoLeftPusher.setPosition(0);
+        servoRightPusher.setPosition(0);
         motorLift.setPower(0);
         motorLift2.setPower(0);
         motorLauncher.setPower(0);
