@@ -269,7 +269,7 @@ abstract class MasterTeleOp extends Master
             return;
         }
 
-        // Que up particles to shoot
+        // Queue up particles to shoot
         if(gamepad2.guide && !guideButtonLast && particlesToShoot < 4)
             particlesToShoot++;
         else if(gamepad2.back)
@@ -282,7 +282,7 @@ abstract class MasterTeleOp extends Master
         if(gamepad2.left_bumper)
             catapultShooting = true;
 
-        if(gamepad2.right_bumper && motorIsAtTarget(motorCatapult))
+        if(gamepad2.right_bumper && motorIsAtTarget(motorCatapult) && !catapultShooting)
         {
             motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition() + CATAPULT_TICKS_PER_CYCLE / 2);
@@ -300,13 +300,13 @@ abstract class MasterTeleOp extends Master
         catapultButtonLast = catapultButton.isPressed();
 
         // Give manual control to driver if necessary
-        if(Math.abs(gamepad2.right_stick_y) > 0.1)
+        if(Math.abs(gamepad2.right_stick_y) > 0.1 && !catapultShooting)
         {
             motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorCatapult.setPower(-gamepad2.right_stick_y); // Y axis is flipped
         }
         // Return control to motor controller
-        else if(motorCatapult.getMode() == DcMotor.RunMode.RUN_USING_ENCODER && !catapultArming)
+        else if(motorCatapult.getMode() == DcMotor.RunMode.RUN_USING_ENCODER && !catapultArming && !catapultShooting)
         {
             // Keep the motor here
             motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
