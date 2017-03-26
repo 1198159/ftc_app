@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team8923;
 
+import com.qualcomm.robotcore.eventloop.EventLoop;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -31,6 +32,8 @@ abstract class MasterTeleOp extends Master
     private boolean catapultStopRequest = false;
     private boolean catapultArm = false;
     private boolean catapultFire = false;
+    private boolean catapultTimerStart = true;
+    private ElapsedTime shootingTimeout = new ElapsedTime();
 
     void driveMecanumTeleOp()
     {
@@ -186,14 +189,14 @@ abstract class MasterTeleOp extends Master
 
             if(!liftRecovered)
             {
-                // Raise the lift to make it deploy
+                // Raise the lift to position for retrieval
                 motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motorLift.setTargetPosition(liftZero + 1550);
+                motorLift.setTargetPosition(liftZero + 1590);
                 motorLift.setPower(1.0);
                 telemetry.log().add("Positioning Lift");
             }
         }
-        // Lower the lift once it's deployed
+        // Lower the arm once the lift is raised
         else if(liftRecovering && liftState == 0 && motorIsAtTarget(motorLift) || (liftRecovered && liftState == 0))
         {
             liftState++;
@@ -201,7 +204,7 @@ abstract class MasterTeleOp extends Master
             liftTimer.reset();
             telemetry.log().add("Moving Arm Servo");
         }
-        // Stop moving the lift and return control to driver
+        // raise the arm and return control to the driver
         else if(liftRecovering && liftState == 1 && liftTimer.milliseconds() > 1000)
         {
             liftState++;
@@ -285,7 +288,7 @@ abstract class MasterTeleOp extends Master
         if(gamepad2.right_bumper && motorIsAtTarget(motorCatapult) && !catapultShooting)
         {
             motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition() + CATAPULT_TICKS_PER_CYCLE / 2);
+            motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition() + CATAPULT_TICKS_PER_CYCLE);
             motorCatapult.setPower(1.0);
         }
 
@@ -320,6 +323,21 @@ abstract class MasterTeleOp extends Master
     // Method to control semi-auto shooting
     private void catapultShootProcess()
     {
+        if(catapultTimerStart)
+        {
+            shootingTimeout.reset();
+            catapultTimerStart = false;
+        }
+        else if(shootingTimeout.milliseconds() >= 10000)
+        {
+            catapultShooting = false;
+            shootingState = 0;
+            particlesToShoot = 0;
+            catapultArm = false;
+            catapultFire = false;
+            return;
+        }
+
         if(gamepad2.back)
             catapultStopRequest = true;
 

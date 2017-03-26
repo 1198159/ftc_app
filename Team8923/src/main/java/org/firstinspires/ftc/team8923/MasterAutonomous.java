@@ -66,8 +66,8 @@ abstract class MasterAutonomous extends Master
     // Max drive power is less than 1 to ensure speed controller works
     private static final double MAX_DRIVE_POWER = 1.0;
     private static final double MIN_DRIVE_POWER = 0.15;
-    private static final double TURN_POWER_CONSTANT = 1.0 / 120.0;
-    private static final double DRIVE_POWER_CONSTANT = 1.0 / 800.0;
+    private static final double TURN_POWER_CONSTANT = 1.0 / 200.0;
+    private static final double DRIVE_POWER_CONSTANT = 1.0 / 1750.0;
 
     enum Objectives
     {
