@@ -138,7 +138,7 @@ public class AutonomousTestsMove extends MasterAutonomous
         TOL_ANGLE = 3.0;
         VUFORIA_TOL_ANGLE = 3.0;
         Kpivot = 1.0/150.0;
-        MINSPEED = 0.2;
+        MINSPEED = 0.35;
         TOL = 50;
         Kmove = 1.0/1200.0;
 
@@ -197,10 +197,11 @@ public class AutonomousTestsMove extends MasterAutonomous
         moveMaintainHeading(0, -1200, -30, refAngle, 0.9, 7);
         pause(50);
         Kmove = 1.0/1500.0;
-        moveMaintainHeading(0, -900, 10, refAngle, 0.9, 7);
+        moveMaintainHeading(0, -1500, -12, refAngle, 0.9, 7);
         pause(50);
-        moveMaintainHeading(0, -400, -12, refAngle, 0.9, 7);
-        pause(50);
+
+        //moveMaintainHeading(0, -150, -12, refAngle, 0.9, 7);
+        pause(3000);
         MINSPEED = 0.25;
         pivotWithReference(90, refAngle, 0.7);
 

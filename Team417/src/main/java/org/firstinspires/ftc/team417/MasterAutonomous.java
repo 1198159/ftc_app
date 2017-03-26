@@ -540,8 +540,12 @@ abstract class MasterAutonomous extends MasterOpMode
 
         double avgDistError;
 
-        final double ROBOT_DIAMETER_MM = 27.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
-        pivotDst = (int) ((pivotAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
+        curTurnAngle = imu.getAngularOrientation().firstAngle - refAngle;
+        curTurnAngle = adjustAngles(curTurnAngle);
+        errorAngle =  pivotAngle - curTurnAngle;
+
+        final double ROBOT_DIAMETER_MM = 17.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
+        pivotDst = (int) ((errorAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
         final double XSCALE = 1.1;
 
@@ -558,6 +562,7 @@ abstract class MasterAutonomous extends MasterOpMode
         // adjust robot angle during movement by adjusting speed of motors
         do
         {
+            // read the real current angle and compute error compared to ref angle
             curTurnAngle = imu.getAngularOrientation().firstAngle - refAngle;
             curTurnAngle = adjustAngles(curTurnAngle);
             errorAngle =  pivotAngle - curTurnAngle;
