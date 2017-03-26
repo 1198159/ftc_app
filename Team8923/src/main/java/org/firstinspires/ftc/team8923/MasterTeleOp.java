@@ -35,8 +35,14 @@ abstract class MasterTeleOp extends Master
     private boolean catapultTimerStart = true;
     private ElapsedTime shootingTimeout = new ElapsedTime();
 
+    ElapsedTime loopTimer = new ElapsedTime();
+    double[] lastLoopTimes = new double[8];
+    double[] currentLoopTimes = new double[8];
+    double LOOP_TIME_CONSTANT = 10.0;
+
     void driveMecanumTeleOp()
     {
+        lastLoopTimes[1] = loopTimer.milliseconds();
         // Reverse drive if desired
         if(gamepad1.start)
             reverseDrive(false);
@@ -56,6 +62,7 @@ abstract class MasterTeleOp extends Master
         double turnPower = -gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
 
         driveMecanum(angle, power, turnPower);
+        currentLoopTimes[1] = loopTimer.milliseconds();
     }
 
     // TODO: Test
@@ -87,6 +94,7 @@ abstract class MasterTeleOp extends Master
     // Extends and retracts beacon pusher
     void controlBeaconPusher()
     {
+        lastLoopTimes[2] = loopTimer.milliseconds();
         // Don't give control to the beacon pusher after lift has been deployed
         if(liftDeployed)
             return;
@@ -102,11 +110,14 @@ abstract class MasterTeleOp extends Master
             servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_LEFT.pos);
         else if(gamepad1.dpad_right)
             servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_RIGHT.pos);
+
+        currentLoopTimes[2] = loopTimer.milliseconds();
     }
 
     // Contains controls for the lift and it's automatic routines, and cap ball holder arm
     void runLift()
     {
+        lastLoopTimes[3] = loopTimer.milliseconds();
         // Don't allow driver to move the lift once the arms have been recovered
         if(!liftRecovered && !liftRecovering)
         {
@@ -215,13 +226,16 @@ abstract class MasterTeleOp extends Master
             liftRecovered = true;
             telemetry.log().add("Recovering Lift Arms");
         }
+
+        currentLoopTimes[3] = loopTimer.milliseconds();
     }
 
     // Runs collector. Can be run forwards and backwards
     void runCollector()
     {
+        lastLoopTimes[4] = loopTimer.milliseconds();
         // Full speed is too fast
-        double speedFactor = 0.6;
+        double speedFactor = 1.0;
 
         // Don't control the collector when the catapult is firing
         if(catapultShooting)
@@ -235,10 +249,13 @@ abstract class MasterTeleOp extends Master
         }
 
         motorCollector.setPower((gamepad2.right_trigger - gamepad2.left_trigger) * speedFactor);
+
+        currentLoopTimes[4] = loopTimer.milliseconds();
     }
 
     void controlHopper()
     {
+        lastLoopTimes[5] = loopTimer.milliseconds();
         // Don't control the servo when the catapult is shooting
         if(catapultShooting)
             return;
@@ -257,12 +274,17 @@ abstract class MasterTeleOp extends Master
             if(hopperTimer.milliseconds() > 250)
                 hopperServoMoving = false;
         }
+
+        currentLoopTimes[5] = loopTimer.milliseconds();
     }
 
     void controlCatapult()
     {
+        lastLoopTimes[6]= loopTimer.milliseconds();
         telemetry.addData("Particles to shoot", particlesToShoot);
         telemetry.addData("Catapult State", catapultState);
+        telemetry.addData("catapultShooting = ", catapultShooting);
+        telemetry.addData("catapultTimerStart = ", catapultTimerStart);
 
         // Run semi-auto process if it's still going
         if(catapultShooting)
@@ -318,18 +340,22 @@ abstract class MasterTeleOp extends Master
             // because it's already at the target (zero location)
             motorCatapult.setPower(1.0);
         }
+
+        currentLoopTimes[6] = loopTimer.milliseconds();
     }
 
     // Method to control semi-auto shooting
     private void catapultShootProcess()
     {
+        lastLoopTimes[7] = loopTimer.milliseconds();
         if(catapultTimerStart)
         {
             shootingTimeout.reset();
             catapultTimerStart = false;
         }
-        else if(shootingTimeout.milliseconds() >= 10000)
+        else if(shootingTimeout.milliseconds() >= 10000 || (gamepad2.a && gamepad2.b))
         {
+            catapultTimerStart = true;
             catapultShooting = false;
             shootingState = 0;
             particlesToShoot = 0;
@@ -357,6 +383,7 @@ abstract class MasterTeleOp extends Master
         if(particlesToShoot == 0)
         {
             catapultShooting = false;
+            catapultTimerStart = true;
             return;
         }
 
@@ -418,11 +445,15 @@ abstract class MasterTeleOp extends Master
             // If requested, stop the shooting process after a cycle is completed
             if(catapultStopRequest)
             {
+                shootingState = 0;
                 particlesToShoot = 0;
                 catapultShooting = false;
                 catapultStopRequest = false;
+                catapultTimerStart = true;
             }
         }
+
+        currentLoopTimes[7] = loopTimer.milliseconds();
     }
 
     // Move catapult forward to the armed state just before it fires
