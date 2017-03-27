@@ -135,12 +135,20 @@ public class AutonomousTestsMove extends MasterAutonomous
 
         double refAngle = imu.getAngularOrientation().firstAngle;
 
-        TOL_ANGLE = 3.0;
+        TOL_ANGLE = 30.0;
         VUFORIA_TOL_ANGLE = 3.0;
         Kpivot = 1.0/150.0;
-        MINSPEED = 0.35;
-        TOL = 50;
+        MINSPEED = 0.25;
+        TOL = 20;
         Kmove = 1.0/1200.0;
+        Kpivot = 1.0/150.0;
+
+        //pivot with heading test
+        moveMaintainHeading(0, 0, 90, refAngle, 0.7, 7);
+        pause(5000);
+        moveMaintainHeading(0, 0, 0, refAngle, 0.7, 7);
+        pause(5000);
+        moveMaintainHeading(0, 0, -90, refAngle, 0.7, 7);
 
         /*
         // setting for align pivot Vuforia
@@ -164,7 +172,8 @@ public class AutonomousTestsMove extends MasterAutonomous
         //pivotVuforia(targetAngle, 0.5);
         */
 
-
+//-------------------------------SECOND OPTION START------------------------------------
+/*
         motorLauncher.setPower(0.85);
 
         telemetry.addData("Path", "start forwards");
@@ -189,7 +198,7 @@ public class AutonomousTestsMove extends MasterAutonomous
         TOL_ANGLE = 3.0;
         Kpivot = 1.0/100.0;
         MINSPEED = 0.3;
-        TOL = 1000.0;
+        TOL = 1000.0; // used ot be 1000
         Kmove = 1.0/1500.0;
         telemetry.addData("Path", "pivot 25");
         telemetry.update();
@@ -204,16 +213,8 @@ public class AutonomousTestsMove extends MasterAutonomous
         pause(3000);
         MINSPEED = 0.25;
         pivotWithReference(90, refAngle, 0.7);
-
-        /*
-
-        pause(100);
-
-        MINSPEED = 0.25;
-        pivotWithReference(-90, refAngle, 0.7);
-        */
+*/
 //------------------------------------------------------------------------------
-
 
 
 

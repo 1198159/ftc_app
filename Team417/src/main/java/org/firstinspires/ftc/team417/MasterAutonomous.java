@@ -544,7 +544,7 @@ abstract class MasterAutonomous extends MasterOpMode
         curTurnAngle = adjustAngles(curTurnAngle);
         errorAngle =  pivotAngle - curTurnAngle;
 
-        final double ROBOT_DIAMETER_MM = 17.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
+        final double ROBOT_DIAMETER_MM = 22.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
         pivotDst = (int) ((errorAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
         final double XSCALE = 1.1;
@@ -568,6 +568,7 @@ abstract class MasterAutonomous extends MasterOpMode
             errorAngle =  pivotAngle - curTurnAngle;
             pivotSpeed = errorAngle * Kpivot;
             pivotSpeed = Range.clip(pivotSpeed, -0.3, 0.3); // limit max pivot speed
+            pivotSpeed = 0.0; // test
             // pivotSpeed is added to each motor's movement speed
 
             errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
