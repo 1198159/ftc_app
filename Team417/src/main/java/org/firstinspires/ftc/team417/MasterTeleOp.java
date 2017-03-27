@@ -27,6 +27,8 @@ public class MasterTeleOp extends MasterOpMode
     boolean isBButtonPressed = false; // isBbuttonPressed causes is lift to toggle
     boolean isLiftActivated = false;
     boolean isLeftBumperPushed = false; // is left bumper causes is mode to toggle
+    boolean isPusherUp = false;
+    boolean isXButtonPressed = false;
     boolean isModeReversed = false;
     boolean isLegatoMode = false;
     boolean isRightBumperPushed = false;
@@ -161,11 +163,6 @@ public class MasterTeleOp extends MasterOpMode
            servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.7));
            //servoForks.setPosition(gamepad2.left_stick_y);
 
-           // add in "if button A is not pushed"
-           servoLeftPusher.setPosition(Range.clip(-gamepad2.left_stick_y, 0, 1));
-           servoRightPusher.setPosition(Range.clip(-gamepad2.left_stick_y, 0, 1));
-
-
            // HIGH SPEED FOR MOTOR LAUNCHER IS 0.7, LOW SPEED IS 0.4 (held at least half way down)
            if (gamepad2.right_trigger > 0.5) motorLauncherSetSpeed = 0.8;
            else if (gamepad2.left_trigger > 0.5) motorLauncherSetSpeed = 0.6;
@@ -227,6 +224,27 @@ public class MasterTeleOp extends MasterOpMode
            {
                motorCollector.setPower(0);
            }
+
+           // press button x to toggle up and down for button pusher servo
+           if (gamepad2.x && !isXButtonPressed)
+           {
+               isXButtonPressed = true;
+               isPusherUp = !isPusherUp;
+           }
+           isXButtonPressed = gamepad2.x;
+
+           if(isPusherUp)
+           {
+               servoLeftPusher.setPosition(0.6);
+               servoRightPusher.setPosition(0.6);
+           }
+           else
+           {
+               servoLeftPusher.setPosition(0.0);
+               servoRightPusher.setPosition(0.0);
+           }
+
+
 
            // press button a to toggle legato mode
            if (gamepad1.right_bumper && !isRightBumperPushed)
