@@ -35,7 +35,7 @@ abstract class Master extends LinearOpMode
     boolean catapultButtonLast = false;
 
     // Constants to be used in code. Measurements in millimeters
-    private static final double GEAR_RATIO = 3.0; // Ratio of driven gear to driving gear
+    private static final double GEAR_RATIO = 2.0; // Ratio of driven gear to driving gear
     private static final double TICKS_PER_MOTOR_REVOLUTION = 1120.0;
     private static final double TICKS_PER_WHEEL_REVOLUTION = TICKS_PER_MOTOR_REVOLUTION / GEAR_RATIO;
     private static final double WHEEL_DIAMETER = 4 * 25.4; // 4 inch diameter
@@ -57,7 +57,7 @@ abstract class Master extends LinearOpMode
         BEACON_LEFT(0.65),
         BEACON_CENTER(0.5),
         CAP_BALL_HOLD(1.0),
-        CAP_BALL_UP(0.2),
+        CAP_BALL_UP(0.25),
         CAP_BALL_RELEASE(0.0),
         HOPPER_SWEEP_BACK(1.0),
         HOPPER_SWEEP_PUSH_FIRST(0.45),

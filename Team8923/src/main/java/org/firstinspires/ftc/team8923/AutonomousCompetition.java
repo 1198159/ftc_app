@@ -257,7 +257,7 @@ public class AutonomousCompetition extends MasterAutonomous
         driveRelativeToBeacon(0.0, 110);
         useVuforia = false;
         // Back away from beacon
-        driveRelativeToBeacon(0.0, observationDistance);
+        driveRelativeToBeacon(0.0, 200);
 
         // Retract and center pusher to prevent damage or anything else bad
         servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_CENTER.pos);
@@ -268,7 +268,7 @@ public class AutonomousCompetition extends MasterAutonomous
     private void shootInCenter(int numberOfShots) throws InterruptedException
     {
         // Distance from the goal at which the robot shoots
-        double shootingDistance = 600;
+        double shootingDistance = 800;
 
         double goalX;
         double goalY;
@@ -305,7 +305,7 @@ public class AutonomousCompetition extends MasterAutonomous
         turnAndDrive(shootPosX, shootPosY);
 
         // Catapult shoots to the side of the robot
-        turnToAngle(angleToGoal - 105);
+        turnToAngle(angleToGoal - 100);
 
         armCatapult();
 

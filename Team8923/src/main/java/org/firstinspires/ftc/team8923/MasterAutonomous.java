@@ -66,7 +66,7 @@ abstract class MasterAutonomous extends Master
     // Max drive power is less than 1 to ensure speed controller works
     private static final double MAX_DRIVE_POWER = 1.0;
     private static final double MIN_DRIVE_POWER = 0.15;
-    private static final double TURN_POWER_CONSTANT = 1.0 / 200.0;
+    private static final double TURN_POWER_CONSTANT = 1.0 / 175.0;
     private static final double DRIVE_POWER_CONSTANT = 1.0 / 1750.0;
 
     enum Objectives
@@ -299,7 +299,7 @@ abstract class MasterAutonomous extends Master
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
-        double DISTANCE_TOLERANCE = 35; // In mm
+        double DISTANCE_TOLERANCE = 50; // In mm
         double ANGLE_TOLERANCE = 5; // In degrees
 
         // Run until robot is within tolerable distance and angle
@@ -315,7 +315,7 @@ abstract class MasterAutonomous extends Master
 
             // In case the robot turns while driving
             deltaAngle = subtractAngles(targetAngle, robotAngle);
-            double turnPower = deltaAngle / 65.0;
+            double turnPower = deltaAngle * TURN_POWER_CONSTANT;
 
             // Set drive motor powers
             driveMecanum(driveAngle, drivePower, turnPower);
