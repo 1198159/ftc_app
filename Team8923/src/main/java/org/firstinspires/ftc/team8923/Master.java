@@ -255,7 +255,7 @@ abstract class Master extends LinearOpMode
 
     // Truncates numbers to fit displays better. Not recommended for numbers that span many
     // magnitudes. Also consider the decimal point character.
-    private String formatNumber(double number)
+    String formatNumber(double number)
     {
         return String.format("%.2f", number);
     }
