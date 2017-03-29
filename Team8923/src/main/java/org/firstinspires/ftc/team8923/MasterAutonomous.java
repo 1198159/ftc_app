@@ -495,6 +495,11 @@ abstract class MasterAutonomous extends Master
     void armCatapult()
     {
         telemetry.log().add("Arming Catapult: " + getRuntime());
+
+        // Don't try to arm the catapult if it's already armed
+        if(!catapultButton.isPressed())
+            return;
+
         motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorCatapult.setPower(1.0);
         catapultButtonLast = catapultButton.isPressed();

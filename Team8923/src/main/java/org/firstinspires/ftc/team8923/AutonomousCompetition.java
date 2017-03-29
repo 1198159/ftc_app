@@ -48,7 +48,7 @@ public class AutonomousCompetition extends MasterAutonomous
                     parkOnObjective(Objectives.PARK_CENTER);
                     break;
                 case SHOOT_CENTER:
-                    shootInCenter(numberOfShots);
+                    shootInCenter();
                     break;
             }
         }
@@ -117,6 +117,17 @@ public class AutonomousCompetition extends MasterAutonomous
         }
         // Drive to the designated point
         turnAndDrive(locationX, locationY);
+
+        // Make the robot drive forwards again if it went for the cap ball
+        if(objective == Objectives.PARK_CENTER)
+        {
+            reverseDrive(true);
+            headingOffset -= 180;
+            lastEncoderBL = motorBL.getCurrentPosition();
+            lastEncoderFL = motorFL.getCurrentPosition();
+            lastEncoderBR = motorBR.getCurrentPosition();
+            lastEncoderFR = motorFR.getCurrentPosition();
+        }
     }
 
     // Each alliance has its own method for the beacons, because they are hard to combine. This
@@ -209,6 +220,10 @@ public class AutonomousCompetition extends MasterAutonomous
         // Once we find the target, go right in front of the beacon to get the colors
         driveRelativeToBeacon(0.0, 250);
 
+        // Arm the catapult early if needed
+        if(numberOfShots > 0)
+            armCatapult();
+
         // Give time for beacon pusher to fall down if no correction is needed. Otherwise don't wait
         sleep((long) Range.clip(1500 - servoTimer.milliseconds(), 0, 1500));
 
@@ -257,7 +272,7 @@ public class AutonomousCompetition extends MasterAutonomous
         driveRelativeToBeacon(0.0, 110);
         useVuforia = false;
         // Back away from beacon
-        driveRelativeToBeacon(0.0, 200);
+        driveRelativeToBeacon(0.0, 250);
 
         // Retract and center pusher to prevent damage or anything else bad
         servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_CENTER.pos);
@@ -265,7 +280,7 @@ public class AutonomousCompetition extends MasterAutonomous
     }
 
     // Shoots balls into the center vortex
-    private void shootInCenter(int numberOfShots) throws InterruptedException
+    private void shootInCenter() throws InterruptedException
     {
         // Distance from the goal at which the robot shoots
         double shootingDistance = 800;
@@ -301,11 +316,8 @@ public class AutonomousCompetition extends MasterAutonomous
         double shootPosX = goalX - Math.cos(Math.toRadians(angleToGoal)) * shootingDistance;
         double shootPosY = goalY - Math.sin(Math.toRadians(angleToGoal)) * shootingDistance;
 
-        // Go to shooting location
-        turnAndDrive(shootPosX, shootPosY);
-
-        // Catapult shoots to the side of the robot
-        turnToAngle(angleToGoal - 100);
+        // Go to shooting location. Catapult shoots to the side of the robot
+        driveToPoint(shootPosX, shootPosY, angleToGoal - 100);
 
         armCatapult();
 
@@ -319,11 +331,13 @@ public class AutonomousCompetition extends MasterAutonomous
             servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_UP.pos);
             motorCollector.setPower(-0.5);
             // Fire the first particle
-            armCatapult();
+            fireCatapult();
             // Push second particle into the catapult
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
             // Stop the collector
             motorCollector.setPower(0.0);
+            // Arm the catapult
+            armCatapult();
 
             // Wait for the second particle to settle
             sleep(1000);
@@ -332,5 +346,7 @@ public class AutonomousCompetition extends MasterAutonomous
             // Launch second particle
             fireCatapult();
         }
+
+        numberOfShots = 0;
     }
 }
