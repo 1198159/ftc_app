@@ -212,20 +212,21 @@ abstract class MasterTeleOp extends Master
 
             if(!liftRecovered)
             {
-                // Raise the lift to position for retrieval
-                motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motorLift.setTargetPosition(liftZero + 1590);
-                motorLift.setPower(1.0);
-                telemetry.log().add("Positioning Lift");
+                // move arm into position
+                servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
+                telemetry.log().add("Moving Arm Servo");
             }
         }
         // Lower the arm once the lift is raised
         else if(liftRecovering && liftState == 0 && motorIsAtTarget(motorLift) || (liftRecovered && liftState == 0))
         {
             liftState++;
-            servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
+            // Raise the lift to position for retrieval
+            motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorLift.setTargetPosition(liftZero + 1590);
+            motorLift.setPower(1.0);
             liftTimer.reset();
-            telemetry.log().add("Moving Arm Servo");
+            telemetry.log().add("Positioning Lift");
         }
         // raise the arm and return control to the driver
         else if(liftRecovering && liftState == 1 && liftTimer.milliseconds() > 1000)
