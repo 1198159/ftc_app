@@ -77,32 +77,6 @@ abstract class MasterTeleOp extends Master
         telemetry.addData("Drive Loop Time", formatNumber(loopTimers[LoopTimers.DRIVE_CALCULATION.ordinal()].milliseconds()));
     }
 
-    // TODO: Test
-    void driveAroundCapBall()
-    {
-        // Reverse drive if desired
-        if(gamepad1.start)
-            reverseDrive(false);
-        if(gamepad1.back)
-            reverseDrive(true);
-
-        double turnPower = -gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
-
-        // Distance from center of robot to center of cap ball
-        double radius = 1.5;
-        // Maximum rotation rate of robot
-        double maxOmega = 1.0;
-        // Find desired rotation rate from scaling joystick
-        double omega = Range.scale(turnPower, -1.0, 1.0, -maxOmega, maxOmega);
-        // Calculate tangential velocity from equation: v=wr
-        double velocity = omega * radius;
-        // Either go left or right
-        double driveAngle = 90;
-
-        // Give values to  drive method
-        driveMecanum(driveAngle, velocity, turnPower);
-    }
-
     // Extends and retracts beacon pusher
     void controlBeaconPusher()
     {

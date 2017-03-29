@@ -26,18 +26,7 @@ public class TeleOpCompetition extends MasterTeleOp
         while(opModeIsActive())
         {
             loopTimers[LoopTimers.ALL_CALCULATIONS.ordinal()].reset();
-            /* TODO: Add back in when cap ball drive mode has been fixed
-            // Select drive mode
-            if(gamepad1.dpad_down)
-                capBallDriveMode = true;
-            else if(gamepad1.dpad_up)
-                capBallDriveMode = false;
 
-            // Run drive mode
-            if(!capBallDriveMode)
-                driveMecanumTeleOp();
-            else if(capBallDriveMode)
-                driveAroundCapBall();*/
             driveMecanumTeleOp();
 
             // Run all of the mechanisms

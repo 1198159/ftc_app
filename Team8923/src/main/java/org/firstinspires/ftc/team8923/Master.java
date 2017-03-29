@@ -87,9 +87,6 @@ abstract class Master extends LinearOpMode
 
         // Set drive motor directions
         reverseDrive(false);
-        // Some hardware person got the wiring backwards...
-        motorLift.setDirection(DcMotor.Direction.FORWARD); // changed due to chain replacing our old gear system for driving the lift
-        motorCollector.setDirection(DcMotor.Direction.REVERSE);
 
         // Our drive motors seem to run at this speed
         motorFL.setMaxSpeed(2700);
