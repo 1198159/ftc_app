@@ -27,7 +27,7 @@ abstract class MasterTeleOp extends Master
     private int shootingState = 0;
     private int catapultState = 0;
     private int particlesToShoot = 0;
-    private boolean guideButtonLast = false;
+    private boolean backButtonLast = false;
     private boolean catapultShooting = false;
     private boolean catapultStopRequest = false;
     private boolean catapultArm = false;
@@ -67,10 +67,16 @@ abstract class MasterTeleOp extends Master
 
         double y = -gamepad1.left_stick_y; // Y axis is negative when up
         double x = gamepad1.left_stick_x;
-
-        double angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
         double power = calculateDistance(x, y);
         double turnPower = -gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
+
+        // Hank has asked to just use cardinal directions
+        double angle;
+        if(Math.abs(x) > Math.abs(y))
+            y = 0;
+        else
+            x = 0;
+        angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
 
         driveMecanum(angle, power, turnPower);
 
@@ -186,21 +192,20 @@ abstract class MasterTeleOp extends Master
 
             if(!liftRecovered)
             {
-                // move arm into position
-                servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
-                telemetry.log().add("Moving Arm Servo");
+                // Raise the lift to position for retrieval
+                motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorLift.setTargetPosition(liftZero + 1590);
+                motorLift.setPower(1.0);
+                telemetry.log().add("Positioning Lift");
             }
         }
         // Lower the arm once the lift is raised
         else if(liftRecovering && liftState == 0 && motorIsAtTarget(motorLift) || (liftRecovered && liftState == 0))
         {
             liftState++;
-            // Raise the lift to position for retrieval
-            motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorLift.setTargetPosition(liftZero + 1590);
-            motorLift.setPower(1.0);
+            servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
             liftTimer.reset();
-            telemetry.log().add("Positioning Lift");
+            telemetry.log().add("Moving Arm Servo");
         }
         // raise the arm and return control to the driver
         else if(liftRecovering && liftState == 1 && liftTimer.milliseconds() > 1000)
@@ -282,13 +287,13 @@ abstract class MasterTeleOp extends Master
         }
 
         // Queue up particles to shoot
-        if(gamepad2.guide && !guideButtonLast && particlesToShoot < 4)
+        if(gamepad2.back && !backButtonLast && particlesToShoot < 4)
             particlesToShoot++;
-        else if(gamepad2.back)
+        else if(gamepad2.guide)
             particlesToShoot = 0;
 
         // Update last button value so only 1 button press is registered
-        guideButtonLast = gamepad2.guide;
+        backButtonLast = gamepad2.back;
 
         // Activate semi-auto shooting
         if(gamepad2.left_bumper)
