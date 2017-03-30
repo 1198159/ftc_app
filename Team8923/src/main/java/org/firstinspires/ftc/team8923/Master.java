@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.team8923;
 
+import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.configuration.DeviceConfiguration;
 
 /*
  * This class contains all objects and methods that should be accessible by all OpModes
@@ -24,10 +26,11 @@ abstract class Master extends LinearOpMode
     Servo servoBeaconPusherSwing = null;
     Servo servoCapBallHolder = null;
     Servo servoHopperSweeper = null;
-    Servo servoCollectorHolder = null;
     Servo servoLiftHolder = null;
 
     TouchSensor catapultButton;
+    BNO055IMU imu;
+    private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
     double headingOffset = 0.0;
 
@@ -62,8 +65,6 @@ abstract class Master extends LinearOpMode
         HOPPER_SWEEP_BACK(1.0),
         HOPPER_SWEEP_PUSH_FIRST(0.45),
         HOPPER_SWEEP_PUSH_SECOND(0.15),
-        COLLECTOR_HOLDER_DOWN(0.65),
-        COLLECTOR_HOLDER_UP(0.0),
         LIFT_HOLD(0.7 ),
         LIFT_RELEASE(0.3);
 
@@ -106,17 +107,20 @@ abstract class Master extends LinearOpMode
         servoBeaconPusherSwing = hardwareMap.servo.get("servoBeaconPusherSwing");
         servoCapBallHolder = hardwareMap.servo.get("servoCapBallHolder");
         servoHopperSweeper = hardwareMap.servo.get("servoHopperSweeper");
-        servoCollectorHolder = hardwareMap.servo.get("servoCollectorHolder");
         servoLiftHolder = hardwareMap.servo.get("servoLiftHolder");
 
         servoBeaconPusherDeploy.setPosition(ServoPositions.BEACON_RETRACT.pos);
         servoBeaconPusherSwing.setPosition(ServoPositions.BEACON_CENTER.pos);
         servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_RELEASE.pos);
         servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
-        servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_DOWN.pos);
         servoLiftHolder.setPosition(ServoPositions.LIFT_HOLD.pos);
 
         catapultButton = hardwareMap.touchSensor.get("catapultButton");
+
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
 
         // Drivers need to get data quickly, and this doesn't take up too much bandwidth
         telemetry.setMsTransmissionInterval(50);

@@ -20,8 +20,6 @@ abstract class MasterAutonomous extends Master
     // These are not in Master, because they take longer to initialize, which slows down TeleOp
     ColorSensor colorSensorLeft;
     ColorSensor colorSensorRight;
-    BNO055IMU imu;
-    private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
     // We sometimes don't want to use Vuforia even if we see the vision targets
     boolean useVuforia = true;
@@ -237,11 +235,6 @@ abstract class MasterAutonomous extends Master
 
         colorSensorLeft = hardwareMap.colorSensor.get("colorSensorLeft");
         colorSensorRight = hardwareMap.colorSensor.get("colorSensorRight");
-
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
 
         // Set IMU heading offset
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;

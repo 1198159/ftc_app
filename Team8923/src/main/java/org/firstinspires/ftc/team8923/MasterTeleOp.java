@@ -13,6 +13,7 @@ abstract class MasterTeleOp extends Master
     // Variables used for hopper control
     private ElapsedTime hopperTimer = new ElapsedTime();
     private boolean hopperServoMoving = false;
+    private double tempIMUZero = 0;
 
     // Variables used for semi-auto lift deployment
     private int liftState = 0;
@@ -73,7 +74,15 @@ abstract class MasterTeleOp extends Master
         // Hank has asked to just use cardinal directions
         double angle;
         if(Math.abs(x) > Math.abs(y))
-            y = 0;
+        {
+            tempIMUZero = imu.getAngularOrientation().firstAngle;
+            if(imu.getAngularOrientation().firstAngle > tempIMUZero)
+                y = 10;
+            else if(imu.getAngularOrientation().firstAngle < tempIMUZero)
+                y = -10;
+            else
+                y = 0;
+        }
         else
             x = 0;
         angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward

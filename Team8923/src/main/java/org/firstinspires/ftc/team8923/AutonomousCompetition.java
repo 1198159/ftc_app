@@ -328,7 +328,6 @@ public class AutonomousCompetition extends MasterAutonomous
         else
         {
             // Drop collector so the hopper isn't blocked and run the collector backwards to help
-            servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_UP.pos);
             motorCollector.setPower(-0.5);
             // Fire the first particle
             fireCatapult();

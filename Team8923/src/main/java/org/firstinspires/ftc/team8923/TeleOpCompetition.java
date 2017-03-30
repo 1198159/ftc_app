@@ -22,7 +22,6 @@ public class TeleOpCompetition extends MasterTeleOp
 
         waitForStart();
 
-        servoCollectorHolder.setPosition(ServoPositions.COLLECTOR_HOLDER_UP.pos);
         while(opModeIsActive())
         {
             loopTimers[LoopTimers.ALL_CALCULATIONS.ordinal()].reset();
