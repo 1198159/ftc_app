@@ -100,6 +100,7 @@ abstract class Master extends LinearOpMode
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorCollector.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorCatapult.setDirection(DcMotor.Direction.REVERSE);
 

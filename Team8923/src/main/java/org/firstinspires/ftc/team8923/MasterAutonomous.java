@@ -30,7 +30,7 @@ abstract class MasterAutonomous extends Master
         RED
     }
 
-    private enum StartLocations
+    enum StartLocations
     {
         // Values of these 2 are arbitrary. Intended to be generic to allow one method for both
         // alliances. Other values should be used for actually setting the coordinates
@@ -40,18 +40,22 @@ abstract class MasterAutonomous extends Master
         RED_LEFT_START_X(200),
         RED_LEFT_START_Y(2200),
         RED_LEFT_START_ANGLE(0.0),
+        RED_LEFT_START_ANGLE_EXTRA_PARTICLE(-90.0),
 
         RED_RIGHT_START_X(200),
         RED_RIGHT_START_Y(1000),
         RED_RIGHT_START_ANGLE(0.0),
+        RED_RIGHT_START_ANGLE_EXTRA_PARTICLE(90.0),
 
         BLUE_LEFT_START_X(1000),
         BLUE_LEFT_START_Y(200),
         BLUE_LEFT_START_ANGLE(90.0),
+        BLUE_LEFT_START_ANGLE_EXTRA_PARTICLE(180.0),
 
         BLUE_RIGHT_START_X(2200),
         BLUE_RIGHT_START_Y(200),
-        BLUE_RIGHT_START_ANGLE(90.0);
+        BLUE_RIGHT_START_ANGLE(90.0),
+        BLUE_RIGHT_START_ANGLE_EXTRA_PARTICLE(0.0);
 
         public final double val;
         StartLocations(double i)
@@ -89,7 +93,7 @@ abstract class MasterAutonomous extends Master
 
     // Variables used for autonomous routine
     ArrayList<Objectives> routine = new ArrayList<>();
-    private StartLocations startLocation = StartLocations.LEFT;
+    StartLocations startLocation = StartLocations.LEFT;
     Alliance alliance = Alliance.RED;
     int delayTime = 0; // In seconds
     int numberOfShots = 0; // Number of shots in the center vortex
@@ -141,7 +145,7 @@ abstract class MasterAutonomous extends Master
             {
                 if (numberOfShots == 0)
                     routine.add(Objectives.SHOOT_CENTER);
-                if (numberOfShots < 2)
+                if (numberOfShots < 3)
                     numberOfShots++;
             }
 
@@ -196,12 +200,16 @@ abstract class MasterAutonomous extends Master
                 robotX = StartLocations.RED_LEFT_START_X.val;
                 robotY = StartLocations.RED_LEFT_START_Y.val;
                 robotAngle = StartLocations.RED_LEFT_START_ANGLE.val;
+                if(numberOfShots > 2)
+                    robotAngle = StartLocations.RED_LEFT_START_ANGLE_EXTRA_PARTICLE.val;
             }
             else if(alliance == Alliance.BLUE)
             {
                 robotX = StartLocations.BLUE_LEFT_START_X.val;
                 robotY = StartLocations.BLUE_LEFT_START_Y.val;
                 robotAngle = StartLocations.BLUE_LEFT_START_ANGLE.val;
+                if(numberOfShots > 2)
+                    robotAngle = StartLocations.BLUE_LEFT_START_ANGLE_EXTRA_PARTICLE.val;
             }
         }
         else if(startLocation == StartLocations.RIGHT)
@@ -211,12 +219,16 @@ abstract class MasterAutonomous extends Master
                 robotX = StartLocations.RED_RIGHT_START_X.val;
                 robotY = StartLocations.RED_RIGHT_START_Y.val;
                 robotAngle = StartLocations.RED_RIGHT_START_ANGLE.val;
+                if(numberOfShots > 2)
+                    robotAngle = StartLocations.RED_RIGHT_START_ANGLE_EXTRA_PARTICLE.val;
             }
             else if(alliance == Alliance.BLUE)
             {
                 robotX = StartLocations.BLUE_RIGHT_START_X.val;
                 robotY = StartLocations.BLUE_RIGHT_START_Y.val;
                 robotAngle = StartLocations.BLUE_RIGHT_START_ANGLE.val;
+                if(numberOfShots > 2)
+                    robotAngle = StartLocations.BLUE_RIGHT_START_ANGLE_EXTRA_PARTICLE.val;
             }
         }
     }

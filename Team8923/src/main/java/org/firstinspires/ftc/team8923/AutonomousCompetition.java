@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team8923;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -23,6 +24,14 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // Wait for requested number of milliseconds
         sleep(delayTime * 1000);
+
+        if(numberOfShots > 2)
+        {
+            collectThirdParticle();
+        }
+
+
+
 
         vuforiaLocator.startTracking();
         // We only want to use Vuforia with the beacons for reliability concerns
@@ -55,6 +64,44 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // TODO: Remove when testing is done. This is just so we can read the results
         sleep(10000);
+    }
+
+    private void collectThirdParticle() throws InterruptedException
+    {
+        if(alliance == Alliance.BLUE)
+        {
+            if(startLocation == StartLocations.LEFT)
+                driveToPoint(StartLocations.BLUE_LEFT_START_X.val + 40, StartLocations.BLUE_LEFT_START_Y.val, 180);
+            else if(startLocation == StartLocations.RIGHT)
+                driveToPoint(StartLocations.BLUE_RIGHT_START_X.val - 40, StartLocations.BLUE_RIGHT_START_Y.val, 0);
+        }
+        if(alliance == Alliance.RED)
+        {
+            if(startLocation == StartLocations.LEFT)
+                driveToPoint(StartLocations.RED_LEFT_START_X.val, StartLocations.RED_LEFT_START_Y.val + 40, -90);
+            else if(startLocation == StartLocations.RIGHT)
+                driveToPoint(StartLocations.RED_RIGHT_START_X.val, StartLocations.RED_RIGHT_START_Y.val - 40, 90);
+
+        }
+        motorCollector.setPower(-0.5);
+        sleep(500);
+        motorCollector.setPower(1.0);
+        if(alliance == Alliance.BLUE)
+        {
+            if(startLocation == StartLocations.LEFT)
+                driveToPoint(StartLocations.BLUE_LEFT_START_X.val - 40, StartLocations.BLUE_LEFT_START_Y.val, 180);
+            else if(startLocation == StartLocations.RIGHT)
+                driveToPoint(StartLocations.BLUE_RIGHT_START_X.val + 40, StartLocations.BLUE_RIGHT_START_Y.val, 0);
+        }
+        if(alliance == Alliance.RED)
+        {
+            if(startLocation == StartLocations.LEFT)
+                driveToPoint(StartLocations.RED_LEFT_START_X.val, StartLocations.RED_LEFT_START_Y.val - 40, -90);
+            else if(startLocation == StartLocations.RIGHT)
+                driveToPoint(StartLocations.RED_RIGHT_START_X.val, StartLocations.RED_RIGHT_START_Y.val + 40, 90);
+        }
+        sleep(1000);
+        motorCollector.setPower(0.0);
     }
 
     // Drives the robot onto either the center platform or corner vortex ramp based on alliance
@@ -325,7 +372,7 @@ public class AutonomousCompetition extends MasterAutonomous
         {
             fireCatapult();
         }
-        else
+        else if(numberOfShots == 2)
         {
             // Drop collector so the hopper isn't blocked and run the collector backwards to help
             motorCollector.setPower(-0.5);
@@ -345,7 +392,35 @@ public class AutonomousCompetition extends MasterAutonomous
             // Launch second particle
             fireCatapult();
         }
-
+        else if(numberOfShots == 3)
+        {
+            // Drop collector so the hopper isn't blocked and run the collector backwards to help
+            motorCollector.setPower(-0.5);
+            // Fire the first particle
+            fireCatapult();
+            // Push second particle into the catapult
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+            // Stop the collector
+            motorCollector.setPower(0.0);
+            // Arm the catapult
+            armCatapult();
+            // Wait for the second particle to settle
+            sleep(1000);
+            // Put the sweeper servo back
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+            // Launch second particle
+            fireCatapult();
+            // Push third particle into the catapult
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+            // Arm the catapult
+            armCatapult();
+            // Wait for the third particle to settle
+            sleep(1000);
+            // Put the sweeper servo back
+            servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
+            // Launch third particle
+            fireCatapult();
+        }
         numberOfShots = 0;
     }
 }
