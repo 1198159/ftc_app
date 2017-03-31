@@ -56,8 +56,6 @@ public class MasterTeleOp extends MasterOpMode
     {
         // Initialize hardware and other important things
         initializeRobot();
-        servoLeftPusher.setPosition(0);
-        servoRightPusher.setPosition(0);
 
         telemetry.addData("Path", "InitDone");
         telemetry.update();
@@ -235,13 +233,13 @@ public class MasterTeleOp extends MasterOpMode
 
            if(isPusherUp)
            {
-               servoLeftPusher.setPosition(0.6);
-               servoRightPusher.setPosition(0.6);
+               servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
+               servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
            }
            else
            {
-               servoLeftPusher.setPosition(0.0);
-               servoRightPusher.setPosition(0.0);
+               servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
+               servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
            }
 
 
