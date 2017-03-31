@@ -147,7 +147,7 @@ public class VuforiaNavigation {
 
         // set phone location
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
-                .translation(25.4f, 203.0f, 0)
+                .translation(-19.05f, 203.0f, 3.0f)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.XYZ,
                         AngleUnit.DEGREES, 90, 0, 180));  // portrait phone
