@@ -204,14 +204,11 @@ abstract class MasterTeleOp extends Master
             liftRecovering = true;
             telemetry.log().add("Starting Lift Recovery");
 
-            // Move the lift down if it's above the retrieval height
-            if(motorLift.getCurrentPosition() > retrievalHeight)
-            {
-                motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motorLift.setTargetPosition(liftZero + retrievalHeight / 2);
-                motorLift.setPower(1.0);
-                telemetry.log().add("Lowering Lift");
-            }
+            // Move the lift below the retrieval height
+            motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorLift.setTargetPosition(liftZero + retrievalHeight / 2);
+            motorLift.setPower(1.0);
+            telemetry.log().add("Lowering Lift");
         }
         // Lower the arm
         else if(liftRecovering && liftState == 0 && motorIsAtTarget(motorLift))
@@ -367,7 +364,7 @@ abstract class MasterTeleOp extends Master
             shootingTimeout.reset();
             catapultTimerStart = false;
         }
-        else if(shootingTimeout.milliseconds() >= 10000 || gamepad2.back)
+        else if(shootingTimeout.milliseconds() >= 10000 || gamepad2.back || gamepad2.right_bumper || gamepad2.left_trigger > 0)
         {
             motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
             catapultStopRequest = false;
