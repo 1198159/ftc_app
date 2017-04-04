@@ -200,7 +200,7 @@ abstract class MasterAutonomous extends MasterOpMode
                 VuforiaNav.getLocation(targetIndex); // update target location and angle
                 idle();
             }
-            while (VuforiaNav.lastLocation == null);
+            while (VuforiaNav.lastLocation == null && opModeIsActive());
 
             // now extract the angle out of "get location", and stores your location
             curTurnAngle = Orientation.getOrientation(VuforiaNav.lastLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
@@ -568,7 +568,6 @@ abstract class MasterAutonomous extends MasterOpMode
             errorAngle =  pivotAngle - curTurnAngle;
             pivotSpeed = errorAngle * Kpivot;
             pivotSpeed = Range.clip(pivotSpeed, -0.3, 0.3); // limit max pivot speed
-            pivotSpeed = 0.0; // test
             // pivotSpeed is added to each motor's movement speed
 
             errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
@@ -674,9 +673,6 @@ abstract class MasterAutonomous extends MasterOpMode
             robotErrorY -= distAwayY;
             robotErrorX += distAwayX;
 
-            //telemetry.log().add("executing");
-            //telemetry.update();
-
 // calls pivot move function here
             //pivotMove(robotErrorX, robotErrorY, errorAngle, speed, timeout); // speed, 3 second timeout
 
@@ -687,7 +683,7 @@ abstract class MasterAutonomous extends MasterOpMode
                 TOL_ANGLE = 2.0;
                 pivot(errorAngle, 0.5);
             }
-            pause(500);
+            pause(50);
 
             refAngle = imu.getAngularOrientation().firstAngle;
 
@@ -695,55 +691,18 @@ abstract class MasterAutonomous extends MasterOpMode
             {
                 MINSPEED = 0.2;
                 Kmove = 1.0/1200.0;
-                TOL_ANGLE = 3.0;
                 move(0.0, robotErrorY, 0.3, 3);
             }
-            pause(500);
+            pause(50);
 
             if (Math.abs(robotErrorX) > VUFORIA_TOL)
             {
+                TOL = 70;
                 MINSPEED = 0.3;
                 Kmove = 1.0/1200.0;
                 move(robotErrorX, 0, 0.5, 3);
             }
-            pause(500);
-
-            /*
-            if (Math.abs(errorAngle) > VUFORIA_TOL_ANGLE)
-            {
-                MINSPEED = 0.2;
-                Kpivot = 1.0/150.0;
-                Kmove = 1.0/1200.0;
-                TOL_ANGLE = 2.0;
-                pivotWithReference(errorAngle, refAngle, 0.5);
-            }
-            pause(500);
-            */
-
-/*
-            MINSPEED = 0.2;
-            Kpivot = 1.0/150.0;
-            Kmove = 1.0/1200.0;
-            TOL_ANGLE = 2.0;
-            pivot(errorAngle, 0.5);
-
-            refAngle = imu.getAngularOrientation().firstAngle;
-
-            MINSPEED = 0.3;
-            Kpivot = 1.0/50.0;
-            TOL_ANGLE = 3.0;
-            move(0.0, robotErrorY, 0.3, 3);
-
-            MINSPEED = 0.35;
-            Kmove = 1.0/1200.0;
-            move(robotErrorX, 0, 0.5, 3);
-
-            MINSPEED = 0.2;
-            Kpivot = 1.0/150.0;
-            Kmove = 1.0/1200.0;
-            TOL_ANGLE = 2.0;
-            pivotWithReference(errorAngle, refAngle, 0.5);
-*/
+            pause(50);
 
             runtime.reset();
             telemetry.log().add(String.format("cnt %d ErX:%.2f ErY:%.2f ErA:%.2f", loopCount, robotErrorX, robotErrorY, errorAngle)); // display each motor error as well
@@ -755,7 +714,7 @@ abstract class MasterAutonomous extends MasterOpMode
             motorFrontRight.setPower(0);
             motorBackLeft.setPower(0);
             motorBackRight.setPower(0);
-            pause(200);
+            pause(200); // allow Vuforia to catch up
 
             // error is in mm
         } while ( opModeIsActive() && ( Math.abs(robotErrorX) > VUFORIA_TOL || Math.abs(robotErrorY) > VUFORIA_TOL
@@ -1093,7 +1052,7 @@ abstract class MasterAutonomous extends MasterOpMode
         pause(70);
         telemetry.addData("Path", "pushing button");
         telemetry.update();
-        move(0, 150, 0.25, 2); // push the button, used to be 325mm forwards
+        move(0, 195, 0.6, 2); // push the button, used to be 325mm forwards
         telemetry.log().add(String.format("pushed button"));
     }
 
