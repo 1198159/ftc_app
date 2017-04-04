@@ -14,6 +14,7 @@ abstract class MasterTeleOp extends Master
     private ElapsedTime hopperTimer = new ElapsedTime();
     private boolean hopperServoMoving = false;
     private double tempIMUZero = 0;
+    private boolean setTempIMUZero = true;
 
     // Variables used for semi-auto lift deployment
     private int liftState = 0;
@@ -75,16 +76,19 @@ abstract class MasterTeleOp extends Master
         double angle;
         if(Math.abs(x) > Math.abs(y))
         {
-            tempIMUZero = imu.getAngularOrientation().firstAngle;
-            if(imu.getAngularOrientation().firstAngle > tempIMUZero)
-                y = 10;
-            else if(imu.getAngularOrientation().firstAngle < tempIMUZero)
-                y = -10;
-            else
-                y = 0;
+            if(setTempIMUZero)
+            {
+                tempIMUZero = imu.getAngularOrientation().firstAngle;
+                setTempIMUZero = false;
+            }
+            turnPower -= imu.getAngularOrientation().firstAngle - tempIMUZero / 100;
+            y = 0;
         }
         else
+        {
             x = 0;
+            setTempIMUZero = true;
+        }
         angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
 
         driveMecanum(angle, power, turnPower);
@@ -123,7 +127,7 @@ abstract class MasterTeleOp extends Master
         if(!liftRecovered && !liftRecovering)
         {
             // Move cap ball holder arm to hold the cap ball
-            if(gamepad2.x)
+            if(gamepad2.left_bumper)
                 servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
             // Move cap ball holder arm to release the cap ball. This is on the dpad to ensure it's
             // out of the way when the lift is raised
@@ -191,33 +195,43 @@ abstract class MasterTeleOp extends Master
             telemetry.log().add("Lift Done Deploying");
         }
 
+        int retrievalHeight = 1590;
+
         // Start auto arm recovery when requested only after lift has been deployed
-        if(gamepad2.y && liftDeployed)
+        if(gamepad2.guide && liftDeployed)
         {
             liftState = 0;
             liftRecovering = true;
-            liftTimer.reset();
             telemetry.log().add("Starting Lift Recovery");
 
-            if(!liftRecovered)
+            // Move the lift down if it's above the retrieval height
+            if(motorLift.getCurrentPosition() > retrievalHeight)
             {
-                // Raise the lift to position for retrieval
                 motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motorLift.setTargetPosition(liftZero + 1590);
+                motorLift.setTargetPosition(liftZero + retrievalHeight / 2);
                 motorLift.setPower(1.0);
-                telemetry.log().add("Positioning Lift");
+                telemetry.log().add("Lowering Lift");
             }
         }
-        // Lower the arm once the lift is raised
-        else if(liftRecovering && liftState == 0 && motorIsAtTarget(motorLift) || (liftRecovered && liftState == 0))
+        // Lower the arm
+        else if(liftRecovering && liftState == 0 && motorIsAtTarget(motorLift))
         {
             liftState++;
             servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_HOLD.pos);
             liftTimer.reset();
             telemetry.log().add("Moving Arm Servo");
         }
-        // raise the arm and return control to the driver
+        // Raise the lift to catch in the arm
         else if(liftRecovering && liftState == 1 && liftTimer.milliseconds() > 1000)
+        {
+            liftState++;
+            motorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorLift.setTargetPosition(liftZero + retrievalHeight);
+            motorLift.setPower(1.0);
+            telemetry.log().add("Raising Lift");
+        }
+        // Raise the arms and return control to the driver
+        else if(liftRecovering && liftState == 2 && motorIsAtTarget(motorLift))
         {
             liftState++;
             servoCapBallHolder.setPosition(ServoPositions.CAP_BALL_UP.pos);
@@ -295,18 +309,26 @@ abstract class MasterTeleOp extends Master
             return;
         }
 
-        // Queue up particles to shoot
-        if(gamepad2.back && !backButtonLast && particlesToShoot < 4)
-            particlesToShoot++;
-        else if(gamepad2.guide)
-            particlesToShoot = 0;
-
-        // Update last button value so only 1 button press is registered
-        backButtonLast = gamepad2.back;
-
-        // Activate semi-auto shooting
-        if(gamepad2.left_bumper)
+        if(gamepad2.x)
+        {
+            particlesToShoot = 1;
             catapultShooting = true;
+        }
+        else if(gamepad2.y)
+        {
+            particlesToShoot = 2;
+            catapultShooting = true;
+        }
+        else if(gamepad2.b)
+        {
+            particlesToShoot = 3;
+            catapultShooting = true;
+        }
+        else if(gamepad2.a)
+        {
+            particlesToShoot = 4;
+            catapultShooting = true;
+        }
 
         if(gamepad2.right_bumper && motorIsAtTarget(motorCatapult) && !catapultShooting)
         {
@@ -354,8 +376,10 @@ abstract class MasterTeleOp extends Master
             shootingTimeout.reset();
             catapultTimerStart = false;
         }
-        else if(shootingTimeout.milliseconds() >= 10000 || (gamepad2.a && gamepad2.b))
+        else if(shootingTimeout.milliseconds() >= 10000 || gamepad2.back)
         {
+            motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
+            catapultStopRequest = false;
             catapultTimerStart = true;
             catapultShooting = false;
             shootingState = 0;
@@ -364,9 +388,6 @@ abstract class MasterTeleOp extends Master
             catapultFire = false;
             return;
         }
-
-        if(gamepad2.back)
-            catapultStopRequest = true;
 
         // Run the state machine to either arm or fire the catapult
         if(catapultArm)
@@ -420,10 +441,6 @@ abstract class MasterTeleOp extends Master
             else
                 servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
 
-            // Stop collector after fourth particle goes into hopper
-            if(particlesToShoot == 2)
-                motorCollector.setPower(0.0);
-
             //  Arm the catapult for the next shot
             catapultArm = true;
             shootingState++;
@@ -438,6 +455,10 @@ abstract class MasterTeleOp extends Master
             // Start collecting particle into hopper after the first of 4 shots
             if(particlesToShoot == 4)
                 motorCollector.setPower(1.0);
+
+            // Stop collector if it was running
+            if(particlesToShoot == 1)
+                motorCollector.setPower(0.0);
 
             // Set variables for next cycle
             shootingState = 0;
