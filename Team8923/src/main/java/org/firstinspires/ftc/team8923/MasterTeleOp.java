@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.team8923;
 
-import com.qualcomm.robotcore.eventloop.EventLoop;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 /**
  * This class contains all objects and methods that should be accessible by all TeleOpModes
@@ -12,9 +10,6 @@ abstract class MasterTeleOp extends Master
 {
     // Variables used for hopper control
     private ElapsedTime hopperTimer = new ElapsedTime();
-    private boolean hopperServoMoving = false;
-    private double tempIMUZero = 0;
-    private boolean setTempIMUZero = true;
 
     // Variables used for semi-auto lift deployment
     private int liftState = 0;
@@ -29,7 +24,6 @@ abstract class MasterTeleOp extends Master
     private int shootingState = 0;
     private int catapultState = 0;
     private int particlesToShoot = 0;
-    private boolean backButtonLast = false;
     private boolean catapultShooting = false;
     private boolean catapultStopRequest = false;
     private boolean catapultArm = false;
@@ -51,7 +45,6 @@ abstract class MasterTeleOp extends Master
     }
 
     ElapsedTime[] loopTimers = new ElapsedTime[9];
-    double[] maxLoopTimes = new double[9];
 
     void driveMecanumTeleOp()
     {
@@ -73,23 +66,11 @@ abstract class MasterTeleOp extends Master
         double turnPower = -gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
 
         // Hank has asked to just use cardinal directions
-        double angle;
         if(Math.abs(x) > Math.abs(y))
-        {
-            if(setTempIMUZero)
-            {
-                tempIMUZero = imu.getAngularOrientation().firstAngle;
-                setTempIMUZero = false;
-            }
-            turnPower -= imu.getAngularOrientation().firstAngle - tempIMUZero / 100;
             y = 0;
-        }
         else
-        {
             x = 0;
-            setTempIMUZero = true;
-        }
-        angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
+        double angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
 
         driveMecanum(angle, power, turnPower);
 
@@ -268,14 +249,11 @@ abstract class MasterTeleOp extends Master
         {
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
             hopperTimer.reset();
-            hopperServoMoving = true;
         }
         // Move sweeper back
         else
         {
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
-            if(hopperTimer.milliseconds() > 250)
-                hopperServoMoving = false;
         }
 
         telemetry.addData("Hopper Control Loop Time", formatNumber(loopTimers[LoopTimers.HOPPER_CONTROL.ordinal()].milliseconds()));

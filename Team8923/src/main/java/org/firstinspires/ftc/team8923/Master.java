@@ -29,10 +29,6 @@ abstract class Master extends LinearOpMode
     Servo servoLiftHolder = null;
 
     TouchSensor catapultButton;
-    BNO055IMU imu;
-    private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-    double headingOffset = 0.0;
 
     boolean catapultArming = false;
     boolean catapultButtonLast = false;
@@ -117,11 +113,6 @@ abstract class Master extends LinearOpMode
         servoLiftHolder.setPosition(ServoPositions.LIFT_HOLD.pos);
 
         catapultButton = hardwareMap.touchSensor.get("catapultButton");
-
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
 
         // Drivers need to get data quickly, and this doesn't take up too much bandwidth
         telemetry.setMsTransmissionInterval(50);
