@@ -14,6 +14,7 @@ abstract class MasterTeleOp extends Master
     private ElapsedTime hopperTimer = new ElapsedTime();
     private boolean hopperServoMoving = false;
     private double tempIMUZero = 0;
+    private boolean setTempIMUZero = true;
 
     // Variables used for semi-auto lift deployment
     private int liftState = 0;
@@ -75,16 +76,19 @@ abstract class MasterTeleOp extends Master
         double angle;
         if(Math.abs(x) > Math.abs(y))
         {
-            tempIMUZero = imu.getAngularOrientation().firstAngle;
-            if(imu.getAngularOrientation().firstAngle > tempIMUZero)
-                y = 10;
-            else if(imu.getAngularOrientation().firstAngle < tempIMUZero)
-                y = -10;
-            else
-                y = 0;
+            if(setTempIMUZero)
+            {
+                tempIMUZero = imu.getAngularOrientation().firstAngle;
+                setTempIMUZero = false;
+            }
+            turnPower -= imu.getAngularOrientation().firstAngle - tempIMUZero / 100;
+            y = 0;
         }
         else
+        {
             x = 0;
+            setTempIMUZero = true;
+        }
         angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
 
         driveMecanum(angle, power, turnPower);
