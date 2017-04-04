@@ -158,8 +158,9 @@ public class MasterTeleOp extends MasterOpMode
 
 
 // move particle servo
-           servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.7));
-           //servoForks.setPosition(gamepad2.left_stick_y);
+           //servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.7));
+           if (-gamepad2.right_stick_y > 0.4) servoParticle.setPosition(0.7);
+           else servoParticle.setPosition(0);
 
            // HIGH SPEED FOR MOTOR LAUNCHER IS 0.7, LOW SPEED IS 0.4 (held at least half way down)
            if (gamepad2.right_trigger > 0.5) motorLauncherSetSpeed = 0.8;

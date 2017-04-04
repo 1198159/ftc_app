@@ -56,9 +56,9 @@ abstract public class MasterOpMode extends LinearOpMode
     static final int MAX_SPEED = 2700;
 
     static final double LEFT_PUSHER_HIGH = 0.75;
-    static final double RIGHT_PUSHER_HIGH = 0.86;
+    static final double RIGHT_PUSHER_HIGH = 0.88;
     static final double LEFT_PUSHER_LOW = 0.01;
-    static final double RIGHT_PUSHER_LOW = 0.13;
+    static final double RIGHT_PUSHER_LOW = 0.14;
 
 
     public void initializeHardware()
@@ -166,7 +166,7 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         //we don't use System.currentTimeMillis() because it can be inconsistent
         long initialTime = System.nanoTime();
-        while((System.nanoTime() - initialTime)/1000/1000 < t)
+        while(((System.nanoTime() - initialTime)/1000/1000 < t) && opModeIsActive())
         {
             idle();
         }
