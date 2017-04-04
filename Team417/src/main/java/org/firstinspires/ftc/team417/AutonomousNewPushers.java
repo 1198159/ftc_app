@@ -156,8 +156,8 @@ public class AutonomousNewPushers extends MasterAutonomous
         pivot(pivotAngle, 0.9); // make sure IMU is on
         pause(200);
 
-        TOL = 60;
-        VUFORIA_TOL = 50;
+        TOL = 90;
+        VUFORIA_TOL = 40;
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         VUFORIA_TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         Kmove = 1.0/1000.0;
@@ -169,8 +169,8 @@ public class AutonomousNewPushers extends MasterAutonomous
         pivotDetectTarget(30, 5);
 
         // setting for align pivot Vuforia
-        TOL_ANGLE = 3.0;
-        VUFORIA_TOL_ANGLE = 3.0;
+        TOL_ANGLE = 2.5;
+        VUFORIA_TOL_ANGLE = 2.5;
         MINSPEED = 0.3;
 
         telemetry.addData("Path", "align pivot vuf");
@@ -178,6 +178,11 @@ public class AutonomousNewPushers extends MasterAutonomous
         alignPivotVuforia(0.6, 0, 600, 4);
         pause(50);
 
+        // This reference angle is stored right before the robot pushes the button, so it's not out of alignment YET.
+        // This angle will be later used for backing up with a reference to this angle.
+        double refWallAngle = imu.getAngularOrientation().firstAngle;
+
+        // TODO: Make this not sit forever if it can't find a target
         do
         {
             VuforiaNav.getLocation(targetIndex); // update target location and angle
@@ -207,8 +212,7 @@ public class AutonomousNewPushers extends MasterAutonomous
         VUFORIA_TOL_ANGLE = 3.0;
         TOL = 40;
         Kmove = 1.0/1200.0;
-        Kpivot = 1/50.0;
-        MINSPEED = 0.35;
+        MINSPEED = 0.15;
 
         if (beaconColor == 0)   // if left side beacon is blue
         {
@@ -217,20 +221,16 @@ public class AutonomousNewPushers extends MasterAutonomous
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
                 servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
-                moveAverage(60, 0, 0, 0.7, 3);
                 PushButton();
                 pause(100);
-                servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
                 servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
-                moveAverage(-45, 0, 0, 0.7, 3);
                 PushButton();
                 pause(100);
-                servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
             }
         }
         else if (beaconColor == 1)  // if left side beacon is red
@@ -240,20 +240,16 @@ public class AutonomousNewPushers extends MasterAutonomous
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
                 servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
-                moveAverage(-45, 0, 0, 0.7, 3);
                 PushButton();
                 pause(100);
-                servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
                 servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
-                moveAverage(60, 0, 0, 0.7, 3);
                 PushButton();
                 pause(100);
-                servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
             }
         }
         else // when the color is unknown
@@ -270,7 +266,10 @@ public class AutonomousNewPushers extends MasterAutonomous
         Kmove = 1.0/1200.0;
         Kpivot = 1/140.0;
         MINSPEED = 0.35;
-        move(0, -250, 0.5, 3); // back up from button (or just back up)
+        moveMaintainHeading(0, -250, 0, refWallAngle, 0.5, 3); // back up
+        // lower both of the pushers
+        servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
+        servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
 
         // determine next beacon target
         if (isRedTeam) // if team RED
@@ -279,7 +278,6 @@ public class AutonomousNewPushers extends MasterAutonomous
             targetIndex = 1;
             targetPos[0] = 2743.2f;
             targetPos[1] = mmFTCFieldWidth;
-            //telemetry.addData("Team: ", "Red 1"); // display what team we're on after choosing with the buttons
         }
         else // if team BLUE
         {
@@ -287,9 +285,7 @@ public class AutonomousNewPushers extends MasterAutonomous
             targetIndex = 2;
             targetPos[0] = mmFTCFieldWidth;
             targetPos[1] = 2743.2f;
-            //telemetry.addData("Team: ", "Blue 1");
         }
-
 
 
         // for big move left or right
@@ -305,14 +301,20 @@ public class AutonomousNewPushers extends MasterAutonomous
         {
             if (isRedTeam) // move shorter
             {
+                MINSPEED = 0.15;
                 pivot(-90, 0.7);
-                moveAverage(0, 1220, 0, 0.8, 3);
+                MINSPEED = 0.3;
+                moveAverage(0, 1250, 0, 0.8, 3);
+                MINSPEED = 0.15;
                 pivot(90, 0.7);
             }
             else // move shorter
             {
+                MINSPEED = 0.15;
                 pivot(90, 0.7);
-                moveAverage(0, 1220, 0, 0.8, 3);
+                MINSPEED = 0.3;
+                moveAverage(0, 1250, 0, 0.8, 3);
+                MINSPEED = 0.15;
                 pivot(-90, 0.7);
             }
         }
@@ -320,21 +322,27 @@ public class AutonomousNewPushers extends MasterAutonomous
         {
             if (isRedTeam) // move longer
             {
+                MINSPEED = 0.15;
                 pivot(-90, 0.7);
-                moveAverage(0, 1300, 0, 0.8, 3);
+                MINSPEED = 0.3;
+                moveAverage(0, 1250, 0, 0.8, 3);
+                MINSPEED = 0.15;
                 pivot(90, 0.7);
             }
             else // move longer
             {
+                MINSPEED = 0.15;
                 pivot(90, 0.7);
-                moveAverage(0, 1300, 0, 0.8, 3);
+                MINSPEED = 0.3;
+                moveAverage(0, 1250, 0, 0.8, 3);
+                MINSPEED = 0.15;
                 pivot(-90, 0.7);
             }
         }
         pause(200);
 
-        TOL = 60;
-        VUFORIA_TOL = 50;
+        TOL = 90;
+        VUFORIA_TOL = 40;
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         VUFORIA_TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         Kmove = 1.0/1000.0;
@@ -345,6 +353,8 @@ public class AutonomousNewPushers extends MasterAutonomous
         telemetry.update();
         pivotDetectTarget(30, 5);
 
+        TOL_ANGLE = 2.5;
+        VUFORIA_TOL_ANGLE = 2.5;
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
         alignPivotVuforia(0.6, 0, 600, 4);
@@ -359,7 +369,7 @@ public class AutonomousNewPushers extends MasterAutonomous
         TOL = 40;
         Kmove = 1.0/1200.0;
         Kpivot = 1/50.0;
-        MINSPEED = 0.35;
+        MINSPEED = 0.15;
 
         if (beaconColor == 0)   // if left side beacon is blue
         {
@@ -368,20 +378,16 @@ public class AutonomousNewPushers extends MasterAutonomous
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
                 servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
-                moveAverage(60, 0, 0, 0.7, 3);
                 PushButton();
                 pause(100);
-                servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
                 servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
-                moveAverage(-45, 0, 0, 0.7, 3);
                 PushButton();
                 pause(100);
-                servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
             }
         }
         else if (beaconColor == 1)  // if left side beacon is red
@@ -391,20 +397,16 @@ public class AutonomousNewPushers extends MasterAutonomous
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
                 servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
-                moveAverage(-45, 0, 0, 0.7, 3);
                 PushButton();
                 pause(100);
-                servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
                 servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
-                moveAverage(60, 0, 0, 0.7, 3);
                 PushButton();
                 pause(100);
-                servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
             }
         }
         else // when the color is unknown
@@ -412,7 +414,6 @@ public class AutonomousNewPushers extends MasterAutonomous
             telemetry.addData("Path", "unknown color, moving on");
             telemetry.update();
         }
-
         pause(100);
 
         TOL_ANGLE = 3.0;
@@ -421,8 +422,10 @@ public class AutonomousNewPushers extends MasterAutonomous
         Kmove = 1.0/1200.0;
         Kpivot = 1/140.0;
         MINSPEED = 0.35;
-
-        move(0, -150, 0.5, 3); // back up
+        moveMaintainHeading(0, -250, 0, refWallAngle, 0.5, 3); // back up
+        // lower both of the pushers
+        servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
+        servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
 
         if (autoRuntime.milliseconds() < 28000)
         {
@@ -471,8 +474,11 @@ public class AutonomousNewPushers extends MasterAutonomous
             motorCollector.setPower(1.0);
             servoParticle.setPosition(0.8);
             pause(300);
+            // Make sure time isn't up
+            //if (autoRuntime.milliseconds() < 29000) return;
             servoParticle.setPosition(0.0);
             pause(1500);
+            //if (autoRuntime.milliseconds() > 29500) return;
             servoParticle.setPosition(0.8);
             pause(300);
             servoParticle.setPosition(0.0);
