@@ -249,21 +249,12 @@ abstract class MasterTeleOp extends Master
     void runCollector()
     {
         loopTimers[LoopTimers.COLLECTOR_CONTROL.ordinal()].reset();
-        // Full speed is too fast
-        double speedFactor = 1.0;
 
         // Don't control the collector when the catapult is firing
         if(catapultShooting)
             return;
 
-        // Don't run collector while hopper sweeper is pushing particles
-        if(hopperServoMoving)
-        {
-            motorCollector.setPower(0);
-            return;
-        }
-
-        motorCollector.setPower((gamepad2.right_trigger - gamepad2.left_trigger) * speedFactor);
+        motorCollector.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
         telemetry.addData("Collector Loop Time", formatNumber(loopTimers[LoopTimers.COLLECTOR_CONTROL.ordinal()].milliseconds()));
     }
