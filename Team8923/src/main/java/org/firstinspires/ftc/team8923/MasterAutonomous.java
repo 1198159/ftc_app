@@ -54,12 +54,12 @@ abstract class MasterAutonomous extends Master
         BLUE_LEFT_START_X(1000),
         BLUE_LEFT_START_Y(200),
         BLUE_LEFT_START_ANGLE(90.0),
-        BLUE_LEFT_START_ANGLE_EXTRA_PARTICLE(0.0),
+        BLUE_LEFT_START_ANGLE_EXTRA_PARTICLE(180.0),
 
         BLUE_RIGHT_START_X(2200),
         BLUE_RIGHT_START_Y(200),
         BLUE_RIGHT_START_ANGLE(90.0),
-        BLUE_RIGHT_START_ANGLE_EXTRA_PARTICLE(180.0);
+        BLUE_RIGHT_START_ANGLE_EXTRA_PARTICLE(0.0);
 
         public final double val;
         StartLocations(double i)
