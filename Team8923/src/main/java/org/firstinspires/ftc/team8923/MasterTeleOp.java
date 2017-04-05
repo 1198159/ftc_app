@@ -337,19 +337,23 @@ abstract class MasterTeleOp extends Master
     private void catapultShootProcess()
     {
         loopTimers[LoopTimers.CATAPULT_AUTO_CONTROL.ordinal()].reset();
+
+        catapultStopRequest = shootingTimeout.milliseconds() >= 10000 || gamepad2.back || gamepad2.right_bumper || gamepad2.left_trigger > 0;
         if(catapultTimerStart)
         {
             shootingTimeout.reset();
             catapultTimerStart = false;
         }
-        else if(shootingTimeout.milliseconds() >= 10000 || gamepad2.back || gamepad2.right_bumper || gamepad2.left_trigger > 0)
+        else if(catapultStopRequest)
         {
             motorCatapult.setTargetPosition(motorCatapult.getCurrentPosition());
+            motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             catapultStopRequest = false;
             catapultTimerStart = true;
             catapultShooting = false;
             shootingState = 0;
             particlesToShoot = 0;
+            catapultState = 0;
             catapultArm = false;
             catapultFire = false;
             return;
@@ -429,16 +433,6 @@ abstract class MasterTeleOp extends Master
             // Set variables for next cycle
             shootingState = 0;
             particlesToShoot--;
-
-            // If requested, stop the shooting process after a cycle is completed
-            if(catapultStopRequest)
-            {
-                shootingState = 0;
-                particlesToShoot = 0;
-                catapultShooting = false;
-                catapultStopRequest = false;
-                catapultTimerStart = true;
-            }
         }
 
         telemetry.addData("Auto Catapult Firing Loop Time", formatNumber(loopTimers[LoopTimers.CATAPULT_AUTO_CONTROL.ordinal()].milliseconds()));
