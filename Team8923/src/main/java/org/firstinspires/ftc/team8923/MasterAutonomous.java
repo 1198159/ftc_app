@@ -157,6 +157,7 @@ abstract class MasterAutonomous extends Master
             else if(gamepad1.back)
             {
                 routine.clear();
+                delayTime = 0;
                 numberOfShots = 0;
             }
             // Finish setup and initialization. Should only be run when robot has been placed

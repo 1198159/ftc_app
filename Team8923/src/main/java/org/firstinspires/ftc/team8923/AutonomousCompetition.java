@@ -65,8 +65,8 @@ public class AutonomousCompetition extends MasterAutonomous
     private void collectThirdParticle() throws InterruptedException
     {
         // Make the collector fall out
-        motorCollector.setPower(-1.0);
-        sleep(250);
+        motorCollector.setPower(-0.25);
+        sleep(150);
 
         // Start running the collector
         motorCollector.setPower(1.0);
@@ -347,7 +347,8 @@ public class AutonomousCompetition extends MasterAutonomous
         double shootPosY = goalY - Math.sin(Math.toRadians(angleToGoal)) * shootingDistance;
 
         // Go to shooting location. Catapult shoots to the side of the robot
-        driveToPoint(shootPosX, shootPosY, angleToGoal - 100);
+        turnAndDrive(shootPosX, shootPosY);
+        turnToAngle(angleToGoal - 100);
 
         /*
          * start moving hopper
@@ -355,6 +356,14 @@ public class AutonomousCompetition extends MasterAutonomous
          * move servo back
          * fire
          */
+
+        if(numberOfShots >= 1)
+        {
+            fireCatapult();
+            sleep(500);
+            numberOfShots--;
+        }
+
         for(; numberOfShots > 0; numberOfShots--)
         {
             if(numberOfShots > 2)
