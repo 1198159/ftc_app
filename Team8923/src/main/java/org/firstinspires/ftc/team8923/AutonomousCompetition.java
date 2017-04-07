@@ -71,7 +71,7 @@ public class AutonomousCompetition extends MasterAutonomous
         // Start running the collector
         motorCollector.setPower(1.0);
 
-        double distanceToDrive = -500;
+        double distanceToDrive = thirdParticlePickupDistance;
         double startX = robotX;
         double startY = robotY;
         double startAngle = robotAngle;

@@ -101,6 +101,7 @@ abstract class MasterAutonomous extends Master
     Alliance alliance = Alliance.RED;
     int delayTime = 0; // In seconds
     int numberOfShots = 0; // Number of shots in the center vortex
+    int thirdParticlePickupDistance = -500;
 
     void setUpRoutine()
     {
@@ -136,6 +137,12 @@ abstract class MasterAutonomous extends Master
             else if(gamepad1.dpad_down)
                 delayTime -= 1;
 
+            // Change the distance that the robot moves forward to collect the third particle
+            else if(gamepad1.right_trigger > 0.35 && numberOfShots == 3)
+                thirdParticlePickupDistance -= 10;
+            else if(gamepad1.left_trigger > 0.35 && numberOfShots == 3)
+                thirdParticlePickupDistance += 10;
+
             // Select objectives to complete
             else if(gamepad1.left_bumper)
                 routine.add(Objectives.BEACON_LEFT);
@@ -159,6 +166,7 @@ abstract class MasterAutonomous extends Master
                 routine.clear();
                 delayTime = 0;
                 numberOfShots = 0;
+                thirdParticlePickupDistance = -500;
             }
             // Finish setup and initialization. Should only be run when robot has been placed
             // in starting location, because the encoders and IMU need to initialize there
@@ -181,6 +189,9 @@ abstract class MasterAutonomous extends Master
             telemetry.addData("Start Location", startLocation.name());
             telemetry.addData("Delay Seconds", delayTime);
             telemetry.addData("Number of shots in center", numberOfShots);
+            // Negative to display a more understandable real world number to the drivers
+            if(numberOfShots == 3)
+                telemetry.addData("Third Particle Pickup Distance", -thirdParticlePickupDistance);
             telemetry.addData("", "");
             // Get the next objective in the routine, and add to telemetry
             // The + 1 is to shift from 0 index to 1 index for display
