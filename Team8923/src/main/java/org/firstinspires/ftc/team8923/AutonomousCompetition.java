@@ -357,23 +357,21 @@ public class AutonomousCompetition extends MasterAutonomous
          * fire
          */
 
-        if(numberOfShots >= 1)
-        {
-            fireCatapult();
-            sleep(500);
-            numberOfShots--;
-        }
-
         for(; numberOfShots > 0; numberOfShots--)
         {
-            if(numberOfShots > 2)
-                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
-            else
-                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
-
-            armCatapult();
+            telemetry.log().add("-- Starting Fire Routine --");
+            if(numberOfShots != 3)
+            {
+                if(numberOfShots == 2)
+                    servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
+                else
+                    servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+                armCatapult();
+            }
+            sleep(500);
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
             fireCatapult();
+            telemetry.log().add("-- Fired the " + numberOfShots + " Particle --");
         }
     }
 }
