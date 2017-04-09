@@ -149,7 +149,7 @@ public class AutonomousNewPushers extends MasterAutonomous
         moveAverage(0, startDist, 0, 0.7, 3);
         pause(100);
 
-        MINSPEED = 0.25;
+        PIVOT_MINSPEED = 0.2;
         telemetry.addData("Path", "pivot 70");
         telemetry.update();
         // pivot to face target
@@ -290,9 +290,11 @@ public class AutonomousNewPushers extends MasterAutonomous
 
         // for big move left or right
         TOL = 40;
-        TOL_ANGLE = 3.0;
+        TOL_ANGLE = 1.5;
         Kmove = 1.0/2000.0;
-        Kpivot = 1.0/100.0;
+        Kpivot = 1.0/120.0;
+        MINSPEED = 0.3;
+        PIVOT_MINSPEED = 0.15;
 // shift to new target!!
         telemetry.addData("Path", "shift to new target");
         telemetry.update();
@@ -301,20 +303,14 @@ public class AutonomousNewPushers extends MasterAutonomous
         {
             if (isRedTeam) // move shorter
             {
-                MINSPEED = 0.15;
                 pivot(-90, 0.7);
-                MINSPEED = 0.3;
                 moveAverage(0, 1250, 0, 0.8, 3);
-                MINSPEED = 0.15;
                 pivot(90, 0.7);
             }
             else // move shorter
-            {
-                MINSPEED = 0.15;
+            {;
                 pivot(90, 0.7);
-                MINSPEED = 0.3;
                 moveAverage(0, 1250, 0, 0.8, 3);
-                MINSPEED = 0.15;
                 pivot(-90, 0.7);
             }
         }
@@ -322,20 +318,14 @@ public class AutonomousNewPushers extends MasterAutonomous
         {
             if (isRedTeam) // move longer
             {
-                MINSPEED = 0.15;
                 pivot(-90, 0.7);
-                MINSPEED = 0.3;
                 moveAverage(0, 1250, 0, 0.8, 3);
-                MINSPEED = 0.15;
                 pivot(90, 0.7);
             }
             else // move longer
             {
-                MINSPEED = 0.15;
                 pivot(90, 0.7);
-                MINSPEED = 0.3;
                 moveAverage(0, 1250, 0, 0.8, 3);
-                MINSPEED = 0.15;
                 pivot(-90, 0.7);
             }
         }
@@ -431,44 +421,23 @@ public class AutonomousNewPushers extends MasterAutonomous
         {
             TOL_ANGLE = 3.0;
             VUFORIA_TOL_ANGLE = 3.0;
-            Kpivot = 1/100.0;
-            MINSPEED = 0.35;
+            Kmove = 1/1200.0;
+            MINSPEED = 0.2;
+            PIVOT_MINSPEED = 0.15;
 
             motorLauncher.setPower(0.85);
 
             if (isRedTeam) // RED
             {
-                if (beaconColor == 0)
-                {
-                    // if red team, right side
-                    move(0, -100, 0.5, 3); // back up less
-                    pivot(-45, 0.8);
-                    move(0, -300, 0.6, 2); // come closer more
-                }
-                else
-                {
-                    // if red team, left side
-                    move(0, -200, 0.5, 3); // back up more
-                    pivot(-45, 0.8);
-                    move(0, -200, 0.6, 2); // come closer less
-                }
+                move(0, -100, 0.5, 3); // back up less
+                pivot(-45, 0.8);
+                move(0, -400, 0.6, 2); // come closer more
             }
             else // BLUE
             {
-                if (beaconColor == 0)
-                {
-                    // if blue team, left side
-                    move(0, -100, 0.5, 3); // back up less
-                    pivot(55, 0.8);
-                    move(0, -300, 0.6, 2); // come closer more
-                }
-                else
-                {
-                    // if blue team, right side
-                    move(0, -200, 0.5, 3); // back up more
-                    pivot(55, 0.8);
-                    move(0, -200, 0.6, 2); // come closer less
-                }
+                move(0, -100, 0.5, 3); // back up less
+                pivot(55, 0.8);
+                move(0, -400, 0.6, 2); // come closer more
             }
 
             motorCollector.setPower(1.0);

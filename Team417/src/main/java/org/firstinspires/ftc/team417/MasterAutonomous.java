@@ -56,6 +56,7 @@ abstract class MasterAutonomous extends MasterOpMode
     double VUFORIA_TOL_ANGLE = 1;
 
     double MINSPEED = 0.25;
+    double PIVOT_MINSPEED = 0.2;
 
 
     // VARIABLES FOR MOVE/ALIGN METHODS
@@ -207,7 +208,7 @@ abstract class MasterAutonomous extends MasterOpMode
             curTurnAngle = adjustAngles(curTurnAngle);
             error =  targetAngle - curTurnAngle;
             pivotSpeed = speed * Math.abs(error) * Kpivot;
-            pivotSpeed = Range.clip(pivotSpeed, MINSPEED, speed); // limit abs speed
+            pivotSpeed = Range.clip(pivotSpeed, PIVOT_MINSPEED, speed); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
 
             pivot(error, pivotSpeed);
@@ -678,7 +679,7 @@ abstract class MasterAutonomous extends MasterOpMode
 
             if (Math.abs(errorAngle) > VUFORIA_TOL_ANGLE)
             {
-                MINSPEED = 0.15;
+                PIVOT_MINSPEED = 0.15;
                 Kpivot = 1.0/80.0;
                 TOL_ANGLE = 2.0;
                 pivot(errorAngle, 0.5);
@@ -762,7 +763,7 @@ abstract class MasterAutonomous extends MasterOpMode
             //pivotSpeed = speed * Math.abs(error) * Kpivot;
             //pivotSpeed = Range.clip(pivotSpeed, 0.2, 0.7); // limit abs speed
             pivotSpeed = Math.abs(error) * Kpivot;
-            pivotSpeed = Range.clip(pivotSpeed, MINSPEED, speed); // limit abs speed
+            pivotSpeed = Range.clip(pivotSpeed, PIVOT_MINSPEED, speed); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
 
             // positive angle means CCW rotation
@@ -826,7 +827,7 @@ abstract class MasterAutonomous extends MasterOpMode
             //pivotSpeed = speed * Math.abs(error) * Kpivot;
             //pivotSpeed = Range.clip(pivotSpeed, 0.2, 0.7); // limit abs speed
             pivotSpeed = Math.abs(error) * Kpivot;
-            pivotSpeed = Range.clip(pivotSpeed, MINSPEED, speed); // limit abs speed
+            pivotSpeed = Range.clip(pivotSpeed, PIVOT_MINSPEED, speed); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
 
             // positive angle means CCW rotation
@@ -1052,7 +1053,7 @@ abstract class MasterAutonomous extends MasterOpMode
         pause(70);
         telemetry.addData("Path", "pushing button");
         telemetry.update();
-        move(0, 195, 0.6, 2); // push the button, used to be 325mm forwards
+        move(0, 200, 0.4, 5); // push the button, used to be 325mm forwards
         telemetry.log().add(String.format("pushed button"));
     }
 
