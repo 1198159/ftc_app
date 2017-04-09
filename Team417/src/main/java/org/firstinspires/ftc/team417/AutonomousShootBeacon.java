@@ -73,7 +73,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
             {
                 // OPTION RED ONE (TOOLS)
                 startDelay = 2000;
-                pivotAngle = 30; // pivot this amount before acquiring target
+                pivotAngle = 55; // pivot this amount before acquiring target
                 targetAngle = 0; // Vuforia angle
                 startDist = 2286;
                 targetIndex = 1;
@@ -85,9 +85,9 @@ public class AutonomousShootBeacon extends MasterAutonomous
             {
                 // OPTION RED TWO (GEARS)
                 startDelay = 0;
-                pivotAngle = 30; // pivot this amount before acquiring target
+                pivotAngle = 55; // pivot this amount before acquiring target
                 targetAngle = 0; // Vuforia angle
-                startDist = 1397;
+                startDist = 1270;
                 targetIndex = 3;
                 targetPos[0] = 1524;
                 targetPos[1] = mmFTCFieldWidth;
@@ -101,7 +101,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
             {
                 // OPTION BLUE ONE (LEGOS)
                 startDelay = 2000;
-                pivotAngle = -30; // recalc pivot?? also for red one??
+                pivotAngle = -55;
                 targetAngle = -90;
                 startDist = 2286;
                 targetIndex = 2;
@@ -113,9 +113,9 @@ public class AutonomousShootBeacon extends MasterAutonomous
             {
                 // OPTION BLUE TWO (WHEELS)
                 startDelay = 0;
-                pivotAngle = -30;
+                pivotAngle = -55;
                 targetAngle = -90;
-                startDist = 1397;
+                startDist = 1270;
                 targetIndex = 0;
                 targetPos[0] = mmFTCFieldWidth;
                 targetPos[1] = 1524;
@@ -126,29 +126,29 @@ public class AutonomousShootBeacon extends MasterAutonomous
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        autoRuntime.reset(); // set the 30 second timer
-
         VuforiaNav.startTracking();
         //     pause(startDelay);
         VuforiaNav.getLocation(targetIndex);
 
-        //pause(delay);
 
-// START OF AUTONOMOUS
+        double refAngle = imu.getAngularOrientation().firstAngle;
 
-        TOL_ANGLE = 3.0;
+        TOL_ANGLE = 30.0;
         VUFORIA_TOL_ANGLE = 3.0;
-        Kpivot = 1/100.0;
-        MINSPEED = 0.35;
-        TOL = 60;
+        Kpivot = 1.0/150.0;
+        MINSPEED = 0.25;
+        TOL = 20;
         Kmove = 1.0/1200.0;
+        Kpivot = 1.0/150.0;
+
+//-------------------------------SECOND OPTION START------------------------------------
 
         motorLauncher.setPower(0.85);
 
         telemetry.addData("Path", "start forwards");
         telemetry.update();
         // go towards center vortex
-        moveAverage(0, -550, 0, 0.7, 3);
+        moveAverage(0, -400, 0, 0.7, 3);
         pause(100);
 
         // shoot up to two particles
@@ -157,6 +157,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
         pause(300);
         servoParticle.setPosition(0.0);
         pause(1500);
+        pause(1500);
         servoParticle.setPosition(0.8);
         pause(300);
         servoParticle.setPosition(0.0);
@@ -164,42 +165,24 @@ public class AutonomousShootBeacon extends MasterAutonomous
         motorLauncher.setPower(0.0);
         motorCollector.setPower(0.0);
 
-        telemetry.addData("Path", "pivot 30");
-        telemetry.update();
-        // pivot to face target
-        pivot(pivotAngle, 0.9); // make sure IMU is on
-        pause(200);
-
         TOL_ANGLE = 3.0;
-        VUFORIA_TOL_ANGLE = 3.0;
-        TOL = 60;
-        Kmove = 1.0/1200.0;
-        Kpivot = 1/120.0;
-        MINSPEED = 0.35;
-
-        telemetry.addData("Path", "to beacon one");
+        Kpivot = 1.0/100.0;
+        MINSPEED = 0.2;
+        TOL = 1000.0; // used to be 1000
+        Kmove = 1.0/1500.0;
+        telemetry.addData("Path", "pivot 25");
         telemetry.update();
-        // go towards target
-        moveAverage(0, 1400, 0, 0.7, 3);
-        pause(100);
-// TODO: check this later!!
-        // check for ten seconds
-        //WaitForTime(10000);
 
-        telemetry.addData("Path", "pivot to face beacon");
-        telemetry.update();
-        if (isRedTeam) pivot(90, 0.7);
-        else pivot(-90, 0.7);
+        moveMaintainHeading(0, -1200, -30, refAngle, 0.9, 7);
+        pause(50);
+        Kmove = 1.0/1500.0;
+        moveMaintainHeading(0, -1500, -12, refAngle, 0.9, 7);
+        pause(50);
 
-        // NOW AT FIRST BEACON!
+        MINSPEED = 0.25;
+        pivotWithReference(90, refAngle, 0.7);
 
-        TOL = 60;
-        VUFORIA_TOL = 50;
-        TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
-        VUFORIA_TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
-        Kmove = 1.0/1000.0;
-        Kpivot = 1.0/150.0;
-        MINSPEED = 0.3;
+        //-------------start using Vuforia-----------------------------------------
 
         telemetry.addData("Path", "scanning for first target");
         telemetry.update();
@@ -215,22 +198,16 @@ public class AutonomousShootBeacon extends MasterAutonomous
         alignPivotVuforia(0.6, 0, 600, 4);
         pause(50);
 
-        // setting for pivot Vuforia
-        TOL_ANGLE = 2.0;
-        VUFORIA_TOL_ANGLE = 2.0;
-        Kpivot = 1.0/200.0;
-        MINSPEED = 0.3;
-        telemetry.addData("Path", "pivotVuforia");
-        telemetry.update();
-        pivotVuforia(targetAngle, 0.5);
+        // This reference angle is stored right before the robot pushes the button, so it's not out of alignment YET.
+        // This angle will be later used for backing up with a reference to this angle.
+        double refWallAngle = imu.getAngularOrientation().firstAngle;
 
+        // TODO: Make this not sit forever if it can't find a target
         do
         {
             VuforiaNav.getLocation(targetIndex); // update target location and angle
         }
         while (VuforiaNav.lastLocation == null);
-
-        // error came up here
 
 // detect beacon color of left side: 0 is blue, 1 is red
         int beaconColor = VuforiaNav.GetBeaconColor();
@@ -253,8 +230,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
         VUFORIA_TOL_ANGLE = 3.0;
         TOL = 40;
         Kmove = 1.0/1200.0;
-        Kpivot = 1/50.0;
-        MINSPEED = 0.35;
+        MINSPEED = 0.15;
 
         if (beaconColor == 0)   // if left side beacon is blue
         {
@@ -262,17 +238,17 @@ public class AutonomousShootBeacon extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                //move(100, 0, 0.3, 3); // shift right
-                moveAverage(120, 0, 0, 0.7, 3);
+                servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
                 PushButton();
+                pause(100);
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                //move(-18, 0, 0.3, 4); // shift left used to be 38
-                moveAverage(-45, 0, 0, 0.7, 3);
+                servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
                 PushButton();
+                pause(100);
             }
         }
         else if (beaconColor == 1)  // if left side beacon is red
@@ -281,17 +257,17 @@ public class AutonomousShootBeacon extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                //move(-18, 0, 0.3, 4); // shift left
-                moveAverage(-45, 0, 0, 0.7, 3);
+                servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
                 PushButton();
+                pause(100);
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                //move(100, 0, 0.3, 3); // shift right
-                moveAverage(120, 0, 0, 0.7, 3);
+                servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
                 PushButton();
+                pause(100);
             }
         }
         else // when the color is unknown
@@ -308,7 +284,10 @@ public class AutonomousShootBeacon extends MasterAutonomous
         Kmove = 1.0/1200.0;
         Kpivot = 1/140.0;
         MINSPEED = 0.35;
-        move(0, -250, 0.5, 3); // back up from button (or just back up)
+        moveMaintainHeading(0, -250, 0, refWallAngle, 0.5, 3); // back up
+        // lower both of the pushers
+        servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
+        servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
 
         // determine next beacon target
         if (isRedTeam) // if team RED
@@ -317,7 +296,6 @@ public class AutonomousShootBeacon extends MasterAutonomous
             targetIndex = 3;
             targetPos[0] = 1524;
             targetPos[1] = mmFTCFieldWidth;
-            //telemetry.addData("Team: ", "Red 1"); // display what team we're on after choosing with the buttons
         }
         else // if team BLUE
         {
@@ -325,7 +303,6 @@ public class AutonomousShootBeacon extends MasterAutonomous
             targetIndex = 0;
             targetPos[0] = mmFTCFieldWidth;
             targetPos[1] = 1524;
-            //telemetry.addData("Team: ", "Blue 1");
         }
 
         // for big move left or right
@@ -337,21 +314,24 @@ public class AutonomousShootBeacon extends MasterAutonomous
         telemetry.addData("Path", "shift to new target");
         telemetry.update();
 
-
         if (beaconColor == 0) // if left side blue
         {
             if (isRedTeam) // move shorter
             {
-                //moveAverage(1125, 0, 0, 0.7, 4);
+                MINSPEED = 0.15;
                 pivot(90, 0.7);
+                MINSPEED = 0.3;
                 moveAverage(0, 1220, 0, 0.8, 3);
+                MINSPEED = 0.15;
                 pivot(-90, 0.7);
             }
             else // move shorter
             {
-                //moveAverage(-1125, 0, 0, 0.7, 4);
+                MINSPEED = 0.15;
                 pivot(-90, 0.7);
+                MINSPEED = 0.3;
                 moveAverage(0, 1220, 0, 0.8, 3);
+                MINSPEED = 0.15;
                 pivot(90, 0.7);
             }
         }
@@ -359,22 +339,26 @@ public class AutonomousShootBeacon extends MasterAutonomous
         {
             if (isRedTeam) // move longer
             {
-                //moveAverage(1220, 0, 0, 0.7, 4);
+                MINSPEED = 0.15;
                 pivot(90, 0.7);
+                MINSPEED = 0.3;
                 moveAverage(0, 1300, 0, 0.8, 3);
+                MINSPEED = 0.15;
                 pivot(-90, 0.7);
             }
             else // move longer
             {
-                //moveAverage(-1220, 0, 0, 0.7, 4);
+                MINSPEED = 0.15;
                 pivot(-90, 0.7);
+                MINSPEED = 0.3;
                 moveAverage(0, 1300, 0, 0.8, 3);
+                MINSPEED = 0.15;
                 pivot(90, 0.7);
             }
         }
         pause(200);
 
-        TOL = 60;
+        TOL = 110;
         VUFORIA_TOL = 50;
         TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
         VUFORIA_TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
@@ -391,15 +375,6 @@ public class AutonomousShootBeacon extends MasterAutonomous
         alignPivotVuforia(0.6, 0, 600, 4);
         pause(50);
 
-        // setting for pivot Vuforia
-        TOL_ANGLE = 2.0;
-        VUFORIA_TOL_ANGLE = 2.0;
-        MINSPEED = 0.3;
-        Kpivot = 1.0/200.0;
-        telemetry.addData("Path", "pivotVuforia");
-        telemetry.update();
-        pivotVuforia(targetAngle, 0.5);
-
         // detect beacon color of left side: 0 is blue, 1 is red
         beaconColor = VuforiaNav.GetBeaconColor();
 
@@ -409,7 +384,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
         TOL = 40;
         Kmove = 1.0/1200.0;
         Kpivot = 1/50.0;
-        MINSPEED = 0.35;
+        MINSPEED = 0.15;
 
         if (beaconColor == 0)   // if left side beacon is blue
         {
@@ -417,17 +392,17 @@ public class AutonomousShootBeacon extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                //move(100, 0, 0.3, 3); // shift right
-                moveAverage(120, 0, 0, 0.7, 3);
+                servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
                 PushButton();
+                pause(100);
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                //move(-18, 0, 0.3, 4); // shift left
-                moveAverage(-45, 0, 0, 0.7, 3);
+                servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
                 PushButton();
+                pause(100);
             }
         }
         else if (beaconColor == 1)  // if left side beacon is red
@@ -436,25 +411,24 @@ public class AutonomousShootBeacon extends MasterAutonomous
             {
                 telemetry.addData("Path", "shift left");
                 telemetry.update();
-                //move(-18, 0, 0.3, 4); // shift left
-                moveAverage(-45, 0, 0, 0.7, 3);
+                servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
                 PushButton();
+                pause(100);
             }
             else    // blue team
             {
                 telemetry.addData("Path", "shift right");
                 telemetry.update();
-                //move(100, 0, 0.3, 3); // shift right
-                moveAverage(120, 0, 0, 0.7, 3);
+                servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
                 PushButton();
+                pause(100);
             }
         }
         else // when the color is unknown
         {
-            telemetry.addData("Path", "unknown color, standing by");
+            telemetry.addData("Path", "unknown color, moving on");
             telemetry.update();
         }
-
         pause(100);
 
         TOL_ANGLE = 3.0;
@@ -463,65 +437,13 @@ public class AutonomousShootBeacon extends MasterAutonomous
         Kmove = 1.0/1200.0;
         Kpivot = 1/140.0;
         MINSPEED = 0.35;
+        moveMaintainHeading(0, -250, 0, refWallAngle, 0.5, 3); // back up
+        // lower both of the pushers
+        servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
+        servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
+//------------------------------------------------------------------------------
 
-        move(0, -150, 0.5, 3); // back up
 
-        if (autoRuntime.milliseconds() < 28000)
-        {
-            TOL_ANGLE = 3.0;
-            VUFORIA_TOL_ANGLE = 3.0;
-            Kpivot = 1/100.0;
-            MINSPEED = 0.35;
-
-            motorLauncher.setPower(0.85);
-
-            if (isRedTeam) // RED
-            {
-                if (beaconColor == 0)
-                {
-                    // if red team, right side
-                    move(0, -100, 0.5, 3); // back up less
-                    pivot(-45, 0.8);
-                    move(0, -300, 0.6, 2); // come closer more
-                }
-                else
-                {
-                    // if red team, left side
-                    move(0, -200, 0.5, 3); // back up more
-                    pivot(-45, 0.8);
-                    move(0, -200, 0.6, 2); // come closer less
-                }
-            }
-            else // BLUE
-            {
-                if (beaconColor == 0)
-                {
-                    // if blue team, left side
-                    move(0, -100, 0.5, 3); // back up less
-                    pivot(55, 0.8);
-                    move(0, -300, 0.6, 2); // come closer more
-                }
-                else
-                {
-                    // if blue team, right side
-                    move(0, -200, 0.5, 3); // back up more
-                    pivot(55, 0.8);
-                    move(0, -200, 0.6, 2); // come closer less
-                }
-            }
-
-            motorCollector.setPower(1.0);
-            servoParticle.setPosition(0.8);
-            pause(300);
-            servoParticle.setPosition(0.0);
-            pause(1500);
-            servoParticle.setPosition(0.8);
-            pause(300);
-            servoParticle.setPosition(0.0);
-            pause(300);
-            motorLauncher.setPower(0.0);
-            motorCollector.setPower(0.0);
-        }
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
