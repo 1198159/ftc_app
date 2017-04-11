@@ -87,6 +87,10 @@ abstract class MasterAutonomous extends MasterOpMode
     double pivotSpeed;
     double errorAngle;
 
+    double avgDistError;
+    double avgSpeed;
+    double speedAbsAvg;
+
 
     public void initializeRobot()
     {
@@ -539,8 +543,6 @@ abstract class MasterAutonomous extends MasterOpMode
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        double avgDistError;
-
         curTurnAngle = imu.getAngularOrientation().firstAngle - refAngle;
         curTurnAngle = adjustAngles(curTurnAngle);
         errorAngle =  pivotAngle - curTurnAngle;
@@ -623,6 +625,90 @@ abstract class MasterAutonomous extends MasterOpMode
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
     }
+
+
+    public void moveKeepHeading(double x, double y, double pivotAngle, double refAngle, double speed, double timeout)
+    {
+        // run with encoder mode
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        double avgDistError;
+
+        curTurnAngle = imu.getAngularOrientation().firstAngle - refAngle;
+        curTurnAngle = adjustAngles(curTurnAngle);
+        errorAngle =  pivotAngle - curTurnAngle;
+
+        final double ROBOT_DIAMETER_MM = 22.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
+        pivotDst = (int) ((errorAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
+
+        final double XSCALE = 1.1;
+
+        int xTarget = (int) Math.round(COUNTS_PER_MM * (x * XSCALE));
+        int yTarget = (int) Math.round(COUNTS_PER_MM * (y));
+        newTargetFL = motorFrontLeft.getCurrentPosition() + xTarget + yTarget + pivotDst;
+        newTargetFR = motorFrontRight.getCurrentPosition() - xTarget + yTarget - pivotDst;
+        newTargetBL = motorBackLeft.getCurrentPosition() - xTarget + yTarget + pivotDst;
+        newTargetBR = motorBackRight.getCurrentPosition() + xTarget + yTarget - pivotDst;
+
+        runtime.reset(); // reset timer, which is used for loop timeout below
+
+        // wait until the motors reach the position
+        // adjust robot angle during movement by adjusting speed of motors
+        do
+        {
+            // read the real current angle and compute error compared to ref angle
+            curTurnAngle = imu.getAngularOrientation().firstAngle - refAngle;
+            curTurnAngle = adjustAngles(curTurnAngle);
+            errorAngle =  pivotAngle - curTurnAngle;
+            pivotSpeed = errorAngle * Kpivot;
+            pivotSpeed = Range.clip(pivotSpeed, -0.3, 0.3); // limit max pivot speed
+            // pivotSpeed is added to each motor's movement speed
+
+            errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
+            errorFR = newTargetFR - motorFrontRight.getCurrentPosition();
+            errorBL = newTargetBL - motorBackLeft.getCurrentPosition();
+            errorBR = newTargetBR - motorBackRight.getCurrentPosition();
+            avgDistError = (errorFL + errorFR + errorBL + errorBR) / 4.0;
+            avgSpeed = Kmove * avgDistError;
+            speedAbsAvg = Range.clip(Math.abs(avgSpeed), MINSPEED, speed - 0.3);
+            avgSpeed = speedAbsAvg * Math.signum(avgSpeed);  // set sign of speed
+
+            speedFL = avgSpeed + pivotSpeed; // combine movement and pivot speeds
+            speedFR = avgSpeed - pivotSpeed;
+            speedBL = avgSpeed + pivotSpeed;
+            speedBR = avgSpeed - pivotSpeed;
+
+            motorFrontLeft.setPower(speedFL);
+            motorFrontRight.setPower(speedFR);
+            motorBackLeft.setPower(speedBL);
+            motorBackRight.setPower(speedBR);
+
+            telemetry.log().add(String.format("avgDistError: %f , EA: %f", avgDistError, errorAngle));
+
+            idle();
+        }
+        while ( (opModeIsActive()) &&
+                (runtime.seconds() < timeout) &&
+                (
+                        //   ( (Math.abs(errorFL) > TOL) && (Math.abs(errorFR) > TOL) && (Math.abs(errorBL) > TOL) && (Math.abs(errorBR) > TOL) )
+                        Math.abs(avgDistError) > TOL
+                                || (Math.abs(errorAngle) > TOL_ANGLE)
+                )
+                );
+
+        telemetry.log().add(String.format("avgDistError: %f , EA: %f", avgDistError, errorAngle));
+        telemetry.update();
+
+        // stop the motors
+        motorFrontLeft.setPower(0);
+        motorFrontRight.setPower(0);
+        motorBackLeft.setPower(0);
+        motorBackRight.setPower(0);
+    }
+
 
     // a combination of both the align and pivot function (WITH VUFORIA) using pivot move
     public void alignPivotVuforia(double speed, double distAwayX, double distAwayY, double timeout) throws InterruptedException
