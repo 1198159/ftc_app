@@ -303,30 +303,30 @@ public class AutonomousNewPushers extends MasterAutonomous
         {
             if (isRedTeam) // move shorter
             {
-                pivot(-90, 0.7);
+                pivot(-89, 0.7);
                 moveAverage(0, 1250, 0, 0.8, 3);
-                pivot(90, 0.7);
+                pivot(89, 0.7);
             }
             else // move shorter
             {;
-                pivot(90, 0.7);
+                pivot(89, 0.7);
                 moveAverage(0, 1250, 0, 0.8, 3);
-                pivot(-90, 0.7);
+                pivot(-89, 0.7);
             }
         }
         else if (beaconColor == 1) // if left side red
         {
             if (isRedTeam) // move longer
             {
-                pivot(-90, 0.7);
+                pivot(-89, 0.7);
                 moveAverage(0, 1250, 0, 0.8, 3);
-                pivot(90, 0.7);
+                pivot(89, 0.7);
             }
             else // move longer
             {
-                pivot(90, 0.7);
+                pivot(89, 0.7);
                 moveAverage(0, 1250, 0, 0.8, 3);
-                pivot(-90, 0.7);
+                pivot(-89, 0.7);
             }
         }
         pause(200);
@@ -431,13 +431,19 @@ public class AutonomousNewPushers extends MasterAutonomous
             {
                 move(0, -100, 0.5, 3); // back up less
                 pivot(-45, 0.8);
-                move(0, -400, 0.6, 2); // come closer more
+                pause(50);
+                refAngle = imu.getAngularOrientation().firstAngle;
+                //move(0, -400, 0.6, 2); // come closer more
+                moveMaintainHeading(0, -450, 0, refAngle, 0.6, 3);
             }
             else // BLUE
             {
                 move(0, -100, 0.5, 3); // back up less
-                pivot(55, 0.8);
-                move(0, -400, 0.6, 2); // come closer more
+                pivot(57, 0.8);
+                pause(50);
+                refAngle = imu.getAngularOrientation().firstAngle;
+                //move(0, -400, 0.6, 2); // come closer more
+                moveMaintainHeading(0, -450, 0, refAngle, 0.6, 3);
             }
 
             motorCollector.setPower(1.0);
