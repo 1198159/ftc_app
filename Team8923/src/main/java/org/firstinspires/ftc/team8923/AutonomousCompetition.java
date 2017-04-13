@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.team8923;
 
-import android.graphics.Color;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -313,7 +310,7 @@ public class AutonomousCompetition extends MasterAutonomous
     private void shootInCenter() throws InterruptedException
     {
         // Distance from the goal at which the robot shoots
-        double shootingDistance = 800;
+        double shootingDistance = 900;
 
         double goalX;
         double goalY;
@@ -348,7 +345,7 @@ public class AutonomousCompetition extends MasterAutonomous
 
         // Go to shooting location. Catapult shoots to the side of the robot
         turnAndDrive(shootPosX, shootPosY);
-        turnToAngle(angleToGoal - 100);
+        turnToAngle(angleToGoal - 95);
 
         /*
          * start moving hopper

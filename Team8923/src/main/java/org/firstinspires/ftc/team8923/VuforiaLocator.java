@@ -56,14 +56,14 @@ class VuforiaLocator
     enum TargetLocations
     {
         // All vision targets are centered on the middle of the tiles, which are 2 feet wide
-        RED_LEFT_X(5 * 12 * 25.4f),
-        RED_LEFT_Y(12 * 12 * 25.4f),
-        RED_RIGHT_X(9 * 12 * 25.4f),
-        RED_RIGHT_Y(12 * 12 * 25.4f),
-        BLUE_LEFT_X(12 * 12 * 25.4f),
-        BLUE_LEFT_Y(9 * 12 * 25.4f),
-        BLUE_RIGHT_X(12 * 12 * 25.4f),
-        BLUE_RIGHT_Y(5 * 12 * 25.4f);
+        RED_LEFT_X(1500),
+        RED_LEFT_Y(3600),
+        RED_RIGHT_X(2700),
+        RED_RIGHT_Y(3600),
+        BLUE_LEFT_X(3600),
+        BLUE_LEFT_Y(2700),
+        BLUE_RIGHT_X(3600),
+        BLUE_RIGHT_Y(1500);
 
         float val;
         TargetLocations(float i)

@@ -41,23 +41,23 @@ abstract class MasterAutonomous extends Master
         LEFT(0),
         RIGHT(0),
 
-        RED_LEFT_START_X(200),
+        RED_LEFT_START_X(250),
         RED_LEFT_START_Y(2200),
         RED_LEFT_START_ANGLE(0.0),
         RED_LEFT_START_ANGLE_EXTRA_PARTICLE(90.0),
 
-        RED_RIGHT_START_X(200),
+        RED_RIGHT_START_X(250),
         RED_RIGHT_START_Y(1000),
         RED_RIGHT_START_ANGLE(0.0),
         RED_RIGHT_START_ANGLE_EXTRA_PARTICLE(-90.0),
 
         BLUE_LEFT_START_X(1000),
-        BLUE_LEFT_START_Y(200),
+        BLUE_LEFT_START_Y(250),
         BLUE_LEFT_START_ANGLE(90.0),
         BLUE_LEFT_START_ANGLE_EXTRA_PARTICLE(180.0),
 
         BLUE_RIGHT_START_X(2200),
-        BLUE_RIGHT_START_Y(200),
+        BLUE_RIGHT_START_Y(250),
         BLUE_RIGHT_START_ANGLE(90.0),
         BLUE_RIGHT_START_ANGLE_EXTRA_PARTICLE(0.0);
 
@@ -325,7 +325,7 @@ abstract class MasterAutonomous extends Master
         // Calculate how far we are from target point
         double distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
         double deltaAngle = subtractAngles(targetAngle, robotAngle);
-        double DISTANCE_TOLERANCE = 50; // In mm
+        double DISTANCE_TOLERANCE = 40; // In mm
         double ANGLE_TOLERANCE = 5; // In degrees
 
         // Run until robot is within tolerable distance and angle
