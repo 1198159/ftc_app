@@ -1141,7 +1141,7 @@ abstract class MasterAutonomous extends MasterOpMode
         pause(70);
         telemetry.addData("Path", "pushing button");
         telemetry.update();
-        move(0, 210, 0.4, 3); // push the button, used to be 325mm forwards
+        move(0, 220, 0.4, 3); // push the button, used to be 325mm forwards
         telemetry.log().add(String.format("pushed button"));
     }
 
