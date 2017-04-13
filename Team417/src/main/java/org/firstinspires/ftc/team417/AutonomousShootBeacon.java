@@ -171,10 +171,10 @@ public class AutonomousShootBeacon extends MasterAutonomous
 
         if (isRedTeam)
         {
-            moveKeepHeading(0, -1200, 30, refAngle, 0.9, 7);
+            moveKeepHeading(0, -1400, 30, refAngle, 0.9, 7);
             pause(50);
             TOL = 200.0;
-            moveKeepHeading(0, -1200, 12, refAngle, 0.9, 7);
+            moveKeepHeading(0, -1000, 20, refAngle, 0.9, 7);
             pause(50);
             Kpivot = 1.0/90.0;
             pivotWithReference(-90, refAngle, 0.7);
@@ -205,7 +205,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
-        alignPivotVuforia(0.6, 0, 600, 4);
+        alignPivotVuforia(0.6, 10, 600, 4);
         pause(50);
 
         // This reference angle is stored right before the robot pushes the button, so it's not out of alignment YET.
@@ -316,7 +316,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
 
         // for big move left or right
         TOL = 40;
-        TOL_ANGLE = 1.5;
+        TOL_ANGLE = 2.5;
         Kmove = 1.0/2000.0;
         Kpivot = 1.0/120.0;
         MINSPEED = 0.3;
@@ -330,13 +330,13 @@ public class AutonomousShootBeacon extends MasterAutonomous
             if (isRedTeam) // move shorter
             {
                 pivot(90, 0.7);
-                moveAverage(0, 1220, 0, 0.8, 3);
+                moveAverage(0, 1200, 0, 0.8, 3);
                 pivot(-90, 0.7);
             }
             else // move shorter
             {
                 pivot(-90, 0.7);
-                moveAverage(0, 1220, 0, 0.8, 3);
+                moveAverage(0, 1200, 0, 0.8, 3);
                 pivot(90, 0.7);
             }
         }
@@ -345,13 +345,13 @@ public class AutonomousShootBeacon extends MasterAutonomous
             if (isRedTeam) // move longer
             {
                 pivot(90, 0.7);
-                moveAverage(0, 1300, 0, 0.8, 3);
+                moveAverage(0, 1200, 0, 0.8, 3);
                 pivot(-90, 0.7);
             }
             else // move longer
             {
                 pivot(-90, 0.7);
-                moveAverage(0, 1300, 0, 0.8, 3);
+                moveAverage(0, 1220, 0, 0.8, 3);
                 pivot(90, 0.7);
             }
         }
@@ -373,7 +373,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
         VUFORIA_TOL_ANGLE = 2.5;
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
-        alignPivotVuforia(0.6, 0, 600, 4);
+        alignPivotVuforia(0.6, 10, 600, 4);
         pause(50);
 
         // detect beacon color of left side: 0 is blue, 1 is red
