@@ -303,7 +303,7 @@ abstract class MasterTeleOp extends Master
             motorCatapult.setPower(1.0);
         }
 
-        if(catapultArming && !catapultButton.isPressed() && catapultButtonLast)
+        if(catapultArming && catapultButton.getVoltage() < 2.5 && catapultButtonLast > 2.5)
         {
             catapultArming = false;
             motorCatapult.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -311,7 +311,7 @@ abstract class MasterTeleOp extends Master
             motorCatapult.setPower(1.0);
         }
 
-        catapultButtonLast = catapultButton.isPressed();
+        catapultButtonLast = catapultButton.getVoltage();
 
         // Give manual control to driver if necessary
         if(Math.abs(gamepad2.right_stick_y) > 0.1 && !catapultShooting)
@@ -391,7 +391,7 @@ abstract class MasterTeleOp extends Master
          */
 
         // If the catapult isn't armed, arm it
-        if(shootingState == 0 && catapultButton.isPressed())
+        if(shootingState == 0 && catapultButton.getVoltage() > 2.5)
             catapultArm = true;
         // Wait until catapult finishes arming
         else if(shootingState == 0 && motorIsAtTarget(motorCatapult))
@@ -452,7 +452,7 @@ abstract class MasterTeleOp extends Master
             catapultState++;
         }
         // Wait until the catapult finishes moving
-        else if(catapultState == 1 && !catapultButton.isPressed() && catapultButtonLast)
+        else if(catapultState == 1 && catapultButton.getVoltage() < 2.5 && catapultButtonLast > 2.5)
         {
             telemetry.log().add("Catapult Armed");
             // Make the motor hold it's current position
@@ -466,7 +466,7 @@ abstract class MasterTeleOp extends Master
         }
 
         // Update last touch sensor value so we can know if it's changed
-        catapultButtonLast = catapultButton.isPressed();
+        catapultButtonLast = catapultButton.getVoltage();
     }
 
     // Moves the catapult a half cycle forward to shoot a particle in the cup

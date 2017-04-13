@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.team8923;
 
-import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.hardware.configuration.DeviceConfiguration;
 
 /*
  * This class contains all objects and methods that should be accessible by all OpModes
@@ -28,10 +26,10 @@ abstract class Master extends LinearOpMode
     Servo servoHopperSweeper = null;
     Servo servoLiftHolder = null;
 
-    TouchSensor catapultButton;
+    AnalogInput catapultButton;
 
     boolean catapultArming = false;
-    boolean catapultButtonLast = false;
+    double catapultButtonLast;
 
     // Constants to be used in code. Measurements in millimeters
     private static final double GEAR_RATIO = 2.0; // Ratio of driven gear to driving gear
@@ -111,7 +109,7 @@ abstract class Master extends LinearOpMode
         servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
         servoLiftHolder.setPosition(ServoPositions.LIFT_HOLD.pos);
 
-        catapultButton = hardwareMap.touchSensor.get("catapultButton");
+        catapultButton = hardwareMap.analogInput.get("catapultButton");
 
         // Drivers need to get data quickly, and this doesn't take up too much bandwidth
         telemetry.setMsTransmissionInterval(50);
@@ -148,7 +146,7 @@ abstract class Master extends LinearOpMode
         telemetry.addData("Catapult Target", motorCatapult.getTargetPosition());
         telemetry.addData("Catapult Power", motorCatapult.getPower());
         telemetry.addData("Catapult Busy", motorCatapult.isBusy());
-        telemetry.addData("Catapult Button", catapultButton.isPressed());
+        telemetry.addData("Catapult Button", catapultButton.getVoltage());
 
         telemetry.addData("Lift Encoder", motorLift.getCurrentPosition());
 

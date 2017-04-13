@@ -523,17 +523,17 @@ abstract class MasterAutonomous extends Master
         telemetry.log().add("Arming Catapult: " + getRuntime());
 
         // Don't try to arm the catapult if it's already armed
-        if(!catapultButton.isPressed())
+        if(catapultButton.getVoltage() < 2.5)
             return;
 
         motorCatapult.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorCatapult.setPower(1.0);
-        catapultButtonLast = catapultButton.isPressed();
+        catapultButtonLast = catapultButton.getVoltage();
 
         // Wait until the catapult finishes moving
-        while(!(!catapultButton.isPressed() && catapultButtonLast) && opModeIsActive())
+        while(!(catapultButton.getVoltage() < 2.5 && catapultButtonLast > 2.5) && opModeIsActive())
         {
-            catapultButtonLast = catapultButton.isPressed();
+            catapultButtonLast = catapultButton.getVoltage();
             sendTelemetry();
             idle();
         }
