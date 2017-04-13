@@ -304,13 +304,13 @@ public class AutonomousNewPushers extends MasterAutonomous
             if (isRedTeam) // move shorter
             {
                 pivot(-89, 0.7);
-                moveAverage(0, 1250, 0, 0.8, 3);
+                moveAverage(0, 1200, 0, 0.8, 3);
                 pivot(89, 0.7);
             }
             else // move shorter
             {;
                 pivot(89, 0.7);
-                moveAverage(0, 1250, 0, 0.8, 3);
+                moveAverage(0, 1200, 0, 0.8, 3);
                 pivot(-89, 0.7);
             }
         }
@@ -319,13 +319,13 @@ public class AutonomousNewPushers extends MasterAutonomous
             if (isRedTeam) // move longer
             {
                 pivot(-89, 0.7);
-                moveAverage(0, 1250, 0, 0.8, 3);
+                moveAverage(0, 1200, 0, 0.8, 3);
                 pivot(89, 0.7);
             }
             else // move longer
             {
                 pivot(89, 0.7);
-                moveAverage(0, 1250, 0, 0.8, 3);
+                moveAverage(0, 1200, 0, 0.8, 3);
                 pivot(-89, 0.7);
             }
         }
@@ -430,7 +430,7 @@ public class AutonomousNewPushers extends MasterAutonomous
             if (isRedTeam) // RED
             {
                 move(0, -100, 0.5, 3); // back up less
-                pivot(-45, 0.8);
+                pivot(-52, 0.8);
                 pause(50);
                 refAngle = imu.getAngularOrientation().firstAngle;
                 //move(0, -400, 0.6, 2); // come closer more
