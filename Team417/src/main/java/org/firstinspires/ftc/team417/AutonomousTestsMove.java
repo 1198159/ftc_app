@@ -81,7 +81,6 @@ public class AutonomousTestsMove extends MasterAutonomous
                 targetIndex = 1;
                 targetPos[0] = 2743.2f;
                 targetPos[1] = mmFTCFieldWidth;
-                //telemetry.addData("Team: ", "Red 1"); // display what team we're on after choosing with the buttons
             }
             else
             {
@@ -93,9 +92,7 @@ public class AutonomousTestsMove extends MasterAutonomous
                 targetIndex = 3;
                 targetPos[0] = 1524;
                 targetPos[1] = mmFTCFieldWidth;
-                //telemetry.addData("Team: ", "Red 2"); // display what team we're on after choosing with the buttons
             }
-            telemetry.update();
         }
         else // if team BLUE
         {
@@ -109,7 +106,6 @@ public class AutonomousTestsMove extends MasterAutonomous
                 targetIndex = 2;
                 targetPos[0] = mmFTCFieldWidth;
                 targetPos[1] = 2743.2f;
-                //telemetry.addData("Team: ", "Blue 1");
             }
             else
             {
@@ -121,7 +117,6 @@ public class AutonomousTestsMove extends MasterAutonomous
                 targetIndex = 0;
                 targetPos[0] = mmFTCFieldWidth;
                 targetPos[1] = 1524;
-                //telemetry.addData("Team: ", "Blue 2");
             }
         }
 

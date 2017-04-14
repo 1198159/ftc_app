@@ -219,7 +219,7 @@ abstract class MasterAutonomous extends MasterOpMode
 
             pivot(error, pivotSpeed);
 
-            telemetry.log().add(String.format("CurAngle: %f, error: %f", curTurnAngle, error));
+            if (isLogging) telemetry.log().add(String.format("CurAngle: %f, error: %f", curTurnAngle, error));
             idle();
 
         } while (opModeIsActive() && (Math.abs(error) > TOL_ANGLE));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
@@ -688,7 +688,7 @@ abstract class MasterAutonomous extends MasterOpMode
             motorBackLeft.setPower(speedBL);
             motorBackRight.setPower(speedBR);
 
-            telemetry.log().add(String.format("avgDistError: %f , EA: %f", avgDistError, errorAngle));
+            if (isLogging) telemetry.log().add(String.format("avgDistError: %f , EA: %f", avgDistError, errorAngle));
 
             idle();
         }
@@ -701,7 +701,7 @@ abstract class MasterAutonomous extends MasterOpMode
                 )
                 );
 
-        telemetry.log().add(String.format("avgDistError: %f , EA: %f", avgDistError, errorAngle));
+        if (isLogging) telemetry.log().add(String.format("avgDistError: %f , EA: %f", avgDistError, errorAngle));
         telemetry.update();
 
         // stop the motors
@@ -794,7 +794,7 @@ abstract class MasterAutonomous extends MasterOpMode
             pause(50);
 
             runtime.reset();
-            telemetry.log().add(String.format("cnt %d ErX:%.2f ErY:%.2f ErA:%.2f", loopCount, robotErrorX, robotErrorY, errorAngle)); // display each motor error as well
+            if (isLogging) telemetry.log().add(String.format("cnt %d ErX:%.2f ErY:%.2f ErA:%.2f", loopCount, robotErrorX, robotErrorY, errorAngle)); // display each motor error as well
             telemetry.update();
             loopCount++;
 
@@ -872,7 +872,7 @@ abstract class MasterAutonomous extends MasterOpMode
                 sleep(150);
             }
 
-            telemetry.log().add(String.format("StartAngle: %f, CurAngle: %f, error: %f", startAngle, curTurnAngle, error));
+            if (isLogging) telemetry.log().add(String.format("StartAngle: %f, CurAngle: %f, error: %f", startAngle, curTurnAngle, error));
             idle();
 
         } while (opModeIsActive() && (Math.abs(error) > TOL_ANGLE || Math.abs(errorP1) > TOL_ANGLE) );
@@ -936,7 +936,7 @@ abstract class MasterAutonomous extends MasterOpMode
                 sleep(150);
             }
 
-            telemetry.log().add(String.format("StartAngle: %f, CurAngle: %f, error: %f", refAngle, curTurnAngle, error));
+            if (isLogging) telemetry.log().add(String.format("StartAngle: %f, CurAngle: %f, error: %f", refAngle, curTurnAngle, error));
             idle();
 
         } while (opModeIsActive() && (Math.abs(error) > TOL_ANGLE || Math.abs(errorP1) > TOL_ANGLE) );
@@ -1142,7 +1142,7 @@ abstract class MasterAutonomous extends MasterOpMode
         telemetry.addData("Path", "pushing button");
         telemetry.update();
         move(0, 220, 0.4, 3); // push the button, used to be 325mm forwards
-        telemetry.log().add(String.format("pushed button"));
+        if (isLogging) telemetry.log().add(String.format("pushed button"));
     }
 
     public void configureDashboard()

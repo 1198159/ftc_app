@@ -2,7 +2,7 @@ package org.firstinspires.ftc.team417;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="ShootThenBeacons", group = "Swerve")
+@Autonomous(name="Autonomous Option 2", group = "Swerve")
 // @Disabled
 
 public class AutonomousShootBeacon extends MasterAutonomous
@@ -147,7 +147,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
         TOL_ANGLE = 4.0;
         Kpivot = 1.0/50.0;
         MINSPEED = 0.3;
-        TOL = 400.0; // used to be 1000
+        TOL = 500.0; // used to be 1000
         Kmove = 1.0/2000.0;
 
         motorLauncher.setPower(0.85);
@@ -174,7 +174,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
             moveKeepHeading(0, -1400, 30, refAngle, 0.9, 7);
             pause(50);
             TOL = 200.0;
-            moveKeepHeading(0, -1000, 20, refAngle, 0.9, 7);
+            moveKeepHeading(0, -800, 25, refAngle, 0.9, 7);
             pause(50);
             Kpivot = 1.0/90.0;
             pivotWithReference(-90, refAngle, 0.7);
@@ -221,15 +221,19 @@ public class AutonomousShootBeacon extends MasterAutonomous
 
 // detect beacon color of left side: 0 is blue, 1 is red
         int beaconColor = VuforiaNav.GetBeaconColor();
-        telemetry.log().add(String.format("LeftSide: %f, RightSide: %f", VuforiaNav.leftColorHSV[0], VuforiaNav.rightColorHSV[0]));
-        telemetry.log().add(String.format("Returned Color: %d", beaconColor));
+        if (isLogging)
+        {
+            telemetry.log().add(String.format("LeftSide: %f, RightSide: %f", VuforiaNav.leftColorHSV[0], VuforiaNav.rightColorHSV[0]));
+            telemetry.log().add(String.format("Returned Color: %d", beaconColor));
+        }
+
         if (isRedTeam)
         {
-            telemetry.log().add(String.format("team red"));
+            if (isLogging) telemetry.log().add(String.format("team red"));
         }
         else
         {
-            telemetry.log().add(String.format("team blue"));
+            if (isLogging) telemetry.log().add(String.format("team blue"));
         }
         telemetry.update();
 

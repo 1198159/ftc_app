@@ -2,7 +2,7 @@ package org.firstinspires.ftc.team417;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Autonomous New Pushers", group = "Swerve")
+@Autonomous(name="Autonomous Option 1", group = "Swerve")
 // @Disabled
 
 public class AutonomousNewPushers extends MasterAutonomous
@@ -79,7 +79,6 @@ public class AutonomousNewPushers extends MasterAutonomous
                 targetIndex = 1;
                 targetPos[0] = 2743.2f;
                 targetPos[1] = mmFTCFieldWidth;
-                //telemetry.addData("Team: ", "Red 1"); // display what team we're on after choosing with the buttons
             }
             else
             {
@@ -91,7 +90,6 @@ public class AutonomousNewPushers extends MasterAutonomous
                 targetIndex = 3;
                 targetPos[0] = 1524;
                 targetPos[1] = mmFTCFieldWidth;
-                //telemetry.addData("Team: ", "Red 2"); // display what team we're on after choosing with the buttons
             }
             telemetry.update();
         }
@@ -107,7 +105,6 @@ public class AutonomousNewPushers extends MasterAutonomous
                 targetIndex = 2;
                 targetPos[0] = mmFTCFieldWidth;
                 targetPos[1] = 2743.2f;
-                //telemetry.addData("Team: ", "Blue 1");
             }
             else
             {
@@ -119,7 +116,6 @@ public class AutonomousNewPushers extends MasterAutonomous
                 targetIndex = 0;
                 targetPos[0] = mmFTCFieldWidth;
                 targetPos[1] = 1524;
-                //telemetry.addData("Team: ", "Blue 2");
             }
         }
 
@@ -193,15 +189,20 @@ public class AutonomousNewPushers extends MasterAutonomous
 
 // detect beacon color of left side: 0 is blue, 1 is red
         int beaconColor = VuforiaNav.GetBeaconColor();
-        telemetry.log().add(String.format("LeftSide: %f, RightSide: %f", VuforiaNav.leftColorHSV[0], VuforiaNav.rightColorHSV[0]));
-        telemetry.log().add(String.format("Returned Color: %d", beaconColor));
+
+        if (isLogging)
+        {
+            telemetry.log().add(String.format("LeftSide: %f, RightSide: %f", VuforiaNav.leftColorHSV[0], VuforiaNav.rightColorHSV[0]));
+            telemetry.log().add(String.format("Returned Color: %d", beaconColor));
+        }
+
         if (isRedTeam)
         {
-            telemetry.log().add(String.format("team red"));
+            if (isLogging) telemetry.log().add(String.format("team red"));
         }
         else
         {
-            telemetry.log().add(String.format("team blue"));
+            if (isLogging) telemetry.log().add(String.format("team blue"));
         }
         telemetry.update();
 
