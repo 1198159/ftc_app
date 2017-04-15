@@ -767,9 +767,9 @@ abstract class MasterAutonomous extends MasterOpMode
 
             if (Math.abs(errorAngle) > VUFORIA_TOL_ANGLE)
             {
-                PIVOT_MINSPEED = 0.15;
-                Kpivot = 1.0/80.0;
-                TOL_ANGLE = 2.0;
+                PIVOT_MINSPEED = 0.14;
+                Kpivot = 1.0/100.0;
+                TOL_ANGLE = 1.5;
                 pivot(errorAngle, 0.5);
             }
             pause(50);
@@ -778,6 +778,7 @@ abstract class MasterAutonomous extends MasterOpMode
 
             if (Math.abs(robotErrorY) > VUFORIA_TOL)
             {
+                TOL = 80;
                 MINSPEED = 0.2;
                 Kmove = 1.0/1200.0;
                 move(0.0, robotErrorY, 0.3, 3);
@@ -787,8 +788,8 @@ abstract class MasterAutonomous extends MasterOpMode
             if (Math.abs(robotErrorX) > VUFORIA_TOL)
             {
                 TOL = 70;
-                MINSPEED = 0.32;
-                Kmove = 1.0/1200.0;
+                MINSPEED = 0.3;
+                Kmove = 1.0/1250.0;
                 move(robotErrorX, 0, 0.5, 3);
             }
             pause(50);
@@ -1141,7 +1142,7 @@ abstract class MasterAutonomous extends MasterOpMode
         pause(70);
         telemetry.addData("Path", "pushing button");
         telemetry.update();
-        move(0, 220, 0.4, 3); // push the button, used to be 325mm forwards
+        move(0, 230, 0.35, 3); // push the button, used to be 325mm forwards
         if (isLogging) telemetry.log().add(String.format("pushed button"));
     }
 

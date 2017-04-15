@@ -126,6 +126,8 @@ public class AutonomousShootBeacon extends MasterAutonomous
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        autoRuntime.reset(); // set the 30 second timer
+
         VuforiaNav.startTracking();
         //     pause(startDelay);
         VuforiaNav.getLocation(targetIndex);
@@ -147,37 +149,37 @@ public class AutonomousShootBeacon extends MasterAutonomous
         TOL_ANGLE = 4.0;
         Kpivot = 1.0/50.0;
         MINSPEED = 0.3;
-        TOL = 500.0; // used to be 1000
+        PIVOT_MINSPEED = 0.15;
+        TOL = 50;
         Kmove = 1.0/2000.0;
 
         motorLauncher.setPower(0.85);
 
-        //moveAverage(0, -450, 0, 0.7, 3);
         moveMaintainHeading(0, -450, 0, refAngle, 0.7, 3);
-        pause(100);
+        pause(200);
 
         // shoot up to two particles
         motorCollector.setPower(1.0);
-        servoParticle.setPosition(0.8);
+        servoParticle.setPosition(SERVO_PARTICLE_HIGH);
         pause(300);
-        servoParticle.setPosition(0.0);
+        servoParticle.setPosition(SERVO_PARTICLE_LOW);
         pause(1500);
-        servoParticle.setPosition(0.8);
+        servoParticle.setPosition(SERVO_PARTICLE_HIGH);
         pause(300);
-        servoParticle.setPosition(0.0);
+        servoParticle.setPosition(SERVO_PARTICLE_LOW);
         pause(300);
         motorLauncher.setPower(0.0);
         motorCollector.setPower(0.0);
 
+        TOL = 100.0; // used to be 1000
+
         if (isRedTeam)
         {
-            moveKeepHeading(0, -1400, 30, refAngle, 0.9, 7);
+            moveKeepHeading(0, -2200, 32, refAngle, 0.9, 7);
             pause(50);
-            TOL = 200.0;
-            moveKeepHeading(0, -800, 25, refAngle, 0.9, 7);
-            pause(50);
-            Kpivot = 1.0/90.0;
-            pivotWithReference(-90, refAngle, 0.7);
+            Kpivot = 1.0/120.0;
+            WaitUntilTime(10000);
+            pivotWithReference(-91, refAngle, 0.7);
         }
         else // if blue team
         {
@@ -187,6 +189,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
             moveKeepHeading(0, -1300, -12, refAngle, 0.9, 7);
             pause(50);
             Kpivot = 1.0/90.0;
+            WaitUntilTime(10000);
             pivotWithReference(90, refAngle, 0.7);
         }
 
@@ -200,7 +203,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
         TOL_ANGLE = 2.5;
         VUFORIA_TOL_ANGLE = 2.5;
 
-        TOL = 90;
+        TOL = 90; //38, a little less than 40
         VUFORIA_TOL = 40;
 
         telemetry.addData("Path", "align pivot vuf");
