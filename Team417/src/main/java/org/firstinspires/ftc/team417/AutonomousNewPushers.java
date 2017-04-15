@@ -291,7 +291,7 @@ public class AutonomousNewPushers extends MasterAutonomous
 
         // for big move left or right
         TOL = 40;
-        TOL_ANGLE = 1.5;
+        TOL_ANGLE = 2.0;
         Kmove = 1.0/2000.0;
         Kpivot = 1.0/120.0;
         MINSPEED = 0.3;
@@ -304,14 +304,14 @@ public class AutonomousNewPushers extends MasterAutonomous
         {
             if (isRedTeam) // move shorter
             {
-                pivot(-89, 0.7);
-                moveAverage(0, 1200, 0, 0.8, 3);
+                pivot(-89, 0.8);
+                moveAverage(0, 1200, 0, 0.9, 3);
                 pivot(89, 0.7);
             }
             else // move shorter
-            {;
-                pivot(89, 0.7);
-                moveAverage(0, 1200, 0, 0.8, 3);
+            {
+                pivot(89, 0.8);
+                moveAverage(0, 1200, 0, 0.9, 3);
                 pivot(-89, 0.7);
             }
         }
@@ -319,14 +319,14 @@ public class AutonomousNewPushers extends MasterAutonomous
         {
             if (isRedTeam) // move longer
             {
-                pivot(-89, 0.7);
-                moveAverage(0, 1200, 0, 0.8, 3);
+                pivot(-89, 0.8);
+                moveAverage(0, 1200, 0, 0.9, 3);
                 pivot(89, 0.7);
             }
             else // move longer
             {
-                pivot(89, 0.7);
-                moveAverage(0, 1200, 0, 0.8, 3);
+                pivot(89, 0.8);
+                moveAverage(0, 1200, 0, 0.9, 3);
                 pivot(-89, 0.7);
             }
         }
@@ -418,7 +418,7 @@ public class AutonomousNewPushers extends MasterAutonomous
         servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
         servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
 
-        if (autoRuntime.milliseconds() < 28000)
+        if (autoRuntime.milliseconds() < 28000) //TODO: should this be more?????
         {
             TOL_ANGLE = 3.0;
             VUFORIA_TOL_ANGLE = 3.0;
@@ -431,10 +431,9 @@ public class AutonomousNewPushers extends MasterAutonomous
             if (isRedTeam) // RED
             {
                 move(0, -100, 0.5, 3); // back up less
-                pivot(-52, 0.8);
+                pivot(-50, 0.8);
                 pause(50);
                 refAngle = imu.getAngularOrientation().firstAngle;
-                //move(0, -400, 0.6, 2); // come closer more
                 moveMaintainHeading(0, -450, 0, refAngle, 0.6, 3);
             }
             else // BLUE
@@ -443,24 +442,26 @@ public class AutonomousNewPushers extends MasterAutonomous
                 pivot(57, 0.8);
                 pause(50);
                 refAngle = imu.getAngularOrientation().firstAngle;
-                //move(0, -400, 0.6, 2); // come closer more
                 moveMaintainHeading(0, -450, 0, refAngle, 0.6, 3);
             }
 
             motorCollector.setPower(1.0);
-            servoParticle.setPosition(0.8);
+            servoParticle.setPosition(SERVO_PARTICLE_HIGH);
             pause(300);
             // Make sure time isn't up
             //if (autoRuntime.milliseconds() < 29000) return;
-            servoParticle.setPosition(0.0);
+            servoParticle.setPosition(SERVO_PARTICLE_LOW);
             pause(1500);
             //if (autoRuntime.milliseconds() > 29500) return;
-            servoParticle.setPosition(0.8);
+            servoParticle.setPosition(SERVO_PARTICLE_HIGH);
             pause(300);
-            servoParticle.setPosition(0.0);
+            servoParticle.setPosition(SERVO_PARTICLE_LOW);
             pause(300);
             motorLauncher.setPower(0.0);
             motorCollector.setPower(0.0);
+
+            moveMaintainHeading(0, -600, 0, refAngle, 0.7, 3);
+            moveMaintainHeading(0, -200, 0, refAngle, 0.6, 3);
         }
 
         telemetry.addData("Path", "Complete");
