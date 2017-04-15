@@ -55,12 +55,15 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double TURN_SPEED = 0.5;
     static final int MAX_SPEED = 2700;
 
-    static final double LEFT_PUSHER_HIGH = 0.85;
-    static final double RIGHT_PUSHER_HIGH = 0.99;
-    static final double LEFT_PUSHER_LOW = 0.08;
-    static final double RIGHT_PUSHER_LOW = 0.26;
+    static final double SERVO_PARTICLE_HIGH = 0.55;
+    static final double SERVO_PARTICLE_LOW = 0.08;
 
-    static final boolean isLogging = true;
+    static final double LEFT_PUSHER_HIGH = 0.85;
+    static final double RIGHT_PUSHER_HIGH = 0.83;
+    static final double LEFT_PUSHER_LOW = 0.08;
+    static final double RIGHT_PUSHER_LOW = 0.07;
+
+    static final boolean isLogging = false;
 
 
     public void initializeHardware()
@@ -117,7 +120,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
-        servoParticle.setPosition(0.07);
+        servoParticle.setPosition(SERVO_PARTICLE_LOW);
         servoRightPusher.setDirection(Servo.Direction.REVERSE);
         servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
         servoLeftPusher.setPosition(LEFT_PUSHER_LOW);

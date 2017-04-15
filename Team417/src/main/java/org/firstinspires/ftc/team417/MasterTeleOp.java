@@ -27,8 +27,12 @@ public class MasterTeleOp extends MasterOpMode
     boolean isBButtonPressed = false; // isBbuttonPressed causes is lift to toggle
     boolean isLiftActivated = false;
     boolean isLeftBumperPushed = false; // is left bumper causes is mode to toggle
-    boolean isPusherUp = false;
+
+    boolean isLeftPusherUp = false;
+    boolean isRightPusherUp = false;
     boolean isXButtonPressed = false;
+    boolean isYButtonPressed = false;
+
     boolean isModeReversed = false;
     boolean isLegatoMode = false;
     boolean isRightBumperPushed = false;
@@ -159,8 +163,8 @@ public class MasterTeleOp extends MasterOpMode
 
 // move particle servo
            //servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.7));
-           if (-gamepad2.right_stick_y > 0.4) servoParticle.setPosition(0.55);
-           else servoParticle.setPosition(0.07);
+           if (-gamepad2.right_stick_y > 0.4) servoParticle.setPosition(SERVO_PARTICLE_HIGH);
+           else servoParticle.setPosition(SERVO_PARTICLE_LOW);
 
            // HIGH SPEED FOR MOTOR LAUNCHER IS 0.7, LOW SPEED IS 0.4 (held at least half way down)
            if (gamepad2.right_trigger > 0.5) motorLauncherSetSpeed = 0.8;
@@ -224,24 +228,29 @@ public class MasterTeleOp extends MasterOpMode
                motorCollector.setPower(0);
            }
 
+
            // press button x to toggle up and down for button pusher servo
            if (gamepad2.x && !isXButtonPressed)
            {
                isXButtonPressed = true;
-               isPusherUp = !isPusherUp;
+               isLeftPusherUp = !isLeftPusherUp;
            }
            isXButtonPressed = gamepad2.x;
 
-           if(isPusherUp)
+           if(isLeftPusherUp) servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
+           else servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
+
+
+           // press button y to toggle up and down for button pusher servo
+           if (gamepad2.y && !isYButtonPressed)
            {
-               servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
-               servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
+               isYButtonPressed = true;
+               isRightPusherUp = !isRightPusherUp;
            }
-           else
-           {
-               servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
-               servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
-           }
+           isYButtonPressed = gamepad2.y;
+
+           if(isRightPusherUp) servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
+           else servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
 
 
 
