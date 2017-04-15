@@ -123,6 +123,8 @@ public class AutonomousTestsMove extends MasterAutonomous
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        autoRuntime.reset(); // set the 30 second timer
+
         VuforiaNav.startTracking();
         //     pause(startDelay);
         VuforiaNav.getLocation(targetIndex);
@@ -130,47 +132,32 @@ public class AutonomousTestsMove extends MasterAutonomous
 
         double refAngle = imu.getAngularOrientation().firstAngle;
 
-        TOL_ANGLE = 30.0;
-        VUFORIA_TOL_ANGLE = 3.0;
-        Kpivot = 1.0/150.0;
-        MINSPEED = 0.25;
-        TOL = 20;
-        Kmove = 1.0/1200.0;
-        Kpivot = 1.0/150.0;
+        WaitUntilTime(5000);
 
-        //pivot with heading test
-        /*
-        moveMaintainHeading(0, 0, 90, refAngle, 0.7, 7);
-        pause(5000);
-        moveMaintainHeading(0, 0, 0, refAngle, 0.7, 7);
-        pause(5000);
-        moveMaintainHeading(0, 0, -90, refAngle, 0.7, 7);
-        */
+        TOL = 90;
+        VUFORIA_TOL = 40;
+        TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
+        VUFORIA_TOL_ANGLE = 3.0; // tol angle for scan is 3, not accurate
+        Kmove = 1.0/1000.0;
+        Kpivot = 1.0/150.0;
+        MINSPEED = 0.3;
 
-/*
+        telemetry.addData("Path", "scanning for first target");
+        telemetry.update();
+        pivotDetectTarget(30, 5);
+
         // setting for align pivot Vuforia
-        TOL_ANGLE = 3.0;
-        VUFORIA_TOL_ANGLE = 3.0;
-        VUFORIA_TOL = 50;
-        TOL = 110;
+        TOL_ANGLE = 2.5;
+        VUFORIA_TOL_ANGLE = 2.5;
         MINSPEED = 0.3;
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
         alignPivotVuforia(0.6, 0, 600, 4);
 
-        // setting for pivot Vuforia
-        TOL_ANGLE = 2.0;
-        VUFORIA_TOL_ANGLE = 2.0;
-        Kpivot = 1.0/200.0;
-        MINSPEED = 0.3;
-        //telemetry.addData("Path", "pivotVuforia");
-        //telemetry.update();
-        //pivotVuforia(targetAngle, 0.5);
-*/
-
 //-------------------------------SECOND OPTION START------------------------------------
 
+        /*
         TOL_ANGLE = 4.0;
         Kpivot = 1.0/50.0;
         MINSPEED = 0.3;
@@ -179,7 +166,7 @@ public class AutonomousTestsMove extends MasterAutonomous
 
         motorLauncher.setPower(0.85);
 
-        moveAverage(0, -400, 0, 0.7, 3);
+        moveMaintainHeading(0, -450, 0, refAngle, 0.7, 3);
         pause(50);
 
         // shoot up to two particles
@@ -195,11 +182,24 @@ public class AutonomousTestsMove extends MasterAutonomous
         motorLauncher.setPower(0.0);
         motorCollector.setPower(0.0);
 
-        moveKeepHeading(0, -1200, -30, refAngle, 0.9, 7);
-        pause(50);
-        TOL = 200.0;
-        moveKeepHeading(0, -1300, -12, refAngle, 0.9, 7);
-        pause(50);
+        if (isRedTeam)
+        {
+            moveKeepHeading(0, -2200, 30, refAngle, 0.9, 7);
+            pause(50);
+            Kpivot = 1.0/90.0;
+            pivotWithReference(-90, refAngle, 0.7);
+        }
+        else // if blue team
+        {
+            moveKeepHeading(0, -1200, -30, refAngle, 0.9, 7);
+            pause(50);
+            TOL = 200.0;
+            moveKeepHeading(0, -1300, -12, refAngle, 0.9, 7);
+            pause(50);
+            Kpivot = 1.0/90.0;
+            pivotWithReference(90, refAngle, 0.7);
+        }
+        */
 //---------------------------------------------------------------------------------------
 
 
