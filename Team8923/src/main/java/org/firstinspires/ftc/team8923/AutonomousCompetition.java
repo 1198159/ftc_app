@@ -348,23 +348,26 @@ public class AutonomousCompetition extends MasterAutonomous
         turnToAngle(angleToGoal - 95);
 
         /*
+         * fire first particle
          * start moving hopper
          * arm
          * move servo back
          * fire
          */
 
+        // Fire first particle
+        armCatapult();
+        fireCatapult();
+        numberOfShots--;
+
         for(; numberOfShots > 0; numberOfShots--)
         {
             telemetry.log().add("-- Starting Fire Routine --");
-            if(numberOfShots != 3)
-            {
-                if(numberOfShots == 2)
-                    servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
-                else
-                    servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
-                armCatapult();
-            }
+            if(numberOfShots == 2)
+                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_FIRST.pos);
+            else
+                servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_PUSH_SECOND.pos);
+            armCatapult();
             sleep(500);
             servoHopperSweeper.setPosition(ServoPositions.HOPPER_SWEEP_BACK.pos);
             fireCatapult();
