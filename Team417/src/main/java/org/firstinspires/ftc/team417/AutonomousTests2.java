@@ -2,7 +2,7 @@ package org.firstinspires.ftc.team417;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Autonomous Tests 2", group = "Swerve")
+@Autonomous(name="Autonomous Option 3", group = "Swerve")
 // @Disabled
 
 public class AutonomousTests2 extends MasterAutonomous
@@ -136,32 +136,18 @@ public class AutonomousTests2 extends MasterAutonomous
 
         Kmove = 1.0/2000.0;
 
-        move(0, -550, 0.5 , 3);
-
-        /*
-        // shoot twice
-        motorLauncher.setPower(0.7);
-        pause(1500);
-        servoParticle.setPosition(0.8);
-        pause(400);
-        servoParticle.setPosition(0.0);
-        pause(1200);
-        servoParticle.setPosition(0.8);
-        pause(400);
-        servoParticle.setPosition(0.0);
-        motorLauncher.setPower(0.0);
-*/
-
         motorLauncher.setPower(0.85);
+        move(0, -800, 0.5 , 3);
+
         motorCollector.setPower(1.0);
         pause(1000);
-        servoParticle.setPosition(0.8);
+        servoParticle.setPosition(SERVO_PARTICLE_HIGH);
         pause(300);
-        servoParticle.setPosition(0.0);
+        servoParticle.setPosition(SERVO_PARTICLE_LOW);
         pause(1500);
-        servoParticle.setPosition(0.8);
+        servoParticle.setPosition(SERVO_PARTICLE_HIGH);
         pause(300);
-        servoParticle.setPosition(0.0);
+        servoParticle.setPosition(SERVO_PARTICLE_LOW);
         pause(300);
         motorLauncher.setPower(0.0);
         motorCollector.setPower(0.0);
@@ -171,7 +157,7 @@ public class AutonomousTests2 extends MasterAutonomous
         //move(0, -1166.8, 0.7, 4);
         move(0, -868, 0.5, 4);
         pause(500);
-        move(0, -50, 0.4, 3);
+        move(0, -100, 0.4, 3);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
