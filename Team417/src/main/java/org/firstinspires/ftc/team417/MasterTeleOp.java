@@ -188,10 +188,14 @@ public class MasterTeleOp extends MasterOpMode
                    else motorLauncherSpeed -= 0.01;
                }
            }
-           motorLauncher.setPower(Range.clip(motorLauncherSpeed, 0, 0.8));
 
 
-           //motorLauncher.setPower(Range.clip(gamepad2.right_trigger, 0, 0.7));
+           if (gamepad2.left_bumper && motorLauncherSpeed < 0.1) // if speed is low and bumper activated
+           {
+               motorLauncher.setPower(-0.2); // then go backwards (slowly)
+           }
+           else motorLauncher.setPower(Range.clip(motorLauncherSpeed, 0, 0.8));
+
 
            // if just pressed and previous time wasn't pressed, for reverse mode
            if (gamepad1.left_bumper && !isLeftBumperPushed)
