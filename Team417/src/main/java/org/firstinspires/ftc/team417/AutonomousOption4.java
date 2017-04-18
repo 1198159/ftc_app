@@ -136,13 +136,13 @@ public class AutonomousOption4 extends MasterAutonomous
 
         refAngle = imu.getAngularOrientation().firstAngle;
 
-        Kpivot = 1.0/70.0;
+        Kpivot = 1.0/50.0;
         Kmove = 1.0/1500.0;
         TOL = 90;
 
         motorLauncher.setPower(0.85);
         //move(0, -800, 0.5 , 3);
-        moveKeepHeading(0, -850, 0, refAngle, 0.8, 3);
+        moveKeepHeading(0, -700, 0, refAngle, 0.8, 3);
 
         motorCollector.setPower(1.0);
         pause(1000);
@@ -166,9 +166,9 @@ public class AutonomousOption4 extends MasterAutonomous
 
         refAngle = imu.getAngularOrientation().firstAngle;
 
-        Kpivot = 1.0/70.0;
+        Kpivot = 1.0/50.0;
         //move(0, -1600, 0.7, 4);
-        moveKeepHeading(0, -1600, 0, refAngle, 0.8, 3);
+        moveKeepHeading(0, -1700, 0, refAngle, 0.9, 3);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

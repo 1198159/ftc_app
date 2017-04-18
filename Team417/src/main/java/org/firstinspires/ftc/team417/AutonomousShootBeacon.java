@@ -65,6 +65,8 @@ public class AutonomousShootBeacon extends MasterAutonomous
             telemetry.update();
             idle();
         }
+        isStartingPosOne = true; // option 2, is always pos 1
+
         telemetry.update();
 
         if (isRedTeam) // if team RED
@@ -171,18 +173,33 @@ public class AutonomousShootBeacon extends MasterAutonomous
         motorLauncher.setPower(0.0);
         motorCollector.setPower(0.0);
 
-        TOL = 100.0; // used to be 1000
+        TOL = 600.0; // used to be 1000
+        TOL_ANGLE = 10.0;
 
         if (isRedTeam)
         {
-            moveKeepHeading(0, -2200, 32, refAngle, 0.9, 7);
-            pause(50);
+            Kpivot = 1.0/180.0;
+            pivot(36, 0.9);
+            Kpivot = 1.0/50.0;
+            moveKeepHeading(0, -1300, 36, refAngle, 0.9, 7);
+            TOL = 400.0;
+            moveKeepHeading(0, -1200, 24, refAngle, 0.9, 7);
             Kpivot = 1.0/120.0;
             WaitUntilTime(10000);
             pivotWithReference(-91, refAngle, 0.7);
         }
         else // if blue team
         {
+            Kpivot = 1.0/180.0;
+            pivot(-36, 0.9);
+            Kpivot = 1.0/50.0;
+            moveKeepHeading(0, -1200, -34, refAngle, 0.9, 7);
+            TOL = 400.0;
+            moveKeepHeading(0, -1300, -22, refAngle, 0.9, 7);
+            Kpivot = 1.0/120.0;
+            WaitUntilTime(10000);
+            pivotWithReference(91, refAngle, 0.7);
+            /*
             moveKeepHeading(0, -1200, -30, refAngle, 0.9, 7);
             pause(50);
             TOL = 200.0;
@@ -191,6 +208,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
             Kpivot = 1.0/90.0;
             WaitUntilTime(10000);
             pivotWithReference(90, refAngle, 0.7);
+            */
         }
 
         //-------------start using Vuforia-----------------------------------------
@@ -204,10 +222,11 @@ public class AutonomousShootBeacon extends MasterAutonomous
         VUFORIA_TOL_ANGLE = 2.5;
 
         TOL = 90; //38, a little less than 40
-        VUFORIA_TOL = 40;
+        VUFORIA_TOL = 30;
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
+        pause(250);
         alignPivotVuforia(0.6, 10, 600, 4);
         pause(50);
 
@@ -300,7 +319,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
         Kmove = 1.0/1200.0;
         Kpivot = 1/140.0;
         MINSPEED = 0.35;
-        moveMaintainHeading(0, -250, 0, refWallAngle, 0.5, 3); // back up
+        moveMaintainHeading(0, -230, 0, refWallAngle, 0.5, 3); // back up
         // lower both of the pushers
         servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
         servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
@@ -380,6 +399,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
         VUFORIA_TOL_ANGLE = 2.5;
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
+        pause(250);
         alignPivotVuforia(0.6, 10, 600, 4);
         pause(50);
 
@@ -445,7 +465,7 @@ public class AutonomousShootBeacon extends MasterAutonomous
         Kmove = 1.0/1200.0;
         Kpivot = 1/140.0;
         MINSPEED = 0.35;
-        moveMaintainHeading(0, -250, 0, refWallAngle, 0.5, 3); // back up
+        moveMaintainHeading(0, -230, 0, refWallAngle, 0.5, 3); // back up
         // lower both of the pushers
         servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
         servoLeftPusher.setPosition(LEFT_PUSHER_LOW);

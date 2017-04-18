@@ -149,8 +149,8 @@ public class AutonomousNewPushers extends MasterAutonomous
         telemetry.addData("Path", "pivot 70");
         telemetry.update();
         // pivot to face target
-        pivot(pivotAngle, 0.9); // make sure IMU is on
-        pause(200);
+        pivot(pivotAngle, 0.8); // make sure IMU is on
+        pause(250);
 
         TOL = 90;
         VUFORIA_TOL = 40;
@@ -171,7 +171,7 @@ public class AutonomousNewPushers extends MasterAutonomous
 
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
-        alignPivotVuforia(0.6, 0, 600, 4);
+        alignPivotVuforia(0.6, 10, 600, 4);
         pause(50);
 
         // This reference angle is stored right before the robot pushes the button, so it's not out of alignment YET.
@@ -348,7 +348,7 @@ public class AutonomousNewPushers extends MasterAutonomous
         VUFORIA_TOL_ANGLE = 2.5;
         telemetry.addData("Path", "align pivot vuf");
         telemetry.update();
-        alignPivotVuforia(0.6, 0, 600, 4);
+        alignPivotVuforia(0.6, 10, 600, 4);
         pause(50);
 
         // detect beacon color of left side: 0 is blue, 1 is red

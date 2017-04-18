@@ -772,18 +772,16 @@ abstract class MasterAutonomous extends MasterOpMode
                 TOL_ANGLE = 1.5;
                 pivot(errorAngle, 0.5);
             }
-            pause(50);
 
             refAngle = imu.getAngularOrientation().firstAngle;
 
             if (Math.abs(robotErrorY) > VUFORIA_TOL)
             {
-                TOL = 80;
+                TOL = 70;
                 MINSPEED = 0.2;
                 Kmove = 1.0/1200.0;
                 move(0.0, robotErrorY, 0.3, 3);
             }
-            pause(50);
 
             if (Math.abs(robotErrorX) > VUFORIA_TOL)
             {
@@ -792,7 +790,6 @@ abstract class MasterAutonomous extends MasterOpMode
                 Kmove = 1.0/1250.0;
                 move(robotErrorX, 0, 0.5, 3);
             }
-            pause(50);
 
             runtime.reset();
             if (isLogging) telemetry.log().add(String.format("cnt %d ErX:%.2f ErY:%.2f ErA:%.2f", loopCount, robotErrorX, robotErrorY, errorAngle)); // display each motor error as well
@@ -804,7 +801,7 @@ abstract class MasterAutonomous extends MasterOpMode
             motorFrontRight.setPower(0);
             motorBackLeft.setPower(0);
             motorBackRight.setPower(0);
-            pause(200); // allow Vuforia to catch up
+            pause(250); // allow Vuforia to catch up
 
             // error is in mm
         } while ( opModeIsActive() && ( Math.abs(robotErrorX) > VUFORIA_TOL || Math.abs(robotErrorY) > VUFORIA_TOL
@@ -957,7 +954,7 @@ abstract class MasterAutonomous extends MasterOpMode
         for (i = 0; i < numIterations; i++)
         {
             // allow Vuforia to catch up
-            sleep(300);
+            pause(300);
             if (VuforiaNav.isVisible(targetIndex))
             {
                 return;
@@ -969,10 +966,10 @@ abstract class MasterAutonomous extends MasterOpMode
         //pivot(-span, 0.7);
         PivotForSeconds(-0.5, 800);
         angle = 0.0;
-        sleep(300);
+        pause(300);
         for (i = 0; i < numIterations; i++)
         {
-            sleep(300);
+            pause(300);
             if (VuforiaNav.isVisible(targetIndex))
             {
                 return;
@@ -1142,7 +1139,7 @@ abstract class MasterAutonomous extends MasterOpMode
         pause(70);
         telemetry.addData("Path", "pushing button");
         telemetry.update();
-        move(0, 230, 0.35, 3); // push the button, used to be 325mm forwards
+        move(0, 230, 0.3, 3); // push the button, used to be 325mm forwards
         if (isLogging) telemetry.log().add(String.format("pushed button"));
     }
 
