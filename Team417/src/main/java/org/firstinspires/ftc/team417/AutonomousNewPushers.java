@@ -150,7 +150,7 @@ public class AutonomousNewPushers extends MasterAutonomous
         telemetry.update();
         // pivot to face target
         pivot(pivotAngle, 0.8); // make sure IMU is on
-        pause(250);
+        pause(300);
 
         TOL = 90;
         VUFORIA_TOL = 40;
@@ -351,6 +351,7 @@ public class AutonomousNewPushers extends MasterAutonomous
         alignPivotVuforia(0.6, 10, 600, 4);
         pause(50);
 
+        refWallAngle = imu.getAngularOrientation().firstAngle;
         // detect beacon color of left side: 0 is blue, 1 is red
         beaconColor = VuforiaNav.GetBeaconColor();
 
