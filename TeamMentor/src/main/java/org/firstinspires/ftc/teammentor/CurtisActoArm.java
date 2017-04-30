@@ -6,7 +6,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 /**
- * Program used to test a servo
+ * Program used to control a simple robot arm.
+ *
+ * The arm consists of 3 servos:
+ *      a "base" servo rotates the arm assembly. We're using a winch servo for more rotation and strength.
+ *      a "middle" servo raises the first part of the arm (analogous to a human upper arm). This is a standard servo.
+ *      an "end" servo raises the final arm segment (analogous to a human forearm). This is a standard servo.
  */
 @TeleOp(name="CurtisArm", group = "Swerve")
 // @Disabled
