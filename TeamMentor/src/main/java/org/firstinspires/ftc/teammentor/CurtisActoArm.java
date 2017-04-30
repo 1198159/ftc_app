@@ -27,6 +27,15 @@ public class CurtisActoArm extends LinearOpMode {
     private final double MIDDLE_STARTING_POSITION = 0.5;
     private final double END_STARTING_POSITION = 0.5;
 
+    //what are the safe ranges for each servo?
+    private final double BASE_LIMIT_MIN = 0.0;
+    private final double BASE_LIMIT_MAX = 1.0;
+    private final double MIDDLE_LIMIT_MIN = 0.0;
+    private final double MIDDLE_LIMIT_MAX = 1.0;
+    private final double END_LIMIT_MIN = 0.0;
+    private final double END_LIMIT_MAX = 1.0;
+
+
     //our servos
     private Servo servoBase = null, servoMiddle = null, servoEnd = null;
 
@@ -96,8 +105,8 @@ public class CurtisActoArm extends LinearOpMode {
 
         basePosition += offset * BASE_SCALE_FACTOR;
 
-        if (basePosition < -1) basePosition = -1;
-        if (basePosition > 1) basePosition = 1;
+        if (basePosition < BASE_LIMIT_MIN) basePosition = BASE_LIMIT_MIN;
+        if (basePosition > BASE_LIMIT_MAX) basePosition = BASE_LIMIT_MAX;
 
         servoBase.setPosition(basePosition);
     }
@@ -109,8 +118,8 @@ public class CurtisActoArm extends LinearOpMode {
 
         middlePosition += offset * MIDDLE_SCALE_FACTOR;
 
-        if (middlePosition < -1) middlePosition = -1;
-        if (middlePosition > 1) middlePosition = 1;
+        if (middlePosition < MIDDLE_LIMIT_MIN) middlePosition = MIDDLE_LIMIT_MIN;
+        if (middlePosition > MIDDLE_LIMIT_MAX) middlePosition = MIDDLE_LIMIT_MAX;
 
         servoMiddle.setPosition(middlePosition);
     }
@@ -122,8 +131,8 @@ public class CurtisActoArm extends LinearOpMode {
 
         endPosition -= offset * END_SCALE_FACTOR;
 
-        if (endPosition < -1) endPosition = -1;
-        if (endPosition > 1) endPosition = 1;
+        if (endPosition < END_LIMIT_MIN) endPosition = END_LIMIT_MIN;
+        if (endPosition > END_LIMIT_MAX) endPosition = END_LIMIT_MAX;
 
         servoEnd.setPosition(endPosition);
     }
