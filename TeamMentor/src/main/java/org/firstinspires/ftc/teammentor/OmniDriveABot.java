@@ -43,6 +43,10 @@ public class OmniDriveABot extends LinearOpMode
 
 
        The motor power calculations are different depending on whether you're using X or +.
+
+       Here's an online video that explains how the programming works.
+       https://www.youtube.com/watch?v=20M62Xil5s4
+
      */
 
     private enum OmniConfiguration
