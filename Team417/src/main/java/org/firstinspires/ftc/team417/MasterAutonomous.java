@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.team417;
 
-import com.qualcomm.hardware.adafruit.BNO055IMU;
-import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -118,10 +117,11 @@ abstract class MasterAutonomous extends MasterOpMode
         motorFrontRight.setDirection(DcMotor.Direction.FORWARD);
         motorBackRight.setDirection(DcMotor.Direction.FORWARD);
 
-        motorFrontLeft.setMaxSpeed(2700);
-        motorFrontRight.setMaxSpeed(2700);
-        motorBackLeft.setMaxSpeed(2700);
-        motorBackRight.setMaxSpeed(2700);
+        //setMaxSpeed is not supported in the latest FTC update
+        //motorFrontLeft.setMaxSpeed(2700);
+        //motorFrontRight.setMaxSpeed(2700);
+        //motorBackLeft.setMaxSpeed(2700);
+        //motorBackRight.setMaxSpeed(2700);
 
         //Set up telemetry data
         // We show the log in oldest-to-newest order, as that's better for poetry

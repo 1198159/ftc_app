@@ -21,8 +21,14 @@ public class TeleOpTests extends LinearOpMode
         //motorLauncher.setDirection(DcMotor.Direction.REVERSE);
         motorLauncher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        //this line was commented out
         //motor.setMaxSpeed(1230); // set to ticks per second
-        motorLauncher.setMaxSpeed(1157); // set to ticks per second
+
+        //This line was not commented out, but setMaxSpeed is not supported in the latest FTC update
+        //motorLauncher.setMaxSpeed(1157); // set to ticks per second
+
+        //this line was commented out
         //motorLauncher.setMaxSpeed(800);
         motorLauncher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

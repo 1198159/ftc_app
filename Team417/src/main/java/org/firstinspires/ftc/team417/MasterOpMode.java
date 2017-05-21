@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.team417;
 import android.graphics.Bitmap;
 
-import com.qualcomm.hardware.adafruit.BNO055IMU;
-import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -107,14 +106,15 @@ abstract public class MasterOpMode extends LinearOpMode
 
         //motorLauncher.setDirection(DcMotor.Direction.REVERSE);
 
-        motorFrontLeft.setMaxSpeed(MAX_SPEED);
-        motorFrontRight.setMaxSpeed(MAX_SPEED);
-        motorBackLeft.setMaxSpeed(MAX_SPEED);
-        motorBackRight.setMaxSpeed(MAX_SPEED);
+        //setMaxSpeed is not supported in the latest FTC update
+        //motorFrontLeft.setMaxSpeed(MAX_SPEED);
+        //motorFrontRight.setMaxSpeed(MAX_SPEED);
+        //motorBackLeft.setMaxSpeed(MAX_SPEED);
+        //motorBackRight.setMaxSpeed(MAX_SPEED);
 
-        motorLauncher.setMaxSpeed(1157); // this is a different type of motor, 1157 ticks per second
-        motorLift.setMaxSpeed(MAX_SPEED);
-        motorLift2.setMaxSpeed(MAX_SPEED);
+        //motorLauncher.setMaxSpeed(1157); // this is a different type of motor, 1157 ticks per second
+        //motorLift.setMaxSpeed(MAX_SPEED);
+        //motorLift2.setMaxSpeed(MAX_SPEED);
 
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);

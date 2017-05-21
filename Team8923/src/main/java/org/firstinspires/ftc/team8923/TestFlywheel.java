@@ -34,7 +34,8 @@ public class TestFlywheel extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         motorFlywheel = hardwareMap.dcMotor.get("motorFlywheel");
-        motorFlywheel.setMaxSpeed(1150);
+        //setMaxSpeed is not supported in the latest FTC update
+        //motorFlywheel.setMaxSpeed(1150);
         motorFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 

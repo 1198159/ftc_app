@@ -84,11 +84,12 @@ abstract class Master extends LinearOpMode
         reverseDrive(false);
 
         // Our drive motors seem to run at this speed
-        motorFL.setMaxSpeed(2700);
-        motorFR.setMaxSpeed(2700);
-        motorBL.setMaxSpeed(2700);
-        motorBR.setMaxSpeed(2700);
-        motorCatapult.setMaxSpeed(2700);
+        //setMaxSpeed is not supported in the latest FTC update
+        //motorFL.setMaxSpeed(2700);
+        //motorFR.setMaxSpeed(2700);
+        //motorBL.setMaxSpeed(2700);
+        //motorBR.setMaxSpeed(2700);
+        //motorCatapult.setMaxSpeed(2700);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

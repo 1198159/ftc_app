@@ -282,10 +282,11 @@ public class TestVuforia extends MasterOpMode
         motorFrontRight.setDirection(DcMotor.Direction.FORWARD);
         motorBackRight.setDirection(DcMotor.Direction.FORWARD);
 
-        motorFrontLeft.setMaxSpeed(2700);   // try this setting from 8923
-        motorFrontRight.setMaxSpeed(2700);   // try this setting from 8923
-        motorBackLeft.setMaxSpeed(2700);   // try this setting from 8923
-        motorBackRight.setMaxSpeed(2700);   // try this setting from 8923
+        //setMaxSpeed is not supported in the latest FTC update
+        //motorFrontLeft.setMaxSpeed(2700);   // try this setting from 8923
+        //motorFrontRight.setMaxSpeed(2700);   // try this setting from 8923
+        //motorBackLeft.setMaxSpeed(2700);   // try this setting from 8923
+        //motorBackRight.setMaxSpeed(2700);   // try this setting from 8923
 
         motorLift.setPower(0);
     }
