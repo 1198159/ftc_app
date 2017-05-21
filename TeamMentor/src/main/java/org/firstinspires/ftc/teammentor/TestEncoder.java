@@ -22,7 +22,7 @@ public class TestEncoder extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        motor  = hardwareMap.dcMotor.get("motor1");
+        motor  = hardwareMap.dcMotor.get("motorFrontLeft");
 
         //using an AndyMark motor so we need to reverse its direction
         motor.setDirection(DcMotor.Direction.REVERSE);

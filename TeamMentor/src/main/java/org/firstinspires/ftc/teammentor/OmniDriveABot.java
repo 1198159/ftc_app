@@ -9,12 +9,50 @@ import org.firstinspires.ftc.robotcore.external.Func;
 
 /**
  * Program used to control Drive-A-Bots.
- * This can be a good reference for drive controls.
+ * This can be a reference for drive controls.
  */
-@TeleOp(name="Omni-Drive-A-Bot", group = "Swerve")
+@TeleOp(name="OmniDriveABot", group = "Swerve")
 // @Disabled
 public class OmniDriveABot extends LinearOpMode
 {
+
+    /*
+        This omniwheel drivabot assumes the following "+" motor configuration:
+
+             "front" of robot
+                 motor1
+
+        motor4            motor2
+
+                 motor3
+             "back" of robot
+
+
+
+        Alternatively, you can configure your motors in an X pattern:
+
+             "front" of robot
+
+           motor1     motor2
+
+
+           motor4     motor3
+
+            "back" of robot
+
+
+
+       The motor power calculations are different depending on whether you're using X or +.
+     */
+
+    private enum OmniConfiguration
+    {
+        PLUS,
+        X
+    }
+
+    //Change this line if your motors are in an X configuration
+    private final OmniConfiguration myOmniBotConfiguration = OmniConfiguration.PLUS;
 
 
     //Omnidrive motors have a particular location on the robot.
@@ -34,7 +72,12 @@ public class OmniDriveABot extends LinearOpMode
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-        public double calculatePower(double requestedX, double requestedY, double requestedRotation)
+        public double calculatePowerOmniPlusConfiguration(double requestedPower, double requestedRotation)
+        {
+            return requestedRotation + (Math.signum(x) * requestedPower);
+        }
+
+        public double calculatePowerOmniXConfiguration(double requestedX, double requestedY, double requestedRotation)
         {
             return    requestedRotation
                     + Math.signum(y) * requestedX  //y works as sine of the angle of each motor
@@ -53,18 +96,12 @@ public class OmniDriveABot extends LinearOpMode
 
     }
 
-    OmniMotor motorFrontLeft = null;
-    OmniMotor motorFrontRight = null;
-    OmniMotor motorBackLeft = null;
-    OmniMotor motorBackRight = null;
 
+    OmniMotor motor1 = null;
+    OmniMotor motor2 = null;
+    OmniMotor motor3 = null;
+    OmniMotor motor4 = null;
 
-    // Drive direction constants
-    //ToDo - add constants that let us switch which side of the robot is "front"
-    public static enum DriveDirection
-    {
-
-    }
 
     @Override public void runOpMode() throws InterruptedException
     {
@@ -89,44 +126,66 @@ public class OmniDriveABot extends LinearOpMode
 
     public void driveOmniDrive(double x, double y, double rotation)
     {
-        double powFrontRight, powFrontLeft, powBackRight, powBackLeft;
+        double power1=0, power2=0, power3=0, power4=0;
 
-        powFrontRight = motorFrontRight.calculatePower(x, y, rotation);
-        powFrontLeft  = motorFrontLeft.calculatePower(x, y, rotation);
-        powBackLeft   = motorBackLeft.calculatePower(x, y, rotation);
-        powBackRight  = motorBackRight.calculatePower(x, y, rotation);
+        if (myOmniBotConfiguration == OmniConfiguration.PLUS)
+        {
+            power1 = motor1.calculatePowerOmniPlusConfiguration(x, rotation);
+            power2 = motor2.calculatePowerOmniPlusConfiguration(y, rotation);
+            power3 = motor3.calculatePowerOmniPlusConfiguration(x, rotation);
+            power4 = motor4.calculatePowerOmniPlusConfiguration(y, rotation);
+        }
+        else if (myOmniBotConfiguration == OmniConfiguration.X)
+        {
+            power1 = motor1.calculatePowerOmniXConfiguration(x, y, rotation);
+            power2 = motor2.calculatePowerOmniXConfiguration(x, y, rotation);
+            power3 = motor3.calculatePowerOmniXConfiguration(x, y, rotation);
+            power4 = motor4.calculatePowerOmniXConfiguration(x, y, rotation);
+        }
 
         //Find the maximum power applied to any motor
-        double max = Math.max(Math.abs(powFrontLeft), Math.abs(powFrontRight));
-        max = Math.max(max, Math.abs(powBackRight));
-        max = Math.max(max, Math.abs(powBackLeft));
+        double max = Math.max(Math.abs(power1), Math.abs(power2));
+        max = Math.max(max, Math.abs(power3));
+        max = Math.max(max, Math.abs(power4));
 
         //if any values were out of the motor power range of -1..1,
         // scale all of the values so they remain in proportion without overflowing
         if (max > 1.0)
         {
-            powFrontRight *= 1.0/max;
-            powFrontLeft  *= 1.0/max;
-            powBackRight  *= 1.0/max;
-            powBackLeft   *= 1.0/max;
+            power1 *= 1.0/max;
+            power2  *= 1.0/max;
+            power3  *= 1.0/max;
+            power4   *= 1.0/max;
         }
 
         //set the powers
-        motorFrontLeft.setPower(powFrontLeft);
-        motorFrontRight.setPower(powFrontRight);
-        motorBackLeft.setPower(powBackLeft);
-        motorBackRight.setPower(powBackRight);
+        motor1.setPower(power1);
+        motor2.setPower(power2);
+        motor3.setPower(power3);
+        motor4.setPower(power4);
 
     }
 
     public void initializeRobot()
     {
         // Initialize motors to be the hardware motors
-        motorFrontLeft = new OmniMotor(hardwareMap.dcMotor.get("motorFrontLeft"), -1, -1, 315);
-        motorFrontRight = new OmniMotor(hardwareMap.dcMotor.get("motorFrontRight"), 1,  -1,  45);
-        motorBackLeft = new OmniMotor(hardwareMap.dcMotor.get("motorBackLeft"), -1,  1, 22);
-        motorBackRight = new OmniMotor(hardwareMap.dcMotor.get("motorBackRight"), 1, 1, 135);
-
+        //configuration for "+"
+        if (myOmniBotConfiguration == OmniConfiguration.PLUS)
+        {
+            motor1 = new OmniMotor(hardwareMap.dcMotor.get("motor1"), -1, 1, 0);
+            motor2 = new OmniMotor(hardwareMap.dcMotor.get("motor2"), -1, -1, 90);
+            motor3 = new OmniMotor(hardwareMap.dcMotor.get("motor3"), 1, -1, 180);
+            motor4 = new OmniMotor(hardwareMap.dcMotor.get("motor4"), 1, 1, 270);
+        }
+        else if (myOmniBotConfiguration == OmniConfiguration.X)
+        {
+            //configuration for "X"
+            //adjust these 1's and -1's if your robot doesn't move in the direction you like
+            motor1 = new OmniMotor(hardwareMap.dcMotor.get("motor1"),  1,   1, 315);
+            motor2 = new OmniMotor(hardwareMap.dcMotor.get("motor2"),  1,  -1,  45);
+            motor3 = new OmniMotor(hardwareMap.dcMotor.get("motor3"), -1,  -1, 135);
+            motor4 = new OmniMotor(hardwareMap.dcMotor.get("motor4"), -1,   1, 225);
+        }
         // Set up telemetry data
         configureDashboard();
     }
@@ -134,24 +193,24 @@ public class OmniDriveABot extends LinearOpMode
     public void configureDashboard()
     {
         telemetry.addLine()
-                .addData("Power | FrontLeft: ", new Func<String>() {
+                .addData("Power | 1: ", new Func<String>() {
                     @Override public String value() {
-                        return formatNumber(motorFrontLeft.getPower());
+                        return formatNumber(motor1.getPower());
                     }
                 })
-                .addData("FrontRight: ", new Func<String>() {
+                .addData("2: ", new Func<String>() {
                     @Override public String value() {
-                        return formatNumber(motorFrontRight.getPower());
+                        return formatNumber(motor2.getPower());
                     }
                 })
-                .addData("BackLeft: ", new Func<String>() {
+                .addData("3: ", new Func<String>() {
                     @Override public String value() {
-                        return formatNumber(motorBackLeft.getPower());
+                        return formatNumber(motor3.getPower());
                     }
                 })
-                .addData("BackRight: ", new Func<String>() {
+                .addData("4: ", new Func<String>() {
                     @Override public String value() {
-                        return formatNumber(motorBackRight.getPower());
+                        return formatNumber(motor4.getPower());
                     }
                 });
     }
