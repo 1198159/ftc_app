@@ -84,8 +84,8 @@ public class OmniDriveABot extends LinearOpMode
         public double calculatePowerOmniXConfiguration(double requestedX, double requestedY, double requestedRotation)
         {
             return    requestedRotation
-                    + Math.signum(y) * requestedX  //y works as sine of the angle of each motor
-                    + Math.signum(x) * requestedY; //x works as cosine of the angle of each motor
+                    + Math.signum(y) * requestedX
+                    + Math.signum(x) * requestedY;
         }
 
         public void setPower(double power)
