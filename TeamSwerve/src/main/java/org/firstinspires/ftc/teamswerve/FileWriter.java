@@ -24,13 +24,13 @@ public class FileWriter
     /*
      * Use this to add messages to the file
      */
-    public void writeMessage(String message)
+    public void print(String message)
     {
         if (outputFile!=null)
         {
             try
             {
-                outputFile.println(message);
+                outputFile.print(message);
                 outputFile.flush();
             }
             catch (Exception e)
@@ -44,9 +44,9 @@ public class FileWriter
     /*
      * Writes message on a new line of the file
      */
-    public void writeMessageNewLine(String message)
+    public void println(String message)
     {
-        writeMessage("\r\n" + message);
+        print("\r\n" + message);
     }
 
     /*
