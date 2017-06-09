@@ -11,13 +11,13 @@ import org.firstinspires.ftc.robotcore.external.Func;
  * Program used to control Drive-A-Bots.
  * This can be a reference for drive controls.
  */
-@TeleOp(name="OmniDriveABot", group = "Swerve")
+@TeleOp(name="SteveOmnibot", group = "Swerve")
 // @Disabled
-public class OmniDriveABot extends LinearOpMode
+public class SteveOmnibot extends LinearOpMode
 {
 
     /*
-        This omniwheel drivabot assumes the following "+" motor configuration:
+        This omniwheel bot assumes the following "+" motor configuration:
 
              "front" of robot
                  motor1
@@ -26,26 +26,6 @@ public class OmniDriveABot extends LinearOpMode
 
                  motor3
              "back" of robot
-
-
-
-        Alternatively, you can configure your motors in an X pattern:
-
-             "front" of robot
-
-           motor1     motor2
-
-
-           motor4     motor3
-
-            "back" of robot
-
-
-
-       The motor power calculations are different depending on whether you're using X or +.
-
-       Here's an online video that explains how the programming works.
-       https://www.youtube.com/watch?v=20M62Xil5s4
 
      */
 
@@ -83,7 +63,7 @@ public class OmniDriveABot extends LinearOpMode
 
         public double calculatePowerOmniXConfiguration(double requestedX, double requestedY, double requestedRotation)
         {
-            return    requestedRotation
+            return  requestedRotation
                     + Math.signum(y) * requestedX
                     + Math.signum(x) * requestedY;
         }
@@ -106,6 +86,8 @@ public class OmniDriveABot extends LinearOpMode
     OmniMotor motor3 = null;
     OmniMotor motor4 = null;
 
+    boolean straightTest = false;
+
 
     @Override public void runOpMode() throws InterruptedException
     {
@@ -118,9 +100,50 @@ public class OmniDriveABot extends LinearOpMode
         // Main loop
         while(opModeIsActive())
         {
-            driveOmniDrive( gamepad1.left_stick_x,    //local x motion power
-                            gamepad1.left_stick_y,     //local y motion power
-                            gamepad1.right_stick_x / 2); //divide rotation in half so we don't spin too quickly
+
+            if (gamepad1.a){
+                straightTest = !straightTest;
+
+                while (gamepad1.a)
+                {
+                    idle();
+                }
+            }
+
+
+            if (!straightTest)
+            {
+                driveOmniDrive( gamepad1.left_stick_x,    //local x motion power
+                                gamepad1.left_stick_y,     //local y motion power
+                                -gamepad1.right_stick_x / 2); //divide rotation in half so we don't spin too quickly
+            }
+            else //test commands for "straight" driving
+            {
+                if (gamepad1.dpad_down)
+                {
+                    driveOmniDrive(0,    //local x motion power
+                            0.5,     //local y motion power
+                            0); //divide rotation in half so we don't spin too quickly
+                }
+                else if (gamepad1.dpad_up)
+                {
+                    driveOmniDrive(0,    //local x motion power
+                            -0.5,     //local y motion power
+                            0); //divide rotation in half so we don't spin too quickly
+                }
+                else if (gamepad1.dpad_left)
+                {
+                    driveOmniDrive(-0.5,    //local x motion power
+                            0,     //local y motion power
+                            0); //divide rotation in half so we don't spin too quickly
+                }
+                else if (gamepad1.dpad_right)
+                {
+                    driveOmniDrive(0.5,    //local x motion power
+                            0,     //local y motion power
+                            0); //divide rotation in half so we don't spin too quickly
+                }
+            }
 
             telemetry.update();
             idle();
@@ -132,20 +155,11 @@ public class OmniDriveABot extends LinearOpMode
     {
         double power1=0, power2=0, power3=0, power4=0;
 
-        if (myOmniBotConfiguration == OmniConfiguration.PLUS)
-        {
-            power1 = motor1.calculatePowerOmniPlusConfiguration(x, rotation);
-            power2 = motor2.calculatePowerOmniPlusConfiguration(y, rotation);
-            power3 = motor3.calculatePowerOmniPlusConfiguration(x, rotation);
-            power4 = motor4.calculatePowerOmniPlusConfiguration(y, rotation);
-        }
-        else if (myOmniBotConfiguration == OmniConfiguration.X)
-        {
-            power1 = motor1.calculatePowerOmniXConfiguration(x, y, rotation);
-            power2 = motor2.calculatePowerOmniXConfiguration(x, y, rotation);
-            power3 = motor3.calculatePowerOmniXConfiguration(x, y, rotation);
-            power4 = motor4.calculatePowerOmniXConfiguration(x, y, rotation);
-        }
+        //this is a "+" configuration omnibot
+        power1 = motor1.calculatePowerOmniPlusConfiguration(x, rotation);
+        power2 = motor2.calculatePowerOmniPlusConfiguration(y, rotation);
+        power3 = motor3.calculatePowerOmniPlusConfiguration(x, rotation);
+        power4 = motor4.calculatePowerOmniPlusConfiguration(y, rotation);
 
         //Find the maximum power applied to any motor
         double max = Math.max(Math.abs(power1), Math.abs(power2));
@@ -174,22 +188,11 @@ public class OmniDriveABot extends LinearOpMode
     {
         // Initialize motors to be the hardware motors
         //configuration for "+"
-        if (myOmniBotConfiguration == OmniConfiguration.PLUS)
-        {
             motor1 = new OmniMotor(hardwareMap.dcMotor.get("motor1"), -1, 1, 0);
             motor2 = new OmniMotor(hardwareMap.dcMotor.get("motor2"), -1, -1, 90);
             motor3 = new OmniMotor(hardwareMap.dcMotor.get("motor3"), 1, -1, 180);
             motor4 = new OmniMotor(hardwareMap.dcMotor.get("motor4"), 1, 1, 270);
-        }
-        else if (myOmniBotConfiguration == OmniConfiguration.X)
-        {
-            //configuration for "X"
-            //adjust these 1's and -1's if your robot doesn't move in the direction you like
-            motor1 = new OmniMotor(hardwareMap.dcMotor.get("motor1"),  1,   1, 315);
-            motor2 = new OmniMotor(hardwareMap.dcMotor.get("motor2"),  1,  -1,  45);
-            motor3 = new OmniMotor(hardwareMap.dcMotor.get("motor3"), -1,  -1, 135);
-            motor4 = new OmniMotor(hardwareMap.dcMotor.get("motor4"), -1,   1, 225);
-        }
+
         // Set up telemetry data
         configureDashboard();
     }
