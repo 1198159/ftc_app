@@ -15,6 +15,8 @@ public class FileWriter
     /*
      * Creates a new file to store messages
      * Each file should be given a different name
+     *
+     * The file will appear on the robot phone in the folder storage/legacy/emulated
      */
     public FileWriter(String filename)
     {
