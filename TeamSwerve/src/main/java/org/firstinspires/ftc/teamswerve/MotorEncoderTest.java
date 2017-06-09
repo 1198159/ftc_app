@@ -43,7 +43,6 @@ public class MotorEncoderTest extends LinearOpMode {
         // Change the text in quotes to match any motor name on your robot.
         motor = hardwareMap.dcMotor.get("motor");
 
-        motor.setMaxSpeed(1157); // set to ticks per second
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Wait for the start button
