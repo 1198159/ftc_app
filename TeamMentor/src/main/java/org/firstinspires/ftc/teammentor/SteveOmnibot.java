@@ -86,11 +86,11 @@ public class SteveOmnibot extends LinearOpMode
     OmniMotor motor3 = null;
     OmniMotor motor4 = null;
 
-    boolean straightTest = false;
-
-
     @Override public void runOpMode() throws InterruptedException
     {
+        boolean straightTest = false;
+
+
         // Initialize hardware and other important things
         initializeRobot();
 
@@ -109,7 +109,6 @@ public class SteveOmnibot extends LinearOpMode
                     idle();
                 }
             }
-
 
             if (!straightTest)
             {
@@ -150,16 +149,26 @@ public class SteveOmnibot extends LinearOpMode
         }
     }
 
+    //filters that limit the robot's acceleration
+    private FilterLimitAcceleration limitXAccelerationFilter;
+    private FilterLimitAcceleration limitYAccelerationFilter;
+    private FilterLimitAcceleration limitRotAccelerationFilter;
+
 
     public void driveOmniDrive(double x, double y, double rotation)
     {
+        //filter incoming values to limit our acceleration
+        double fX = limitXAccelerationFilter.getFilteredValue(x);
+        double fY = limitYAccelerationFilter.getFilteredValue(y);
+        double fR = limitRotAccelerationFilter.getFilteredValue(rotation);
+
         double power1=0, power2=0, power3=0, power4=0;
 
         //this is a "+" configuration omnibot
-        power1 = motor1.calculatePowerOmniPlusConfiguration(x, rotation);
-        power2 = motor2.calculatePowerOmniPlusConfiguration(y, rotation);
-        power3 = motor3.calculatePowerOmniPlusConfiguration(x, rotation);
-        power4 = motor4.calculatePowerOmniPlusConfiguration(y, rotation);
+        power1 = motor1.calculatePowerOmniPlusConfiguration(fX, fR);
+        power2 = motor2.calculatePowerOmniPlusConfiguration(fY, fR);
+        power3 = motor3.calculatePowerOmniPlusConfiguration(fX, fR);
+        power4 = motor4.calculatePowerOmniPlusConfiguration(fY, fR);
 
         //Find the maximum power applied to any motor
         double max = Math.max(Math.abs(power1), Math.abs(power2));
@@ -184,6 +193,7 @@ public class SteveOmnibot extends LinearOpMode
 
     }
 
+
     public void initializeRobot()
     {
         // Initialize motors to be the hardware motors
@@ -193,8 +203,13 @@ public class SteveOmnibot extends LinearOpMode
             motor3 = new OmniMotor(hardwareMap.dcMotor.get("motor3"), 1, -1, 180);
             motor4 = new OmniMotor(hardwareMap.dcMotor.get("motor4"), 1, 1, 270);
 
+        //set up filters that limit our robot's acceleration to avoid wheel slippage
+        limitXAccelerationFilter = new FilterLimitAcceleration(this, 0.001, 0.001);
+        limitYAccelerationFilter = new FilterLimitAcceleration(this, 0.001, 0.001);
+        limitRotAccelerationFilter = new FilterLimitAcceleration(this, 0.001, 0.001);
+
         // Set up telemetry data
-        configureDashboard();
+        //configureDashboard();
     }
 
     public void configureDashboard()
@@ -225,5 +240,9 @@ public class SteveOmnibot extends LinearOpMode
     public String formatNumber(double d)
     {
         return String.format("%.2f", d);
+    }
+    public String formatNumberEightDigits(double d)
+    {
+        return String.format("%.8f", d);
     }
 }
