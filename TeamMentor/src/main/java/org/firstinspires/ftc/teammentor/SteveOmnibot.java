@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
 
 
 /**
- * Program used to control Drive-A-Bots.
+ * Program used to control an omni wheel drivabot.
  * This can be a reference for drive controls.
  */
 @TeleOp(name="SteveOmnibot", group = "Swerve")
