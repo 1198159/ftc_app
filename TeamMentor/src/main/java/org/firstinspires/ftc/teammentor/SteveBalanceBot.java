@@ -52,9 +52,9 @@ public class SteveBalanceBot extends LinearOpMode
      *
     */
 
-    final double P_CONSTANT = 0.04;
-    final double I_CONSTANT = 0.0;
-    final double D_CONSTANT = 0.0;
+    private double P_CONSTANT = 0.04;
+    private double I_CONSTANT = 0.0;
+    private double D_CONSTANT = 0.0;
 
     @Override public void runOpMode() throws InterruptedException
     {
@@ -78,6 +78,50 @@ public class SteveBalanceBot extends LinearOpMode
         // Main loop
         while(opModeIsActive())
         {
+
+            //some gamepad controls that may help me tune the PID constants
+            if (gamepad1.a)
+            {
+                while (gamepad1.a) {}
+                P_CONSTANT += 0.01;
+                filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
+            }
+            if (gamepad1.b)
+            {
+                while (gamepad1.b) {}
+                P_CONSTANT -= 0.01;
+                filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
+            }
+            if (gamepad1.x)
+            {
+                while (gamepad1.x) {}
+                P_CONSTANT += 0.001;
+                filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
+            }
+            if (gamepad1.y)
+            {
+                while (gamepad1.y) {}
+                P_CONSTANT -= 0.001;
+                filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
+            }
+            if (gamepad1.dpad_up)
+            {
+                while (gamepad1.dpad_up) {}
+                P_CONSTANT += 0.0001;
+                filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
+            }
+            if (gamepad1.dpad_down)
+            {
+                while (gamepad1.dpad_down) {}
+                P_CONSTANT -= 0.0001;
+                filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
+            }
+            if (gamepad1.left_bumper)
+            {
+                telemetry.addData("KP", P_CONSTANT);
+            }
+
+
 
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             //currentRoll = AngleUnit.DEGREES.normalize(degrees)
@@ -139,6 +183,7 @@ public class SteveBalanceBot extends LinearOpMode
         });
         */
 
+        /*
         telemetry.addLine()
                 .addData("heading", new Func<String>() {
                     @Override public String value() {
@@ -155,6 +200,7 @@ public class SteveBalanceBot extends LinearOpMode
                         return formatAngle(angles.angleUnit, angles.thirdAngle);
                     }
                 });
+         */
 /*
         telemetry.addData("currRoll", new Func<String>() {
             @Override public String value() {

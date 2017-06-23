@@ -68,6 +68,13 @@ public class FilterPID {
         return filteredValue;
     }
 
+    public void updateFilterConstants(double newKP, double newKI, double newKD)
+    {
+        KP = newKP;
+        KI = newKI;
+        KD = newKD;
+    }
+
     public void resetFilter()
     {
         lastObservedError = 0;
