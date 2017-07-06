@@ -52,9 +52,9 @@ public class SteveBalanceBot extends LinearOpMode
      *
     */
 
-    private double P_CONSTANT = 0.04;
-    private double I_CONSTANT = 0.0;
-    private double D_CONSTANT = 0.0;
+    private double P_CONSTANT = 0.0321;
+    private double I_CONSTANT = 0.0000;
+    private double D_CONSTANT = 0.001;
 
     @Override public void runOpMode() throws InterruptedException
     {
@@ -83,13 +83,13 @@ public class SteveBalanceBot extends LinearOpMode
             if (gamepad1.a)
             {
                 while (gamepad1.a) {}
-                P_CONSTANT += 0.01;
+                D_CONSTANT += 0.001;
                 filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
             }
             if (gamepad1.b)
             {
                 while (gamepad1.b) {}
-                P_CONSTANT -= 0.01;
+                D_CONSTANT -= 0.001;
                 filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
             }
             if (gamepad1.x)
@@ -119,6 +119,8 @@ public class SteveBalanceBot extends LinearOpMode
             if (gamepad1.left_bumper)
             {
                 telemetry.addData("KP", P_CONSTANT);
+                telemetry.addData("KI", I_CONSTANT);
+                telemetry.addData("KD", D_CONSTANT);
             }
 
 
@@ -201,18 +203,36 @@ public class SteveBalanceBot extends LinearOpMode
                     }
                 });
          */
-/*
+
         telemetry.addData("currRoll", new Func<String>() {
             @Override public String value() {
                 return formatDegrees(currentRoll);
             }
         });
-*/
+
+        telemetry.addLine()
+                .addData("P", new Func<String>() {
+                    @Override public String value() {
+                return formatNumber(P_CONSTANT);
+                }
+                })
+                .addData("I", new Func<String>() {
+                    @Override public String value() {
+                        return formatNumber(I_CONSTANT);
+                    }
+                })
+                .addData("D", new Func<String>() {
+                    @Override public String value() {
+                        return formatNumber(D_CONSTANT);
+                    }
+                });
+
+
     }
 
     public String formatNumber(double d)
     {
-        return String.format("%.2f", d);
+        return String.format("%.4f", d);
     }
     public String formatNumberEightDigits(double d)
     {
