@@ -35,7 +35,6 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor collectorMotor;
     Servo gateServo;
     Servo collectorServo;
-    //TODO: ENSURE BEACONSERVO IS ON HARDWAREMAP!
     Servo beaconServo;
 
     private int EncoderFR = 0;
