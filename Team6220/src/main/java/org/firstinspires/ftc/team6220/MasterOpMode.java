@@ -36,6 +36,7 @@ abstract public class MasterOpMode extends LinearOpMode
     Servo gateServo;
     Servo collectorServo;
     Servo beaconServo;
+    BNO055IMU imu;
 
     private int EncoderFR = 0;
     private int EncoderFL = 0;
@@ -54,7 +55,7 @@ abstract public class MasterOpMode extends LinearOpMode
     //allows robot to have two possible front ends in teleOp
     boolean leftButtonPusherAsFront = false;
 
-    private BNO055IMU imu;
+
 
     //used to ensure that the robot drives straight when not attempting to turn
     double targetHeading = 0.0 + headingOffset;
