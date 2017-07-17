@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.util.TypeConversion;
 import java.nio.ByteOrder;
 import java.util.Locale;
 
+/* Implementation by Dryw Wade */
+
 @SuppressWarnings("WeakerAccess")
 @I2cSensor(name = "INA219 Current Sensor", description = "Current Sensor from Adafruit", xmlTag = "INA219")
 public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cAddrConfig
