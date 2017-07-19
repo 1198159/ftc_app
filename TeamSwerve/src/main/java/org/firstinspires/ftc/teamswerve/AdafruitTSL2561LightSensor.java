@@ -29,10 +29,10 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
         //public I2cAddr i2cAddress = I2cAddr.create7bit(I2CADDR.DEFAULT.bVal);
 
         //default integration time for our implementation
-        public INTEGRATION_TIME integrationTime = INTEGRATION_TIME.MS_13;
+        public INTEGRATION_TIME integrationTime = INTEGRATION_TIME.MS_402;
 
         //default gain for our implementation
-        public GAIN gain = GAIN.GAIN_1;
+        public GAIN gain = GAIN.GAIN_16;
 
         public LIGHT_DETECTION_MODE detectionMode = LIGHT_DETECTION_MODE.BROADBAND;
 
@@ -63,9 +63,11 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
         return initialize(params);
     }
 
-    public boolean initialize(Parameters parameters) {
+    protected synchronized boolean initialize(Parameters parameters) {
         // Remember the parameters for future use
         this.parameters = parameters;
+
+        boolean armed = this.deviceClient.isArmed();
 
         byte id = this.getDeviceID();
 
@@ -73,29 +75,23 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
             throw new IllegalArgumentException(String.format("unexpected chip: expected=%d found=%d", ADAFRUIT_TSL2561_ID, id));
         }
 
-        // Enable the device
-        // todo: in Adafruit's implelmentation they enable/disable the device for each read,
-        // presumably to save power. Should we? If we do, that would delay the read time
-        // while we wait for integration to complete. I'll skip that for now.
-        enable();
-
-        byte b = getState();
-
         // Set the integration time and gain
         setIntegrationTimeAndGain(parameters.integrationTime, parameters.gain);
 
         //wait x milliseconds for first integration to complete
         waitForIntegrationToComplete();
 
+        enable();
+
         return true;
     }
 
 
-    private synchronized void setIntegrationTimeAndGain(INTEGRATION_TIME time, GAIN gain) {
+    protected synchronized void setIntegrationTimeAndGain(INTEGRATION_TIME time, GAIN gain) {
         write8(REGISTER.TIMING, time.byteVal | gain.byteVal);
     }
 
-    private synchronized void waitForIntegrationToComplete() {
+    protected synchronized void waitForIntegrationToComplete() {
         //wait x milliseconds for integration to complete
         if (parameters.integrationTime == INTEGRATION_TIME.MS_13)
             delay(TSL2561_INTEGRATION_DELAY_13MS);
@@ -110,7 +106,7 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
         return b;
     }
 
-    public synchronized void enable() {
+    private synchronized void enable() {
         write8(REGISTER.CONTROL, TSL2561_CONTROL_POWERON);
     }
 
@@ -136,7 +132,7 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
      * Get the amount of light detected by the sensor. 1.0 is max possible light, 0.0 is least possible light.
      * Returns amount of light, on a scale of 0 to 1
      */
-    public double getLightDetected() {
+    public synchronized double getLightDetected() {
         double raw = getLightDetectedRaw(); //get this as a double so the division below will use double math
 
         double result = 0;
@@ -153,7 +149,7 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
 
 
     //return the raw value of the sensor, considering which light detection mode the user has asked for.
-    public int getLightDetectedRaw() {
+    public synchronized int getLightDetectedRaw() {
         if (parameters.detectionMode == LIGHT_DETECTION_MODE.BROADBAND) {
             return getRawBroadbandLight();
         } else if (parameters.detectionMode == LIGHT_DETECTION_MODE.INFRARED) {
@@ -177,7 +173,7 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
     // Low level sensor methods
     //----------------------------------------------------------------------------------------------
 
-    private int getRawBroadbandLight() {
+    private synchronized int getRawBroadbandLight() {
         //todo In AdaFruit's implementation, they always enable, read, disable. Should we?
         //No for now.
             //enable();
@@ -191,7 +187,7 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
         return (high << 8) + low;
     }
 
-    private int getRawIRSpectrumLight() {
+    private synchronized int getRawIRSpectrumLight() {
         //todo In AdaFruit's implementation, they always enable, read, disable. Should we?
         // No for now.
             //enable();
@@ -209,6 +205,7 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
     // Communication
     //----------------------------------------------------------------------------------------------
 
+
     public synchronized byte read8(final REGISTER reg) {
         //this device likes the COMMAND bit to be set when specifying registers
         return deviceClient.read8(reg.bVal | TSL2561_COMMAND_BIT);
@@ -219,39 +216,37 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
         return deviceClient.read(reg.bVal | TSL2561_COMMAND_BIT, cb);
     }
 
-    public void write8(REGISTER reg, int data) {
+    public synchronized void write8(REGISTER reg, int data) {
         //this device likes the COMMAND bit to be set when specifying registers
-        this.deviceClient.write8(reg.bVal | TSL2561_COMMAND_BIT, data);
-        waitForWriteCompletions();
+        this.deviceClient.write8(reg.bVal | TSL2561_COMMAND_BIT, data, I2cWaitControl.WRITTEN);
     }
 
-    public void write(REGISTER reg, byte[] data) {
+    public synchronized void write(REGISTER reg, byte[] data) {
         //this device likes the COMMAND bit to be set when specifying registers,
-        this.deviceClient.write(reg.bVal | TSL2561_COMMAND_BIT, data);
-        waitForWriteCompletions();
+        this.deviceClient.write(reg.bVal | TSL2561_COMMAND_BIT, data, I2cWaitControl.WRITTEN);
     }
 
-    public int readUnsignedByte(REGISTER register)
+    public synchronized int readUnsignedByte(REGISTER register)
     {
         return TypeConversion.unsignedByteToInt(read8(register));
     }
 
-    public int readUnsignedShort(REGISTER register)
+    public synchronized int readUnsignedShort(REGISTER register)
     {
         return TypeConversion.unsignedShortToInt(TypeConversion.byteArrayToShort(this.deviceClient.read(register.bVal, 2)));
     }
 
-    public int readSignedShort(REGISTER register)
+    public synchronized int readSignedShort(REGISTER register)
     {
         return TypeConversion.byteArrayToShort(this.deviceClient.read(register.bVal, 2));
     }
 
-    protected void waitForWriteCompletions()
+    protected synchronized void waitForWriteCompletions()
     {
         this.deviceClient.waitForWriteCompletions(I2cWaitControl.WRITTEN);
     }
 
-    protected void setOptimalReadWindow()
+    protected synchronized void setOptimalReadWindow()
     {
         I2cDeviceSynch.ReadWindow readWindow = new I2cDeviceSynch.ReadWindow(
                 REGISTER.FIRST.bVal,
@@ -301,7 +296,7 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
     //----------------------------------------------------------------------------------------------
 
     //wait a number of milliseconds
-    protected void delay(int ms)
+    protected synchronized void delay(int ms)
     {
         try
         {
