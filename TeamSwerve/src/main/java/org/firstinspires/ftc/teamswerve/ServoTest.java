@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamswerve;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -15,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
  * Program used to test a servo
  */
 @TeleOp(name="ServoTest", group = "Swerve")
-// @Disabled
+@Disabled
 public class ServoTest extends LinearOpMode {
     Servo servo = null;
 

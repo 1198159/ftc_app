@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamswerve;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
  * This can be a good reference for drive controls.
  */
 @TeleOp(name="FileWriterTest", group = "Swerve")
-//@Disabled
+@Disabled
 public class FileWriterTest extends LinearOpMode
 {
 

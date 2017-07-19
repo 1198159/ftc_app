@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamswerve;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -17,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
  * This can be a good reference for drive controls.
  */
 @TeleOp(name="ServoExperiment", group = "Swerve")
-// @Disabled
+@Disabled
 public class ServoExperiment extends LinearOpMode
 {
     DcMotor motorLeft = null;
