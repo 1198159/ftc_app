@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
 
 
 /**
- * Program used to control Drive-A-Bots. YAY!!
+ * Program used to control Drive-A-Bots.
  * This can be a good reference for drive controls.
  */
 @TeleOp(name="Drive-A-Bot", group = "Swerve")
