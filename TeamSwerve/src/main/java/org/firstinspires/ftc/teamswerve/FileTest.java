@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamswerve;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,6 +8,7 @@ import org.firstinspires.ftc.robotcore.internal.SystemProperties;
 import org.firstinspires.ftc.teamswerve.FileWriter;
 
 @TeleOp(name = "Dryw FileWriter Test", group = "Tests")
+@Disabled
 public class FileTest extends LinearOpMode
 {
     FileWriter fileWriter;

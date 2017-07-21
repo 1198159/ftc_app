@@ -22,11 +22,11 @@ public class SensorAdafruitLight extends LinearOpMode
 
         waitForStart();
 
-        sensor.enable();
+        //sensor.enable();
 
         while (opModeIsActive())
         {
-            sensor.enable();
+            //sensor.enable();
 
             lightDetected = sensor.getLightDetected();
             rawLightDetected = sensor.getLightDetectedRaw();
