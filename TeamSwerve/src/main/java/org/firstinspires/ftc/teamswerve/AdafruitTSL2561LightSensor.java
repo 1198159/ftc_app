@@ -149,6 +149,10 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
             For 0.80 < CH1/CH0  1.30 Lux = (0.00146 * CH0) − (0.00112 * CH1)
             For CH1/CH0 > 1.30 Lux = 0
 
+            The formulas shown above were obtained by optical testing with fluorescent and incandescent light sources,
+            and apply only to open-air applications. Optical apertures (e.g. light pipes) will
+            affect the incident light on the device
+
      */
     /*
     public synchronized double getLUX() {
