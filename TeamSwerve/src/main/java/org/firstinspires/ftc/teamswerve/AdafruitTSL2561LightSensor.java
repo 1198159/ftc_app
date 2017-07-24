@@ -133,7 +133,7 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
      * Get the amount of light detected by the sensor.
      * Returns amount of light in LUX.
      *
-     *
+     *   From the datasheet, page 23
      *   How to calculate LUX from the sensor light values
          CS Package
             For 0 < CH1/CH0  0.52 Lux = (0.0315 * CH0) − (0.0593 * CH0 * ((CH1/CH0)^1.4))
