@@ -29,12 +29,12 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
         //public I2cAddr i2cAddress = I2cAddr.create7bit(I2CADDR.DEFAULT.bVal);
 
         //default integration time for our implementation
-        public INTEGRATION_TIME integrationTime = INTEGRATION_TIME.MS_402;
+        public INTEGRATION_TIME integrationTime = INTEGRATION_TIME.MS_13;
 
         //default gain for our implementation
         public GAIN gain = GAIN.GAIN_16;
 
-        public LIGHT_DETECTION_MODE detectionMode = LIGHT_DETECTION_MODE.BROADBAND;
+        public LIGHT_DETECTION_MODE detectionMode = LIGHT_DETECTION_MODE.VISIBLE;
 
     }
 
@@ -127,6 +127,43 @@ public class AdafruitTSL2561LightSensor extends I2cDeviceSynchDevice<I2cDeviceSy
     //----------------------------------------------------------------------------------------------
     // Light sensor methods
     //----------------------------------------------------------------------------------------------
+
+
+    /*
+     * Get the amount of light detected by the sensor.
+     * Returns amount of light in LUX.
+     *
+     *   From the datasheet, page 23
+     *   How to calculate LUX from the sensor light values
+         CS Package
+            For 0 < CH1/CH0  0.52 Lux = (0.0315 * CH0) − (0.0593 * CH0 * ((CH1/CH0)^1.4))
+            For 0.52 < CH1/CH0  0.65 Lux = (0.0229 * CH0) − (0.0291 * CH1)
+            For 0.65 < CH1/CH0  0.80 Lux = (0.0157 * CH0) − (0.0180 * CH1)
+            For 0.80 < CH1/CH0  1.30 Lux = (0.00338 * CH0) − (0.00260 * CH1)
+            For CH1/CH0 > 1.30 Lux = 0
+
+         T, FN, and CL Package
+            For 0 < CH1/CH0  0.50 Lux = (0.0304 * CH0) − (0.062 * CH0 * ((CH1/CH0)^1.4))
+            For 0.50 < CH1/CH0  0.61 Lux = (0.0224 * CH0) − (0.031 * CH1)
+            For 0.61 < CH1/CH0  0.80 Lux = (0.0128 * CH0) − (0.0153 * CH1)
+            For 0.80 < CH1/CH0  1.30 Lux = (0.00146 * CH0) − (0.00112 * CH1)
+            For CH1/CH0 > 1.30 Lux = 0
+
+            The formulas shown above were obtained by optical testing with fluorescent and incandescent light sources,
+            and apply only to open-air applications. Optical apertures (e.g. light pipes) will
+            affect the incident light on the device
+
+     */
+    /*
+    public synchronized double getLUX() {
+        double result = 0;
+
+        //add the above math here...
+        //open Q: do we need to scale the register values by the integration time? I think so.
+
+        return result;
+    }
+    */
 
     /*
      * Get the amount of light detected by the sensor. 1.0 is max possible light, 0.0 is least possible light.
