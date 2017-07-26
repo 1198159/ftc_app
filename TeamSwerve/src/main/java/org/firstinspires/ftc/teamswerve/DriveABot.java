@@ -27,7 +27,7 @@ public class DriveABot extends LinearOpMode
     public static final int ARCADE_DRIVE = 1;
     public static final int SPLIT_ARCADE_DRIVE = 2;
     public static final int GAME_DRIVE = 3;
-    public int driveMode = SPLIT_ARCADE_DRIVE;
+    public int driveMode = TANK_DRIVE;
 
     @Override public void runOpMode() throws InterruptedException
     {
