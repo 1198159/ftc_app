@@ -1,14 +1,17 @@
 package org.firstinspires.ftc.team8923;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxEmbeddedIMU;
 import com.qualcomm.hardware.motors.NeveRest20Gearmotor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.ThreadPool;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 
@@ -26,26 +29,29 @@ import javax.xml.transform.sax.TemplatesHandler;
 @Autonomous(name = "Summer Beacon Challenge", group = "Summer")
 public class SummerBeaconChallenge2017 extends LinearOpMode
 {
-    DcMotor motorL;
-    DcMotor motorR;
-    DcMotor pusherL;
-    DcMotor pusherR;
+    private DcMotor motorL;
+    private DcMotor motorR;
+    private DcMotor pusherL;
+    private DcMotor pusherR;
 
-    ColorSensor colorSensorLeft;
-    ColorSensor colorSensorRight;
-    LightSensor lightSensorLeft;
-    LightSensor lightSensorRight;
-    LynxEmbeddedIMU imu;
+    private ColorSensor colorSensorLeft;
+    private ColorSensor colorSensorRight;
+    private ColorSensor lightSensorLeft;
+    private ColorSensor lightSensorRight;
+    private BNO055IMU imu;
 
-    double TURN_CONSTANT = 1/100; // somewhat arbitrary, will nail down in testing
-    double WHEEL_DIAMETER = 4.0; // inches
-    double lightTolerance = 0.5; // from 0.0 - 1.0
-    String color = "Red"; // [true = red / false = blue]
-    int distance; // distance traveled to find white line
+    private double TURN_CONSTANT = 1.0/1000.0; // somewhat arbitrary, will nail down in testing
+    private double WHEEL_DIAMETER = 4.0; // inches
+    private int lightTolerance = 5; // from 0 - 10
+    private boolean start = false; // controls the exit from the pre-init setup loop
+    private String color = "Red"; // denotes the color of the beacon to press
+    private int distance; // distance traveled to find white line
 
     @Override public void runOpMode() throws InterruptedException
     {
         // Initialize hardware and other important things
+        InitRobot();
+
         SelectVariables();
 
         // Wait until start button has been pressed
@@ -54,79 +60,119 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
         // Main loop
         while(opModeIsActive())
         {
-            //DriveManual();
+            telemetry.addLine("Entered main loop");
+            double imuAngle = imu.getAngularOrientation().firstAngle;
+            telemetry.addData("imu angle: ", imuAngle);
+            telemetry.update();
 
-            turnToAngle(90);
+            /*turnToAngle(90);
+            idle();
+            wait(10000);*/
 
-            wait(10000);
-
+            /*
             //Drive until line
                 driveUntilLine();
             //Line up with Beacon
                 correctForBeacon();
             //Detect color and press button
-                detectAndPressBeaconButton();
+                //detectAndPressBeaconButton();
             //Continue to next wall
                 continueToWall();
             //Turn to angle
                 turnToAngle(90);
             //Repeat
+            */
         }
     }
 
-    public void InitRobot()
+    private void InitRobot()
     {
         motorL = hardwareMap.get(DcMotor.class, "motorL");
         motorR = hardwareMap.get(DcMotor.class, "motorR");
-        pusherL = hardwareMap.get(DcMotor.class, "pusherL");
-        pusherR = hardwareMap.get(DcMotor.class, "pusherR");
-        colorSensorLeft = hardwareMap.get(ColorSensor.class, "colorSensorLeft");
+        //pusherL = hardwareMap.get(DcMotor.class, "pusherL");
+        //pusherR = hardwareMap.get(DcMotor.class, "pusherR");
+
+        telemetry.addLine("starting IMU init");
+        telemetry.update();
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+        telemetry.addLine("finished IMU init");
+        telemetry.update();
+
+        /*colorSensorLeft = hardwareMap.get(ColorSensor.class, "colorSensorLeft");
         colorSensorRight = hardwareMap.get(ColorSensor.class, "colorSensorRight");
-        lightSensorLeft = hardwareMap.get(LightSensor.class, "lightSensorLeft");
-        lightSensorRight = hardwareMap.get(LightSensor.class, "lightSensorRight");
-        imu = hardwareMap.get(LynxEmbeddedIMU.class, "imu");
+        lightSensorLeft = hardwareMap.get(ColorSensor.class, "lightSensorLeft");
+        lightSensorRight = hardwareMap.get(ColorSensor.class, "lightSensorRight");*/
 
         motorL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorR.setDirection(DcMotorSimple.Direction.REVERSE); //Motor is placed "backwards" so reversing it fixes normal power setting issues
 
-        pusherL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        pusherR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        /*pusherL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        pusherR.setMode(DcMotor.RunMode.RUN_TO_POSITION);*/
     }
 
-    void SelectVariables()
+    private void SelectVariables()
     {
-        gamepad1.setJoystickDeadzone(0.15f);
-        while(!gamepad1.a)
+        //gamepad1.setJoystickDeadzone(0.15f);
+        while(!start)
         {
-            if(gamepad1.dpad_up)
-                lightTolerance += 0.1;
-            else if(gamepad1.dpad_down)
-                lightTolerance -= 0.1;
-
+            if(gamepad1.dpad_up && lightTolerance < 10)
+            {
+                while (gamepad1.dpad_up)
+                    idle();  //do nothing until the key is released
+                lightTolerance += 1;
+            }
+            else if(gamepad1.dpad_down && lightTolerance > 0)
+            {
+                while (gamepad1.dpad_down)
+                    idle();  //do nothing until the key is released
+                lightTolerance -= 1;
+            }
             if(gamepad1.b)
                 color = "Red";
             else if(gamepad1.x)
                 color = "Blue";
 
+            if(gamepad1.start)
+            {
+                while(gamepad1.start)
+                    idle();  //do nothing until the key is released
+                start = true;
+            }
+
             displayTelemetry();
         }
-        InitRobot();
+        telemetry.clearAll();
+        telemetry.addLine("- - - Waiting for start - - -");
+        telemetry.addLine("");
+        telemetry.addLine("- - - Current Configuration - - -");
+        telemetry.addData("Color", color);
+        telemetry.addData("Light Tolerance", lightTolerance);
+        telemetry.update();
     }
 
-    void displayTelemetry()
+    private void displayTelemetry()
     {
-        telemetry.clear();
         telemetry.addLine("-----------------------------");
-        telemetry.addData("Light Tolerance:", lightTolerance);
-        telemetry.addData("Color: ", color);
+        telemetry.addData("Light Tolerance (Up / Down)", lightTolerance);
+        telemetry.addData("Color (X / B)", color);
+        telemetry.addLine("Press \"Start\" to continue");
         telemetry.addLine("-----------------------------");
+        telemetry.update();
     }
 
-    void turnToAngle(double deltaAngle) throws InterruptedException
+    private void turnToAngle(double deltaAngle) throws InterruptedException
     {
         if(deltaAngle > 180 || deltaAngle < -180)
             throw new IllegalArgumentException("Delta Angle must be between -180 and 180 degrees");
         double ANGLE_TOLERANCE = 5.0;
+        //TODO: update values to telemetry
         double currentAngle = imu.getAngularOrientation().firstAngle;
         double targetAngle = currentAngle + deltaAngle;
 
@@ -134,15 +180,15 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
         {
             double power = Range.clip((currentAngle - targetAngle) * TURN_CONSTANT, -1.0, 1.0);
             motorL.setPower(power);
-            motorR.setPower(-power);
+            motorR.setPower(-1 * power);
         }
     }
 
-    void driveUntilLine()
+    private void driveUntilLine()
     {
         double targetAngle = imu.getAngularOrientation().firstAngle;
         int initialEncoderValue = motorL.getCurrentPosition();
-        while(lightSensorLeft.getLightDetected() < 0.5 && lightSensorRight.getLightDetected() < 0.5)
+        while(GetBrightness(lightSensorLeft) < 5 && GetBrightness(lightSensorRight) < 5)
         {
             double correction = Range.clip((imu.getAngularOrientation().firstAngle - targetAngle) * TURN_CONSTANT, -0.35, 0.35);
             motorL.setPower(0.9 - correction);
@@ -153,10 +199,10 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
         distance = motorL.getCurrentPosition() - initialEncoderValue;
     }
 
-    void correctForBeacon()
+    private void correctForBeacon()
     {
         double targetAngle = imu.getAngularOrientation().firstAngle;
-        while(lightSensorLeft.getLightDetected() < 0.5 && lightSensorRight.getLightDetected() < 0.5)
+        while(GetBrightness(lightSensorLeft) < 5 && GetBrightness(lightSensorRight) < 5)
         {
             double correction = Range.clip((imu.getAngularOrientation().firstAngle - targetAngle) * TURN_CONSTANT, -0.35, 0.35);
             motorL.setPower(-0.2 + correction);
@@ -165,7 +211,12 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
         stopDriving();
     }
 
-    void detectAndPressBeaconButton() throws InterruptedException
+    private int GetBrightness (ColorSensor sensor)
+    {
+        return sensor.red() + sensor.blue() + sensor.green();
+    }
+
+    /*void detectAndPressBeaconButton() throws InterruptedException
     {
         int distance = 100;
         int[] colorsRight = new int[2];
@@ -179,9 +230,9 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
             pushBeacon(motorR);
         else
             pushBeacon(motorL);
-    }
+    }*/
 
-    void pushBeacon(DcMotor motor) throws InterruptedException
+    private void pushBeacon(DcMotor motor) throws InterruptedException
     {
         // in encoder ticks
         int travelDistance = 100;
@@ -206,7 +257,7 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
         motor.setMode(previousRunMode);
     }
 
-    void continueToWall()
+    private void continueToWall()
     {
         if(motorL.getMode() != DcMotor.RunMode.RUN_TO_POSITION)
             motorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -227,10 +278,21 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
         stopDriving();
     }
 
-    void stopDriving()
+    private void stopDriving()
     {
         motorL.setPower(0.0);
         motorR.setPower(0.0);
+    }
+
+    //wait a number of milliseconds
+    public void pause(int t) throws InterruptedException
+    {
+        //we don't use System.currentTimeMillis() because it can be inconsistent
+        long initialTime = System.nanoTime();
+        while((System.nanoTime() - initialTime)/1000/1000 < t)
+        {
+            idle();
+        }
     }
 
 }
