@@ -13,21 +13,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 @TeleOp(name="TeleOp", group = "Swerve")
 // @Disabled
 
-//TODO: add servo fork to configuration and make it move, look at old test code in team Swerve
-
-// CONTROLS:
-// left joystick controls the turn, or pivot alone
-// right joystick controls forwards, backwards, horizontal left and right
-// hold down right bumper for slow mode
-// push left bumper to reverse drive
-
 public class MasterTeleOp extends MasterOpMode
 {
-    boolean isSwitchPressed = false;
-    boolean isBButtonPressed = false; // isBbuttonPressed causes is lift to toggle
-    boolean isLiftActivated = false;
-    boolean isLeftBumperPushed = false; // is left bumper causes is mode to toggle
-
+    boolean isLeftBumperPushed = false;
     boolean isLeftPusherUp = false;
     boolean isRightPusherUp = false;
     boolean isXButtonPressed = false;
@@ -37,13 +25,9 @@ public class MasterTeleOp extends MasterOpMode
     boolean isLegatoMode = false;
     boolean isRightBumperPushed = false;
     private ElapsedTime runtime = new ElapsedTime();
-    Orientation angles;
     AvgFilter filterJoyStickInput = new AvgFilter();
-    double startAngle;
-    double currentAngle;
-    double imuAngle;
-    final double LIFT_POWER = 1.0;
 
+    // For autonomous lift
     int liftState = 0;
     boolean isLiftRunning = false;
     int liftZero = 0;
@@ -52,7 +36,6 @@ public class MasterTeleOp extends MasterOpMode
 
     double motorLauncherSpeed = 0;
     double motorLauncherSetSpeed = 0;
-    double driveSpeed = 0;
 
 
     @Override
@@ -64,22 +47,12 @@ public class MasterTeleOp extends MasterOpMode
         telemetry.addData("Path", "InitDone");
         telemetry.update();
 
-        //startAngle = imu.getAngularOrientation().firstAngle;
-
         // Wait until start button has been pressed
         waitForStart();
 
         // Main loop
         while (opModeIsActive())
        {
-
-           //CodeReview: Jarrod mentioned that your robot drives sluggishly. That might suggest
-           //  that your main loop should be more efficient. To test that theory, you might try adding
-           //  a timer + some telemetry to show you how long your main loop takes to execute on average.
-           //  If it seems like it's taking a long time per loop, you could look for ways to optimize.
-           //  E.g. you might be spending a lot of time updating your filter, or doing the Math.pow(x,2) command.
-           //  You could comment out various parts of your code to see how it affects the loop time.
-
            if (gamepad2.a)
            {
                motorLift.setPower(-gamepad2.left_stick_y);
@@ -92,6 +65,7 @@ public class MasterTeleOp extends MasterOpMode
            }
 
 
+// Autonomous Fork Deploy
            if (gamepad2.b && gamepad2.left_bumper)
            {
                liftState = 0;
@@ -161,8 +135,7 @@ public class MasterTeleOp extends MasterOpMode
 
 
 
-// move particle servo
-           //servoParticle.setPosition(Range.clip(-gamepad2.right_stick_y, 0, 0.7));
+// Move particle servo
            if (-gamepad2.right_stick_y > 0.4) servoParticle.setPosition(SERVO_PARTICLE_HIGH);
            else servoParticle.setPosition(SERVO_PARTICLE_LOW);
 
@@ -171,9 +144,7 @@ public class MasterTeleOp extends MasterOpMode
            else if (gamepad2.left_trigger > 0.5) motorLauncherSetSpeed = 0.6;
            else motorLauncherSetSpeed = 0;
 
-           //CodeReview: come talk with me about the following block of code.
-           // There's almost certainly a bug here, or something unintended,
-           // and there might be a simpler way to do this.
+// Ramp up flywheel motor
            if (runtime.milliseconds() > 100)
            {
                runtime.reset();
@@ -188,8 +159,6 @@ public class MasterTeleOp extends MasterOpMode
                    else motorLauncherSpeed -= 0.01;
                }
            }
-
-
            if (gamepad2.left_bumper && motorLauncherSpeed < 0.1) // if speed is low and bumper activated
            {
                motorLauncher.setPower(-0.2); // then go backwards (slowly)
@@ -197,68 +166,7 @@ public class MasterTeleOp extends MasterOpMode
            else motorLauncher.setPower(Range.clip(motorLauncherSpeed, 0, 0.8));
 
 
-           // if just pressed and previous time wasn't pressed, for reverse mode
-           if (gamepad1.left_bumper && !isLeftBumperPushed)
-           {
-               isLeftBumperPushed = true;
-               isModeReversed = !isModeReversed;
-           }
-           isLeftBumperPushed = gamepad1.left_bumper;
-
-
-// Adagio Legato Mode!
-           //CodeReview: you don't process the buttons that turn this mode on until later down,
-           //  which means that the response to turning on LegatoMode is delayed by one loop.
-           //  If you move that code above this block, it will be more responsive.
-           if (isLegatoMode) // if mode activated, reduce constants and filter input
-           {
-               mecanumDrive(0.3, 0.3);
-           }
-           else
-           {
-               mecanumDrive(1.0, 0.8);
-           }
-
-           if (gamepad2.dpad_left) // hold game pad left or right is held down
-           {
-               motorCollector.setPower(1.0);
-           }
-           else if (gamepad2.dpad_right)
-           {
-               motorCollector.setPower(-1.0);
-           }
-           else
-           {
-               motorCollector.setPower(0);
-           }
-
-
-           // press button x to toggle up and down for button pusher servo
-           if (gamepad2.x && !isXButtonPressed)
-           {
-               isXButtonPressed = true;
-               isLeftPusherUp = !isLeftPusherUp;
-           }
-           isXButtonPressed = gamepad2.x;
-
-           if(isLeftPusherUp) servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
-           else servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
-
-
-           // press button y to toggle up and down for button pusher servo
-           if (gamepad2.y && !isYButtonPressed)
-           {
-               isYButtonPressed = true;
-               isRightPusherUp = !isRightPusherUp;
-           }
-           isYButtonPressed = gamepad2.y;
-
-           if(isRightPusherUp) servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
-           else servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
-
-
-
-           // press button a to toggle legato mode
+// press button A to toggle adagio legato mode
            if (gamepad1.right_bumper && !isRightBumperPushed)
            {
                isRightBumperPushed = true;
@@ -269,9 +177,51 @@ public class MasterTeleOp extends MasterOpMode
 
            telemetry.update();
            idle();
-        } // =================================== end of while active ===========================
 
-        // for safety, turn off all motors
+// Reverse mode, activated by GamePad1's left bumper
+           if (gamepad1.left_bumper && !isLeftBumperPushed)
+           {
+               isLeftBumperPushed = true;
+               isModeReversed = !isModeReversed;
+           }
+           isLeftBumperPushed = gamepad1.left_bumper;
+
+
+// Adagio Legato Mode!  If mode activated, reduce constants and filter input (uses filter input class)
+           if (isLegatoMode) mecanumDrive(0.3, 0.3);
+           else mecanumDrive(1.0, 0.8);
+
+
+// Operate collector motor (hold gamepad left (out) or right (in)
+           if (gamepad2.dpad_left) motorCollector.setPower(1.0);
+           else if (gamepad2.dpad_right) motorCollector.setPower(-1.0);
+           else motorCollector.setPower(0);
+
+
+// Button pusher servo: press button x to toggle up and down,
+           if (gamepad2.x && !isXButtonPressed)
+           {
+               isXButtonPressed = true;
+               isLeftPusherUp = !isLeftPusherUp;
+           }
+           isXButtonPressed = gamepad2.x;
+// Press button y to toggle up and down
+           if(isLeftPusherUp) servoLeftPusher.setPosition(LEFT_PUSHER_HIGH);
+           else servoLeftPusher.setPosition(LEFT_PUSHER_LOW);
+
+           if (gamepad2.y && !isYButtonPressed)
+           {
+               isYButtonPressed = true;
+               isRightPusherUp = !isRightPusherUp;
+           }
+           isYButtonPressed = gamepad2.y;
+
+           if(isRightPusherUp) servoRightPusher.setPosition(RIGHT_PUSHER_HIGH);
+           else servoRightPusher.setPosition(RIGHT_PUSHER_LOW);
+
+        } // =================================== end of while op mode is active ===========================
+
+// For safety, turn off all motors
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
@@ -338,7 +288,7 @@ public class MasterTeleOp extends MasterOpMode
     }
 
 
-    /* TABLE:
+    /* MECANUM DRIVE TABLE:
                  FL      FR      BL      BR
     rotate ->    +        -      +        -
     rotate <-    -        +      -        +
@@ -378,35 +328,11 @@ public class MasterTeleOp extends MasterOpMode
         motorFrontLeft.setDirection(DcMotor.Direction.FORWARD);
         motorBackLeft.setDirection(DcMotor.Direction.FORWARD);
 
-        // TODO: check if the new motor have to be reversed or not
         motorLift.setDirection(DcMotor.Direction.REVERSE);
-        //motorLift2.setDirection(DcMotor.Direction.REVERSE);
         motorCollector.setDirection(DcMotor.Direction.REVERSE);
 
         // Set up telemetry data
         configureDashboard();
-    }
-
-    public void rampShooterMotor(double speed)
-    {
-        while (motorLauncherSpeed < speed)
-        {
-            motorLauncherSpeed += speed / 20.0;
-            motorLauncher.setPower(motorLauncherSpeed);
-            sleep(200);
-        }
-        while (motorLauncherSpeed > speed)
-        {
-            motorLauncherSpeed -= 0.05;
-            motorLauncher.setPower(motorLauncherSpeed);
-            sleep(200);
-        }
-    }
-
-    public void RunDistance (double speed, double distInches, double timeout) throws InterruptedException
-    {
-        int newTarget;
-
     }
 
 
