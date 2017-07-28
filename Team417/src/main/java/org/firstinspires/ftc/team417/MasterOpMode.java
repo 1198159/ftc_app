@@ -47,12 +47,8 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     // static final double DRIVE_GEAR_REDUCTION = 0.25;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 6.0;     // For figuring circumference
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4; // is 2.34
-    static final double DRIVE_SPEED = 0.6;
-    static final double TURN_SPEED = 0.5;
-    static final int MAX_SPEED = 2700;
 
     static final double SERVO_PARTICLE_HIGH = 0.55;
     static final double SERVO_PARTICLE_LOW = 0.08;
@@ -80,8 +76,6 @@ abstract public class MasterOpMode extends LinearOpMode
         motorLauncher = hardwareMap.dcMotor.get("motorLauncher");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
 
-        // get a reference to a Modern Robotics DIM, and IO channels.
-        //dim = hardwareMap.get(DeviceInterfaceModule.class, "dim");   //  Use generic form of device mapping
         liftSwitch  = hardwareMap.get(DigitalChannel.class, "liftSwitch");     //  Use generic form of device mapping
         liftSwitch.setMode(DigitalChannelController.Mode.INPUT);          // Set the direction of each channel
 
@@ -104,18 +98,6 @@ abstract public class MasterOpMode extends LinearOpMode
         motorLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        //motorLauncher.setDirection(DcMotor.Direction.REVERSE);
-
-        //setMaxSpeed is not supported in the latest FTC update
-        //motorFrontLeft.setMaxSpeed(MAX_SPEED);
-        //motorFrontRight.setMaxSpeed(MAX_SPEED);
-        //motorBackLeft.setMaxSpeed(MAX_SPEED);
-        //motorBackRight.setMaxSpeed(MAX_SPEED);
-
-        //motorLauncher.setMaxSpeed(1157); // this is a different type of motor, 1157 ticks per second
-        //motorLift.setMaxSpeed(MAX_SPEED);
-        //motorLift2.setMaxSpeed(MAX_SPEED);
-
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
@@ -132,7 +114,6 @@ abstract public class MasterOpMode extends LinearOpMode
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
         // provide positional information.
-
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -149,7 +130,6 @@ abstract public class MasterOpMode extends LinearOpMode
         // get the heading 3 times because first readings aren't accurate (this was tested)
         float angle;
         for (int i = 0; i < 3; i++) {
-            //pause(100);
             sleep(100);
             angle = imu.getAngularOrientation().firstAngle;
         }
@@ -185,5 +165,4 @@ abstract public class MasterOpMode extends LinearOpMode
     String formatDegrees(double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
-
 }
