@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 /*
     A simple opmode that shows how to use a digital input/output pin.
-    This could be used to control a relay, an LED, etc. 
+    This could be used to control a relay, an LED, etc.
  */
 
 
@@ -21,8 +21,16 @@ public class DigitalPinTest extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
 
+        //get the digital channel object
         myRelay = hardwareMap.digitalChannel.get("relay");
+
+        //tell the hardware whether the pin should be an input or output.
+        //Use inputs to read from devices, such as a switch.
+        //Use outputs to control devices, such as LEDs or relays.
         myRelay.setMode(DigitalChannel.Mode.OUTPUT);
+
+        //We're using an output because we're controlling a relay.
+        //You control the output of the digital pin by setting its state.
         myRelay.setState(false);
 
         waitForStart();
