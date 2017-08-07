@@ -20,47 +20,22 @@ public class AutonomousNewPushers extends MasterAutonomous
         while (!isStarted())
         {
             // allow driver to choose a team
-            if (gamepad1.b)
-            {
-                isRedTeam = true;
-            }
-
-            if (gamepad1.x)
-            {
-                isRedTeam = false;
-            }
+            if (gamepad1.b) isRedTeam = true;
+            if (gamepad1.x) isRedTeam = false;
 
             // select position one or two, one is closer to the origin
-            if (gamepad1.y)
-            {
-                isStartingPosOne = true;
-            }
-            if (gamepad1.a)
-            {
-                isStartingPosOne = false;
-            }
+            if (gamepad1.y) isStartingPosOne = true;
+            if (gamepad1.a) isStartingPosOne = false;
 
             if (isRedTeam)
             {
-                if (isStartingPosOne)
-                {
-                    telemetry.addData("Team: ", "Red 1");
-                }
-                else
-                {
-                    telemetry.addData("Team: ", "Red 2");
-                }
+                if (isStartingPosOne) telemetry.addData("Team: ", "Red 1");
+                else telemetry.addData("Team: ", "Red 2");
             }
             else
             {
-                if (isStartingPosOne)
-                {
-                    telemetry.addData("Team: ", "Blue 1");
-                }
-                else
-                {
-                    telemetry.addData("Team: ", "Blue 2");
-                }
+                if (isStartingPosOne) telemetry.addData("Team: ", "Blue 1");
+                else telemetry.addData("Team: ", "Blue 2");
             }
             telemetry.update();
             idle();
@@ -99,7 +74,7 @@ public class AutonomousNewPushers extends MasterAutonomous
             {
                 // OPTION BLUE ONE (LEGOS)
                 startDelay = 2000;
-                pivotAngle = -55; // recalc pivot?? also for red one??
+                pivotAngle = -55;
                 targetAngle = -90;
                 startDist = 2286;
                 targetIndex = 2;
@@ -123,12 +98,9 @@ public class AutonomousNewPushers extends MasterAutonomous
         waitForStart();
 
         autoRuntime.reset(); // set the 30 second timer
-
         VuforiaNav.startTracking();
-        //     pause(startDelay);
         VuforiaNav.getLocation(targetIndex);
 
-        //pause(delay);
 
 // START OF AUTONOMOUS
 
@@ -146,7 +118,7 @@ public class AutonomousNewPushers extends MasterAutonomous
         pause(100);
 
         PIVOT_MINSPEED = 0.2;
-        telemetry.addData("Path", "pivot 70");
+        telemetry.addData("Path", "pivot 55");
         telemetry.update();
         // pivot to face target
         pivot(pivotAngle, 0.8); // make sure IMU is on
@@ -178,7 +150,6 @@ public class AutonomousNewPushers extends MasterAutonomous
         // This angle will be later used for backing up with a reference to this angle.
         double refWallAngle = imu.getAngularOrientation().firstAngle;
 
-        // TODO: Make this not sit forever if it can't find a target
         do
         {
             VuforiaNav.getLocation(targetIndex); // update target location and angle
@@ -449,8 +420,6 @@ public class AutonomousNewPushers extends MasterAutonomous
             motorCollector.setPower(1.0);
             servoParticle.setPosition(SERVO_PARTICLE_HIGH);
             pause(300);
-            // Make sure time isn't up
-            //if (autoRuntime.milliseconds() < 29000) return;
             servoParticle.setPosition(SERVO_PARTICLE_LOW);
             pause(1500);
             //if (autoRuntime.milliseconds() > 29500) return;

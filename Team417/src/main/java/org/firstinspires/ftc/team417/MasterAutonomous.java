@@ -30,22 +30,20 @@ abstract class MasterAutonomous extends MasterOpMode
     final float mmBotWidth = 18 * mmPerInch; // the robot width
     final float mmFTCFieldWidth = (12 * 12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
 
-    // declare "what team we're on" variables
     boolean isRedTeam; // are you on red team? (if not, you're blue)
-    boolean isStartingPosOne;  // are you on starting position one? (if not, you're on position two
+    boolean isStartingPosOne;  // are you on starting position one? (if not, you're on position two)
     double startDist; // the distance traveled depending on pos one or two
-    int startDelay; // the time to delay the start if another team needs us to delay
-    int delay = 0;
+    int startDelay; // the time to delay the start if our alliance needs us to delay
     int targetIndex; // specify what image target it is
 
-    //double teamAngle;
-    double pivotAngle; // will be 60, -60 depending on what team you're on
+    double pivotAngle; // depends on what team you're on
     double targetAngle; // the Vuforia angle to align to depending on what team you're on
 
     float[] targetPos = {1524, mmFTCFieldWidth}; // target position x and y with an origin right between the driver stations
     VuforiaNavigation VuforiaNav = new VuforiaNavigation();
 
-    double Kmove = 1.0f/1200.0f; // speed is proportional to error
+    // speed is proportional to error
+    double Kmove = 1.0f/1200.0f;
     double Kpivot = 1.0f/150.0f;
 
     double TOL = 100.0;
@@ -117,12 +115,6 @@ abstract class MasterAutonomous extends MasterOpMode
         motorFrontRight.setDirection(DcMotor.Direction.FORWARD);
         motorBackRight.setDirection(DcMotor.Direction.FORWARD);
 
-        //setMaxSpeed is not supported in the latest FTC update
-        //motorFrontLeft.setMaxSpeed(2700);
-        //motorFrontRight.setMaxSpeed(2700);
-        //motorBackLeft.setMaxSpeed(2700);
-        //motorBackRight.setMaxSpeed(2700);
-
         //Set up telemetry data
         // We show the log in oldest-to-newest order, as that's better for poetry
         telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.OLDEST_FIRST);
@@ -130,6 +122,7 @@ abstract class MasterAutonomous extends MasterOpMode
         telemetry.log().setCapacity(4);
         //configureDashboard();
     }
+
     // drive forwards/backwards/horizontal left and right function
     public void move(double x, double y, double speed, double timeout) throws InterruptedException
     {
@@ -137,7 +130,6 @@ abstract class MasterAutonomous extends MasterOpMode
         newTargetFR = motorFrontRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) - (int) Math.round(COUNTS_PER_MM * x * 1.15);
         newTargetBL = motorBackLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) - (int) Math.round(COUNTS_PER_MM * x * 1.15);
         newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) + (int) Math.round(COUNTS_PER_MM * x * 1.15);
-
 
     runtime.reset(); // used for timeout
 
@@ -198,10 +190,7 @@ abstract class MasterAutonomous extends MasterOpMode
         do
         {
             VuforiaNav.getLocation(targetIndex); // update target location and angle
-            //CodeReview: sometimes getLocation returns null. Sometimes Vuforia.lastLocation might be null. Does your code handle that case gracefully?
-            //CodeReview: the code review comment above is still true ;) and hasn't been addressed yet.
 
-            //CodeReview: will this block spin forever if the vuforia target isn't visible? I think it might.
             do
             {
                 VuforiaNav.getLocation(targetIndex); // update target location and angle
@@ -222,7 +211,7 @@ abstract class MasterAutonomous extends MasterOpMode
             if (isLogging) telemetry.log().add(String.format("CurAngle: %f, error: %f", curTurnAngle, error));
             idle();
 
-        } while (opModeIsActive() && (Math.abs(error) > TOL_ANGLE));    //&& Math.abs(errorP1) > 0.3 && Math.abs(errorP2) > 0.3) );
+        } while (opModeIsActive() && (Math.abs(error) > TOL_ANGLE));
 
         // stop motors
         motorFrontLeft.setPower(0);
@@ -319,134 +308,6 @@ abstract class MasterAutonomous extends MasterOpMode
         motorBackRight.setPower(0);
     }
 
-    // a combination of both the align and pivot function (WITHOUT VUFORIA)
-    // angle has to be small otherwise won't work, this function moves and pivots robot
-    // TOL must be set to > 5
-    public void pivotMove2(double x, double y, double pivotAngle, double speed, double timeout)
-    {
-        // run with encoder mode
-        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        final double ROBOT_DIAMETER_MM = 27.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
-
-        // pivotDst is added with movement positions
-        pivotDst = (int) ((pivotAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
-
-        newTargetFL = motorFrontLeft.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetFR = motorFrontRight.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
-        newTargetBL = motorBackLeft.getCurrentPosition() - (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) + pivotDst;
-        newTargetBR = motorBackRight.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * (x * 1.1))
-                + (int) Math.round(COUNTS_PER_MM * (y)) - pivotDst;
-
-        runtime.reset(); // reset timer, which is used for loop timeout below
-
-        // read starting angle
-        startAngle = imu.getAngularOrientation().firstAngle;
-
-        // wait until the motors reach the position
-        // adjust robot angle during movement by adjusting speed of motors
-        do
-        {
-            curTurnAngle = imu.getAngularOrientation().firstAngle - startAngle;
-            curTurnAngle = adjustAngles(curTurnAngle);
-            errorAngle =  pivotAngle - curTurnAngle;
-
-            if (Math.abs(errorAngle) < TOL_ANGLE)
-            {
-                pivotSpeed = 0.0;
-            }
-            else
-            {
-                pivotSpeed = errorAngle * Kpivot;   // speed proportional to error
-                pivotSpeed = Math.abs(pivotSpeed);
-                pivotSpeed = Range.clip(pivotSpeed, 0.2, 0.5);  // clip magnitude
-                pivotSpeed = pivotSpeed * Math.signum(pivotSpeed);  // set sign
-            }
-            // pivotSpeed is added to each motor's movement speed
-
-            errorFL = newTargetFL - motorFrontLeft.getCurrentPosition();
-            if (Math.abs(errorFL) < (TOL - 5) )
-            {
-                speedFL = 0.0;
-            }
-            else
-            {
-                speedFL = Kmove * errorFL;  // movement speed proportional to error
-                speedAbsFL = Math.abs(speedFL);
-                speedAbsFL = Range.clip(speedAbsFL, MINSPEED, speed);  // clip abs(speed)
-                speedFL = speedAbsFL * Math.signum(speedFL);  // set sign of speed
-            }
-            speedFL += pivotSpeed;  // combine movement and pivot speeds
-
-            errorFR = newTargetFR - motorFrontRight.getCurrentPosition();
-            if (Math.abs(errorFR) < (TOL - 5) )
-            {
-                speedFR = 0.0;
-            }
-            else
-            {
-                speedFR = Kmove * errorFR;
-                speedAbsFR = Math.abs(speedFR);
-                speedAbsFR = Range.clip(speedAbsFR, MINSPEED, speed);  // clip abs(speed)
-                speedFR = speedAbsFR * Math.signum(speedFR);
-            }
-
-            speedFR -= pivotSpeed;  // combine movement and pivot speeds
-
-            errorBL = newTargetBL - motorBackLeft.getCurrentPosition();
-            if (Math.abs(errorBL) < (TOL - 5) )
-            {
-                speedBL = 0.0;
-            }
-            else
-            {
-                speedBL = Kmove * errorBL;
-                speedAbsBL = Math.abs(speedBL);
-                speedAbsBL = Range.clip(speedAbsBL, MINSPEED, speed);  // clip abs(speed)
-                speedBL = speedAbsBL * Math.signum(speedBL);
-            }
-            speedBL += pivotSpeed;  // combine movement and pivot speeds
-
-            errorBR = newTargetBR - motorBackRight.getCurrentPosition();
-            if (Math.abs(errorBR) < (TOL - 5) )
-            {
-                speedBR = 0.0;
-            }
-            else
-            {
-                speedBR = Kmove * errorBR;
-                speedAbsBR = Math.abs(speedBR);
-                speedAbsBR = Range.clip(speedAbsBR, MINSPEED, speed);
-                speedBR = speedAbsBR * Math.signum(speedBR);
-            }
-            speedBR -= pivotSpeed;  // combine movement and pivot speeds
-
-            motorFrontLeft.setPower(speedFL);
-            motorFrontRight.setPower(speedFR);
-            motorBackLeft.setPower(speedBL);
-            motorBackRight.setPower(speedBR);
-
-            idle();
-        }
-        while ( (opModeIsActive()) &&
-                (runtime.seconds() < timeout) &&
-                (
-                        (Math.abs(errorFL) > TOL) || (Math.abs(errorFR) > TOL) || (Math.abs(errorBL) > TOL) || (Math.abs(errorBR) > TOL) ||
-                                (Math.abs(errorAngle) > TOL_ANGLE)
-                )
-                );
-
-        // stop the motors
-        motorFrontLeft.setPower(0);
-        motorFrontRight.setPower(0);
-        motorBackLeft.setPower(0);
-        motorBackRight.setPower(0);
-    }
 
     // a combination of both the align and pivot function (WITHOUT VUFORIA)
     // angle has to be small otherwise won't work, this function moves and pivots robot
@@ -536,7 +397,6 @@ abstract class MasterAutonomous extends MasterOpMode
 
     // a combination of both the align and pivot function (WITHOUT VUFORIA)
     // angle has to be small otherwise won't work, this function moves and pivots robot
-    // test: move while maintaining an angle
     public void moveMaintainHeading(double x, double y, double pivotAngle, double refAngle, double speed, double timeout)
     {
         // run with encoder mode
@@ -815,7 +675,7 @@ abstract class MasterAutonomous extends MasterOpMode
     }
 
 
-    // pivot using IMU, it moves in a staccato-like manner
+    // pivot using IMU
     public void pivot(double turnAngle, double speed)
     {
         double pivotSpeed;
@@ -910,8 +770,6 @@ abstract class MasterAutonomous extends MasterOpMode
             curTurnAngle = imu.getAngularOrientation().firstAngle - refAngle;
             curTurnAngle = adjustAngles(curTurnAngle);
             error =  turnAngle - curTurnAngle;
-            //pivotSpeed = speed * Math.abs(error) * Kpivot;
-            //pivotSpeed = Range.clip(pivotSpeed, 0.2, 0.7); // limit abs speed
             pivotSpeed = Math.abs(error) * Kpivot;
             pivotSpeed = Range.clip(pivotSpeed, PIVOT_MINSPEED, speed); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
@@ -963,7 +821,6 @@ abstract class MasterAutonomous extends MasterOpMode
             //pivot(angle, 0.5);
             PivotForSeconds(0.5, 200);
         }
-        //pivot(-span, 0.7);
         PivotForSeconds(-0.5, 800);
         angle = 0.0;
         pause(300);
@@ -985,34 +842,6 @@ abstract class MasterAutonomous extends MasterOpMode
         while (autoRuntime.milliseconds() < milliseconds) idle();
     }
 
-
-    public void CornerVortexOption() throws InterruptedException
-    {
-        // CORNER VORTEX OPTION
-        if (isRedTeam) pivot(-100, 0.6); // if red team, pivot right
-        else pivot(100, 0.6);
-
-        DriveForSeconds(-0.6, 2500); // drive for 2.5 seconds
-    }
-
-
-    // this method drives for seconds, and it can only drive forwards or backwards
-    public void DriveForSeconds(double speed, int milliSeconds) throws InterruptedException
-    {
-        // turn on power
-        motorFrontLeft.setPower(speed);
-        motorFrontRight.setPower(speed);
-        motorBackLeft.setPower(speed);
-        motorBackRight.setPower(speed);
-        // let it run for x seconds
-        pause(milliSeconds);
-        // stop the motors after two seconds
-        motorFrontLeft.setPower(0);
-        motorFrontRight.setPower(0);
-        motorBackLeft.setPower(0);
-        motorBackRight.setPower(0);
-    }
-
     // this method drives for seconds, and it can only pivot
     public void PivotForSeconds(double speed, int milliSeconds) throws InterruptedException
     {
@@ -1031,51 +860,6 @@ abstract class MasterAutonomous extends MasterOpMode
     }
 
 
-    public void CenterVortextOption() throws InterruptedException
-    {
-        // CENTER VORTEX OPTION
-        if (isRedTeam) pivot(50, 0.6);
-        else pivot(-50, 0.6);
-        move(0, 762, 0.6, 3);
-    }
-
-    // pushes the cap ball and parks on the center vortex
-    public void PushCapBall() throws InterruptedException
-    {
-        move(0, 1143, 0.7, 3);
-        pause(500);
-        move(0, 127, 0.7, 3);
-    }
-
-
-    // parks parks on corner vortex
-    public void parkCornerVortex() throws InterruptedException
-    {
-        move(0, 762, 0.7, 3);
-        if (isRedTeam)
-        {
-            move(-508, 0, 0.8, 3);
-        }
-        else
-        {
-            move(508, 0, 0.8, 3);
-        }
-    }
-
-    public void parkCornerVortexAfterBeacons() throws InterruptedException
-    {
-        move(0, -300, 0.5, 3); // back up
-        if (isRedTeam)
-        {
-            pivot(-45, 0.8);
-        }
-        else
-        {
-            pivot(45, 0.8);
-        }
-        move(0, -1524, 0.8, 3); // move back 60 inches
-    }
-
     public void shootParticlesAfterBeacons() throws InterruptedException
     {
         TOL_ANGLE = 3.0;
@@ -1093,33 +877,6 @@ abstract class MasterAutonomous extends MasterOpMode
             pivot(55, 0.8);
         }
         move(0, -100, 0.6, 2);
-
-        motorCollector.setPower(1.0);
-        servoParticle.setPosition(0.8);
-        pause(300);
-        servoParticle.setPosition(0.0);
-        pause(1500);
-        servoParticle.setPosition(0.8);
-        pause(300);
-        servoParticle.setPosition(0.0);
-        pause(300);
-        motorLauncher.setPower(0.0);
-        motorCollector.setPower(0.0);
-    }
-
-    public void shootParticlesAfterBeacons2(double backUp, double turnToShoot, double toVortex) throws InterruptedException
-    {
-        TOL_ANGLE = 3.0;
-        VUFORIA_TOL_ANGLE = 3.0;
-        Kpivot = 1/100.0;
-        MINSPEED = 0.35;
-
-        move(0, backUp, 0.6, 2);
-
-        motorLauncher.setPower(0.85);
-        pivot(turnToShoot, 0.8);
-
-        move(0, toVortex, 0.6, 2); // used to be -420mm
 
         motorCollector.setPower(1.0);
         servoParticle.setPosition(0.8);
