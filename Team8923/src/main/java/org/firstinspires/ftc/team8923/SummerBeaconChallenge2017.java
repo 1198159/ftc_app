@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.util.Range;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.transform.sax.TemplatesHandler;
 
@@ -52,7 +54,7 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
         // Initialize hardware and other important things
         InitRobot();
 
-        SelectVariables();
+        //SelectVariables();
 
         // Wait until start button has been pressed
         waitForStart();
@@ -60,10 +62,8 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
         // Main loop
         while(opModeIsActive())
         {
-            telemetry.addLine("Entered main loop");
-            double imuAngle = imu.getAngularOrientation().firstAngle;
-            telemetry.addData("imu angle: ", imuAngle);
-            telemetry.update();
+
+            ManualDrive();
 
             /*turnToAngle(90);
             idle();
@@ -92,6 +92,18 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
         //pusherL = hardwareMap.get(DcMotor.class, "pusherL");
         //pusherR = hardwareMap.get(DcMotor.class, "pusherR");
 
+        /*colorSensorLeft = hardwareMap.get(ColorSensor.class, "colorSensorLeft");
+        colorSensorRight = hardwareMap.get(ColorSensor.class, "colorSensorRight");
+        lightSensorLeft = hardwareMap.get(ColorSensor.class, "lightSensorLeft");
+        lightSensorRight = hardwareMap.get(ColorSensor.class, "lightSensorRight");*/
+
+        motorL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorL.setDirection(DcMotorSimple.Direction.REVERSE); //Motor is placed "backwards" so reversing it fixes normal power setting issues
+
+        /*pusherL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        pusherR.setMode(DcMotor.RunMode.RUN_TO_POSITION);*/
+
         telemetry.addLine("starting IMU init");
         telemetry.update();
 
@@ -103,18 +115,16 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
 
         telemetry.addLine("finished IMU init");
         telemetry.update();
+    }
 
-        /*colorSensorLeft = hardwareMap.get(ColorSensor.class, "colorSensorLeft");
-        colorSensorRight = hardwareMap.get(ColorSensor.class, "colorSensorRight");
-        lightSensorLeft = hardwareMap.get(ColorSensor.class, "lightSensorLeft");
-        lightSensorRight = hardwareMap.get(ColorSensor.class, "lightSensorRight");*/
-
-        motorL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorR.setDirection(DcMotorSimple.Direction.REVERSE); //Motor is placed "backwards" so reversing it fixes normal power setting issues
-
-        /*pusherL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        pusherR.setMode(DcMotor.RunMode.RUN_TO_POSITION);*/
+    private void ManualDrive()
+    {
+        while(opModeIsActive())
+        {
+            motorL.setPower(gamepad1.left_stick_y / 2.0);
+            motorR.setPower(gamepad1.right_stick_y / 2.0);
+            displayTelemetry();
+        }
     }
 
     private void SelectVariables()
@@ -123,32 +133,31 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
         while(!start)
         {
             if(gamepad1.dpad_up && lightTolerance < 10)
-            {
-                while (gamepad1.dpad_up)
-                    idle();  //do nothing until the key is released
                 lightTolerance += 1;
-            }
             else if(gamepad1.dpad_down && lightTolerance > 0)
-            {
-                while (gamepad1.dpad_down)
-                    idle();  //do nothing until the key is released
                 lightTolerance -= 1;
-            }
+
             if(gamepad1.b)
                 color = "Red";
             else if(gamepad1.x)
                 color = "Blue";
 
             if(gamepad1.start)
-            {
-                while(gamepad1.start)
-                    idle();  //do nothing until the key is released
                 start = true;
-            }
 
-            displayTelemetry();
+            //prevent key repeat by waiting for all keys to be released here (also allows system process time)
+            while(!buttonsAreReleased(gamepad1))
+                idle();
+
+            //display current settings to phone
+
+            telemetry.addLine("-----------------------------");
+            telemetry.addData("Light Tolerance (Up / Down)", lightTolerance);
+            telemetry.addData("Color (X / B)", color);
+            telemetry.addLine("Press \"Start\" to continue");
+            telemetry.addLine("-----------------------------");
+            telemetry.update();
         }
-        telemetry.clearAll();
         telemetry.addLine("- - - Waiting for start - - -");
         telemetry.addLine("");
         telemetry.addLine("- - - Current Configuration - - -");
@@ -159,11 +168,11 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
 
     private void displayTelemetry()
     {
-        telemetry.addLine("-----------------------------");
-        telemetry.addData("Light Tolerance (Up / Down)", lightTolerance);
-        telemetry.addData("Color (X / B)", color);
-        telemetry.addLine("Press \"Start\" to continue");
-        telemetry.addLine("-----------------------------");
+        telemetry.addData("MotorL Power: ", motorL.getPower());
+        telemetry.addData("LeftStick: ", gamepad1.left_stick_y);
+        telemetry.addData("MotorR Power: ", motorR.getPower());
+        telemetry.addData("RightStick: ", gamepad1.right_stick_y);
+        telemetry.addData("Imu Angle: ", imu.getAngularOrientation().firstAngle);
         telemetry.update();
     }
 
@@ -293,6 +302,15 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
         {
             idle();
         }
+    }
+
+    boolean buttonsAreReleased(Gamepad pad)
+    {
+        return !(pad.a || pad.b || pad.x || pad.y || pad.left_bumper || pad.right_bumper
+                || pad.dpad_up || pad.dpad_down || pad.dpad_left || pad.dpad_right
+                || pad.left_stick_button || pad.right_stick_button
+                || pad.start || pad.back || pad.guide || pad.left_trigger > 0.35
+                || pad.right_trigger > 0.35);
     }
 
 }
