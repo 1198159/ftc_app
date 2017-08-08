@@ -106,6 +106,8 @@ public class DynamomterProject extends LinearOpMode
             whole process will keep looping until the 5 seconds is up.
             */
             currentPos2 = motor.getCurrentPosition();
+            currentValue2 = ina.current();
+            voltageValue2 = ina.shuntVoltage();
             if (currentPos2 != motorPos2[index])
             {
                 index++;
@@ -184,6 +186,8 @@ public class DynamomterProject extends LinearOpMode
         // Connect to motor
         motor = hardwareMap.dcMotor.get("motor");
         initializeRelay();
+        telemetry.addData(">", "relay inited");
+        telemetry.update();
 
         motor.setDirection(DcMotor.Direction.REVERSE);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
