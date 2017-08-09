@@ -3,11 +3,8 @@ package org.firstinspires.ftc.teamswerve;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.Func;
 
 @TeleOp(name="DynamomterTests", group = "Swerve")
 // @Disabled
@@ -21,7 +18,7 @@ public class DynamomterProject extends LinearOpMode
     double motorPower = 0;
     int waitTime = 100;
     double motorSetPower = 0.4;
-    int numSamples = 1000000;
+    int numSamples = 1500;
     // values before the relay turns off
     int currentPos;
     double currentValue;
@@ -74,7 +71,7 @@ public class DynamomterProject extends LinearOpMode
             currentValue = ina.current();
             voltageValue = ina.shuntVoltage();
 
-            if (currentPos != motorPos[index])
+            if ((currentPos != motorPos[index]) && (index < numSamples))
             {
                 index++;
                 time[index] = runtime.milliseconds();
@@ -108,7 +105,7 @@ public class DynamomterProject extends LinearOpMode
             currentPos2 = motor.getCurrentPosition();
             currentValue2 = ina.current();
             voltageValue2 = ina.shuntVoltage();
-            if (currentPos2 != motorPos2[index])
+            if ((currentPos2 != motorPos2[index]) && (index < numSamples))
             {
                 index++;
                 time2[index] = runtime.milliseconds();
@@ -144,7 +141,7 @@ public class DynamomterProject extends LinearOpMode
         // The file will appear on the robot phone in the folder storage/legacy/emulated
         FileWriter myFile = new FileWriter("testfile.txt");
 
-        //write some data to a file
+        // write some data to a file
         for (int i = 0; i < index; i++)
         {
             // pass in time, motor position, current, and voltage (displayed in that order)
@@ -161,7 +158,7 @@ public class DynamomterProject extends LinearOpMode
         // The file will appear on the robot phone in the folder storage/legacy/emulated
         FileWriter myFile = new FileWriter("testfile2.txt");
 
-        //write some data to a file
+        // write some data to a file
         for (int i = 0; i < index; i++)
         {
             myFile.println( time2[i] + " " + motorPos2[i] + " " + current2[i] + " " + voltage2[i] ); // pass in time and motor position
@@ -186,14 +183,13 @@ public class DynamomterProject extends LinearOpMode
         // Connect to motor
         motor = hardwareMap.dcMotor.get("motor");
         initializeRelay();
-        telemetry.addData(">", "relay inited");
-        telemetry.update();
 
         motor.setDirection(DcMotor.Direction.REVERSE);
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // input power, so no PID
+
+        // create current sensor object
+        ina = hardwareMap.get(INA219.class, "ina");
 
         // Wait for the start button
         telemetry.addData(">", "Press start to run Motor");
