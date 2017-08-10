@@ -137,7 +137,7 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
         RES_9BIT(0x0080),  // 9-bit bus res = 0..511
         RES_10BIT(0x0100),  // 10-bit bus res = 0..1023
         RES_11BIT(0x0200),  // 11-bit bus res = 0..2047
-        RES_12BIT(0x0400);  // 12-bit bus res = 0..4097
+        RES_12BIT(0x0400);  // 12-bit bus res = 0..4095
 
         public int bVal;
 
@@ -279,8 +279,8 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
         // TODO: Make a way for user to change these
         // Set the configuration of the sensor
         int config = BusResolution.RES_12BIT.bVal |
-                BusVoltageRange.V32.bVal |
-                Gain.GAIN_8_320MV.bVal |
+                BusVoltageRange.V16.bVal |
+                Gain.GAIN_1_40MV.bVal |
                 Mode.SANDBVOLT_CONTINUOUS.bVal |
                 ShuntResolution.RES_12BIT_128S_69MS.bVal;
         writeShort(Register.CONFIGURATION, (short) config);
