@@ -173,8 +173,8 @@ public class DynamomterProject extends LinearOpMode
         relay = hardwareMap.digitalChannel.get("relay");
         // specify mode is output
         relay.setMode(DigitalChannel.Mode.OUTPUT);
-        // false activates the pin, true deactivates the pin
-        relay.setState(true);
+        // true activates the pin, false deactivates the pin
+        relay.setState(false);
     }
 
 
@@ -190,6 +190,7 @@ public class DynamomterProject extends LinearOpMode
 
         // create current sensor object
         ina = hardwareMap.get(INA219.class, "ina");
+        ina.doInitialize();
 
         // Wait for the start button
         telemetry.addData(">", "Press start to run Motor");
@@ -198,7 +199,7 @@ public class DynamomterProject extends LinearOpMode
         waitForStart();
 
         runtime.reset();
-        relay.setState(false); // turn relay on
+        relay.setState(true); // turn relay on
 
         //RampUpMotor();
 
@@ -208,7 +209,7 @@ public class DynamomterProject extends LinearOpMode
 
         //sleep(20000);
 
-        relay.setState(true); // turn relay off
+        relay.setState(false); // turn relay off
 
         MotorTest2();
 
@@ -219,9 +220,10 @@ public class DynamomterProject extends LinearOpMode
         telemetry.update();
 
 
+        // for safety, just in case the relay doesn't power off by itself
         while (!opModeIsActive())
         {
-            relay.setState(true); // turn relay off
+            relay.setState(false); // turn relay off
         }
     }
 }
