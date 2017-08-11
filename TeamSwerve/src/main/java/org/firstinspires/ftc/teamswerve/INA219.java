@@ -192,7 +192,7 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
     // Variables and Constants
     //----------------------------------------------------------------------------------------------
 
-    public double shuntResistance = 0.01;
+    public double shuntResistance = 0.02;
 
     protected static final double MAX_SHUNT_VOLTAGE = 0.32;
     protected static final double MAX_SHUNT_VOLTAGE_RAW = 16384;
@@ -280,7 +280,7 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
         // Set the configuration of the sensor
         int config = BusResolution.RES_12BIT.bVal |
                 BusVoltageRange.V16.bVal |
-                Gain.GAIN_1_40MV.bVal |
+                Gain.GAIN_8_320MV.bVal |
                 Mode.SANDBVOLT_CONTINUOUS.bVal |
                 ShuntResolution.RES_12BIT_128S_69MS.bVal;
         writeShort(Register.CONFIGURATION, (short) config);
