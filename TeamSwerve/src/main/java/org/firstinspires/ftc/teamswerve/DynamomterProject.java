@@ -6,13 +6,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-// The name of this test is ""DynamomterTests", and it belongs to the group "Swerve".
+// The name of this test is "DynamomterTests", and it belongs to the group "Swerve".
 @TeleOp(name="DynamomterTests", group = "Swerve")
 // @Disabled // when NOT disabled, "DynamomterTests" will show up on the select OpMode screen, under "TeleOp"
-public class DynamomterProject extends LinearOpMode
+public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a subclass of the base class "LinearOpMode".
 {
 
-    DcMotor motor; // We are testing AndyMark NeverRest 20s, 40s, 60s, 3.7s, Matrix, and REV Core Hex motors, three of each.
+    DcMotor motor; // We are testing AndyMark NeverRest 20s, 40s, 60s, 3.7s, Matrix, and REV Core Hex motors (three of each).
     DigitalChannel relay; // Relay circuit, plugged into port 0 of the REV module
     INA219 ina; // INA219 Current Sensor, plugged into port 1 of the REV module.  Here's the link to the data sheet: https://cdn-shop.adafruit.com/datasheets/ina219.pdf
 
@@ -32,7 +32,8 @@ public class DynamomterProject extends LinearOpMode
     // used for recording shunt and bus voltage to telemetry
     double shuntVoltage;
     double busVoltage;
-
+    int rawShuntVoltage;
+    int rawBusVoltage;
 
     private ElapsedTime runtime = new ElapsedTime(); // used for timer that starts as soon as the play button is pushed
     int index = 0; // used to keep track of arrays
@@ -199,7 +200,7 @@ public class DynamomterProject extends LinearOpMode
     }
 
 /*
-This is where the opmode starts, including the initializing process.
+This is where the OpMode starts, including the initializing process.
  */
     public void runOpMode()
     {
@@ -207,7 +208,7 @@ This is where the opmode starts, including the initializing process.
         motor = hardwareMap.dcMotor.get("motor");
         initializeRelay();
 
-        motor.setDirection(DcMotor.Direction.REVERSE); // reverse the motor
+        //motor.setDirection(DcMotor.Direction.REVERSE); // reverse the motor
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // allows the motor to slow down without brakes
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // this mode simply inputs power, so no PID
 
@@ -234,24 +235,24 @@ This is where the opmode starts, including the initializing process.
 
         // record the shunt and bus voltage to display in the next few lines
         // this code is written here in case we don't have a game controller
-        shuntVoltage = ina.shuntVoltage();
-        busVoltage = ina.busVoltage();
+        //shuntVoltage = ina.rawShuntVoltage();
+        //busVoltage = ina.rawBusVoltage();
+
         while (opModeIsActive())
         {
-            if (gamepad1.a) // if the button "A" on gamepad 1 is pressed...
-            {
-                // record the shunt and bus voltage to display in the next few lines
-                shuntVoltage = ina.shuntVoltage();
-                busVoltage = ina.busVoltage();
-            }
-            else
-            {
-
-            }
+            // record the raw shunt and bus voltage to display in the next few lines
+            //rawShuntVoltage = ina.rawShuntVoltage();
+            //rawBusVoltage = ina.rawBusVoltage();
+            shuntVoltage = ina.shuntVoltage();
+            busVoltage = ina.busVoltage();
             // display the shunt and bus voltage to the UI on the driver station phone using telemetry
-            telemetry.addData("shuntVoltage", shuntVoltage);
-            telemetry.addData("busVoltage", busVoltage);
+            //telemetry.addData("rawShuntVoltage", rawShuntVoltage);
+            //telemetry.addData("rawBusVoltage", rawBusVoltage);
+            telemetry.addData("ShuntVoltage", shuntVoltage);
+            telemetry.addData("BusVoltage", busVoltage);
             telemetry.update(); // update the information to the driver station phone screen
+
+            sleep(5000); // wait 5000 milliseconds
         }
 
         //relay.setState(false); // turn relay off
