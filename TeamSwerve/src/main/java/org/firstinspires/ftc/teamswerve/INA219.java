@@ -37,13 +37,13 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
 
     public double shuntVoltage()
     {
-        return Range.scale(rawShuntVoltage(), 0, MAX_SHUNT_VOLTAGE_RAW, 0, MAX_SHUNT_VOLTAGE);
+        return Range.scale(rawShuntVoltage(), -32000, 32000, -0.320, 0.320); // !!!!!
     }
 
     public double busVoltage()
     {
         // Returned data is not right-aligned
-        return Range.scale(rawBusVoltage() >> 4, 0, MAX_BUS_VOLTAGE_RAW, 0, MAX_BUS_VOLTAGE);
+        return Range.scale(rawBusVoltage(), 0, 8000, 0, 32); // problem here too
     }
 
     public void reset()
@@ -62,7 +62,7 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
 
     public int rawBusVoltage()
     {
-        return readShort(Register.BUS_VOLTAGE);
+        return readShort(Register.BUS_VOLTAGE) >>> 3;
     }
 
     public int rawCurrent()
@@ -217,7 +217,7 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
 
     protected short readShort(Register reg)
     {
-        return TypeConversion.byteArrayToShort(deviceClient.read(reg.bVal, 8), ByteOrder.BIG_ENDIAN);
+        return TypeConversion.byteArrayToShort(deviceClient.read(reg.bVal, 8 /*2?*/), ByteOrder.BIG_ENDIAN);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -283,7 +283,7 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
                 Gain.GAIN_8_320MV.bVal |
                 Mode.SANDBVOLT_CONTINUOUS.bVal |
                 ShuntResolution.RES_12BIT_128S_69MS.bVal;
-        writeShort(Register.CONFIGURATION, (short) config);
+        writeShort(Register.CONFIGURATION, (short) config); // break point!!!
 
         // TODO
         // Should do something with calibration here so the sensor can return current and power
