@@ -22,32 +22,27 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
     int numSamples = 1500; // the maximum number of data samples the arrays for time, encoder counts, current, and voltage will store
     // values before the relay turns off
     int currentPos; // the current encoder position
-    double currentValue; // the value of the current read from the INA219 current sensor
-    double voltageValue; // the value of the voltage read from the INA219
+    double shuntVoltageValue; // the value of the shunt voltage read from the INA219 current sensor
+    double busVoltageValue; // the value of the bus voltage read from the INA219
     // values after the relay turns off, named the same as the three variables above,
     // just with a "2" at the end to indicate they're used after the relay is turned off
     int currentPos2;
-    double currentValue2;
-    double voltageValue2;
-    // used for recording shunt and bus voltage to telemetry
-    double shuntVoltage;
-    double busVoltage;
-    int rawShuntVoltage;
-    int rawBusVoltage;
+    double shuntVoltageValue2;
+    double busVoltageValue2;
 
     private ElapsedTime runtime = new ElapsedTime(); // used for timer that starts as soon as the play button is pushed
     int index = 0; // used to keep track of arrays
     // declare parallel arrays, made parallel by the same index
     double[] time = new double[numSamples]; // logs time every time a new encoder value is reached
     int[] motorPos = new int[numSamples]; // logs encoder counts
-    double[] current = new double[numSamples]; // logs current every time a new encoder value is reached
-    double[] voltage = new double[numSamples]; // logs voltage every time a new encoder value is reached
+    double[] shuntVoltage = new double[numSamples]; // logs current every time a new encoder value is reached
+    double[] busVoltage = new double[numSamples]; // logs voltage every time a new encoder value is reached
     // second set for logging after the relay is turned off, named the same as the four arrays above,
     // just with a "2" at the end to indicate they're used after the relay is turned off
     double[] time2 = new double[numSamples];
     int[] motorPos2 = new int[numSamples];
-    double[] current2 = new double[numSamples];
-    double[] voltage2 = new double[numSamples];
+    double[] shuntVoltage2 = new double[numSamples];
+    double[] busVoltage2 = new double[numSamples];
 
     /*
     This method counts the number of times the encoder count changes, and records the time with
@@ -63,8 +58,8 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
         */
         motorPos[0] = motor.getCurrentPosition(); // retrieve the motor's current encoder value
         time[0] = runtime.milliseconds(); // set the first value of time array to the current time using runtime object
-        current[0] = ina.current(); // record the first value of the current array to the current current reading from the INA219
-        voltage[0] = ina.shuntVoltage(); // record the first value the voltage array to the current shunt voltage from the INA219
+        busVoltage[0] = ina.busVoltage(); // record the first value of the current array to the current current reading from the INA219
+        shuntVoltage[0] = ina.shuntVoltage(); // record the first value the voltage array to the current shunt voltage from the INA219
 
         index = 0; // reset the index value to 0
         while (runtime.milliseconds() < 20000) // while the test has been under 20 seconds...
@@ -75,18 +70,18 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
             whole process will keep looping until the 20 seconds is up.
             */
             currentPos = motor.getCurrentPosition(); // get the current encoder value
-            currentValue = ina.current(); // get the current value from the IAN219 current sensor
-            voltageValue = ina.shuntVoltage(); // get the shunt voltage value from the IAN219 current sensor
+            busVoltageValue = ina.busVoltage(); // get the current value from the INA219 current sensor
+            shuntVoltageValue = ina.shuntVoltage(); // get the shunt voltage value from the INA219 current sensor
 
-            // if the current position is not equal to the motor position at the current index value
+            // If the current position is not equal to the motor position at the current index value
             // and the current index value is less than the number samples, then...
             if ((currentPos != motorPos[index]) && (index < numSamples))
             {
                 index++; // increment the current index value
                 time[index] = runtime.milliseconds(); // record the time at the new index value
                 motorPos[index] = currentPos; // record the motor position at the new index value
-                current[index] = currentValue; // record the current (from sensor INA219) at the new index value
-                voltage[index] = voltageValue; // record the shunt voltage at the new index value
+                busVoltage[index] = busVoltageValue; // record the bus voltage (from sensor INA219) at the new index value
+                shuntVoltage[index] = shuntVoltageValue; // record the shunt voltage at the new index value
             }
         }
     }
@@ -105,22 +100,22 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
         */
         motorPos2[0] = motor.getCurrentPosition();
         time2[0] = runtime.milliseconds();
-        current2[0] = ina.current();
-        voltage2[0] = ina.shuntVoltage();
+        busVoltage2[0] = ina.busVoltage();
+        shuntVoltage2[0] = ina.shuntVoltage();
 
         index = 0;
         while (runtime.milliseconds() < 40000 + 20000) // 40 seconds after the relay is turned off
         {
             currentPos2 = motor.getCurrentPosition();
-            currentValue2 = ina.current();
-            voltageValue2 = ina.shuntVoltage();
+            busVoltageValue2 = ina.busVoltage();
+            shuntVoltageValue2 = ina.shuntVoltage();
             if ((currentPos2 != motorPos2[index]) && (index < numSamples))
             {
                 index++;
                 time2[index] = runtime.milliseconds();
                 motorPos2[index] = currentPos2;
-                current2[index] = currentValue2;
-                voltage2[index] = voltageValue2;
+                busVoltage2[index] = busVoltageValue2;
+                shuntVoltage2[index] = shuntVoltageValue2;
             }
         }
     }
@@ -159,8 +154,8 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
         // write some data to a file
         for (int i = 0; i < index; i++)
         {
-            // pass in time, motor position, current, and voltage (displayed in that order)
-            myFile.println( time[i] + " " + motorPos[i] + " " + current[i] + " " + voltage[i] );
+            // pass in time, motor position, bus voltage, and shunt voltage (displayed in that order)
+            myFile.println( time[i] + " " + motorPos[i] + " " + busVoltage[i] + " " + shuntVoltage[i] );
         }
         // Close the file when you're done. (Not strictly necessary, but nice to do.)
         myFile.closeFile();
@@ -180,7 +175,7 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
         // write some data to a file
         for (int i = 0; i < index; i++)
         {
-            myFile.println( time2[i] + " " + motorPos2[i] + " " + current2[i] + " " + voltage2[i] ); // pass in time and motor position
+            myFile.println( time2[i] + " " + motorPos2[i] + " " + busVoltage2[i] + " " + shuntVoltage2[i] );
         }
         // Close the file when you're done. (Not strictly necessary, but nice to do.)
         myFile.closeFile();
@@ -216,7 +211,6 @@ This is where the OpMode starts, including the initializing process.
         ina = hardwareMap.get(INA219.class, "ina");
         ina.doInitialize(); // initialize the INA219 current sensor
 
-        // Wait for the start button
         telemetry.addData(">", "Press start to run Motor"); // write a message to indicate the initialization is done
         telemetry.update(); // update the message to display on the UI (the very bottom of the driver station phone screen)
 
@@ -228,45 +222,20 @@ This is where the OpMode starts, including the initializing process.
         //RampUpMotor(); // Ramp up the motor speed for 10 seconds
 
         //motor.setPower(motorSetPower); // turn on the motor to the set power
-        //MotorTest(); // record encoder counts vs. time as well as current and voltage
+        MotorTest(); // record encoder counts vs. time as well as current and voltage
         //motor.setPower(0.0); // turn the motor off
 
-        //sleep(20000); // wait for 20000 milliseconds
-
-        // record the shunt and bus voltage to display in the next few lines
-        // this code is written here in case we don't have a game controller
-        //shuntVoltage = ina.rawShuntVoltage();
-        //busVoltage = ina.rawBusVoltage();
-
-        while (opModeIsActive())
-        {
-            // record the raw shunt and bus voltage to display in the next few lines
-            //rawShuntVoltage = ina.rawShuntVoltage();
-            //rawBusVoltage = ina.rawBusVoltage();
-            shuntVoltage = ina.shuntVoltage();
-            busVoltage = ina.busVoltage();
-            // display the shunt and bus voltage to the UI on the driver station phone using telemetry
-            //telemetry.addData("rawShuntVoltage", rawShuntVoltage);
-            //telemetry.addData("rawBusVoltage", rawBusVoltage);
-            telemetry.addData("ShuntVoltage", shuntVoltage);
-            telemetry.addData("BusVoltage", busVoltage);
-            telemetry.update(); // update the information to the driver station phone screen
-
-            sleep(5000); // wait 5000 milliseconds
-        }
-
-        //relay.setState(false); // turn relay off
+        relay.setState(false); // turn relay off after 20 seconds
 
         // Record data into arrays after the relay is turned off
-        //MotorTest2();
+        MotorTest2();
 
         // Record the Data from the arrays
-        //RecordData();
-        //RecordData2();
+        RecordData();
+        RecordData2();
 
-        //telemetry.addData( ">", "Press Stop to end test." ); // write final message to indicate the test is over
-        //telemetry.update(); // update the message to the driver station phone screen
-
+        telemetry.addData( ">", "Press Stop to end test." ); // write final message to indicate the test is over
+        telemetry.update(); // update the message to the driver station phone screen
 
         // for safety, just in case the relay doesn't power off by itself
         relay.setState(false); // turn relay off
