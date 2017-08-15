@@ -16,6 +16,13 @@ import java.util.Locale;
 
 @SuppressWarnings("WeakerAccess")
 @I2cSensor(name = "INA219 Current Sensor", description = "Current Sensor from Adafruit", xmlTag = "INA219")
+
+/*
+This is the class for the INA219 Current Sensor, plugged into port 1 of the REV module on
+the dynamometer project.  Here's the link to the data sheet:
+https://cdn-shop.adafruit.com/datasheets/ina219.pdf.
+ */
+
 public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cAddrConfig
 {
 
@@ -23,29 +30,48 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
     // User Methods
     //----------------------------------------------------------------------------------------------
 
+    /*
+    This method returns current, which is voltage divided by resistance (0.02 ohm), according to
+    Ohm's Law.
+     */
     public double current()
     {
         // I=V/R
         return shuntVoltage() / shuntResistance;
     }
 
+    /*
+    This method returns power, which is the product of current and voltage.
+     */
     public double power()
     {
         // P=IV
         return current() * busVoltage();
     }
 
+    /*
+    This method returns shunt voltage, by reading the raw value from the INA219 current sensor
+    and by scaling it to a voltage.
+     */
     public double shuntVoltage()
     {
-        return Range.scale(rawShuntVoltage(), -32000, 32000, -0.320, 0.320); // !!!!!
+        // Shunt voltage is signed
+        return Range.scale(rawShuntVoltage(), -MAX_SHUNT_VOLTAGE_RAW, MAX_SHUNT_VOLTAGE_RAW, -MAX_SHUNT_VOLTAGE, MAX_SHUNT_VOLTAGE);
     }
 
+    /*
+    This method returns bus voltage, by reading the raw value from the current sensor and by
+    scaling it to a bus voltage.
+     */
     public double busVoltage()
     {
-        // Returned data is not right-aligned
-        return Range.scale(rawBusVoltage(), 0, 8000, 0, 32); // problem here too
+        // bus voltage is unsigned (always >= 0)
+        return Range.scale(rawBusVoltage(), 0, MAX_BUS_VOLTAGE_RAW, 0, MAX_BUS_VOLTAGE);
     }
 
+    /*
+    This method writes to the configuration register to reset the INA219 device.
+     */
     public void reset()
     {
         writeShort(Register.CONFIGURATION, (short) 0x8000);
@@ -55,26 +81,46 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
     // Raw Data
     //----------------------------------------------------------------------------------------------
 
+    /*
+    This method reads the raw shunt voltage value from the INA219 device.
+     */
     public int rawShuntVoltage()
     {
         return readShort(Register.SHUNT_VOLTAGE);
     }
 
+    /*
+    This method reads the raw bus voltage from the INA219 device.
+     */
     public int rawBusVoltage()
     {
+        // Bus voltage is unsigned (always positive).
+        // Unsigned shift right by 3 bits to remove unused bits 2:0; data is in bits 15:3.
         return readShort(Register.BUS_VOLTAGE) >>> 3;
     }
 
+    /*
+    This method returns the raw current value from the INA219 device.  The device computes the
+    current using the calibration register, but it must be programmed before reading the current
+    register.
+     */
     public int rawCurrent()
     {
         return readShort(Register.CURRENT);
     }
 
+    /*
+    This method returns the raw power from the INA219 device.  The device computes the power using
+    the calibration register, but it must be programmed before reading the current register.
+     */
     public int rawPower()
     {
         return readShort(Register.POWER);
     }
 
+    /*
+    This method reads the configuration register.
+     */
     public int rawConfig()
     {
         return readShort(Register.CONFIGURATION);
@@ -84,10 +130,13 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
     // Registers
     //----------------------------------------------------------------------------------------------
 
+    /*
+    This is the list of registers for INA219.
+     */
     public enum Register
     {
         FIRST(0),
-        CONFIGURATION(0X00),
+        CONFIGURATION(0x00),
         SHUNT_VOLTAGE(0x01),
         BUS_VOLTAGE(0x02),
         CURRENT(0x03),
@@ -96,9 +145,9 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
         LAST(CALIBRATION.bVal),
         UNKNOWN(-1);
 
-        public int bVal;
+        public int bVal; // defines an integer "bit value"
 
-        Register(int bVal)
+        Register(int bVal) // a constructor that allows user to pass in a bit value
         {
             this.bVal = bVal;
         }
@@ -194,10 +243,11 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
 
     public double shuntResistance = 0.02;
 
-    protected static final double MAX_SHUNT_VOLTAGE = 0.32;
-    protected static final double MAX_SHUNT_VOLTAGE_RAW = 16384;
+    protected static final double MAX_SHUNT_VOLTAGE = 0.320; // 320 mV
+    protected static final double MAX_SHUNT_VOLTAGE_RAW = 32000; // 320mV * 100; LSB is 10uV
     protected static final double SHUNT_VOLTAGE_RESOLUTION = MAX_SHUNT_VOLTAGE / MAX_SHUNT_VOLTAGE_RAW;
-    protected static final double MAX_BUS_VOLTAGE = 32;
+    protected static final double MAX_BUS_VOLTAGE = 32; // 0V to 32V range
+    // 4000 for 16V range, 8000 for 32V range; LSB = 4mV for both ranges
     protected static final double MAX_BUS_VOLTAGE_RAW = 4000;
     protected static final double BUS_VOLTAGE_RESOLUTION = MAX_BUS_VOLTAGE / MAX_BUS_VOLTAGE_RAW;
 
@@ -217,7 +267,7 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
 
     protected short readShort(Register reg)
     {
-        return TypeConversion.byteArrayToShort(deviceClient.read(reg.bVal, 8 /*2?*/), ByteOrder.BIG_ENDIAN);
+        return TypeConversion.byteArrayToShort(deviceClient.read(reg.bVal, 2), ByteOrder.BIG_ENDIAN);
     }
 
     //----------------------------------------------------------------------------------------------
