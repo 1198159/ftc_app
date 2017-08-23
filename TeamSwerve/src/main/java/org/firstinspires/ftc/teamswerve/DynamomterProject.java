@@ -15,34 +15,41 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
     DcMotor motor; // We are testing AndyMark NeverRest 20s, 40s, 60s, 3.7s, Matrix, and REV Core Hex motors (three of each).
     DigitalChannel relay; // Relay circuit, plugged into port 0 of the REV module
     INA219 ina; // INA219 Current Sensor, plugged into port 1 of the REV module.  Here's the link to the data sheet: https://cdn-shop.adafruit.com/datasheets/ina219.pdf
+    WeightedMovingAverage filter;
 
     double motorPower = 0.0; // used as a placeholder value for incremented motor power the method "RampUpMotor" below
     int waitTime = 100; // a value used for time between each motor power increment in the method "RampUpMotor" below
     double motorSetPower = 0.4; // the max power the motor power will increment to in the method "RampUpMotor" below
-    int numSamples = 1500; // the maximum number of data samples the arrays for time, encoder counts, current, and voltage will store
+    int numSamples = 3000; // the maximum number of data samples the arrays for time, encoder counts, current, and voltage will store
     // values before the relay turns off
     int currentPos; // the current encoder position
     double shuntVoltageValue; // the value of the shunt voltage read from the INA219 current sensor
     double busVoltageValue; // the value of the bus voltage read from the INA219
+    double shuntCurrentValue; // the value of the shunt current read from the INA219
+
     // values after the relay turns off, named the same as the three variables above,
     // just with a "2" at the end to indicate they're used after the relay is turned off
     int currentPos2;
     double shuntVoltageValue2;
     double busVoltageValue2;
+    double shuntCurrentValue2;
 
     private ElapsedTime runtime = new ElapsedTime(); // used for timer that starts as soon as the play button is pushed
+    private ElapsedTime sampleTime = new ElapsedTime(); // used as a separate timer in the timed sample loop
     int index = 0; // used to keep track of arrays
     // declare parallel arrays, made parallel by the same index
     double[] time = new double[numSamples]; // logs time every time a new encoder value is reached
     int[] motorPos = new int[numSamples]; // logs encoder counts
     double[] shuntVoltage = new double[numSamples]; // logs current every time a new encoder value is reached
     double[] busVoltage = new double[numSamples]; // logs voltage every time a new encoder value is reached
+    double[] shuntCurrent = new double[numSamples]; // logs shunt current every time a new encoder value is reached
     // second set for logging after the relay is turned off, named the same as the four arrays above,
     // just with a "2" at the end to indicate they're used after the relay is turned off
     double[] time2 = new double[numSamples];
     int[] motorPos2 = new int[numSamples];
     double[] shuntVoltage2 = new double[numSamples];
     double[] busVoltage2 = new double[numSamples];
+    double[] shuntCurrent2 = new double[numSamples];
 
     /*
     This method counts the number of times the encoder count changes, and records the time with
@@ -59,7 +66,7 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
         motorPos[0] = motor.getCurrentPosition(); // retrieve the motor's current encoder value
         time[0] = runtime.milliseconds(); // set the first value of time array to the current time using runtime object
         busVoltage[0] = ina.busVoltage(); // record the first value of the current array to the current current reading from the INA219
-        shuntVoltage[0] = ina.shuntVoltage(); // record the first value the voltage array to the current shunt voltage from the INA219
+        shuntCurrent[0] = ina.current(); // record the first value the voltage array to the current shunt voltage from the INA219
 
         index = 0; // reset the index value to 0
         while (runtime.milliseconds() < 20000) // while the test has been under 20 seconds...
@@ -70,8 +77,8 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
             whole process will keep looping until the 20 seconds is up.
             */
             currentPos = motor.getCurrentPosition(); // get the current encoder value
-            busVoltageValue = ina.busVoltage(); // get the current value from the INA219 current sensor
-            shuntVoltageValue = ina.shuntVoltage(); // get the shunt voltage value from the INA219 current sensor
+            busVoltageValue = ina.busVoltage(); // get the bus voltage value from the INA219 current sensor
+            shuntCurrentValue = ina.current(); // get the shunt current value from the INA219 current sensor
 
             // If the current position is not equal to the motor position at the current index value
             // and the current index value is less than the number samples, then...
@@ -81,7 +88,7 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
                 time[index] = runtime.milliseconds(); // record the time at the new index value
                 motorPos[index] = currentPos; // record the motor position at the new index value
                 busVoltage[index] = busVoltageValue; // record the bus voltage (from sensor INA219) at the new index value
-                shuntVoltage[index] = shuntVoltageValue; // record the shunt voltage at the new index value
+                shuntCurrent[index] = shuntCurrentValue; // record the shunt current (from sensor INA219) at the new index value
             }
         }
     }
@@ -101,21 +108,56 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
         motorPos2[0] = motor.getCurrentPosition();
         time2[0] = runtime.milliseconds();
         busVoltage2[0] = ina.busVoltage();
-        shuntVoltage2[0] = ina.shuntVoltage();
+        shuntCurrent2[0] = ina.current();
 
         index = 0;
         while (runtime.milliseconds() < 40000 + 20000) // 40 seconds after the relay is turned off
         {
             currentPos2 = motor.getCurrentPosition();
             busVoltageValue2 = ina.busVoltage();
-            shuntVoltageValue2 = ina.shuntVoltage();
+            shuntCurrentValue2 = ina.current();
             if ((currentPos2 != motorPos2[index]) && (index < numSamples))
             {
                 index++;
                 time2[index] = runtime.milliseconds();
                 motorPos2[index] = currentPos2;
                 busVoltage2[index] = busVoltageValue2;
-                shuntVoltage2[index] = shuntVoltageValue2;
+                shuntCurrent2[index] = shuntCurrentValue2;
+            }
+        }
+    }
+
+    public void TimedSampling()
+    {
+        index = 0;
+        while (runtime.milliseconds() < 20000)
+        {
+            time[index] = runtime.milliseconds(); // record the time at the new index value
+            motorPos[index] = motor.getCurrentPosition(); // record the motor position at the new index value
+            //busVoltage[index] = ina.busVoltage; // record the bus voltage (from sensor INA219) at the new index value
+            filter.addNewValue(ina.busVoltage());
+            shuntCurrent[index] = ina.current(); // record the shunt current (from sensor INA219) at the new index value
+            index++; // increment the index value
+            sleep(waitTime); // wait for the time intended between each sample
+        }
+    }
+
+    public void TimedSamplingTest()
+    {
+        index = 0; // reset the index value to 0
+        sampleTime.reset(); // reset the sample timer
+        while (runtime.milliseconds() < 20000) // while the motor hasn't been running for 20 seconds...
+        {
+            // if the sample time is less than the intended time between each sample...
+            if (sampleTime.milliseconds() > waitTime)
+            {
+                time[index] = runtime.milliseconds(); // record the time at the new index value
+                motorPos[index] = motor.getCurrentPosition(); // record the motor position at the new index value
+                //busVoltage[index] = ina.busVoltage; // record the bus voltage (from sensor INA219) at the new index value
+                filter.addNewValue(ina.busVoltage());
+                shuntCurrent[index] = ina.current(); // record the shunt current (from sensor INA219) at the new index value
+                index++; // increment the index value
+                sampleTime.reset(); // reset the sample timer
             }
         }
     }
@@ -155,7 +197,7 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
         for (int i = 0; i < index; i++)
         {
             // pass in time, motor position, bus voltage, and shunt voltage (displayed in that order)
-            myFile.println( time[i] + " " + motorPos[i] + " " + busVoltage[i] + " " + shuntVoltage[i] );
+            myFile.println( time[i] + " " + motorPos[i] + " " + busVoltage[i] + " " + shuntCurrent[i] );
         }
         // Close the file when you're done. (Not strictly necessary, but nice to do.)
         myFile.closeFile();
@@ -175,7 +217,7 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
         // write some data to a file
         for (int i = 0; i < index; i++)
         {
-            myFile.println( time2[i] + " " + motorPos2[i] + " " + busVoltage2[i] + " " + shuntVoltage2[i] );
+            myFile.println( time2[i] + " " + motorPos2[i] + " " + busVoltage2[i] + " " + shuntCurrent2[i] );
         }
         // Close the file when you're done. (Not strictly necessary, but nice to do.)
         myFile.closeFile();

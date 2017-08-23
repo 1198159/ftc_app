@@ -37,7 +37,8 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
     public double current()
     {
         // I=V/R
-        return shuntVoltage() / shuntResistance;
+        //return shuntVoltage() / shuntResistance;
+        return shuntVoltage() * 50; // 50 is derived from 16 amps divided by 0.32 max shunt voltage
     }
 
     /*
@@ -66,7 +67,8 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
     public double busVoltage()
     {
         // bus voltage is unsigned (always >= 0)
-        return Range.scale(rawBusVoltage(), 0, MAX_BUS_VOLTAGE_RAW, 0, MAX_BUS_VOLTAGE);
+        //return Range.scale(rawBusVoltage(), 0, MAX_BUS_VOLTAGE_RAW, 0, MAX_BUS_VOLTAGE);
+        return rawBusVoltage() * 0.004 /*4 mV, the LSB*/;
     }
 
     /*
@@ -246,7 +248,7 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
     protected static final double MAX_SHUNT_VOLTAGE = 0.320; // 320 mV
     protected static final double MAX_SHUNT_VOLTAGE_RAW = 32000; // 320mV * 100; LSB is 10uV
     protected static final double SHUNT_VOLTAGE_RESOLUTION = MAX_SHUNT_VOLTAGE / MAX_SHUNT_VOLTAGE_RAW;
-    protected static final double MAX_BUS_VOLTAGE = 32; // 0V to 32V range
+    protected static final double MAX_BUS_VOLTAGE = 16; // 0V to 16V range
     // 4000 for 16V range, 8000 for 32V range; LSB = 4mV for both ranges
     protected static final double MAX_BUS_VOLTAGE_RAW = 4000;
     protected static final double BUS_VOLTAGE_RESOLUTION = MAX_BUS_VOLTAGE / MAX_BUS_VOLTAGE_RAW;
