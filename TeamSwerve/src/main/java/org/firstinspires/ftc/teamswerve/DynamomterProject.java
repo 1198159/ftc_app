@@ -15,10 +15,10 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
     DcMotor motor; // We are testing AndyMark NeverRest 20s, 40s, 60s, 3.7s, Matrix, and REV Core Hex motors (three of each).
     DigitalChannel relay; // Relay circuit, plugged into port 0 of the REV module
     INA219 ina; // INA219 Current Sensor, plugged into port 1 of the REV module.  Here's the link to the data sheet: https://cdn-shop.adafruit.com/datasheets/ina219.pdf
-    WeightedMovingAverage filter;
+    WeightedMovingAverage filter; // An FIR (Finite Impulse Response) Filter used to reduce the bus voltage data during the data collection process
 
     double motorPower = 0.0; // used as a placeholder value for incremented motor power the method "RampUpMotor" below
-    int waitTime = 100; // a value used for time between each motor power increment in the method "RampUpMotor" below
+    int waitTime = 150; // a value (in milliseconds) used for time between each motor power increment in the method "RampUpMotor" below, and in timed saples
     double motorSetPower = 0.4; // the max power the motor power will increment to in the method "RampUpMotor" below
     int numSamples = 3000; // the maximum number of data samples the arrays for time, encoder counts, current, and voltage will store
     // values before the relay turns off
@@ -35,7 +35,7 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
     double shuntCurrentValue2;
 
     private ElapsedTime runtime = new ElapsedTime(); // used for timer that starts as soon as the play button is pushed
-    private ElapsedTime sampleTime = new ElapsedTime(); // used as a separate timer in the timed sample loop
+    private ElapsedTime sampleTime = new ElapsedTime(); // used as a separate timer in the timed sample loop, "TimedSamplingTest"
     int index = 0; // used to keep track of arrays
     // declare parallel arrays, made parallel by the same index
     double[] time = new double[numSamples]; // logs time every time a new encoder value is reached
@@ -127,6 +127,13 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
         }
     }
 
+    /*
+    This two following methods are timed sampling tests.  Instead of recording a sample for every
+    detected encoder count, this test samples a set "waitTime", a variable also used in the ramp
+    motor function.  "TimedSampling2" is the same method as "TimedSampling" except it is used for
+    logging data after 20 seconds.  These two methods use the "sleep" method to wait for the
+    specified "waitTime".
+     */
     public void TimedSampling()
     {
         index = 0;
@@ -134,14 +141,37 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
         {
             time[index] = runtime.milliseconds(); // record the time at the new index value
             motorPos[index] = motor.getCurrentPosition(); // record the motor position at the new index value
-            //busVoltage[index] = ina.busVoltage; // record the bus voltage (from sensor INA219) at the new index value
-            filter.addNewValue(ina.busVoltage());
+            busVoltage[index] = ina.busVoltage(); // record the bus voltage (from sensor INA219) at the new index value
+            //filter.addNewValue(ina.busVoltage());
             shuntCurrent[index] = ina.current(); // record the shunt current (from sensor INA219) at the new index value
             index++; // increment the index value
             sleep(waitTime); // wait for the time intended between each sample
         }
     }
+    public void TimedSampling2()
+    {
+        index = 0;
+        while (runtime.milliseconds() < 20000 + 40000)
+        {
+            time2[index] = runtime.milliseconds(); // record the time at the new index value
+            motorPos2[index] = motor.getCurrentPosition(); // record the motor position at the new index value
+            busVoltage2[index] = ina.busVoltage(); // record the bus voltage (from sensor INA219) at the new index value
+            //filter.addNewValue(ina.busVoltage());
+            shuntCurrent2[index] = ina.current(); // record the shunt current (from sensor INA219) at the new index value
+            index++; // increment the index value
+            sleep(waitTime); // wait for the time intended between each sample
+        }
+    }
 
+    /*
+    The following two methods follow the same concept as the two methods above.  They both log data
+    in specific time increments instead of for every encoder count.  Different from the two methods
+    above, the two methods below keep the time with a separate timer called "sampleTime".  During
+    the log loop, the sample timer "sampleTime" is checked to see if it is greater than the
+    specified "waitTime".  If it is, then the time (from the separate "runtime" timer, motor
+    position, bus voltage, and shunt current will be logged.  After all of the four data points have
+    been logged, the index is incremented for the new data point and the sample timer is reset.
+     */
     public void TimedSamplingTest()
     {
         index = 0; // reset the index value to 0
@@ -153,9 +183,28 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
             {
                 time[index] = runtime.milliseconds(); // record the time at the new index value
                 motorPos[index] = motor.getCurrentPosition(); // record the motor position at the new index value
-                //busVoltage[index] = ina.busVoltage; // record the bus voltage (from sensor INA219) at the new index value
-                filter.addNewValue(ina.busVoltage());
+                busVoltage[index] = ina.busVoltage(); // record the bus voltage (from sensor INA219) at the new index value
+                //filter.addNewValue(ina.busVoltage());
                 shuntCurrent[index] = ina.current(); // record the shunt current (from sensor INA219) at the new index value
+                index++; // increment the index value
+                sampleTime.reset(); // reset the sample timer
+            }
+        }
+    }
+    public void TimedSamplingTest2()
+    {
+        index = 0; // reset the index value to 0
+        sampleTime.reset(); // reset the sample timer
+        while (runtime.milliseconds() < 20000 + 40000) // while the motor hasn't been running for 20 seconds...
+        {
+            // if the sample time is less than the intended time between each sample...
+            if (sampleTime.milliseconds() > waitTime)
+            {
+                time2[index] = runtime.milliseconds(); // record the time at the new index value
+                motorPos2[index] = motor.getCurrentPosition(); // record the motor position at the new index value
+                busVoltage2[index] = ina.busVoltage(); // record the bus voltage (from sensor INA219) at the new index value
+                //filter.addNewValue(ina.busVoltage());
+                shuntCurrent2[index] = ina.current(); // record the shunt current (from sensor INA219) at the new index value
                 index++; // increment the index value
                 sampleTime.reset(); // reset the sample timer
             }
@@ -168,18 +217,34 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
      */
     public void RampUpMotor()
     {
-        while (runtime.milliseconds() < 10000)
+        while (runtime.milliseconds() < 10000) // while the motor hasn't been running for 10 seconds...
         {
-            while (motorPower < motorSetPower)
+            while (motorPower < motorSetPower) // while the motor power is less than the set power
             {
-                motorPower += 0.01;
-                motor.setPower(motorPower);
-                sleep(waitTime);
+                motorPower += 0.01; // increment the motor power by 1%
+                motor.setPower(motorPower); // set the motor power to variable "motorPower"
+                sleep(waitTime); // wait for the specified "waitTime"
+                // display the motor power and update it to the screen on the driver station phone
                 telemetry.addData("Power:", motor.getPower());
                 telemetry.update();
             }
         }
-        motor.setPower(0.0);
+        motor.setPower(0.0); // turn off the motor power
+    }
+
+    /*
+    This method is for reading and displaying the encoder counts while manually spinning the
+    flywheel.  The purpose of this is so that you can compare how much the motor turns optically and
+    the encoder count reading.
+     */
+    public void EncoderCountTest()
+    {
+        relay.setState(false); // turn the relay off, even though we know we won;t run the motor
+        while (opModeIsActive())
+        {
+            telemetry.addData("EncoderCount", motor.getCurrentPosition()); // read encoder counts to update the count displayed
+            telemetry.update(); // display the encoder count to the driver station phone screen
+        }
     }
 
     /*
@@ -233,11 +298,11 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
         // specify mode is output
         relay.setMode(DigitalChannel.Mode.OUTPUT);
         // true activates the pin, false deactivates the pin
-        relay.setState(false);
+        relay.setState(false); // turn off the relay to initialize
     }
 
 /*
-This is where the OpMode starts, including the initializing process.
+This is where the OpMode starts, including the initializing process.  The runOpMode is not a loop.
  */
     public void runOpMode()
     {
@@ -256,7 +321,12 @@ This is where the OpMode starts, including the initializing process.
         telemetry.addData(">", "Press start to run Motor"); // write a message to indicate the initialization is done
         telemetry.update(); // update the message to display on the UI (the very bottom of the driver station phone screen)
 
-        waitForStart(); // wait until the start button is pushed
+// wait until the start button is pushed
+        waitForStart();
+
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // this resets the encoder
+        //EncoderCountTest();
+
 
         runtime.reset(); // restart the timer (used when running the motor for seconds
         relay.setState(true); // turn relay on
@@ -264,13 +334,15 @@ This is where the OpMode starts, including the initializing process.
         //RampUpMotor(); // Ramp up the motor speed for 10 seconds
 
         //motor.setPower(motorSetPower); // turn on the motor to the set power
-        MotorTest(); // record encoder counts vs. time as well as current and voltage
+        //MotorTest(); // record encoder counts vs. time as well as current and voltage
+        TimedSamplingTest();
         //motor.setPower(0.0); // turn the motor off
 
         relay.setState(false); // turn relay off after 20 seconds
 
         // Record data into arrays after the relay is turned off
-        MotorTest2();
+        //MotorTest2();
+        TimedSamplingTest2();
 
         // Record the Data from the arrays
         RecordData();
