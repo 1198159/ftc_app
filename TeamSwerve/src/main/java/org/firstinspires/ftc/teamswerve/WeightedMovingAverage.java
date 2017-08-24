@@ -3,12 +3,8 @@ package org.firstinspires.ftc.teamswerve;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by user on 8/17/2017.
- */
-
-public class WeightedMovingAverage {
-
+public class WeightedMovingAverage
+{
     //Let's define the zero element as the oldest.
     private ArrayList<Double> values;
     private double[] weights;
@@ -65,7 +61,7 @@ public class WeightedMovingAverage {
     /*
     This method returns the filtered values after applying the weighted filter calculations.
      */
-    public double getWeightedAverage()
+    public double getRunningTotal()
     {
         double runningTotal = 0.0;
 
@@ -73,8 +69,6 @@ public class WeightedMovingAverage {
         {
             runningTotal += applyWeight(i);
         }
-        return runningTotal / values.size();
+        return runningTotal;
     }
-
-
 }
