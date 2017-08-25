@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 // @Disabled // when NOT disabled, "DynamomterTests" will show up on the select OpMode screen, under "TeleOp"
 public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a subclass of the base class "LinearOpMode".
 {
-
     DcMotor motor; // We are testing AndyMark NeverRest 20s, 40s, 60s, 3.7s, Matrix, and REV Core Hex motors (three of each).
     DigitalChannel relay; // Relay circuit, plugged into port 0 of the REV module
     INA219 ina; // INA219 Current Sensor, plugged into port 1 of the REV module.  Here's the link to the data sheet: https://cdn-shop.adafruit.com/datasheets/ina219.pdf
@@ -334,19 +333,20 @@ This is where the OpMode starts, including the initializing process.  The runOpM
         //RampUpMotor(); // Ramp up the motor speed for 10 seconds
 
         //motor.setPower(motorSetPower); // turn on the motor to the set power
-        //MotorTest(); // record encoder counts vs. time as well as current and voltage
-        TimedSamplingTest();
+        MotorTest(); // record encoder counts vs. time as well as current and voltage
+        //TimedSamplingTest();
         //motor.setPower(0.0); // turn the motor off
 
         relay.setState(false); // turn relay off after 20 seconds
 
         // Record data into arrays after the relay is turned off
-        //MotorTest2();
-        TimedSamplingTest2();
+        MotorTest2();
+        //TimedSamplingTest2();
 
         // Record the Data from the arrays
         RecordData();
         RecordData2();
+
 
         telemetry.addData( ">", "Press Stop to end test." ); // write final message to indicate the test is over
         telemetry.update(); // update the message to the driver station phone screen
