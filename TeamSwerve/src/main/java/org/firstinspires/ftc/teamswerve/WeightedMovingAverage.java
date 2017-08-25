@@ -12,13 +12,27 @@ public class WeightedMovingAverage
 
     public WeightedMovingAverage(double[] weightArray)
     {
+        samples = weightArray.length;
+
         if (weightArray.length < 2) throw new IllegalArgumentException("Array requires at least 2 elements");
 
-        samples = weightArray.length;
+        //The elements of the weightArray must sum to 1.0.  (Since double arithmetic is not exact, we'll allow a slop factor.)
+        //Confirm that the input weights sum to roughly 1.0 and throw an exception if not.
+        double sumOfWeights = 0;
+
+        for (int i = 0; i < samples; i++)
+        {
+            sumOfWeights += weightArray[i];
+        }
+
+        if ((sumOfWeights > 1.001) || (sumOfWeights < 0.999))
+        {
+            throw new IllegalArgumentException("Array elements must sum to 1.0");
+        }
+
         values = new ArrayList<Double>(samples);
         weights = new double[samples];
 
-        //for now, make all the weights the same.
         //reminder: the 0th element is the oldest one.
         for (int i = 0; i < samples; i++)
         {
