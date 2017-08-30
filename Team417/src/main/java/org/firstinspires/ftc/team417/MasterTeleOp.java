@@ -322,14 +322,15 @@ public class MasterTeleOp extends MasterOpMode
         motorBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         // reverse front and back right motors just for TeleOp
-        motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
-        motorBackRight.setDirection(DcMotor.Direction.REVERSE);
+        motorFrontRight.setDirection(DcMotor.Direction.FORWARD);
+        motorBackRight.setDirection(DcMotor.Direction.FORWARD);
 
-        motorFrontLeft.setDirection(DcMotor.Direction.FORWARD);
-        motorBackLeft.setDirection(DcMotor.Direction.FORWARD);
+        motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
 
-        motorLift.setDirection(DcMotor.Direction.REVERSE);
-        motorCollector.setDirection(DcMotor.Direction.REVERSE);
+        motorLift.setDirection(DcMotor.Direction.FORWARD);
+        motorCollector.setDirection(DcMotor.Direction.FORWARD);
+        motorLauncher.setDirection(DcMotor.Direction.REVERSE);
 
         // Set up telemetry data
         configureDashboard();
