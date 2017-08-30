@@ -38,7 +38,7 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
     {
         // I=V/R
         //return shuntVoltage() / shuntResistance;
-        return shuntVoltage() * 50; // 50 is derived from 16 amps divided by 0.32 max shunt voltage
+        return shuntVoltage() * 1; // 1 is derived from 3.2 amps divided by 0.32 max shunt voltage
     }
 
     /*
@@ -243,7 +243,7 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
     // Variables and Constants
     //----------------------------------------------------------------------------------------------
 
-    public double shuntResistance = 0.02;
+    public double shuntResistance = 0.1;
 
     protected static final double MAX_SHUNT_VOLTAGE = 0.320; // 320 mV
     protected static final double MAX_SHUNT_VOLTAGE_RAW = 32000; // 320mV * 100; LSB is 10uV
