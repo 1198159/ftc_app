@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
-The purpose of this class is to filter noisy.
+The purpose of this class is to filter noisy data.
  */
 public class WeightedMovingAverage
 {

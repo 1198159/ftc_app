@@ -11,13 +11,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 // @Disabled // when NOT disabled, "DynamomterTests" will show up on the select OpMode screen, under "TeleOp"
 public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a subclass of the base class "LinearOpMode".
 {
-    DcMotor motor; // We are testing AndyMark NeverRest 20s, 40s, 60s, 3.7s, Matrix, and REV Core Hex motors (three of each).
+    DcMotor motor; // We are testing AndyMark NeverRest 20s, 40s, 60s, 3.7s, Matrix, and REV Core Hex motors (three of each) plugged into port 1.
     DigitalChannel relay; // Relay circuit, plugged into port 0 of the REV module
     INA219 ina; // INA219 Current Sensor, plugged into port 1 of the REV module.  Here's the link to the data sheet: https://cdn-shop.adafruit.com/datasheets/ina219.pdf
     WeightedMovingAverage filter; // An FIR (Finite Impulse Response) Filter used to reduce the bus voltage data during the data collection process
 
     double motorPower = 0.0; // used as a placeholder value for incremented motor power the method "RampUpMotor" below
-    int waitTime = 150; // a value (in milliseconds) used for time between each motor power increment in the method "RampUpMotor" below, and in timed saples
+    int waitTime = 5; // a value (in milliseconds) used for time between each motor power increment in the method "RampUpMotor" below, and in timed saples
     double motorSetPower = 0.4; // the max power the motor power will increment to in the method "RampUpMotor" below
     int numSamples = 3000; // the maximum number of data samples the arrays for time, encoder counts, current, and voltage will store
     // values before the relay turns off
@@ -306,18 +306,34 @@ This is where the OpMode starts, including the initializing process.  The runOpM
     public void runOpMode()
     {
         // Connect to motor
-        motor = hardwareMap.dcMotor.get("motor");
-        initializeRelay();
+        // Tell the user that the motor is initializing
+        telemetry.addData("Motor", "Initializing");
+        telemetry.update();
 
+        motor = hardwareMap.dcMotor.get("motor");
         //motor.setDirection(DcMotor.Direction.REVERSE); // reverse the motor
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // allows the motor to slow down without brakes
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // this mode simply inputs power, so no PID
 
+        // Tell the user that the motor is done initializing
+        telemetry.addData(">", "Motor done initializing");
+        telemetry.update();
+
+        // Tell the user that the relay is initializing
+        telemetry.addData("Relay", "Initializing");
+        telemetry.update();
+        initializeRelay(); // initialize the relay
+        // Tell the user that the relay is done initializing
+        telemetry.addData(">", "Relay done initializing");
+        telemetry.update();
+
+        // Tell the user that the INA219 Current Sensor is initializing
+        telemetry.addData("INA", "Initializing");
+        telemetry.update();
         // create current sensor object
         ina = hardwareMap.get(INA219.class, "ina");
         ina.doInitialize(); // initialize the INA219 current sensor
-
-        telemetry.addData(">", "Press start to run Motor"); // write a message to indicate the initialization is done
+        telemetry.addData(">", "INA done initializing"); // write a message to indicate the initialization is done
         telemetry.update(); // update the message to display on the UI (the very bottom of the driver station phone screen)
 
 // wait until the start button is pushed
@@ -333,15 +349,15 @@ This is where the OpMode starts, including the initializing process.  The runOpM
         //RampUpMotor(); // Ramp up the motor speed for 10 seconds
 
         //motor.setPower(motorSetPower); // turn on the motor to the set power
-        MotorTest(); // record encoder counts vs. time as well as current and voltage
-        //TimedSamplingTest();
+        //MotorTest(); // record encoder counts vs. time as well as current and voltage
+        TimedSamplingTest();
         //motor.setPower(0.0); // turn the motor off
 
         relay.setState(false); // turn relay off after 20 seconds
 
         // Record data into arrays after the relay is turned off
-        MotorTest2();
-        //TimedSamplingTest2();
+        //MotorTest2();
+        TimedSamplingTest2();
 
         // Record the Data from the arrays
         RecordData();
