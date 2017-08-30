@@ -23,21 +23,25 @@ import java.util.Locale;
 
 abstract public class MasterOpMode extends LinearOpMode
 {
-    DcMotor motorFrontLeft = null;
-    DcMotor motorBackLeft = null;
-    DcMotor motorFrontRight = null;
-    DcMotor motorBackRight = null;
+    // CONTROLLER LEFT SIDE (A104OQP9)
+    DcMotor motorFrontLeft = null; // port 2
+    DcMotor motorBackLeft = null; // port 1
+    // CONTROLLER RIGHT SIDE (AL00VX00)
+    DcMotor motorFrontRight = null; // port 1
+    DcMotor motorBackRight = null; // port 2
+    // CONTROLLER LIFT (AL00VX5R)
     DcMotor motorLift = null;
     DcMotor motorLift2 = null;
-    Servo servoParticle = null;
-    Servo servoLeftPusher = null;
-    Servo servoRightPusher = null;
-    DcMotor motorLauncher = null;
-    DcMotor motorCollector = null;
+    // SERVO CONTROLLER
+    Servo servoParticle = null; // port 1
+    Servo servoLeftPusher = null; // port 2
+    Servo servoRightPusher = null; // port 3
+    // CONTROLLER LAUNCHER (AL00UVEL)
+    DcMotor motorLauncher = null; // port 1
+    DcMotor motorCollector = null; // port 2
     BNO055IMU imu;
     Orientation angles;
     DeviceInterfaceModule dim;                  // Device Object
-    DigitalChannel liftSwitch;                // Device Object
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -75,9 +79,6 @@ abstract public class MasterOpMode extends LinearOpMode
         servoRightPusher = hardwareMap.servo.get("servoRightPusher");
         motorLauncher = hardwareMap.dcMotor.get("motorLauncher");
         motorCollector = hardwareMap.dcMotor.get("motorCollector");
-
-        liftSwitch  = hardwareMap.get(DigitalChannel.class, "liftSwitch");     //  Use generic form of device mapping
-        liftSwitch.setMode(DigitalChannelController.Mode.INPUT);          // Set the direction of each channel
 
         motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
