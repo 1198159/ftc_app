@@ -19,7 +19,7 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
     double motorPower = 0.0; // used as a placeholder value for incremented motor power the method "RampUpMotor" below
     int waitTime = 5; // a value (in milliseconds) used for time between each motor power increment in the method "RampUpMotor" below, and in timed saples
     double motorSetPower = 0.4; // the max power the motor power will increment to in the method "RampUpMotor" below
-    int numSamples = 3000; // the maximum number of data samples the arrays for time, encoder counts, current, and voltage will store
+    int numSamples = 4000; // the maximum number of data samples the arrays for time, encoder counts, current, and voltage will store
     // values before the relay turns off
     int currentPos; // the current encoder position
     double shuntVoltageValue; // the value of the shunt voltage read from the INA219 current sensor
@@ -175,7 +175,7 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
     {
         index = 0; // reset the index value to 0
         sampleTime.reset(); // reset the sample timer
-        while (runtime.milliseconds() < 20000) // while the motor hasn't been running for 20 seconds...
+        while (runtime.milliseconds() < 30000) // while the motor hasn't been running for 30 seconds...
         {
             // if the sample time is less than the intended time between each sample...
             if (sampleTime.milliseconds() > waitTime)
@@ -194,7 +194,7 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
     {
         index = 0; // reset the index value to 0
         sampleTime.reset(); // reset the sample timer
-        while (runtime.milliseconds() < 20000 + 40000) // while the motor hasn't been running for 20 seconds...
+        while (runtime.milliseconds() < 30000 + 60000) // while the motor hasn't been running for 30 seconds...
         {
             // if the sample time is less than the intended time between each sample...
             if (sampleTime.milliseconds() > waitTime)
@@ -343,7 +343,7 @@ This is where the OpMode starts, including the initializing process.  The runOpM
         //EncoderCountTest();
 
 
-        runtime.reset(); // restart the timer (used when running the motor for seconds
+        runtime.reset(); // restart the timer (used when running the motor for seconds)
         relay.setState(true); // turn relay on
 
         //RampUpMotor(); // Ramp up the motor speed for 10 seconds
@@ -353,7 +353,7 @@ This is where the OpMode starts, including the initializing process.  The runOpM
         TimedSamplingTest();
         //motor.setPower(0.0); // turn the motor off
 
-        relay.setState(false); // turn relay off after 20 seconds
+        relay.setState(false); // turn relay off after 30 seconds
 
         // Record data into arrays after the relay is turned off
         //MotorTest2();

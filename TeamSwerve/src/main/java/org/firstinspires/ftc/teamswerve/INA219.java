@@ -38,7 +38,8 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
     {
         // I=V/R
         //return shuntVoltage() / shuntResistance;
-        return shuntVoltage() * 1; // 1 is derived from 3.2 amps divided by 0.32 max shunt voltage
+        return shuntVoltage() * 50; // 10 is derived from 3.2 amps divided by 0.32 max shunt voltage
+        // 50 is derived from 16 amps divided by 0.32 max shunt voltage
     }
 
     /*
@@ -248,9 +249,9 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
     protected static final double MAX_SHUNT_VOLTAGE = 0.320; // 320 mV
     protected static final double MAX_SHUNT_VOLTAGE_RAW = 32000; // 320mV * 100; LSB is 10uV
     protected static final double SHUNT_VOLTAGE_RESOLUTION = MAX_SHUNT_VOLTAGE / MAX_SHUNT_VOLTAGE_RAW;
-    protected static final double MAX_BUS_VOLTAGE = 16; // 0V to 16V range
+    protected static final double MAX_BUS_VOLTAGE = 32; // 0V to 32V range
     // 4000 for 16V range, 8000 for 32V range; LSB = 4mV for both ranges
-    protected static final double MAX_BUS_VOLTAGE_RAW = 4000;
+    protected static final double MAX_BUS_VOLTAGE_RAW = 8000;
     protected static final double BUS_VOLTAGE_RESOLUTION = MAX_BUS_VOLTAGE / MAX_BUS_VOLTAGE_RAW;
 
     //----------------------------------------------------------------------------------------------
@@ -331,7 +332,7 @@ public class INA219 extends I2cDeviceSynchDevice<I2cDeviceSynch> implements I2cA
         // TODO: Make a way for user to change these
         // Set the configuration of the sensor
         int config = BusResolution.RES_12BIT.bVal |
-                BusVoltageRange.V16.bVal |
+                BusVoltageRange.V32.bVal |
                 Gain.GAIN_8_320MV.bVal |
                 Mode.SANDBVOLT_CONTINUOUS.bVal |
                 ShuntResolution.RES_12BIT_128S_69MS.bVal;
