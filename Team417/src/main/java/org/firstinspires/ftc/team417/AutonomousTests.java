@@ -2,8 +2,6 @@ package org.firstinspires.ftc.team417;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.TemplateOpMode_Linear;
-
 @Autonomous(name="Autonomous Tests", group = "Swerve")
 // @Disabled
 
