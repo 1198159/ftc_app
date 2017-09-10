@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.xml.transform.sax.TemplatesHandler;
 
-
 /**
  * Runs the autonomous code to complete the 2017 summer beacon challenge
  */
@@ -38,8 +37,8 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
 
     private ColorSensor colorSensorLeft;
     private ColorSensor colorSensorRight;
-    private ColorSensor lightSensorLeft;
-    private ColorSensor lightSensorRight;
+    private AdafruitTSL2561LightSensor lightSensorLeft;
+    private AdafruitTSL2561LightSensor lightSensorRight;
     private BNO055IMU imu;
 
     private double TURN_CONSTANT = 1.0/1000.0; // somewhat arbitrary, will nail down in testing
@@ -197,7 +196,7 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
     {
         double targetAngle = imu.getAngularOrientation().firstAngle;
         int initialEncoderValue = motorL.getCurrentPosition();
-        while(GetBrightness(lightSensorLeft) < 5 && GetBrightness(lightSensorRight) < 5)
+        while(lightSensorLeft.getLightDetected() <0.5 && lightSensorRight.getLightDetected() <0.5)
         {
             double correction = Range.clip((imu.getAngularOrientation().firstAngle - targetAngle) * TURN_CONSTANT, -0.35, 0.35);
             motorL.setPower(0.9 - correction);
@@ -211,7 +210,7 @@ public class SummerBeaconChallenge2017 extends LinearOpMode
     private void correctForBeacon()
     {
         double targetAngle = imu.getAngularOrientation().firstAngle;
-        while(GetBrightness(lightSensorLeft) < 5 && GetBrightness(lightSensorRight) < 5)
+        while(lightSensorLeft.getLightDetected() < 0.5 && lightSensorRight.getLightDetected() <0.5)
         {
             double correction = Range.clip((imu.getAngularOrientation().firstAngle - targetAngle) * TURN_CONSTANT, -0.35, 0.35);
             motorL.setPower(-0.2 + correction);
