@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team6220;
+package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
