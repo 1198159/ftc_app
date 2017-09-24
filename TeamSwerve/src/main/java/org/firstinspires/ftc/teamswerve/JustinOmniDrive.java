@@ -51,7 +51,9 @@ public class JustinOmniDrive extends LinearOpMode
         waitForStart();
 
         robotAngle = imu.getAngularOrientation().firstAngle;
+        robotAngle = adjustAngles(robotAngle);
         anglePivot = robotAngle;
+
 
         // Main loop
         while(opModeIsActive())
@@ -60,12 +62,13 @@ public class JustinOmniDrive extends LinearOpMode
             //currentAngle = angles.firstAngle - startAngle;
 
             imuAngle = imu.getAngularOrientation().firstAngle;
+            imuAngle = adjustAngles(imuAngle);
 
 
             omniDriveDiagonal();
 
 
-            telemetry.update();
+            //telemetry.update();
             idle();
         }
     }
@@ -118,8 +121,9 @@ public class JustinOmniDrive extends LinearOpMode
         anglePivot = anglePivot + jpivot;
 
 
-        kAngle = 2.5;
+        kAngle = 0.01;
         robotAngle = imu.getAngularOrientation().firstAngle;
+        robotAngle = adjustAngles(robotAngle);
         error = anglePivot - robotAngle;
         pivot = error * kAngle;
         speedMotorFront = jx - jy - pivot;
@@ -134,6 +138,17 @@ public class JustinOmniDrive extends LinearOpMode
 
 
     }
+
+    // normalizing the angle to be between -180 to 180
+    public double adjustAngles(double angle)
+    {
+        while(angle > 180)
+            angle -= 360;
+        while(angle < -180)
+            angle += 360;
+        return angle;
+    }
+
     public void initializeRobot()
     {
         // Initialize motors to be the hardware motors
@@ -143,10 +158,10 @@ public class JustinOmniDrive extends LinearOpMode
         motorRight = hardwareMap.dcMotor.get("motorRight");
 
         // We're not using encoders, so tell the motor controller
-        motorFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // The motors will run in opposite directions, so flip one
         //THIS IS SET UP FOR TANK MODE WITH OUR CURRENT DRIVABOTS
@@ -160,8 +175,9 @@ public class JustinOmniDrive extends LinearOpMode
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
+        //parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        //parameters.loggingEnabled      = true;
+        parameters.loggingEnabled      = false;
         parameters.loggingTag          = "IMU";
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
@@ -171,10 +187,10 @@ public class JustinOmniDrive extends LinearOpMode
         imu.initialize(parameters);
 
         // Set up telemetry data
-        configureDashboard();
+        //configureDashboard();
     }
 
-    public void configureDashboard()
+    /*public void configureDashboard()
     {
         telemetry.addLine()
                 .addData("Power | Front: ", new Func<String>() {
@@ -221,7 +237,7 @@ public class JustinOmniDrive extends LinearOpMode
                 });
 
     }
-
+*/
     //----------------------------------------------------------------------------------------------
     // Formatting
     //----------------------------------------------------------------------------------------------
