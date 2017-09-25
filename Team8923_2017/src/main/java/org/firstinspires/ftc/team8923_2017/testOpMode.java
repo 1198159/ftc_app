@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team8923_2017;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,8 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 /**
  * A test to confirm that we can compile code in each new team project
  */
+@Disabled
 @TeleOp(name="test 8923_2017", group = "Swerve")
-// @Disabled
 public class testOpMode extends LinearOpMode
 {
 
