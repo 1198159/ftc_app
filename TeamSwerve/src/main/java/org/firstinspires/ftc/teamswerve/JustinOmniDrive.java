@@ -28,6 +28,8 @@ public class JustinOmniDrive extends LinearOpMode
     double currentAngle;
     double startAngle;
     double imuAngle;
+    double robotAngle;
+    double anglePivot;
     // double currentAngleY;
     // double currentAngleZ;
     Orientation angles;
@@ -48,6 +50,9 @@ public class JustinOmniDrive extends LinearOpMode
         // Wait until start button has been pressed
         waitForStart();
 
+        robotAngle = imu.getAngularOrientation().firstAngle;
+        anglePivot = robotAngle;
+
         // Main loop
         while(opModeIsActive())
         {
@@ -55,19 +60,10 @@ public class JustinOmniDrive extends LinearOpMode
             //currentAngle = angles.firstAngle - startAngle;
 
             imuAngle = imu.getAngularOrientation().firstAngle;
-            currentAngle = imuAngle - startAngle;
 
-            // currentAngleY = angles.firstAngle - startAngle;
-            // currentAngleZ = angles.firstAngle - startAngle;
 
-            // Gamepads have a new state, so update things that need updating
-            //if(updateGamepads())
-            {
-                // Set drive mode
+            omniDriveDiagonal();
 
-                // Run drive mode
-                omniDrive();
-            }
 
             telemetry.update();
             idle();
@@ -79,20 +75,18 @@ public class JustinOmniDrive extends LinearOpMode
      * Left joystick controls left side
      * Right joystick controls right side
      */
+/*
     public void omniDrive()
     {
-        double frontPower;
-        double backPower;
-        double leftPower;
-        double rightPower;
         double jx;
         double jy;
         double jt;
         double jp;
         jt = gamepad1. left_stick_x;
-        jp = -gamepad1.left_stick_x;
         jx = gamepad1.right_stick_x;
         jy = -gamepad1.right_stick_y;
+
+
 
 
         motorFront.setPower(jx);
@@ -100,60 +94,46 @@ public class JustinOmniDrive extends LinearOpMode
         motorLeft.setPower(jy);
         motorRight.setPower(jy);
         motorFront.setPower(jt);
-        motorBack.setPower(jp);
+        motorBack.setPower(-jt);
         motorLeft.setPower(jt);
-        motorRight.setPower(jp);
+        motorRight.setPower(-jt);
     }
+*/
+    public void omniDriveDiagonal() {
+        double jy;
+        double jx;
+        double error;
+        double pivot;
+        double kAngle;
+        double jpivot;//for pivoting
+        double speedMotorFront;
+        double speedMotorBack;
+        double speedMotorLeft;
+        double speedMotorRight;
+        double kJ;
 
-    /*
-     * Controls the robot with a single joystick
-     * Forward, backward, right, and left on joystick control
-     *
-     */
-    public void arcadeDrive()
-    {
-        double forwardPower = gamepad1.left_stick_y;
-        double turningPower = Math.pow(Math.abs(gamepad1.left_stick_x), 2) * Math.signum(gamepad1.left_stick_x);
-        double leftPower = forwardPower - turningPower;
-        double rightPower = forwardPower + turningPower;
+        jy = -gamepad1.right_stick_y;
+        jx = gamepad1.right_stick_x;
+        jpivot = gamepad1.left_stick_x;
+        anglePivot = anglePivot + jpivot;
 
-        motorLeft.setPower(leftPower);
-        motorRight.setPower(rightPower);
+
+        kAngle = 2.5;
+        robotAngle = imu.getAngularOrientation().firstAngle;
+        error = anglePivot - robotAngle;
+        pivot = error * kAngle;
+        speedMotorFront = jx - jy - pivot;
+        speedMotorBack = -jx + jy - pivot;
+        speedMotorLeft = jx + jy - pivot;
+        speedMotorRight = -jx - jy - pivot;
+
+        motorFront.setPower(speedMotorFront);
+        motorBack.setPower(speedMotorBack);
+        motorLeft.setPower(speedMotorLeft);
+        motorRight.setPower(speedMotorRight);
+
+
     }
-
-    /*
-     * Controls robot like a racing video game
-     * Right trigger moves robot forward
-     * Left trigger moves robot backward
-     * Left stick for turning
-     */
-    public void gameDrive()
-    {
-        double forwardPower = gamepad1.left_trigger - gamepad1.right_trigger;
-        double turningPower = Math.pow(gamepad1.left_stick_x, 2) * Math.signum(gamepad1.left_stick_x); // This multiplier is because the robot turns too quickly
-
-        double leftPower = forwardPower - turningPower;
-        double rightPower = forwardPower + turningPower;
-
-        motorLeft.setPower(leftPower);
-        motorRight.setPower(rightPower);
-    }
-
-    /*
-     * Arcade drive with 2 joysticks
-     */
-    public void splitArcadeDrive()
-    {
-        double forwardPower = gamepad1.left_stick_y;
-        double turningPower = Math.pow(Math.abs(gamepad1.right_stick_x), 2) * Math.signum(gamepad1.right_stick_x);
-
-        double leftPower = forwardPower - turningPower;
-        double rightPower = forwardPower + turningPower;
-
-        motorLeft.setPower(leftPower);
-        motorRight.setPower(rightPower);
-    }
-
     public void initializeRobot()
     {
         // Initialize motors to be the hardware motors
@@ -171,8 +151,8 @@ public class JustinOmniDrive extends LinearOpMode
         // The motors will run in opposite directions, so flip one
         //THIS IS SET UP FOR TANK MODE WITH OUR CURRENT DRIVABOTS
         //DON'T CHANGE IT!
-        motorFront.setDirection(DcMotor.Direction.REVERSE);
-        motorLeft.setDirection(DcMotor.Direction.REVERSE);
+        //motorFront.setDirection(DcMotor.Direction.REVERSE);
+        //motorLeft.setDirection(DcMotor.Direction.REVERSE);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -233,10 +213,10 @@ public class JustinOmniDrive extends LinearOpMode
                     }
                 })
 
-                .addData("imuAngle", new Func<String>() {
+                .addData("robotAngle", new Func<String>() {
                     @Override public String value() {
 //                        return formatAngle(angles.angleUnit, imuAngle);
-                        return formatNumber(imuAngle);
+                        return formatNumber(robotAngle);
                     }
                 });
 
