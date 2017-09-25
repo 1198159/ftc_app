@@ -21,6 +21,9 @@ public abstract class Master extends LinearOpMode
     // Declare any neccessary sensors here
     BNO055IMU imu;
 
+    // Declare any robot-wide variables here
+    double SlowModeDivisor = 1.0;
+
     void InitHardware()
     {
         // Motors here
@@ -59,6 +62,16 @@ public abstract class Master extends LinearOpMode
         double powerFR = -y + x + turnPower;
         double powerBL = y - x + turnPower;
         double powerBR = -y - x + turnPower;
+
+        double scalar = Math.max(Math.abs(powerFL),  Math.max(Math.abs(powerFR), Math.max(Math.abs(powerBL), Math.abs(powerBR))));
+
+        if(scalar < 1)
+            scalar = 1;
+
+        powerFL /= (scalar * SlowModeDivisor);
+        powerFR /= (scalar * SlowModeDivisor);
+        powerBL /= (scalar * SlowModeDivisor);
+        powerBR /= (scalar * SlowModeDivisor);
 
         motorFL.setPower(powerFL);
         motorFR.setPower(powerFR);

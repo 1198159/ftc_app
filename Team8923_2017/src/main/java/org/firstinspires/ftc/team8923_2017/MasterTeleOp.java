@@ -8,6 +8,11 @@ public abstract class MasterTeleOp extends Master
 {
     void DriveOmni45TeleOp()
     {
+        if(gamepad1.dpad_down)
+            SlowModeDivisor = 5.0;
+        else if(gamepad1.dpad_up)
+            SlowModeDivisor = 1.0;
+
         double y = -gamepad1.left_stick_y; // Y axis is negative when up
         double x = gamepad1.left_stick_x;
         double power = calculateDistance(x, y);
