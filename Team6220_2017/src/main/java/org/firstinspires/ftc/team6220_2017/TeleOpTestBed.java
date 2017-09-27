@@ -16,15 +16,16 @@ public class TeleOpTestBed extends MasterOpMode
 {
     CRServo rightServo;
     CRServo leftServo;
+    Servo servo;
 
     @Override public void runOpMode() throws InterruptedException
     {
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
-        rightServo = hardwareMap.crservo.get("servoRight");
-        leftServo = hardwareMap.crservo.get("servoLeft");
-
+        /*rightServo = hardwareMap.crservo.get("servoRight");
+        leftServo = hardwareMap.crservo.get("servoLeft");*/
+        servo = hardwareMap.servo.get("servo");
         // Wait until start button has been pressed
         waitForStart();
 
@@ -34,14 +35,17 @@ public class TeleOpTestBed extends MasterOpMode
             //for testing glyph collection; servos on either side of glyph pull or push it
             if(gamepad1.a)
             {
-                rightServo.setPower(1.0);
-                leftServo.setPower(-1.0);
+                //rightServo.setPower(1.0);
+                //leftServo.setPower(-1.0);
             }
             if(gamepad1.b)
             {
-                rightServo.setPower(-1.0);
-                leftServo.setPower(1.0);
+                //rightServo.setPower(-1.0);
+                //leftServo.setPower(1.0);
             }
+
+            //for robot arm test
+            servo.setPosition((gamepad1.left_stick_y + 1) / 2);
 
             idle();
         }
