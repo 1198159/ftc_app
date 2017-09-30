@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
      - X: Collect
      - B: Reverse Collect
      - Right Bumper: Load particle
+     - Dpad Down: Cock launcher
+     - Dpad Down: Fire launcher
 */
 @TeleOp(name="TeleOpCompetition", group="6220")
 public class TeleOpCompetition extends MasterTeleOp
@@ -85,7 +87,7 @@ public class TeleOpCompetition extends MasterTeleOp
                 launcher.launchParticle();
             }
 
-            if(launcherManualControl)
+            if (launcherManualControl)
             {
                 if(driver2.isButtonPressed(Button.DPAD_LEFT))
                 {
