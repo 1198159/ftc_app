@@ -63,7 +63,8 @@ public abstract class Master extends LinearOpMode
         double powerBL = y - x + turnPower;
         double powerBR = -y - x + turnPower;
 
-        double scalar = Math.max(Math.abs(powerFL),  Math.max(Math.abs(powerFR), Math.max(Math.abs(powerBL), Math.abs(powerBR))));
+        double scalar = Math.max(Math.abs(powerFL),  Math.max(Math.abs(powerFR),
+                Math.max(Math.abs(powerBL), Math.abs(powerBR))));
 
         if(scalar < 1)
             scalar = 1;
