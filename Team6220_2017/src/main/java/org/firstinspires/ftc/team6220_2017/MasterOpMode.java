@@ -33,6 +33,8 @@ abstract public class MasterOpMode extends LinearOpMode {
     DriverInput driver1;
     DriverInput driver2;
 
+    PIDFilter RotationControlFilter;
+
     //declare hardware devices
     BNO055IMU imu;
 
@@ -40,6 +42,9 @@ abstract public class MasterOpMode extends LinearOpMode {
     DcMotor motorFrontRight;
     DcMotor motorBackLeft;
     DcMotor motorBackRight;
+
+    //servo that operates the jewel arm
+    Servo golfClubServo;
     //
 
     //create a list of tasks to accomplish in order
@@ -55,10 +60,14 @@ abstract public class MasterOpMode extends LinearOpMode {
         callback.add(driver2);
 
         //initialize hardware devices
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+
         motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
         motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
+
+        golfClubServo = hardwareMap.servo.get("servoGolfClub");
         //
 
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -69,7 +78,6 @@ abstract public class MasterOpMode extends LinearOpMode {
         // Retrieves and initializes the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu". Certain parameters must be specified before using the imu.
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -77,6 +85,9 @@ abstract public class MasterOpMode extends LinearOpMode {
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
         imu.initialize(parameters);
+
+        //todo adjust for robot
+        RotationControlFilter = new PIDFilter(0.5, 0.0, 0.0);
 
         //todo What is the purpose of this?
         for (ConcurrentOperation item : callback)

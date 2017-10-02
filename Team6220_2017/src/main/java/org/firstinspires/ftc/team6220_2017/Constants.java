@@ -20,5 +20,10 @@ public class Constants
     //used for PID loops involving rotation and turning power adjustments
     public static final double TURNING_POWER_FACTOR = 1.0 / 700;    //not determined yet
 
+    //field specs
     public static final float MM_FIELD_SIZE = 3657;
+    //todo check accuracy of values with actual field
+    public static final float MM_JEWEL_OFFSET_X = 50;
+    public static final float MM_JEWEL_OFFSET_Y = 514;
+    public static final float MM_JEWEL_OFFSET_Z = 0;
 }
