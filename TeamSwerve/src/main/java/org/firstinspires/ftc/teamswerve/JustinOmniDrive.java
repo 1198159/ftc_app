@@ -30,8 +30,19 @@ public class JustinOmniDrive extends LinearOpMode
     double imuAngle;
     double robotAngle;
     double anglePivot;
-    // double currentAngleY;
-    // double currentAngleZ;
+
+    double jy;
+    double jx;
+    double error;
+    double pivot;
+    double kAngle;
+    double jpivot;//for pivoting
+    double speedMotorFront;
+    double speedMotorBack;
+    double speedMotorLeft;
+    double speedMotorRight;
+    //double currentAngleY;
+    //double currentAngleZ;
     Orientation angles;
     //----------------------------------------------------------------------------------------------
     // State
@@ -47,38 +58,30 @@ public class JustinOmniDrive extends LinearOpMode
         // Initialize hardware and other important things
         initializeRobot();
 
+        robotAngle = imu.getAngularOrientation().firstAngle;
+
         // Wait until start button has been pressed
         waitForStart();
 
         robotAngle = imu.getAngularOrientation().firstAngle;
-        robotAngle = adjustAngles(robotAngle);
+        //robotAngle = adjustAngles(robotAngle);
         anglePivot = robotAngle;
 
 
         // Main loop
         while(opModeIsActive())
         {
-            //angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-            //currentAngle = angles.firstAngle - startAngle;
-
-            imuAngle = imu.getAngularOrientation().firstAngle;
-            imuAngle = adjustAngles(imuAngle);
-
-
             omniDriveDiagonal();
 
-
-            //telemetry.update();
+            telemetry.update();
             idle();
         }
     }
-
     /*
      * Controls the robot with two joysticks
      * Left joystick controls left side
      * Right joystick controls right side
-     */
-/*
+
     public void omniDrive()
     {
         double jx;
@@ -103,28 +106,19 @@ public class JustinOmniDrive extends LinearOpMode
     }
 */
     public void omniDriveDiagonal() {
-        double jy;
-        double jx;
-        double error;
-        double pivot;
-        double kAngle;
-        double jpivot;//for pivoting
-        double speedMotorFront;
-        double speedMotorBack;
-        double speedMotorLeft;
-        double speedMotorRight;
-        double kJ;
 
         jy = -gamepad1.right_stick_y;
         jx = gamepad1.right_stick_x;
         jpivot = gamepad1.left_stick_x;
-        anglePivot = anglePivot + jpivot;
+        anglePivot = 2 * (anglePivot - jpivot);
+        anglePivot = adjustAngles(anglePivot);
 
 
-        kAngle = 0.01;
+        kAngle = 0.035;
         robotAngle = imu.getAngularOrientation().firstAngle;
-        robotAngle = adjustAngles(robotAngle);
-        error = anglePivot - robotAngle;
+        //robotAngle = adjustAngles(robotAngle);
+        error = robotAngle - anglePivot;
+        error = adjustAngles(error);
         pivot = error * kAngle;
         speedMotorFront = jx - jy - pivot;
         speedMotorBack = -jx + jy - pivot;
@@ -135,7 +129,6 @@ public class JustinOmniDrive extends LinearOpMode
         motorBack.setPower(speedMotorBack);
         motorLeft.setPower(speedMotorLeft);
         motorRight.setPower(speedMotorRight);
-
 
     }
 
@@ -187,10 +180,10 @@ public class JustinOmniDrive extends LinearOpMode
         imu.initialize(parameters);
 
         // Set up telemetry data
-        //configureDashboard();
+        configureDashboard();
     }
 
-    /*public void configureDashboard()
+    public void configureDashboard()
     {
         telemetry.addLine()
                 .addData("Power | Front: ", new Func<String>() {
@@ -214,18 +207,10 @@ public class JustinOmniDrive extends LinearOpMode
                     }
                 })
 
-                .addData("heading", new Func<String>() {
-                    @Override public String value() {
-//                        return formatAngle(angles.angleUnit, currentAngle);
-                        return formatNumber(currentAngle);
-
-                    }
-                })
-
-                .addData("startAngle", new Func<String>() {
+                .addData("anglePivot", new Func<String>() {
                     @Override public String value() {
 //                        return formatAngle(angles.angleUnit, startAngle);
-                        return formatNumber(startAngle);
+                        return formatNumber(anglePivot);
                     }
                 })
 
@@ -237,7 +222,7 @@ public class JustinOmniDrive extends LinearOpMode
                 });
 
     }
-*/
+
     //----------------------------------------------------------------------------------------------
     // Formatting
     //----------------------------------------------------------------------------------------------
