@@ -41,10 +41,9 @@ public class DriverInput implements ConcurrentOperation
         return buttonHeldCounts[label.ordinal()];
     }
 
-    //TODO check if y axes are actually flipped
     public double getLeftStickAngle()
     {
-        return Math.atan2(-controller.left_stick_y,controller.left_stick_x);
+        return Math.atan2(-controller.left_stick_y, controller.left_stick_x);
     }
 
     public double getRightStickAngle()
@@ -54,12 +53,12 @@ public class DriverInput implements ConcurrentOperation
 
     public double getLeftStickMagnitude()
     {
-        return Math.pow(Math.pow(controller.left_stick_x, 2) + Math.pow(controller.left_stick_y, 2), 0.5);
+        return Math.sqrt(Math.pow(controller.left_stick_x, 2) + Math.pow(controller.left_stick_y, 2));
     }
 
     public double getRightStickMagnitude()
     {
-        return Math.pow(Math.pow(controller.right_stick_x,2)+Math.pow(controller.right_stick_y,2),0.5);
+        return Math.sqrt(Math.pow(controller.right_stick_x, 2) + Math.pow(controller.right_stick_y, 2));
     }
 
     //call at end of loop

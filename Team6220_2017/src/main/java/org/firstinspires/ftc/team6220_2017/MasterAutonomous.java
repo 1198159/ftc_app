@@ -9,7 +9,9 @@ abstract public class MasterAutonomous extends MasterOpMode
 {
     //variables used in autonomous setup
     Alliance alliance = Alliance.BLUE;
-    RoutineOption routineOption = RoutineOption.LAUNCHANDBUTTONS;
+    /*
+    RoutineOption routineOption = RoutineOption.;
+    */
     int delay = 0;
 
     //used for initializations only necessary in autonomous
@@ -20,7 +22,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         vuforiaHelper.setupVuforia();
     }
 
-    //enums used for autonomous setup
+    //enums used for runSetUp
     enum Alliance
     {
         BLUE,
@@ -28,81 +30,15 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
     enum RoutineOption
     {
-        LAUNCHANDBUTTONS,
-        LAUNCH,
-        BUTTONS,
-        PARKANDCAPBALL
 
     }
 
+    //todo write setup for this year's autonomous
+    //note: not currently in use
     //allows the driver to decide which autonomous routine should be run; not in use
     public void runSetUp()
     {
-        //tells driver the routine options available
-        telemetry.log().add("BlueSide/RedSide = X/B");
-        telemetry.log().add("Delay/No = Y/A");
-        telemetry.log().add("LaunchAndButtons = Dpad Left");
-        telemetry.log().add("Launch = Dpad Right");
-        telemetry.log().add("Buttons = Left Bumper");
-        telemetry.log().add("ParkAndCapBall = Right Bumper");
-        telemetry.log().add("Press start to exit setup.");
 
-        boolean isSetUpRunning = true;
-
-        while(isSetUpRunning)
-        {
-            if (driver1.isButtonPressed(Button.X))
-            {
-                alliance = Alliance.BLUE;
-            }
-            else if (driver1.isButtonPressed(Button.B))
-            {
-                alliance = Alliance.RED;
-            }
-            else if (driver1.isButtonPressed(Button.Y))
-            {
-                delay++;
-            }
-            else if (driver1.isButtonPressed(Button.A))
-            {
-                delay--;
-            }
-            else if (driver1.isButtonPressed(Button.DPAD_LEFT))
-            {
-                routineOption = RoutineOption.LAUNCHANDBUTTONS;
-            }
-            else if (driver1.isButtonPressed(Button.DPAD_RIGHT))
-            {
-                routineOption = RoutineOption.LAUNCHANDBUTTONS;
-            }
-            else if (driver1.isButtonPressed(Button.LEFT_BUMPER))
-            {
-                routineOption = RoutineOption.LAUNCHANDBUTTONS;
-            }
-            else if (driver1.isButtonPressed(Button.RIGHT_BUMPER))
-            {
-                routineOption = RoutineOption.LAUNCHANDBUTTONS;
-            }
-            else if (driver1.isButtonPressed(Button.START))
-            {
-                //stops the setup loop
-                isSetUpRunning = false;
-            }
-
-            //ensures delay is not negative
-            if (delay < 0)
-            {
-                delay = 0;
-            }
-
-            //displays current configuration
-            telemetry.addData("Alliance: ", alliance.name());
-            telemetry.addData("Delay: ", delay);
-            telemetry.addData("Routine Option: ", routineOption.name());
-            telemetry.update();
-
-            idle();
-        }
 
         telemetry.log().add("Setup finished.");
     }
@@ -115,58 +51,31 @@ abstract public class MasterAutonomous extends MasterOpMode
         return Distance;
     }
 
-    //todo needs to be changed
-    //uses vuforia to move to a location
+    //todo needs to be changed for mecanum
+    //use vuforia to move to a location
     public void vuforiaDriveToPosition(double targetX, double targetY)throws InterruptedException
     {
 
     }
 
-    //tells the robot to turn to a specified angle
-    public void turnTo(boolean deadReckoning, double targetAngle)
+    //tell the robot to turn to a specified angle
+    public void turnTo(double targetAngle)
     {
-        //counter used to improve the accuracy of turnTo
-        int  angleToleranceCounter = 0;
-
-        if (deadReckoning)
-        {
-            currentAngle = getAngularOrientationWithOffset();
-        }
-        else
-        {
-            currentAngle = getRobotAngleUsingVuforia();
-        }
-
         double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
         double turningPower;
 
-        //counter ensures that the robot is as close as possible to its target angle
-        while(angleToleranceCounter < 50 && opModeIsActive())
+        //robot only stops when it is within angle tolerance
+        while(Math.abs(angleDiff) >= Constants.ANGLE_TOLERANCE && opModeIsActive())
         {
-            //increases the counter if the robot's heading is in tolerance
-            if (Math.abs(angleDiff) <= Constants.ANGLE_TOLERANCE)
-            {
-                angleToleranceCounter++;
-            }
-
-            if (deadReckoning)
-            {
-                currentAngle = getAngularOrientationWithOffset();
-            }
-            else
-            {
-                currentAngle = getRobotAngleUsingVuforia();
-            }
+            currentAngle = getAngularOrientationWithOffset();
 
             //gives robot its adjusted turning power
             angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
-            turningPower = angleDiff * Constants.TURNING_POWER_FACTOR;
+            turningPower = Constants.TURNING_POWER_FACTOR * angleDiff;
 
-            //todo needs to be changed
-            /*
-            drive.RotationControlFilter.roll(turningPower);
-            turningPower = drive.RotationControlFilter.getFilteredValue();
-            */
+            //sends turningPower through PID filter to increase precision of turning
+            RotationControlFilter.roll(turningPower);
+            turningPower = RotationControlFilter.getFilteredValue();
 
             //makes sure turn power doesn't go above maximum power
             if (Math.abs(turningPower) > 1.0)
@@ -174,7 +83,7 @@ abstract public class MasterAutonomous extends MasterOpMode
                 turningPower = Math.signum(turningPower);
             }
 
-            // Makes sure turn power doesn't go below minimum power
+            //makes sure turn power doesn't go below minimum power
             if(turningPower > 0 && turningPower < Constants.MINIMUM_TURNING_POWER)
             {
                 turningPower = Constants.MINIMUM_TURNING_POWER;
@@ -184,13 +93,11 @@ abstract public class MasterAutonomous extends MasterOpMode
                 turningPower = -Constants.MINIMUM_TURNING_POWER;
             }
 
+            //turns robot
+            driveMecanum(0.0, 0.0, -turningPower);
+
             telemetry.addData("angleDiff: ", angleDiff);
             telemetry.update();
-
-            //todo needs to be changed
-            /*
-            drive.moveRobot(0.0, 0.0, -turningPower);
-            */
 
             idle();
         }
@@ -198,7 +105,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopAllDriveMotors();
     }
 
-    //TODO: adjust pause times to allow vuforia just enough time to determine the jewel colors
+    //todo modify for jewels rather than beacons
     //we use this function to determine the color of jewels and knock them
     public void knockJewel (boolean redSide) throws InterruptedException
     {

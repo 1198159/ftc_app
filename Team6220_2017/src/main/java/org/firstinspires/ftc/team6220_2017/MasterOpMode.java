@@ -14,14 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-/*
-
-*/
-
-abstract public class MasterOpMode extends LinearOpMode
-{
+abstract public class MasterOpMode extends LinearOpMode {
     //TODO: deal with angles at all starting positions
     double currentAngle = 0.0;
 
@@ -31,6 +24,7 @@ abstract public class MasterOpMode extends LinearOpMode
     //used to ensure that the robot drives straight when not attempting to turn
     double targetHeading = 0.0 + headingOffset;
 
+    //contains useful vuforia functions
     VuforiaHelper vuforiaHelper;
 
     ElapsedTime timer = new ElapsedTime();
@@ -39,56 +33,101 @@ abstract public class MasterOpMode extends LinearOpMode
     DriverInput driver1;
     DriverInput driver2;
 
+    PIDFilter RotationControlFilter;
+
+    //declare hardware devices
     BNO055IMU imu;
 
+    DcMotor motorFrontLeft;
+    DcMotor motorFrontRight;
+    DcMotor motorBackLeft;
+    DcMotor motorBackRight;
+
+    //servo that operates the jewel arm
+    Servo golfClubServo;
+    //
+
+    //create a list of tasks to accomplish in order
     List<ConcurrentOperation> callback = new ArrayList<>();
-    //currently not in use
-    /*
-    MotorToggler motorToggler;
-    MotorToggler motorTogglerReverse;
-    */
 
     public void initializeHardware()
     {
+        //encapsulation for gamepad objects and methods
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
-        //CodeReview: Did we include the calibration json somewhere so it can be found in our program?
-        //            If we are going to reference this file, it has to exist, and has to be where the
-        //            calibration sample opmode puts it (so it can be found)
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
 
         callback.add(driver1);
         callback.add(driver2);
 
-        for(ConcurrentOperation item : callback)
+        //initialize hardware devices
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+        motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
+        motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
+        motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
+        motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
+
+        golfClubServo = hardwareMap.servo.get("servoGolfClub");
+        //
+
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Retrieves and initializes the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu". Certain parameters must be specified before using the imu.
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        imu.initialize(parameters);
+
+        //todo adjust for robot
+        RotationControlFilter = new PIDFilter(0.5, 0.0, 0.0);
+
+        //todo What is the purpose of this?
+        for (ConcurrentOperation item : callback)
         {
             item.initialize(hardwareMap);
         }
     }
 
+    //general method for driving robot
+    //driveAngle = 0 when driving straight, rotates counterclockwise from y axis
+    void driveMecanum(double driveAngle, double drivePower, double w)
+    {
+        double x = -drivePower * Math.sin(driveAngle);
+        double y = drivePower * Math.cos(driveAngle);
+
+        //signs for w, x, and y are based on inherent properties of mecanum drive
+        double powerMotorFL = x + y + w;
+        double powerMotorFR = x - y + w;
+        double powerMotorBL = -x + y + w;
+        double powerMotorBR = -x - y + w;
+
+        //power motors
+        motorFrontLeft.setPower(powerMotorFL);
+        motorFrontRight.setPower(powerMotorFR);
+        motorBackLeft.setPower(powerMotorBL);
+        motorBackRight.setPower(powerMotorBR);
+    }
+
+    //updates every item with elapsed time at the end of the main loop; ensures that operations
+    //based on a timer are executed on time
     public void updateCallback(double eTime)
     {
-        for(ConcurrentOperation item : callback)
+        for (ConcurrentOperation item : callback)
         {
             item.update(eTime);
         }
     }
 
-    //other opmodes must go through this method to prevent others from blithely changing headingOffset
-    public void setRobotStartingOrientation(double newValue)
-    {
+    //other opmodes must go through this method to prevent others from unnecessarily changing headingOffset
+    void setRobotStartingOrientation(double newValue) {
         headingOffset = newValue;
     }
 
@@ -97,8 +136,7 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         double diff = finalAngle - initialAngle;
 
-        while (Math.abs(diff) > 180)
-        {
+        while (Math.abs(diff) > 180) {
             diff -= Math.signum(diff) * 360;
         }
 
@@ -117,7 +155,7 @@ abstract public class MasterOpMode extends LinearOpMode
     }
 
     //takes into account headingOffset to utilize global orientation
-    public double getAngularOrientationWithOffset()
+    double getAngularOrientationWithOffset()
     {
         double correctedHeading = normalizeAngle(imu.getAngularOrientation().firstAngle + headingOffset);
 
@@ -125,14 +163,22 @@ abstract public class MasterOpMode extends LinearOpMode
     }
 
     //uses vuforia instead of imu
-    public double getRobotAngleUsingVuforia()
+    double getRobotAngleUsingVuforia()
     {
         vuforiaHelper.updateLocation();
         return Orientation.getOrientation(vuforiaHelper.lastKnownLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle + headingOffset;
     }
 
+    //finds distance between 2 points
+    double calculateDistance(double dx, double dy)
+    {
+        double distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+
+        return distance;
+    }
+
     //wait a number of milliseconds
-    public void pause(int t) throws InterruptedException
+    void pause(int t) throws InterruptedException
     {
         //we don't use System.currentTimeMillis() because it can be inconsistent
         long initialTime = System.nanoTime();
@@ -142,9 +188,11 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
-    //todo add motors when drive system is decided
-    public void stopAllDriveMotors()
+    void stopAllDriveMotors()
     {
-
+        motorFrontLeft.setPower(0.0);
+        motorFrontRight.setPower(0.0);
+        motorBackLeft.setPower(0.0);
+        motorBackRight.setPower(0.0);
     }
 }

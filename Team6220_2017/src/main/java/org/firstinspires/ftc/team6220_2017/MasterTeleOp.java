@@ -6,10 +6,10 @@ package org.firstinspires.ftc.team6220_2017;
 abstract public class MasterTeleOp extends MasterOpMode
 {
     //                                                   y = 0.0 + 1/2x + 0.0 + 1/2x^3
-    Polynomial pilotInputCurve = new Polynomial(new double[]{ 0.0, 0.5, 0.0, 0.5 });
+    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.5, 0.0, 0.5 });
 
     //takes driver 1 stick input and uses it to move the robot
-    void driveRobotWithJoysticks(double xMotionAxis, double yMotionAxis, double rotationAxis)
+    void driveMecanumWithJoysticks()
     {
         double eTime = timer.seconds() - lTime;
         lTime = timer.seconds();
@@ -20,6 +20,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         double rFactor;
 
         //slows down the robot if slow mode is requested
+        // note: factors are different for translation and rotation
         if (driver1.isButtonPressed(Button.RIGHT_BUMPER))
         {
             tFactor = 0.2;
@@ -31,12 +32,12 @@ abstract public class MasterTeleOp extends MasterOpMode
             rFactor = 1.0;
         }
 
-        //todo needs to be changed
-        /*
-        drive.moveRobot(pilotInputCurve.getOuput(xMotionAxis) * tFactor,
-                        pilotInputCurve.getOuput(yMotionAxis) * tFactor,
-                        pilotInputCurve.getOuput(rotationAxis) * rFactor);
-        */
+        //stick inputs must be changed from x and y to angle and drive power
+        double angle = driver1.getRightStickAngle();
+        double power = tFactor * stickCurve.getOuput(driver1.getRightStickMagnitude());
+        double rotationPower = rFactor * stickCurve.getOuput(gamepad1.left_stick_x);
+
+        driveMecanum(angle, power, rotationPower);
 
         telemetry.addData("eTime: ", eTime);
         telemetry.update();
