@@ -53,7 +53,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         isRightBumperPushed = gamepad1.right_bumper;
         */
-        
+
         double y = -gamepad1.right_stick_y; // Y axis is negative when up
         double x = gamepad1.right_stick_x;
         double power = calcDistance(x, y);
