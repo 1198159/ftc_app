@@ -30,6 +30,12 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4; // is 2.34
 
+    // declare motor powers
+    double powerFL;
+    double powerFR;
+    double powerBL;
+    double powerBR;
+
     public void initializeHardware()
     {
         // Initialize motors to be the hardware motors
@@ -47,6 +53,12 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // reverse front and back right motors just for TeleOp
+        motorFL.setDirection(DcMotor.Direction.FORWARD);
+        motorBL.setDirection(DcMotor.Direction.FORWARD);
+        motorFR.setDirection(DcMotor.Direction.REVERSE);
+        motorBR.setDirection(DcMotor.Direction.REVERSE);
 
         motorFL.setPower(0);
         motorFR.setPower(0);
@@ -107,10 +119,18 @@ abstract public class MasterOpMode extends LinearOpMode
         double py = drivePower * Math.cos(Math.toRadians(driveAngle));
 
         // calculate the power for each motor
-        double powerFL = px + py + pivotPower;
-        double powerFR = px - py + pivotPower;
-        double powerBL = px + py + pivotPower;
-        double powerBR = -px - py + pivotPower;
+        /*
+        powerFL = px + py + pivotPower;
+        powerFR = -px + py - pivotPower; // reversed?
+        powerBL = -px + py + pivotPower;
+        powerBR = px + py - pivotPower; // reversed?
+        */
+
+        powerFL = px + 0*py + pivotPower;
+        powerFR = 0*px + py - pivotPower;
+        powerBL = 0*px + py + pivotPower;
+        powerBR = px + 0*py - pivotPower;
+
 
         // set power to the motors
         motorFL.setPower(powerFL);

@@ -18,6 +18,13 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isXButtonPressed = false;
     boolean isYButtonPressed = false;
 
+    /*
+    This keeps track of the side or corner of the robot that is considered "forwards" by the driver.
+    0 degrees is the side of the robot with with the phone, and since there are eight possible
+    fronts, we add 45 degrees to 0 as we rotate the robot to the right.
+     */
+    int frontAngle = 0;
+
     // angle is the arc tangent of (-jx/jy), considering that 0 degrees is forwards
     double driveAngle; // used to calculate the drive angle based on the x and y position on the joystick
 
@@ -29,69 +36,32 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     void omniDriveTeleOp()
     {
-        double y = -gamepad1.left_stick_y; // Y axis is negative when up
-        double x = gamepad1.left_stick_x;
+        /*
+        // if the left bumper is pushed and it hasn't been pushed before,
+        if (gamepad1.left_bumper && !isLeftBumperPushed)
+        {
+            isLeftBumperPushed = true;
+            frontAngle -= 45; // shift the front 45 degrees to the left
+        }
+        isLeftBumperPushed = gamepad1.left_bumper;
+
+        // if the right bumper is pushed and it hasn't been pushed before,
+        if (gamepad1.right_bumper && !isRightBumperPushed)
+        {
+            isRightBumperPushed = true;
+            frontAngle += 45; // shift the front 45 degrees to the right
+        }
+        isRightBumperPushed = gamepad1.right_bumper;
+        */
+        
+        double y = -gamepad1.right_stick_y; // Y axis is negative when up
+        double x = gamepad1.right_stick_x;
         double power = calcDistance(x, y);
-        double turnPower = -gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
+        double turnPower = gamepad1.left_stick_x; // Fix for clockwise being a negative rotation
 
         double angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
 
         omniDrive(angle, power, turnPower);
-    }
-    public void mecanumDrive(double kDrive, double kPivot)
-    {
-        double jx2;
-        double jy2;
-        double turn;
-
-        double avgX;
-        double avgY;
-        double avgPivot;
-
-        double rx;  // represents RIGHT joystick "x axis"
-        double ry;  // represents RIGHT joystick "y axis"
-        double lx; // represents joystick LEFT "x axis"
-
-        rx = gamepad1.right_stick_x;
-        ry = -gamepad1.right_stick_y; // the joystick is reversed, so make this negative
-        lx = gamepad1.left_stick_x;
-
-        jx2 = modJoyStickInput(rx);
-        jx2 = Range.clip(jx2, -1, 1);
-        jy2 = modJoyStickInput(ry);
-        jy2 = Range.clip(jy2, -1, 1);
-        turn = modJoyStickInput(lx);
-        turn = Range.clip(turn, -1, 1);
-
-        // used in all modes including adagio legato mode
-        filterJoyStickInput.appendInput(jx2, jy2, turn);
-
-        if (isLegatoMode)
-        {
-            avgX = filterJoyStickInput.getFilteredX();
-            avgY = filterJoyStickInput.getFilteredY();
-            avgPivot = filterJoyStickInput.getFilteredP();
-        }
-        else
-        {
-            avgX = jx2;
-            avgY = jy2;
-            avgPivot = turn;
-        }
-
-        if (isModeReversed)
-        {
-            avgX = -avgX;
-            avgY = -avgY;
-        }
-        telemetry.addData("Reversed: ", isModeReversed);
-
-        motorFL.setPower(avgX * kDrive + avgY * kDrive + avgPivot * kPivot);
-        motorFR.setPower(-avgX * kDrive + avgY * kDrive - avgPivot * kPivot);
-        motorBL.setPower(-avgX * kDrive + avgY * kDrive + avgPivot * kPivot);
-        motorBR.setPower(avgX * kDrive + avgY * kDrive - avgPivot * kPivot);
-        // lx is defined as game pad input, then turn gets value from function "modJoyStickInput"
-        // turn used in final equation for each motor
     }
 
     public double modJoyStickInput(double x) // x is the raw joystick input, refer to "modJoyStickInput"

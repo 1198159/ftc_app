@@ -8,6 +8,14 @@ public class TeleOpCompetition extends MasterTeleOp
     @Override
     public void runOpMode() throws InterruptedException
     {
-        omniDriveTeleOp();
+        super.initializeHardware();
+        telemetry.addData("Init:", "Done");
+        telemetry.update();
+        waitForStart();
+        while (opModeIsActive())
+        {
+            omniDriveTeleOp();
+            idle();
+        }
     }
 }
