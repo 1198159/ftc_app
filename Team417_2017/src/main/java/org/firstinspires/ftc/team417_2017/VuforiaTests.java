@@ -155,7 +155,7 @@ public class VuforiaTests extends LinearOpMode
                 /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
                  * it is perhaps unlikely that you will actually need to act on this pose information, but
                  * we illustrate it nevertheless, for completeness. */
-                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
+                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
                 telemetry.addData("Pose", format(pose));
 
                 /* We further illustrate how to decompose the pose into useful rotational and
@@ -166,8 +166,7 @@ public class VuforiaTests extends LinearOpMode
                     float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
                     rawPose.setData(poseData);
                     // image size is 254 mm x 184 mm
-                    //Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(140, -108, -102));
-                    Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(0, 0, 0));
+                    Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(140, -108, -102));
                     //Vec2F jewelRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(292, -108, -102));
 
                     // takes the frame at the head of the queue
@@ -203,6 +202,7 @@ public class VuforiaTests extends LinearOpMode
                     Color.colorToHSV(color, colorHSV);
                     */
 
+                    colorHsvSum[0] = 0;
                     for (int j = y - 8; j < y + 8; j++)
                     {
                         for (int i = x - 8; i < x + 8; i++)
