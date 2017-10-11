@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team6220_2017;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import com.qualcomm.ftcrobotcontroller.R;
 import com.vuforia.HINT;
@@ -23,6 +24,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
+
+
 import java.util.Arrays;
 
 
@@ -40,6 +45,8 @@ public class VuforiaHelper
 
     OpenGLMatrix lastKnownLocation;
     OpenGLMatrix phoneLocation;
+
+    Bitmap bitMap;
 
     // Constants for later reference
     public static final String PICTURE_ASSET = "FTC_2016-17";
@@ -61,6 +68,13 @@ public class VuforiaHelper
     public static final float MM_BOT_SIZE = 18 * MM_PER_INCH;
     public static final float MM_FIELD_SIZE = 12 * 12 * MM_PER_INCH;
 
+    //stores colors used as return values in getJewelColor()
+    enum JewelColor
+    {
+        red,
+        blue,
+        undetermined
+    }
     //function for finding the location of robot
     public OpenGLMatrix getLatestLocation()
     {
@@ -83,6 +97,60 @@ public class VuforiaHelper
         return lastKnownLocation;
     }
 
+
+    //finds color of image
+    public float[] getImageColor(Image image, Vec2F targetUpperLeftCorner)
+    {
+        //what we want to return
+        float[] colorOutput = new float[]{0,0,0};
+
+        if (image != null)
+        {
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
+            //coordinates of corner of target area for acquiring color
+            int x = (int) targetUpperLeftCorner.getData()[0];
+            int y = (int) targetUpperLeftCorner.getData()[1];
+            //color of sample pixel from nested for loop below
+            int samplePixel = 0;
+
+            //sum of all colors from sample pixels
+            float[] colorSum = new float[]{0,0,0};
+
+            float[] colorHSV = new float[]{0,0,0};
+
+            // create image bitmap to get color
+            bitMap = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
+            bitMap.copyPixelsFromBuffer(image.getPixels());
+
+            for (int yComp = y; yComp < y + 300; y += 30)
+            {
+                for (int xComp = x; xComp < x + 650; x += 65)
+                {
+                    samplePixel = bitMap.getPixel(xComp, yComp);
+
+                    Color.colorToHSV(samplePixel, colorHSV);
+
+                    // sum HSV colors of all sample pixels
+                    for (int i = 0; i < 3; i++)
+                    {
+                        colorSum[i] += colorHSV[i];
+                    }
+
+                    //todo add border around pixel area for debugging
+                }
+            }
+
+            //averages colors of sample pixels
+            for (int i = 0; i < 3; i++)
+            {
+                colorOutput[i] = colorSum[i] /121;
+            }
+        }
+
+        return colorOutput;
+    }
+
     public void setupVuforia()
     {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
@@ -91,11 +159,13 @@ public class VuforiaHelper
         parameters.useExtendedTracking = false;
         vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
 
-        // Stuff for getting pixel information
+        // setup for getting pixel information
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         vuforiaLocalizer.setFrameQueueCapacity(1);
 
         // Initialize vision targets
+
+        /*
         visionTargets = vuforiaLocalizer.loadTrackablesFromAsset(PICTURE_ASSET);
         Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 4);
 
@@ -119,6 +189,7 @@ public class VuforiaHelper
         targets[RED_RIGHT].setLocation(createMatrix(2743.2f, MM_FIELD_SIZE, 0, 90, 0, 0));
         targets[BLUE_LEFT].setLocation(createMatrix(MM_FIELD_SIZE, 2743.2f, 0, 90, 0, -90));
         targets[BLUE_RIGHT].setLocation(createMatrix(MM_FIELD_SIZE, 1524, 0, 90, 0, -90));
+        */
 
         //Sets phone location on robot. The center of the camera is the origin
         //This location is 90 degrees less than the phone's actual rotation about the z-axis since we
@@ -219,12 +290,16 @@ public class VuforiaHelper
         visionTargets.activate();
     }
 
+    void stopTracking() {visionTargets.deactivate();}
+
     boolean isTracking()
     {
         for(int i = 0; i < targets.length; i++)
         {
             if(listeners[i].isVisible())
+            {
                 return true;
+            }
         }
         return false;
     }
