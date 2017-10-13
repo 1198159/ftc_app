@@ -137,7 +137,13 @@ public class VuforiaHelper
                         colorSum[i] += colorHSV[i];
                     }
 
-                    //todo add border around pixel area for debugging
+
+                    //add black border around pixel area for debugging.  Sets each pixel on border to black.
+                    if ((yComp == y) || (yComp == y + 300) || (xComp == x) || (xComp == x +650))
+                    {
+                        bitMap.setPixel(xComp, yComp, 0);
+                    }
+
                 }
             }
 
@@ -149,6 +155,24 @@ public class VuforiaHelper
         }
 
         return colorOutput;
+    }
+
+    public JewelColor getJewelColor()
+    {
+        //Image image ;
+        //Vec2F targetUpperLeftCorner;
+        JewelColor jewelColor = JewelColor.undetermined;
+
+        //float[] colorOutput = getImageColor(image, targetUpperLeftCorner);
+        boolean isBlue = false;
+        boolean isRed = false;
+
+
+        if(isBlue)
+        {
+
+        }
+        return jewelColor;
     }
 
     public void setupVuforia()
