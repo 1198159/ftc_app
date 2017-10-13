@@ -77,6 +77,10 @@ public class VuforiaTests extends LinearOpMode
     float[] colorHsvSum = {0,0,0};
     float[] colorHSV = {0,0,0};
     float[] colorHsvOut = {0,0,0};
+    float leftJewelColor;
+    float avgLeftJewelColor;
+    float avgRightJewelColor;
+    boolean isLeftJewelBlue;
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -166,7 +170,7 @@ public class VuforiaTests extends LinearOpMode
                     float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
                     rawPose.setData(poseData);
                     // image size is 254 mm x 184 mm
-                    //Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
+                    Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
                     Vec2F jewelRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(390, -180, -102));
 
                     // takes the frame at the head of the queue
@@ -191,63 +195,71 @@ public class VuforiaTests extends LinearOpMode
 
 
                     // coordinates in image
-                    // TODO:  check to make sure x < 1280; y < 720
-                    int x = (int) jewelRight.getData()[0];
-                    int y = (int) jewelRight.getData()[1];
+                    // TODO: check to make sure x < 1280; y < 720
+                    int lx = (int) jewelRight.getData()[0];
+                    int ly = (int) jewelRight.getData()[1];
+
+                    int rx = (int) jewelLeft.getData()[0];
+                    int ry = (int) jewelLeft.getData()[1];
+
+                    avgLeftJewelColor = GetAvgJewelColor(lx, ly); // get the averaged jewel HSV color value for the left jewel
+                    avgRightJewelColor = GetAvgJewelColor(rx, ry);
 
 
-                    if (x>=0 && x<1280-8 && y>=0 && y<720-8)
-                    {
-                        colorHsvSum[0] = 0;
-                        for (int j = y - 8; j < y + 8; j++)
-                        {
-                            for (int i = x - 8; i < x + 8; i++)
-                            {
-                                // get RGB color of pixel
-                                color = bm.getPixel(i, j);
+                    float colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
+                    float colorRight = (avgRightJewelColor < 45) ? avgRightJewelColor + 300 : avgRightJewelColor;
 
-                                // convert RGB to HSV - hue, sat, val
-                                // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
-                                Color.colorToHSV(color, colorHSV);
+                    float deltaColorHSV = colorLeft - colorRight;
+                    // if left color is negative, then left side is blue
+                    if (deltaColorHSV > 0) isLeftJewelBlue = true; // BLUE
+                    else isLeftJewelBlue = false; // RED
 
-                                // integrate HSV color of all pixels
-                                colorHsvSum[0] += colorHSV[0];
-
-                                // draw black border around sample region for debugging only
-                                if ((j == y - 8) || (j == y + 7) || (i == x - 8) || (i == x + 7))
-                                {
-                                    bm.setPixel(i, j, 0);
-                                }
-                            }
-                        }
-                        // normalize output for 16x16 = 256 integration above
-                        colorHsvOut[0] = colorHsvSum[0] / 256;
-                        telemetry.addData("ColorHSV", "%f %f %f", colorHsvOut[0], colorHsvOut[1], colorHsvOut[2]);
-                    }
-
-                    /*
-                    // get RGB color of pixel
-                    color = bm.getPixel(x, y);
-                    // convert RGB to HSV - hue, sat, val
-                    // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
-                    Color.colorToHSV(color, colorHSV);
-                    */
+                    telemetry.addData("isLeftJewelBlue", isLeftJewelBlue);
                 }
             }
             else
             {
                 telemetry.addData("VuMark", "not visible");
+                //telemetry.addData("isLeftJewelBlue", isLeftJewelBlue);
+                telemetry.update();
             }
             telemetry.update();
-
-            /*
-            VuforiaNavigate.JewelColor jewelColor;
-            jewelColor = VuforiaNav.GetJewelColor();
-            telemetry.addData("Jewel Color is:", jewelColor);
-            telemetry.update();
-            */
         }
     }
+
+
+    public float GetAvgJewelColor(int x, int y)
+    {
+        if (x>=0 && x<1280-8 && y>=0 && y<720-8)
+        {
+            colorHsvSum[0] = 0;
+            for (int j = y - 8; j < y + 8; j++)
+            {
+                for (int i = x - 8; i < x + 8; i++)
+                {
+                    // get RGB color of pixel
+                    color = bm.getPixel(i, j);
+
+                    // convert RGB to HSV - hue, sat, val
+                    // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
+                    Color.colorToHSV(color, colorHSV);
+
+                    // integrate HSV color of all pixels
+                    colorHsvSum[0] += colorHSV[0];
+
+                    // draw black border around sample region for debugging only
+                    if ((j == y - 8) || (j == y + 7) || (i == x - 8) || (i == x + 7))
+                    {
+                        bm.setPixel(i, j, 0);
+                    }
+                }
+            }
+            // normalize output for 16x16 = 256 integration above
+            colorHsvOut[0] = colorHsvSum[0] / 256;
+        }
+        return colorHsvOut[0]; // return the averaged sampled HSV color value
+    }
+
 
     String format(OpenGLMatrix transformationMatrix)
     {
