@@ -26,14 +26,17 @@ public class TestServo extends LinearOpMode
 
         waitForStart();
 
+        servoL.setPosition(0.5);
+        servoR.setPosition(0.0);
+
         while(opModeIsActive())
         {
-            if(gamepad1.dpad_right)
+            if(gamepad1.dpad_left)
             {
                 currentServo = servoL;
                 currentServoID = "Left Servo";
             }
-            else if(gamepad1.dpad_left)
+            else if(gamepad1.dpad_right)
             {
                 currentServo = servoR;
                 currentServoID = "Right Servo";
