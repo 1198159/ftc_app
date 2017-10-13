@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.lang.reflect.GenericSignatureFormatError;
 
 /**
- *
+ * Runable shell for Master TeleOp code
  */
 
 @TeleOp(name = "CapBot Teleop")
