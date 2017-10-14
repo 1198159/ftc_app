@@ -196,26 +196,26 @@ public class VuforiaTests extends LinearOpMode
 
                     // coordinates in image
                     // TODO: check to make sure x < 1280; y < 720
-                    int lx = (int) jewelRight.getData()[0];
-                    int ly = (int) jewelRight.getData()[1];
+                    int lx = (int) jewelLeft.getData()[0];
+                    int ly = (int) jewelLeft.getData()[1];
 
-                    int rx = (int) jewelLeft.getData()[0];
-                    int ry = (int) jewelLeft.getData()[1];
+                    int rx = (int) jewelRight.getData()[0];
+                    int ry = (int) jewelRight.getData()[1];
 
                     avgLeftJewelColor = GetAvgJewelColor(lx, ly); // get the averaged jewel HSV color value for the left jewel
                     avgRightJewelColor = GetAvgJewelColor(rx, ry);
 
-
+                    // adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
                     float colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
                     float colorRight = (avgRightJewelColor < 45) ? avgRightJewelColor + 300 : avgRightJewelColor;
 
                     float deltaColorHSV = colorLeft - colorRight;
                     // if left color is negative, then left side is blue
-                    if (deltaColorHSV > 0) isLeftJewelBlue = true; // BLUE
+                    if (deltaColorHSV < 0) isLeftJewelBlue = true; // BLUE
                     else isLeftJewelBlue = false; // RED
 
-                    telemetry.addData("leftHue ", colorLeft);
-                    telemetry.addData("rightHue ", colorRight);
+                    telemetry.addData("leftHue ", avgLeftJewelColor);
+                    telemetry.addData("rightHue ", avgRightJewelColor);
                     telemetry.addData("isLeftJewelBlue", isLeftJewelBlue);
                 }
             }
@@ -254,7 +254,7 @@ public class VuforiaTests extends LinearOpMode
                     }
                 }
             }
-            // normalize output for 16x16 = 256 integration above
+            // normalize output for 32x32 = 4096 integration above
             colorHsvOut[0] = colorHsvSum[0] / 4096;
         }
         return colorHsvOut[0]; // return the averaged sampled HSV color value
