@@ -214,14 +214,14 @@ public class VuforiaTests extends LinearOpMode
                     if (deltaColorHSV > 0) isLeftJewelBlue = true; // BLUE
                     else isLeftJewelBlue = false; // RED
 
+                    telemetry.addData("leftHue ", colorLeft);
+                    telemetry.addData("rightHue ", colorRight);
                     telemetry.addData("isLeftJewelBlue", isLeftJewelBlue);
                 }
             }
             else
             {
                 telemetry.addData("VuMark", "not visible");
-                //telemetry.addData("isLeftJewelBlue", isLeftJewelBlue);
-                telemetry.update();
             }
             telemetry.update();
         }
@@ -230,12 +230,12 @@ public class VuforiaTests extends LinearOpMode
 
     public float GetAvgJewelColor(int x, int y)
     {
-        if (x>=0 && x<1280-8 && y>=0 && y<720-8)
+        if (x>=0 && x<1280-32 && y>=0 && y<720-32)
         {
             colorHsvSum[0] = 0;
-            for (int j = y - 8; j < y + 8; j++)
+            for (int j = y - 32; j < y + 32; j++) // columns
             {
-                for (int i = x - 8; i < x + 8; i++)
+                for (int i = x - 32; i < x + 32; i++) // rows
                 {
                     // get RGB color of pixel
                     color = bm.getPixel(i, j);
@@ -248,14 +248,14 @@ public class VuforiaTests extends LinearOpMode
                     colorHsvSum[0] += colorHSV[0];
 
                     // draw black border around sample region for debugging only
-                    if ((j == y - 8) || (j == y + 7) || (i == x - 8) || (i == x + 7))
+                    if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31))
                     {
-                        bm.setPixel(i, j, 0);
+                        bm.setPixel(i, j, 0xff00ff00);
                     }
                 }
             }
             // normalize output for 16x16 = 256 integration above
-            colorHsvOut[0] = colorHsvSum[0] / 256;
+            colorHsvOut[0] = colorHsvSum[0] / 4096;
         }
         return colorHsvOut[0]; // return the averaged sampled HSV color value
     }
