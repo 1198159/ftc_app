@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.qualcomm.ftcrobotcontroller.R;
-import com.vuforia.HINT;
 import com.vuforia.Image;
 import com.vuforia.Matrix34F;
 import com.vuforia.PIXEL_FORMAT;
@@ -24,15 +23,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
-
 
 import java.util.Arrays;
 
 
 /**
- * Created by Colew on 10/25/2016.
+ * This class contains useful methods for integrating vuforia into robot code
  */
 
 public class VuforiaHelper
@@ -43,184 +39,87 @@ public class VuforiaHelper
     VuforiaTrackable[] targets = new VuforiaTrackable[4];
     VuforiaTrackableDefaultListener[] listeners = new VuforiaTrackableDefaultListener[4];
 
+    // colors of both jewels used in getJewelColor()
+    public float leftJewelColorHSV[] = {0f, 0f, 0f};
+    public float rightJewelColorHSV[] = {0f, 0f, 0f};
+
+    // necessary matrices
+    OpenGLMatrix targetPosition;
     OpenGLMatrix lastKnownLocation;
     OpenGLMatrix phoneLocation;
 
     Bitmap bitMap;
 
-    // Constants for later reference
-    public static final String PICTURE_ASSET = "FTC_2016-17";
+    // key needed to use vuforia
     public static final String VUFORIA_KEY = "ARnvYoH/////AAAAGQS+OAV8SElJhcYQ4Ud8LkNvhk/zpT8UiiVlkQOGgruNCfQryIqNOyyl6iYhvsCCVYMqHZPJJgORL7ZL3+Hl1VE/CJZiBI357gU4uSmFahasqA9UV/HVmd0Mze0j5cEaVgJ7w3dRhz4Lvdk7qcVwGQTMpAVFKdlpt0657wA0C2vFWzJgZZv3vk7Ouw6bfSltX1/Wgf15jcCcBPRLQs/KkIngbvc+rtBxtD5f4REyb9FuqtN00MoHKL8RIpFQagX/b39JbN8oFLDjUiC5smxchqIHYMIvt7JAQH0TT+fizeIYMnZk3/t8SfNg/gt1lJACY514k9TpM4UwfBvVZcfDVdXj1wKUsPWw8ndUQ6l5PtSq";
 
-    public static final int WHEELS = 0;
-    public static final int TOOLS = 1;
-    public static final int LEGOS = 2;
-    public static final int GEARS = 3;
+    //used for storing info from vuforia frame queue to be analyzed in other methods
+    VuforiaLocalizer.CloseableFrame frame;
 
-    public static final int RED_LEFT = 0;
-    public static final int RED_RIGHT = 1;
-    public static final int BLUE_LEFT = 2;
-    public static final int BLUE_RIGHT = 3;
+    /*
+    Necessary image variables.  Note:  we are using RGB888 because it stores more pixels, so we suspect
+    that we will obtain more accurate colors by using it.  However, we are not certain about this
+    and will need to look further into the issue
+    */
+    // todo find where to initialize and use
+    Image image = null;
+    Image imageRGB888 = null;
+    int imageFormat;
 
-    //CodeReview: The botsize is a constant that relate to your robot - should it be in MasterOpMode? (Probably) (Well, definitely)
-    //            Except that it's not actually used... hmm. So maybe delete it :)
-    public static final float MM_PER_INCH = 25.4f;
-    public static final float MM_BOT_SIZE = 18 * MM_PER_INCH;
-    public static final float MM_FIELD_SIZE = 12 * 12 * MM_PER_INCH;
-
-    //stores colors used as return values in getJewelColor()
+    // stores colors used as return values in getJewelColor()
     enum JewelColor
     {
         red,
         blue,
         undetermined
     }
-    //function for finding the location of robot
+    // function for finding the location of robot
     public OpenGLMatrix getLatestLocation()
     {
-        // Checks each target to see if we can find our location. If none are visible, then it returns null
+        // checks each target to see if we can find our location. If none are visible, then it returns null
         for(int i = 0; i < targets.length; i++)
         {
-            // Try to find location from this target
+            // try to find location from this target
             OpenGLMatrix latestLocation = listeners[i].getUpdatedRobotLocation();
 
-            // We've found a target to track
+            // we've found a target to track
             if(latestLocation != null)
             {
-                // Tell driver which target is being tracked
-                //telemetry.addData("Tracking", targets[i].getName());
+                // tell driver which target is being tracked
+                // telemetry.addData("Tracking", targets[i].getName());
                 return latestLocation;
             }
         }
-        // We've lost track of the targets
-        //telemetry.addData("Tracking", "lost");
+        // we've lost track of the targets
+        // telemetry.addData("Tracking", "lost");
         return lastKnownLocation;
-    }
-
-
-    //finds color of image
-    public float[] getImageColor(Image image, Vec2F targetUpperLeftCorner)
-    {
-        //what we want to return
-        float[] colorOutput = new float[]{0,0,0};
-
-        if (image != null)
-        {
-            int imageWidth = image.getWidth();
-            int imageHeight = image.getHeight();
-            //coordinates of corner of target area for acquiring color
-            int x = (int) targetUpperLeftCorner.getData()[0];
-            int y = (int) targetUpperLeftCorner.getData()[1];
-            //color of sample pixel from nested for loop below
-            int samplePixel = 0;
-
-            //sum of all colors from sample pixels
-            float[] colorSum = new float[]{0,0,0};
-
-            float[] colorHSV = new float[]{0,0,0};
-
-            // create image bitmap to get color
-            bitMap = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
-            bitMap.copyPixelsFromBuffer(image.getPixels());
-
-            for (int yComp = y; yComp < y + 300; y += 30)
-            {
-                for (int xComp = x; xComp < x + 650; x += 65)
-                {
-                    samplePixel = bitMap.getPixel(xComp, yComp);
-
-                    Color.colorToHSV(samplePixel, colorHSV);
-
-                    // sum HSV colors of all sample pixels
-                    for (int i = 0; i < 3; i++)
-                    {
-                        colorSum[i] += colorHSV[i];
-                    }
-
-
-                    //add black border around pixel area for debugging.  Sets each pixel on border to black.
-                    if ((yComp == y) || (yComp == y + 300) || (xComp == x) || (xComp == x +650))
-                    {
-                        bitMap.setPixel(xComp, yComp, 0);
-                    }
-
-                }
-            }
-
-            //averages colors of sample pixels
-            for (int i = 0; i < 3; i++)
-            {
-                colorOutput[i] = colorSum[i] /121;
-            }
-        }
-
-        return colorOutput;
-    }
-
-    public JewelColor getJewelColor()
-    {
-        //Image image ;
-        //Vec2F targetUpperLeftCorner;
-        JewelColor jewelColor = JewelColor.undetermined;
-
-        //float[] colorOutput = getImageColor(image, targetUpperLeftCorner);
-        boolean isBlue = false;
-        boolean isRed = false;
-
-
-        if(isBlue)
-        {
-
-        }
-        return jewelColor;
     }
 
     public void setupVuforia()
     {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         parameters.useExtendedTracking = false;
         vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
 
-        // setup for getting pixel information
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+        //setup for getting pixel information
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB888, true);
+        //make sure that vuforia doesn't begin racking up unnecessary frames
         vuforiaLocalizer.setFrameQueueCapacity(1);
 
         // Initialize vision targets
+        VuforiaTrackables relicTrackables = this.vuforiaLocalizer.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        //for debugging, but not essential
+        relicTemplate.setName("relicVuMarkTemplate");
 
-        /*
-        visionTargets = vuforiaLocalizer.loadTrackablesFromAsset(PICTURE_ASSET);
-        Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 4);
-
-        targets[RED_LEFT] = visionTargets.get(GEARS);
-        targets[RED_LEFT].setName("Target Red Left");
-
-        targets[RED_RIGHT] = visionTargets.get(TOOLS);
-        targets[RED_RIGHT].setName("Target Red Right");
-
-        targets[BLUE_LEFT] = visionTargets.get(LEGOS);
-        targets[BLUE_LEFT].setName("Target Blue Left");
-
-        targets[BLUE_RIGHT] = visionTargets.get(WHEELS);
-        targets[BLUE_RIGHT].setName("Target Blue Right");
-
-        // Set vision target locations on field. Origin is at corner of field between driver
-        // stations, with the positive x-axis extending to the blue side, and positive y-axis
-        // extending to the red side. Units in mm and degrees
-        // TODO: use constants
-        targets[RED_LEFT].setLocation(createMatrix(1524, MM_FIELD_SIZE, 0, 90, 0, 0));
-        targets[RED_RIGHT].setLocation(createMatrix(2743.2f, MM_FIELD_SIZE, 0, 90, 0, 0));
-        targets[BLUE_LEFT].setLocation(createMatrix(MM_FIELD_SIZE, 2743.2f, 0, 90, 0, -90));
-        targets[BLUE_RIGHT].setLocation(createMatrix(MM_FIELD_SIZE, 1524, 0, 90, 0, -90));
-        */
-
-        //Sets phone location on robot. The center of the camera is the origin
+        //Set phone location on robot. The center of the camera is the origin.
         //This location is 90 degrees less than the phone's actual rotation about the z-axis since we
         //use the mathematical sense of absolute rotation (0 degrees located on the x-axis) while vuforia
         //uses compass coordinates for rotation (0 degrees located on the y-axis)
-        phoneLocation = createMatrix(-70, 220, 0, 90, 0, 180);
-        //phoneLocation = createMatrix(-70, 220, 0, 90, 0, 180);
+        //todo adjust for this year's robot
+        phoneLocation = createMatrix(220, 0, 0, 90, 0, 180);
 
         // Setup listeners
         for(int i = 0; i < targets.length; i++)
@@ -264,13 +163,13 @@ public class VuforiaHelper
         // Check to see if any of the vision targets are being tracked
         for(int i = 0; i < targets.length; i++)
         {
-            OpenGLMatrix targetPose = listeners[i].getRawPose();
+            targetPosition = listeners[i].getRawPose();
 
             // If the vision target isn't being tracked, it will be null. If it's not null, we're tracking it
-            if(targetPose != null)
+            if(targetPosition != null)
             {
                 Matrix34F matrixPose = new Matrix34F();
-                matrixPose.setData(Arrays.copyOfRange(targetPose.transposed().getData(), 0, 12));
+                matrixPose.setData(Arrays.copyOfRange(targetPosition.transposed().getData(), 0, 12));
 
                 // Get the pixel that represents the specified point
                 Vec2F point = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), matrixPose, new Vec3F(x, y, z));
@@ -345,5 +244,146 @@ public class VuforiaHelper
         return OpenGLMatrix.translation(x, y, z)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
+    }
+
+    //finds color of image
+    public float[] getImageColor(Image image, Vec2F targetUpperLeftCorner)
+    {
+        //what we will eventually return
+        float[] colorOutput = new float[]{0,0,0};
+
+        if (image != null)
+        {
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
+            //coordinates of corner of target area for acquiring color
+            int x = (int) targetUpperLeftCorner.getData()[0];
+            int y = (int) targetUpperLeftCorner.getData()[1];
+
+            //color of sample pixel from nested for loop below; will be changed to HSV value
+            int samplePixel = 0;
+
+            //sum of all colors from sample pixels
+            float[] colorSum = new float[]{0,0,0};
+
+            //intermediary array necessary for calculations below
+            float[] colorHSV = new float[]{0,0,0};
+
+            // create image bitmap to get color
+            bitMap = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
+            bitMap.copyPixelsFromBuffer(image.getPixels());
+
+            for (int yComp = y; yComp < y + 300; y += 30)
+            {
+                for (int xComp = x; xComp < x + 650; x += 65)
+                {
+                    samplePixel = bitMap.getPixel(xComp, yComp);
+
+                    Color.colorToHSV(samplePixel, colorHSV);
+
+                    // sum HSV colors of all sample pixels
+                    for (int i = 0; i < 3; i++)
+                    {
+                        colorSum[i] += colorHSV[i];
+                    }
+
+
+                    //add black border around pixel area for debugging.  Sets each pixel on border to black.
+                    if ((yComp == y) || (yComp == y + 300) || (xComp == x) || (xComp == x +650))
+                    {
+                        bitMap.setPixel(xComp, yComp, 0);
+                    }
+                }
+            }
+
+            //average colors of sample pixels
+            for (int i = 0; i < 3; i++)
+            {
+                colorOutput[i] = colorSum[i] /121;
+            }
+        }
+
+        return colorOutput;
+    }
+
+    /*
+    Note:  this method references the color of left jewel for its output
+
+    uses getImageColor() to determine the colors of the jewels and compare them, then returns
+    information that tells you whether the left jewel is red or blue
+    */
+    public JewelColor getJewelColor() throws InterruptedException
+    {
+        //initialize jewel color value to prevent possibility of a null pointer error
+        JewelColor leftJewelColor = JewelColor.undetermined;
+
+        //intermediary jewel color arrays that will be used by getImage()
+        float leftColorOutput[] = {0, 0, 0};
+        float rightColorOutput[] = {0, 0, 0};
+
+        //todo uncomment and finish
+        /*
+
+        for (int i = 0; i < listeners.length; i++)
+        {
+            //check to make sure that we are tracking the image
+            if (listeners[i].isVisible())
+            {
+                //frame that will be analyzed here
+                frame = vuforiaLocalizer.getFrameQueue().take();
+
+                long numberOfImages = frame.getNumImages();
+
+                //use j, since i is already used
+                for (int j = 0; j < numberOfImages; j++)
+                {
+                    image = frame.getImage(j);
+                    imageFormat = image.getFormat();
+
+                    if (imageFormat == PIXEL_FORMAT.RGB888) break;
+                }
+
+                targetPosition = listeners[i].getRawPose();
+                if (targetPosition != null)
+                {
+                    //math to get the position of of the current target point for vuforia
+                    Matrix34F rawPosition = new Matrix34F();
+                    float[] positionData = Arrays.copyOfRange(targetPosition.transposed().getData(), 0, 12);
+                    rawPosition.setData(positionData);
+
+                    //these are the coordinates for projected points in the upper left corner of each
+                    //of the jewels; our image size is 650mm x 300mm
+                    //todo check locations of projected points
+                    Vec2F cornerJewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPosition, new Vec3F(500, -800, 0));
+                    Vec2F cornerJewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPosition, new Vec3F(2000, -800, 0));
+
+                    leftColorOutput = getImageColor(image, jewelLeft);
+                    rightColorOutput = getImageColor(image, jewelRight);
+
+                    // close frame to free up memory space
+                    frame.close();
+
+                    // adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
+                    float colorLeft = (leftColorHSV[0] < 45) ? leftColorHSV[0] + 300 : leftColorHSV[0];
+                    float colorRight = (rightColorHSV[0] < 45) ? rightColorHSV[0] + 300 : rightColorHSV[0];
+
+                    float deltaColorHSV = colorLeft - colorRight;
+                    // if left color is negative, then left side is blue
+                    if (deltaColorHSV < 0)
+                    {
+                        leftJewelColor = JewelColor.blue;
+                    }
+                    else
+                    {
+                        leftJewelColor = JewelColor.red;
+                    }
+                    // debug data
+                    //telemetry.log().add(String.format("LeftSideHue: %f RightSideHue: %f", leftColorHSV[0], rightColorHSV[0]));
+                }
+            }
+        }
+
+        */
+        return leftJewelColor;
     }
 }

@@ -97,13 +97,14 @@ abstract public class MasterOpMode extends LinearOpMode {
     }
 
     //general method for driving robot
-    //driveAngle = 0 when driving straight, rotates counterclockwise from y axis
+    //driveAngle = 0 when driving along robot's y-axis (like compass heading); positive angle values are
+    //counterclockwise from y-axis (like math heading)
     void driveMecanum(double driveAngle, double drivePower, double w)
     {
         double x = -drivePower * Math.sin(driveAngle);
         double y = drivePower * Math.cos(driveAngle);
 
-        //signs for w, x, and y are based on inherent properties of mecanum drive
+        //signs for x, y, and w are based on inherent properties of mecanum drive
         double powerMotorFL = x + y + w;
         double powerMotorFR = x - y + w;
         double powerMotorBL = -x + y + w;

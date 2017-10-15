@@ -3,7 +3,7 @@ package org.firstinspires.ftc.team6220;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /*
-    Handles the toggling behaviour that is present for many of our manipulators.
+    Handles back and forth servo motions that are common for manipulators.
 */
 
 public class ServoToggler
