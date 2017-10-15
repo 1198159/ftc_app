@@ -28,7 +28,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.util.Arrays;
 
-public class VuforiaNavigate
+public class VuforiaDetection
 {
     VuforiaLocalizer.CloseableFrame frame;
     Image image = null;
@@ -46,7 +46,7 @@ public class VuforiaNavigate
     OpenGLMatrix pose;
 
     float mmPerInch = 25.4f;
-    float mmBotWidth = 18 * mmPerInch;            // ... or whatever is right for your robot
+    float mmBotWidth = 18 * mmPerInch; // ... or whatever is right for your robot
     float mmFTCFieldWidth = (12 * 12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
 
     /**
