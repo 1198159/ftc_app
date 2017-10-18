@@ -64,58 +64,12 @@ import java.util.Arrays;
 public class VuforiaTests extends LinearOpMode
 {
 
-    VuforiaNavigate VuforiaNav = new VuforiaNavigate();
+    VuforiaDetection VuforiaDetect = new VuforiaDetection();
     public static final String TAG = "Vuforia VuMark Sample";
-
-    OpenGLMatrix lastLocation = null;
-    Bitmap bm; // android.graphics
-    VuforiaLocalizer.CloseableFrame frame;
-    Image image = null;
-    int imageFormat;
-
-    int color = 0;
-    float[] colorHsvSum = {0,0,0};
-    float[] colorHSV = {0,0,0};
-    float[] colorHsvOut = {0,0,0};
-    float leftJewelColor;
-    float avgLeftJewelColor;
-    float avgRightJewelColor;
-    boolean isLeftJewelBlue;
-
-    /**
-     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
-     * localization engine.
-     */
-    VuforiaLocalizer vuforia;
 
     @Override public void runOpMode() throws InterruptedException
     {
-        /*
-         * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
-         * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
-         */
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        // OR...  Do Not Activate the Camera Monitor View, to save power
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        //This licence key belongs to Steve Geffner
-        parameters.vuforiaLicenseKey = "ATJf0AL/////AAAAGQZ9xp9L+k5UkmHj3LjxcoQwNTTBJqjO9LYsbkWQArRpYKQmt7vqe680RCQSS9HatStn1XZVi7rgA8T7qrJz/KYI748M4ZjlKv4Z11gryemJCRA9+WWkQ51D3TuYJbQC46+LDeMfbvcJQoQ79jtXr7xdFhfJl1mRxf+wMVoPWfN6Dhr8q3XVxFwOE/pM3gXWQ0kacbcGR/vy3NAsbOhf02DEe5WoV5PNZTF34LWN3dWURu7NJsnbFzkpzXdogeVAdiQ3QUWDvuhEwvSJY4W+fCTb15t6T/c/GJ/vqptsVKqavXk6MQobnUsVFpFP+5OSuRQe7EgvWuOxn7xn5YlC+CWAYh9LrXDpktwCwBAiX3Gx";
-
-        /*
-         * We also indicate which camera on the RC that we wish to use.
-         * Here we chose the back (HiRes) camera (for greater range), but
-         * for a competition robot, the front camera might be more convenient.
-         */
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-        // set phone location
-        OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
-                .translation(0.0f, 0.0f, 0.0f)
-                .multiplied(Orientation.getRotationMatrix(
-                        AxesReference.EXTRINSIC, AxesOrder.XYZ,
-                        AngleUnit.DEGREES, 90, -90, 0));  // landscape back camera
+        VuforiaDetect.initVuforia();
 
         /**
          * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
@@ -123,22 +77,8 @@ public class VuforiaTests extends LinearOpMode
          * but differ in their instance id information.
          * @see VuMarkInstanceId
          */
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
-        //((VuforiaTrackableDefaultListener)relicTemplate.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
 
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB888, true);
-        vuforia.setFrameQueueCapacity(1); // this tells VuforiaLocalizer to only store one frame at a time
-
-        telemetry.log().setCapacity(4);
-        // wait until the start button is pressed
-        telemetry.addData(">", "Press Play to start");
-        telemetry.update();
         waitForStart();
-
-        relicTrackables.activate();
 
         while (opModeIsActive())
         {
@@ -148,75 +88,22 @@ public class VuforiaTests extends LinearOpMode
              * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
              * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
              */
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) // if vuMark seen is not unknown,
+            VuforiaDetect.GetVumark(); // gets the vuMark
+            if (VuforiaDetect.isVisible()) // if vuMark seen is not unknown,
             {
+                VuforiaDetect.GetLeftJewelColor();
                 /* Found an instance of the template. In the actual game, you will probably
                  * loop until this condition occurs, then move on to act accordingly depending
                  * on which VuMark was visible. */
-                telemetry.addData("VuMark", "%s visible", vuMark);
-
-                /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
-                 * it is perhaps unlikely that you will actually need to act on this pose information, but
-                 * we illustrate it nevertheless, for completeness. */
-                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
-                telemetry.addData("Pose", format(pose));
+                telemetry.addData("VuMark", "%s visible", VuforiaDetect.vuMark);
 
                 /* We further illustrate how to decompose the pose into useful rotational and
                  * translational components */
-                if (pose != null) // if the pose is NOT null,
+                if (VuforiaDetect.pose != null) // if the pose is NOT null,
                 {
-                    Matrix34F rawPose = new Matrix34F();
-                    float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
-                    rawPose.setData(poseData);
-                    // image size is 254 mm x 184 mm
-                    Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
-                    Vec2F jewelRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(390, -180, -102));
-
-                    // takes the frame at the head of the queue
-                    frame = vuforia.getFrameQueue().take();
-
-                    long numImages = frame.getNumImages();
-
-                    for (int j = 0; j < numImages; j++)
-                    {
-                        image = frame.getImage(j);
-                        imageFormat = image.getFormat();
-
-                        if (imageFormat == PIXEL_FORMAT.RGB565) break;
-                    }
-
-                    int imageWidth = image.getWidth();
-                    int imageHeight = image.getHeight();
-
-                    // create bitmap of image to detect color
-                    bm = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
-                    bm.copyPixelsFromBuffer(image.getPixels());
-
-
-                    // coordinates in image
-                    // TODO: check to make sure x < 1280; y < 720
-                    int lx = (int) jewelLeft.getData()[0];
-                    int ly = (int) jewelLeft.getData()[1];
-
-                    int rx = (int) jewelRight.getData()[0];
-                    int ry = (int) jewelRight.getData()[1];
-
-                    avgLeftJewelColor = GetAvgJewelColor(lx, ly); // get the averaged jewel HSV color value for the left jewel
-                    avgRightJewelColor = GetAvgJewelColor(rx, ry);
-
-                    // adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
-                    float colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
-                    float colorRight = (avgRightJewelColor < 45) ? avgRightJewelColor + 300 : avgRightJewelColor;
-
-                    float deltaColorHSV = colorLeft - colorRight;
-                    // if left color is negative, then left side is blue
-                    if (deltaColorHSV < 0) isLeftJewelBlue = true; // BLUE
-                    else isLeftJewelBlue = false; // RED
-
-                    telemetry.addData("leftHue ", avgLeftJewelColor);
-                    telemetry.addData("rightHue ", avgRightJewelColor);
-                    telemetry.addData("isLeftJewelBlue", isLeftJewelBlue);
+                    telemetry.addData("leftHue ", VuforiaDetect.avgLeftJewelColor);
+                    telemetry.addData("rightHue ", VuforiaDetect.avgRightJewelColor);
+                    telemetry.addData("isLeftJewelBlue", VuforiaDetect.isLeftJewelBlue);
                 }
             }
             else
@@ -226,40 +113,6 @@ public class VuforiaTests extends LinearOpMode
             telemetry.update();
         }
     }
-
-
-    public float GetAvgJewelColor(int x, int y)
-    {
-        if (x>=0 && x<1280-32 && y>=0 && y<720-32)
-        {
-            colorHsvSum[0] = 0;
-            for (int j = y - 32; j < y + 32; j++) // columns
-            {
-                for (int i = x - 32; i < x + 32; i++) // rows
-                {
-                    // get RGB color of pixel
-                    color = bm.getPixel(i, j);
-
-                    // convert RGB to HSV - hue, sat, val
-                    // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
-                    Color.colorToHSV(color, colorHSV);
-
-                    // integrate HSV color of all pixels
-                    colorHsvSum[0] += colorHSV[0];
-
-                    // draw black border around sample region for debugging only
-                    if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31))
-                    {
-                        bm.setPixel(i, j, 0xff00ff00);
-                    }
-                }
-            }
-            // normalize output for 32x32 = 4096 integration above
-            colorHsvOut[0] = colorHsvSum[0] / 4096;
-        }
-        return colorHsvOut[0]; // return the averaged sampled HSV color value
-    }
-
 
     String format(OpenGLMatrix transformationMatrix)
     {
