@@ -20,6 +20,7 @@ public class AutonomousCompetition extends MasterAutonomous
         while (opModeIsActive())
         {
             Run();
+            driveOmni45(0, 2.0, .1);
         }
 
     }
