@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Main robot code center, hold all the information needed to run the robot
@@ -17,7 +18,10 @@ public abstract class Master extends LinearOpMode
     DcMotor motorBL = null;
     DcMotor motorBR = null;
 
+    DcMotor motorGG = null;
+
     // Declare servos here
+    Servo servoJJ = null;
 
     // Declare any neccessary sensors here
     BNO055IMU imu;
@@ -42,12 +46,18 @@ public abstract class Master extends LinearOpMode
         motorBL = hardwareMap.get(DcMotor.class, "motorBL");
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
 
+        motorGG = hardwareMap.get(DcMotor.class, "motorGG");
+
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         // Servos here
+
+        servoJJ =  hardwareMap.get(Servo.class, "servoJJ");
 
         // Sensors here
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
