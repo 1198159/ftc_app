@@ -38,10 +38,13 @@ public class TeleOpTestBed extends MasterOpMode
         {
             if(gamepad1.x)
             {
-                vuforiaHelper.getJewelColor();
+                vuforiaHelper.getJewelColor(this);
                 //output red hue values of both sides for debugging
                 telemetry.addData("LeftSideHue: ", vuforiaHelper.leftColorOutput[0]);
                 telemetry.addData("RightSideHue: ", vuforiaHelper.rightColorOutput[0]);
+                telemetry.addData("R: ", vuforiaHelper.colorOutput[0]);
+                telemetry.addData("G: ", vuforiaHelper.colorOutput[1]);
+                telemetry.addData("B: ", vuforiaHelper.colorOutput[2]);
                 telemetry.update();
             }
 
