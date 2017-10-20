@@ -22,6 +22,8 @@ public abstract class Master extends LinearOpMode
 
     // Declare servos here
     Servo servoJJ = null;
+    Servo servoGGL = null;
+    Servo servoGGR = null;
 
     // Declare any neccessary sensors here
     BNO055IMU imu;
@@ -58,6 +60,8 @@ public abstract class Master extends LinearOpMode
         // Servos here
 
         servoJJ =  hardwareMap.get(Servo.class, "servoJJ");
+        servoGGL = hardwareMap.get(Servo.class, "servoGGL");
+        servoGGR = hardwareMap.get(Servo.class, "servoGGR");
 
         // Sensors here
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();

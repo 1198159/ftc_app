@@ -46,6 +46,16 @@ public abstract class MasterTeleOp extends Master
             liftMoving = true;
         }
         // while motor is not at target return
+        if(gamepad1.x)
+        {
+            servoGGL.setPosition(0.0); //TODO value needs to be changed
+            servoGGR.setPosition(0.0); //TODO value to be changed
 
+        }
+         else if(gamepad1.b)
+        {
+            servoGGL.setPosition(0.0);//TODO value needs to be changed
+            servoGGR.setPosition(0.0);//TODO value needs to be changed
+        }
     }
 }
