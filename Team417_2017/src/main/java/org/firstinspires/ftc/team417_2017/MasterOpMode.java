@@ -20,6 +20,12 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorBL = null;
     DcMotor motorBR = null;
 
+    // Declare servos
+    Servo servoJewelStore = null;
+    // servoJewelStore is in servo port 0
+    Servo servoJewelDrop = null;
+    // servoJewelDrop is in servo port 1
+
     // Declare sensors
     BNO055IMU imu; // inertial measurement unit (located within the REV Hub
 
@@ -64,6 +70,13 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR.setPower(0);
         motorBL.setPower(0);
         motorBR.setPower(0);
+
+        // Initialize servos
+        servoJewelStore = hardwareMap.servo.get("servoJewelStore");
+        servoJewelDrop = hardwareMap.servo.get("servoJewelDrop");
+
+        servoJewelStore.setPosition(0.85);
+        servoJewelDrop.setPosition(0.1);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually

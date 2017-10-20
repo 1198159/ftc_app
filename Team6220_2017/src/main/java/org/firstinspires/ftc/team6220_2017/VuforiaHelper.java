@@ -23,7 +23,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-
 import java.util.Arrays;
 
 
@@ -36,12 +35,18 @@ public class VuforiaHelper
     // Vuforia variables
     VuforiaLocalizer vuforiaLocalizer;
     VuforiaTrackables visionTargets;
-    VuforiaTrackable[] targets = new VuforiaTrackable[4];
-    VuforiaTrackableDefaultListener[] listeners = new VuforiaTrackableDefaultListener[4];
+    VuforiaTrackable[] targets = new VuforiaTrackable[0];
+    VuforiaTrackableDefaultListener[] listeners = new VuforiaTrackableDefaultListener[0];
 
     // colors of both jewels used in getJewelColor()
     public float leftJewelColorHSV[] = {0f, 0f, 0f};
     public float rightJewelColorHSV[] = {0f, 0f, 0f};
+
+    //what we will eventually return
+    float[] colorOutput = new float[]{0,0,0};
+    //intermediary jewel color arrays that will be used by getImage()
+    float leftColorOutput[] = {0, 0, 0};
+    float rightColorOutput[] = {0, 0, 0};
 
     // necessary matrices
     OpenGLMatrix targetPosition;
@@ -63,7 +68,7 @@ public class VuforiaHelper
     */
     // todo find where to initialize and use
     Image image = null;
-    Image imageRGB888 = null;
+    Image imageRGB565 = null;
     int imageFormat;
 
     // stores colors used as return values in getJewelColor()
@@ -103,8 +108,10 @@ public class VuforiaHelper
         parameters.useExtendedTracking = false;
         vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
 
+        //telemetry.log().setCapacity(4);
+
         //setup for getting pixel information
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB888, true);
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         //make sure that vuforia doesn't begin racking up unnecessary frames
         vuforiaLocalizer.setFrameQueueCapacity(1);
 
@@ -249,9 +256,6 @@ public class VuforiaHelper
     //finds color of image
     public float[] getImageColor(Image image, Vec2F targetUpperLeftCorner)
     {
-        //what we will eventually return
-        float[] colorOutput = new float[]{0,0,0};
-
         if (image != null)
         {
             int imageWidth = image.getWidth();
@@ -317,13 +321,15 @@ public class VuforiaHelper
         //initialize jewel color value to prevent possibility of a null pointer error
         JewelColor leftJewelColor = JewelColor.undetermined;
 
-        //intermediary jewel color arrays that will be used by getImage()
-        float leftColorOutput[] = {0, 0, 0};
-        float rightColorOutput[] = {0, 0, 0};
+        //once again sets all array outputs to 0 to prevent holdover values from previous method calls
+        leftColorOutput[0] = 0;
+        leftColorOutput[1] = 0;
+        leftColorOutput[2] = 0;
+        rightColorOutput[0] = 0;
+        rightColorOutput[1] = 0;
+        rightColorOutput[2] = 0;
 
         //todo uncomment and finish
-        /*
-
         for (int i = 0; i < listeners.length; i++)
         {
             //check to make sure that we are tracking the image
@@ -340,7 +346,7 @@ public class VuforiaHelper
                     image = frame.getImage(j);
                     imageFormat = image.getFormat();
 
-                    if (imageFormat == PIXEL_FORMAT.RGB888) break;
+                    if (imageFormat == PIXEL_FORMAT.RGB565) break;
                 }
 
                 targetPosition = listeners[i].getRawPose();
@@ -357,15 +363,19 @@ public class VuforiaHelper
                     Vec2F cornerJewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPosition, new Vec3F(500, -800, 0));
                     Vec2F cornerJewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPosition, new Vec3F(2000, -800, 0));
 
-                    leftColorOutput = getImageColor(image, jewelLeft);
-                    rightColorOutput = getImageColor(image, jewelRight);
+                    leftColorOutput = getImageColor(image, cornerJewelLeft);
+                    rightColorOutput = getImageColor(image, cornerJewelRight);
 
                     // close frame to free up memory space
                     frame.close();
 
-                    // adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
-                    float colorLeft = (leftColorHSV[0] < 45) ? leftColorHSV[0] + 300 : leftColorHSV[0];
-                    float colorRight = (rightColorHSV[0] < 45) ? rightColorHSV[0] + 300 : rightColorHSV[0];
+                    /*
+                    adjust color for red range (if red is between 0 and 90 degrees, shift by
+                    adding 360 so that red is greater than blue)
+                    Note:  logic is shorthand for if statement
+                    */
+                    float colorLeft = (leftColorOutput[0] < 90) ? leftColorOutput[0] + 360 : leftColorOutput[0];
+                    float colorRight = (rightColorOutput[0] < 90) ? rightColorOutput[0] + 360 : rightColorOutput[0];
 
                     float deltaColorHSV = colorLeft - colorRight;
                     // if left color is negative, then left side is blue
@@ -378,12 +388,10 @@ public class VuforiaHelper
                         leftJewelColor = JewelColor.red;
                     }
                     // debug data
-                    //telemetry.log().add(String.format("LeftSideHue: %f RightSideHue: %f", leftColorHSV[0], rightColorHSV[0]));
+                    //telemetry.log().add(String.format("LeftSideHue: %f RightSideHue: %f", leftColorOutput[0], rightColorOutput[0]));
                 }
             }
         }
-
-        */
         return leftJewelColor;
     }
 }
