@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team8923_2017;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 /**
  * Holds all code necessary to run the robot in driver controlled mode
  */
@@ -11,18 +13,19 @@ public abstract class MasterTeleOp extends Master
     boolean slowModeActive = false;
     boolean liftMoving = false;
 
+    ElapsedTime GGLiftTimer = new ElapsedTime();
+
 
     void DriveOmni45TeleOp()
     {
-        if(gamepad1.guide && !slowModeActive)
+        if(gamepad1.guide)
         {
-            slowModeActive = true;
-            SlowModeDivisor = 5.0;
-        }
-        else if(gamepad1.dpad_up & slowModeActive)
-        {
-            slowModeActive = false;
-            SlowModeDivisor = 1.0;
+            if(slowModeActive)
+                slowModeDivisor = 1.0;
+            else if(!slowModeActive)
+                slowModeDivisor = 5.0; 
+
+            slowModeActive = !slowModeActive;
         }
 
         double y = -gamepad1.left_stick_y; // Y axis is negative when up
@@ -37,22 +40,33 @@ public abstract class MasterTeleOp extends Master
 
     void RunGG()
     {
-        if(gamepad1.dpad_down || gamepad1.dpad_up)
+        if((gamepad1.dpad_down || gamepad1.dpad_up) && !liftMoving)
         {
+            liftMoving = true;
+            GGLiftTimer.reset();
+
             if (gamepad1.dpad_up)
                 motorGG.setTargetPosition(motorGG.getCurrentPosition() + GGLiftTicks);
+
             else if (gamepad1.dpad_down)
                 motorGG.setTargetPosition(motorGG.getCurrentPosition() - GGLiftTicks);
-            liftMoving = true;
+
+            motorGG.setPower(Math.signum(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * 0.75);
         }
-        // while motor is not at target return
-        if(gamepad1.x)
+
+        if(GGLiftTimer.milliseconds() > 250 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 50)
+        {
+            motorGG.setPower(0.0);
+            liftMoving = false;
+        }
+
+        if(gamepad1.x && !liftMoving)
         {
             servoGGL.setPosition(0.0); //TODO value needs to be changed
             servoGGR.setPosition(0.0); //TODO value to be changed
 
         }
-         else if(gamepad1.b)
+         else if(gamepad1.b && !liftMoving)
         {
             servoGGL.setPosition(0.0);//TODO value needs to be changed
             servoGGR.setPosition(0.0);//TODO value needs to be changed

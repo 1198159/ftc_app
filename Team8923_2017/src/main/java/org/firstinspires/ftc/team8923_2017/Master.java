@@ -29,7 +29,7 @@ public abstract class Master extends LinearOpMode
     BNO055IMU imu;
 
     // Declare any robot-wide variables here
-    double SlowModeDivisor = 1.0;
+    double slowModeDivisor = 1.0;
 
     // Declare constants here
     private static  final double GEAR_RATIO = 1.0;
@@ -98,10 +98,10 @@ public abstract class Master extends LinearOpMode
         if(scalar < 1)
             scalar = 1;
 
-        powerFL /= (scalar * SlowModeDivisor);
-        powerFR /= (scalar * SlowModeDivisor);
-        powerBL /= (scalar * SlowModeDivisor);
-        powerBR /= (scalar * SlowModeDivisor);
+        powerFL /= (scalar * slowModeDivisor);
+        powerFR /= (scalar * slowModeDivisor);
+        powerBL /= (scalar * slowModeDivisor);
+        powerBR /= (scalar * slowModeDivisor);
 
         motorFL.setPower(powerFL);
         motorFR.setPower(powerFR);
