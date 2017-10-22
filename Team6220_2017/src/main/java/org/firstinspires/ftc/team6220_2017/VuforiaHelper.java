@@ -256,15 +256,17 @@ public class VuforiaHelper
     }
 
     //finds color of image
-    public float[] getImageColor(Image image, Vec2F targetUpperLeftCorner) {
-        if (image != null) {
+    public float[] getImageColor(Image image, Vec2F targetUpperLeftCorner)
+    {
+        if (image != null)
+        {
             int imageWidth = image.getWidth();
             int imageHeight = image.getHeight();
             //coordinates of corner of target area for acquiring color
             int x = (int) targetUpperLeftCorner.getData()[0];
             int y = (int) targetUpperLeftCorner.getData()[1];
 
-            //color of sample pixel from nested for loop below; will be changed to HSV value
+            //color of sample pixel from nested for loop below; will later be given an HSV value
             int samplePixel = 0;
 
             //sum of all colors from sample pixels
@@ -281,6 +283,7 @@ public class VuforiaHelper
 
             samplePixel = image.getPixels().get(0);
 
+            //todo figure out why values can be negative and all read identical values in telemetry
             //samplePixel = bitMap.getPixel(0, 0);
             int R = (samplePixel & 0xff0000) >> 16;
             int G = (samplePixel & 0x00ff00) >> 8;
@@ -293,6 +296,7 @@ public class VuforiaHelper
 
 
 /*
+            //todo adjust pixel numbers when ready; maybe y = 30 and x = 65, since vuforia uses 1/10 pixels of jpeg
             for (int yComp = y; yComp < y + 300; y += 30)
             {
                 for (int xComp = x; xComp < x + 650; x += 65)

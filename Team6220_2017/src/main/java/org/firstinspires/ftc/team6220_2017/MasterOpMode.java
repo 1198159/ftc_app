@@ -42,6 +42,7 @@ abstract public class MasterOpMode extends LinearOpMode {
     DcMotor motorFrontRight;
     DcMotor motorBackLeft;
     DcMotor motorBackRight;
+    DcMotor motorArm;
 
     //servo that operates the jewel arm
     Servo golfClubServo;
@@ -70,12 +71,12 @@ abstract public class MasterOpMode extends LinearOpMode {
         golfClubServo = hardwareMap.servo.get("servoGolfClub");
         //
 
-        motorFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Retrieves and initializes the IMU. We expect the IMU to be attached to an I2C port
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu". Certain parameters must be specified before using the imu.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -101,8 +102,9 @@ abstract public class MasterOpMode extends LinearOpMode {
     //counterclockwise from y-axis (like math heading)
     void driveMecanum(double driveAngle, double drivePower, double w)
     {
-        double x = -drivePower * Math.sin(driveAngle);
-        double y = drivePower * Math.cos(driveAngle);
+        //x and y are switched
+        double y = -drivePower * Math.sin(driveAngle);
+        double x = drivePower * Math.cos(driveAngle);
 
         //signs for x, y, and w are based on inherent properties of mecanum drive
         double powerMotorFL = x + y + w;

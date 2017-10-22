@@ -5,7 +5,7 @@ package org.firstinspires.ftc.team6220_2017;
 */
 abstract public class MasterTeleOp extends MasterOpMode
 {
-    //                                                   y = 0.0 + 1/2x + 0.0 + 1/2x^3
+    //                                             y = 0.0 + 1/2x + 0.0 + 1/2x^3
     Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.5, 0.0, 0.5 });
 
     //takes driver 1 stick input and uses it to move the robot
@@ -24,12 +24,12 @@ abstract public class MasterTeleOp extends MasterOpMode
         if (driver1.isButtonPressed(Button.RIGHT_BUMPER))
         {
             tFactor = 0.2;
-            rFactor = 0.4;
+            rFactor = 0.3;
         }
         else
         {
             tFactor = 1.0;
-            rFactor = 1.0;
+            rFactor = 0.6;
         }
 
         //stick inputs must be changed from x and y to angle and drive power
