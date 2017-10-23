@@ -23,7 +23,8 @@ public class TeleOpCompetition extends MasterTeleOp
         while (opModeIsActive())
         {
             DriveOmni45TeleOp();
-            idle();
+            RunGG();
+            //idle();
         }
     }
     public void initServos()

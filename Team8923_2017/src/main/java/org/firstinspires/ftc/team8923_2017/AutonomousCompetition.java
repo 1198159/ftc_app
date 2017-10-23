@@ -20,10 +20,11 @@ public class AutonomousCompetition extends MasterAutonomous
 
         waitForStart();
 
-        //DropJJ();
-        //sleep(2000);
-        //RetreiveJJ();
-        //sleep(1000);
+        DropJJ();
+        sleep(2000);
+        RetreiveJJ();
+        sleep(1000);
+        MoveIMU(100, 0.0, 0.035, 0.6, 1);
 
         while (opModeIsActive())
         {

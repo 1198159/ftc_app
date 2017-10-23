@@ -29,6 +29,8 @@ public class TeleOpTestBed extends MasterOpMode
         leftServo = hardwareMap.crservo.get("servoLeft");*/
         //servo = hardwareMap.servo.get("servo");
 
+        motorArm = hardwareMap.dcMotor.get("motorArm");
+
         vuforiaHelper.setupVuforia();
         // Wait until start button has been pressed
         waitForStart();
@@ -36,14 +38,22 @@ public class TeleOpTestBed extends MasterOpMode
         // Main loop
         while(opModeIsActive())
         {
+            //for motor that actuates arm
+            motorArm.setPower(gamepad1.left_stick_y);
+
+            /*
             if(gamepad1.x)
             {
-                vuforiaHelper.getJewelColor();
+                vuforiaHelper.getJewelColor(this);
                 //output red hue values of both sides for debugging
                 telemetry.addData("LeftSideHue: ", vuforiaHelper.leftColorOutput[0]);
                 telemetry.addData("RightSideHue: ", vuforiaHelper.rightColorOutput[0]);
+                telemetry.addData("R: ", vuforiaHelper.colorOutput[0]);
+                telemetry.addData("G: ", vuforiaHelper.colorOutput[1]);
+                telemetry.addData("B: ", vuforiaHelper.colorOutput[2]);
                 telemetry.update();
             }
+            */
 
             //for testing glyph collection; servos on either side of glyph pull or push it
             if(gamepad1.a)
