@@ -42,6 +42,9 @@ abstract public class MasterOpMode extends LinearOpMode
     double powerBL;
     double powerBR;
 
+    double px;
+    double py;
+
     public void initializeHardware()
     {
         // Initialize motors to be the hardware motors
@@ -82,11 +85,11 @@ abstract public class MasterOpMode extends LinearOpMode
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
         // provide positional information.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.angleUnit            = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit            = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
 
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
+        parameters.loggingEnabled       = true;
+        parameters.loggingTag           = "IMU";
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
@@ -94,12 +97,6 @@ abstract public class MasterOpMode extends LinearOpMode
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
-        // get the heading 3 times because first readings aren't accurate (this was tested)
-        float angle;
-        for (int i = 0; i < 3; i++) {
-            sleep(100);
-            angle = imu.getAngularOrientation().firstAngle;
-        }
     } //-----------------------END OF INITIALIZATION SOFTWARE------------------------
 
 
@@ -128,22 +125,22 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         // x is right, or -90 degrees, while y is forwards, which is 0 degrees
         // Calculate drive power (px and py) for both x and y direction
-        double px = drivePower * -Math.sin(Math.toRadians(driveAngle));
-        double py = drivePower * Math.cos(Math.toRadians(driveAngle));
+        px = drivePower * -Math.sin(Math.toRadians(driveAngle));
+        py = drivePower * Math.cos(Math.toRadians(driveAngle));
 
         // calculate the power for each motor
-        /*
-        powerFL = px + py + pivotPower;
-        powerFR = -px + py - pivotPower; // reversed?
-        powerBL = -px + py + pivotPower;
-        powerBR = px + py - pivotPower; // reversed?
-        */
 
+        powerFL = px + py + pivotPower;
+        powerFR = -px + py - pivotPower;
+        powerBL = -px + py + pivotPower;
+        powerBR = px + py - pivotPower;
+
+/*
         powerFL = px + 0*py + pivotPower;
         powerFR = 0*px + py - pivotPower;
         powerBL = 0*px + py + pivotPower;
         powerBR = px + 0*py - pivotPower;
-
+*/
 
         // set power to the motors
         motorFL.setPower(powerFL);
