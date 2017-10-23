@@ -4,6 +4,9 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * Main robot code center, hold all the information needed to run the robot
@@ -11,6 +14,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 public abstract class Master extends LinearOpMode
 {
+
     // Declare motors here
     DcMotor motorFL = null;
     DcMotor motorFR = null;
@@ -18,7 +22,7 @@ public abstract class Master extends LinearOpMode
     DcMotor motorBR = null;
 
     // Declare servos here
-
+    Servo servoJJ = null;
     // Declare any neccessary sensors here
     BNO055IMU imu;
 
@@ -33,6 +37,16 @@ public abstract class Master extends LinearOpMode
     private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
     //private static final double CORRECTION_FACTOR = 0.92;
     static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/;
+    //Servos constants
+    double SERVO_JJ_UP = 0.8; //Port 5, Hub 1
+    double SERVO_JJ_DOWN = 0.1;
+
+    //declare IMU
+    double currentRobotAngle;
+    double jX;
+    double jY;
+    double kAngle;
+
 
     void InitHardware()
     {
@@ -42,10 +56,17 @@ public abstract class Master extends LinearOpMode
         motorBL = hardwareMap.get(DcMotor.class, "motorBL");
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
 
+        // Servos here
+        servoJJ = hardwareMap.get(Servo.class, "servoJJ");
+
+        servoJJ.setPosition(SERVO_JJ_UP);
+
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
 
         // Servos here
 
@@ -93,6 +114,18 @@ public abstract class Master extends LinearOpMode
         motorFR.setPower(powerFR);
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
+    }
+
+
+
+    // normalizing the angle to be between -180 to 180
+    public double adjustAngles(double angle)
+    {
+        while(angle > 180)
+            angle -= 360;
+        while(angle < -180)
+            angle += 360;
+        return angle;
     }
 
     void stopDriving()

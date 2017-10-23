@@ -105,7 +105,8 @@ public class JustinOmniDrive extends LinearOpMode
         motorRight.setPower(-jt);
     }
 */
-    public void omniDriveDiagonal() {
+    public void omniDriveDiagonal()
+    {
 
         jy = -gamepad1.right_stick_y;
         jx = gamepad1.right_stick_x;

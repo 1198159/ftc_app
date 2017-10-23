@@ -4,10 +4,39 @@ package org.firstinspires.ftc.team8923_2017;
  * Holds all code necessary to run the robot in autonomous controlled mode
  */
 
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 public abstract class MasterAutonomous extends Master
 {
+    private ElapsedTime runtime = new ElapsedTime();
+
+    int newTargetFL;
+    int newTargetFR;
+    int newTargetBL;
+    int newTargetBR;
+    double currentFL;
+    double currentFR;
+    double currentBL;
+    double currentBR;
+    double moveErrorFL;
+    double moveErrorFR;
+    double moveErrorBL;
+    double moveErrorBR;
+    double speedFL;
+    double speedFR;
+    double speedBL;
+    double speedBR;
+    double kMove = 1/1200.0;
+    double TOL = 100.0;
+    double angleError;
+    double pivot;
+    double motorPowerFL;
+    double motorPowerFR;
+    double motorPowerBL;
+    double motorPowerBR;
+
     enum Alliance
     {
         RED(),
@@ -138,6 +167,73 @@ public abstract class MasterAutonomous extends Master
         }
     }
 
+    void MoveIMU(double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
+    {
+
+        currentFL = motorFL.getCurrentPosition();
+        currentFR = motorFR.getCurrentPosition();
+        currentBL = motorBL.getCurrentPosition();
+        currentBR = motorBR.getCurrentPosition();
+
+        //Sets motor encoder values
+        newTargetFL = motorFL.getCurrentPosition() + (int) (MM_PER_TICK * moveMM);
+        newTargetFR = motorFR.getCurrentPosition() + (int) (MM_PER_TICK * moveMM);
+        newTargetBL = motorBL.getCurrentPosition() + (int) (MM_PER_TICK * moveMM);
+        newTargetBR = motorBL.getCurrentPosition() + (int) (MM_PER_TICK * moveMM);
+
+        do {
+            moveErrorFL = newTargetFL - currentFL;
+            speedFL = Math.abs(kMove * moveErrorFL);
+            speedFL = Range.clip(speedFL, 0.25, maxSpeed);
+            speedFL = speedFL * Math.signum(moveErrorFL);
+
+            moveErrorFR = newTargetFR - currentFR;
+            speedFR = Math.abs(kMove * moveErrorFR);
+            speedFR = Range.clip(speedFR, 0.25, maxSpeed);
+            speedFR = speedFR * Math.signum(moveErrorFR);
+
+            moveErrorBL = newTargetBL - currentBL;
+            speedBL = Math.abs(kMove * moveErrorBL);
+            speedBL = Range.clip(speedBL, 0.25, maxSpeed);
+            speedBL = speedBL * Math.signum(moveErrorBL);
+
+            moveErrorBR = newTargetBR - currentBR;
+            speedBR = Math.abs(kMove * moveErrorBR);
+            speedBR = Range.clip(speedBR, 0.25, maxSpeed);
+            speedBR = speedBR * Math.signum(moveErrorBR);
+
+
+            targetAngle = adjustAngles(targetAngle);//Makes it so the target angle does not wrap
+            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
+            angleError = currentRobotAngle - targetAngle;
+            angleError = adjustAngles(angleError);
+            pivot = angleError * kAngle;
+
+            //Sets vlaues for motor power
+            motorPowerFL = -speedFL - pivot;
+            motorPowerFR = speedFR - pivot;
+            motorPowerBL = -speedBL - pivot;
+            motorPowerBR = speedBR - pivot;
+
+            //Sets motor power
+            motorFL.setPower(motorPowerFL);
+            motorFR.setPower(motorPowerFR);
+            motorBL.setPower(motorPowerBL);
+            motorBR.setPower(motorPowerBR);
+            idle();
+
+            //Stop motors
+            motorFL.setPower(0);
+            motorFR.setPower(0);
+            motorBL.setPower(0);
+            motorBR.setPower(0);
+        }
+        while (opModeIsActive() &&
+                (runtime.seconds() < timeout) &&
+                (Math.abs(moveErrorFL) > TOL || Math.abs(moveErrorFR) > TOL || Math.abs(moveErrorBL) > TOL || Math.abs(moveErrorBR) > TOL));
+
+    }
+
     void driveToPoint(double targetX, double targetY, double targetAngle, double maxPower) throws InterruptedException
     {
         UpdateRobotLocation();
@@ -176,6 +272,16 @@ public abstract class MasterAutonomous extends Master
             idle();
         }
         stopDriving();
+    }
+
+    void DropJJ()
+    {
+        servoJJ.setPosition(SERVO_JJ_DOWN);
+    }
+
+    void RetreiveJJ()
+    {
+        servoJJ.setPosition(SERVO_JJ_UP);
     }
 
     void UpdateRobotLocation()

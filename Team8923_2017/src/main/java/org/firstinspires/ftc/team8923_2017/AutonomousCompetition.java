@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.team8923_2017;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+@Autonomous(name="Autonomous Competition", group = "Swerve")
 /**
  * Runable shell for Master Autonomous code
  */
-
+//@Disabled
 public class AutonomousCompetition extends MasterAutonomous
 {
     //Declare variables here
@@ -11,16 +14,21 @@ public class AutonomousCompetition extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        ChooseOptions();
+        //ChooseOptions();
 
-        InitAuto();
+        InitAuto();//Initializes Hardware and sets position based on alliance
 
         waitForStart();
 
+        //DropJJ();
+        //sleep(2000);
+        //RetreiveJJ();
+        //sleep(1000);
+
         while (opModeIsActive())
         {
-            Run();
-            driveOmni45(0, 2.0, .1);
+            //Run();
+            idle();
         }
 
     }

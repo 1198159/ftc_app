@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team8923_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import java.lang.reflect.GenericSignatureFormatError;
 
@@ -11,6 +12,7 @@ import java.lang.reflect.GenericSignatureFormatError;
 @TeleOp(name = "CapBot Teleop")
 public class TeleOpCompetition extends MasterTeleOp
 {
+    Servo servoJJ;
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -24,4 +26,9 @@ public class TeleOpCompetition extends MasterTeleOp
             idle();
         }
     }
+    public void initServos()
+    {
+        servoJJ = hardwareMap.get(Servo.class, "servoL");
+    }
 }
+
