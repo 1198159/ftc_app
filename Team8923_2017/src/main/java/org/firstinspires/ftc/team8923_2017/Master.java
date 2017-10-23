@@ -20,9 +20,16 @@ public abstract class Master extends LinearOpMode
     DcMotor motorFR = null;
     DcMotor motorBL = null;
     DcMotor motorBR = null;
+    DcMotor motorGG = null;
+
+
+    double slowModeDivisor;
 
     // Declare servos here
     Servo servoJJ = null;
+    Servo servoGGL = null;
+    Servo servoGGR = null;
+
     // Declare any neccessary sensors here
     BNO055IMU imu;
 
