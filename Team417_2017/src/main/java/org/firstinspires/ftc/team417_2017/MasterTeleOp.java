@@ -27,6 +27,11 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     // angle is the arc tangent of (-jx/jy), considering that 0 degrees is forwards
     double driveAngle; // used to calculate the drive angle based on the x and y position on the joystick
+    double y;
+    double x;
+    double power;
+    double turnPower;
+    double angle;
 
     boolean isModeReversed = false;
     boolean isLegatoMode = false;
@@ -54,12 +59,12 @@ abstract public class MasterTeleOp extends MasterOpMode
         isRightBumperPushed = gamepad1.right_bumper;
         */
 
-        double y = -gamepad1.right_stick_y; // Y axis is negative when up
-        double x = gamepad1.right_stick_x;
-        double power = calcDistance(x, y);
-        double turnPower = gamepad1.left_stick_x; // Fix for clockwise being a negative rotation
+        y = -gamepad1.right_stick_y; // Y axis is negative when up
+        x = gamepad1.right_stick_x;
+        power = calcDistance(x, y);
+        turnPower = gamepad1.left_stick_x; // Fix for clockwise being a negative rotation
 
-        double angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
+        angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
 
         omniDrive(angle, power, turnPower);
     }
