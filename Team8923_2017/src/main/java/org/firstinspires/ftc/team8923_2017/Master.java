@@ -40,10 +40,10 @@ public abstract class Master extends LinearOpMode
     private static  final double GEAR_RATIO = 1.0;
     private static final double TICKS_PER_MOTOR_REVOLUTION = 1120.0; // Standard number for Andymark Neverest 40's
     private static final double TICKS_PER_WHEEL_REVOLUTION = TICKS_PER_MOTOR_REVOLUTION / GEAR_RATIO;
-    private static final double WHEEL_DIAMETER = 4 * 25.4; // 4 inch diameter
-    private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
+    private static final double WHEEL_DIAMETER = 4.0 * 25.4; // 4 inch diameter to MM = 101.6
+    private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;// = 319.024
     //private static final double CORRECTION_FACTOR = 0.92;
-    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/;
+    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/; //319.024/1120 = .28484
     //Servos constants
     double SERVO_JJ_UP = 0.8; //Port 5, Hub 1
     double SERVO_JJ_DOWN = 0.1;
@@ -67,6 +67,12 @@ public abstract class Master extends LinearOpMode
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
 
         servoJJ.setPosition(SERVO_JJ_UP);
+
+        //Reset encoders
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

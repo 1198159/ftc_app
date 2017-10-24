@@ -176,62 +176,74 @@ public abstract class MasterAutonomous extends Master
         currentBR = motorBR.getCurrentPosition();
 
         //Sets motor encoder values
-        newTargetFL = motorFL.getCurrentPosition() + (int) (MM_PER_TICK * moveMM);
-        newTargetFR = motorFR.getCurrentPosition() + (int) (MM_PER_TICK * moveMM);
-        newTargetBL = motorBL.getCurrentPosition() + (int) (MM_PER_TICK * moveMM);
-        newTargetBR = motorBL.getCurrentPosition() + (int) (MM_PER_TICK * moveMM);
+        newTargetFL = motorFL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetBL = motorBL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+
+        runtime.reset(); // used for timeout
 
         do {
+            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
             moveErrorFL = newTargetFL - currentFL;
             speedFL = Math.abs(kMove * moveErrorFL);
-            speedFL = Range.clip(speedFL, 0.25, maxSpeed);
+            speedFL = Range.clip(speedFL, 0.15, maxSpeed);
             speedFL = speedFL * Math.signum(moveErrorFL);
 
             moveErrorFR = newTargetFR - currentFR;
             speedFR = Math.abs(kMove * moveErrorFR);
-            speedFR = Range.clip(speedFR, 0.25, maxSpeed);
+            speedFR = Range.clip(speedFR, 0.15, maxSpeed);
             speedFR = speedFR * Math.signum(moveErrorFR);
 
             moveErrorBL = newTargetBL - currentBL;
             speedBL = Math.abs(kMove * moveErrorBL);
-            speedBL = Range.clip(speedBL, 0.25, maxSpeed);
+            speedBL = Range.clip(speedBL, 0.15, maxSpeed);
             speedBL = speedBL * Math.signum(moveErrorBL);
 
             moveErrorBR = newTargetBR - currentBR;
             speedBR = Math.abs(kMove * moveErrorBR);
-            speedBR = Range.clip(speedBR, 0.25, maxSpeed);
+            speedBR = Range.clip(speedBR, 0.15, maxSpeed);
             speedBR = speedBR * Math.signum(moveErrorBR);
 
 
             targetAngle = adjustAngles(targetAngle);//Makes it so the target angle does not wrap
-            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
             angleError = currentRobotAngle - targetAngle;
             angleError = adjustAngles(angleError);
             pivot = angleError * kAngle;
 
-            //Sets vlaues for motor power
-            motorPowerFL = -speedFL - pivot;
-            motorPowerFR = speedFR - pivot;
-            motorPowerBL = -speedBL - pivot;
-            motorPowerBR = speedBR - pivot;
+            //Sets values for motor power
+            motorPowerFL = speedFL + pivot;
+            motorPowerFR = speedFR + pivot;
+            motorPowerBL = speedBL + pivot;
+            motorPowerBR = speedBR + pivot;
 
             //Sets motor power
+            //motorFL.setPower(0.5);
+            //motorFR.setPower(-0.5);
+            //motorBL.setPower(0.5);
+            //motorBR.setPower(-0.5);
             motorFL.setPower(motorPowerFL);
             motorFR.setPower(motorPowerFR);
             motorBL.setPower(motorPowerBL);
             motorBR.setPower(motorPowerBR);
-            idle();
+            //sleep(100);
 
-            //Stop motors
-            motorFL.setPower(0);
-            motorFR.setPower(0);
-            motorBL.setPower(0);
-            motorBR.setPower(0);
+            //motorFL.setPower(0.0);
+            //motorFR.setPower(0.0);
+            //motorBL.setPower(0.0);
+            //motorBR.setPower(0.0);
+
+            idle();
         }
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
-                (Math.abs(moveErrorFL) > TOL || Math.abs(moveErrorFR) > TOL || Math.abs(moveErrorBL) > TOL || Math.abs(moveErrorBR) > TOL));
+                (Math.abs(moveErrorFL) > TOL));
 
+        //Stop motors
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+        motorBL.setPower(0);
+        motorBR.setPower(0);
     }
 
     void driveToPoint(double targetX, double targetY, double targetAngle, double maxPower) throws InterruptedException
