@@ -15,7 +15,7 @@ public class VuforiaTestBed extends MasterAutonomous
     {
         initializeAuto();
 
-        vuforiaHelper.startTracking();
+        //vuforiaHelper.startTracking();
 
         waitForStart();
     }

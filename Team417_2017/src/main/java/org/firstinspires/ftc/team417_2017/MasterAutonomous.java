@@ -535,7 +535,7 @@ abstract class MasterAutonomous extends MasterOpMode
             errorP1 = error;
             curTurnAngle = imu.getAngularOrientation().firstAngle - startAngle;
             curTurnAngle = adjustAngles(curTurnAngle);
-            error =  turnAngle - curTurnAngle;
+            error =  adjustAngles(turnAngle - curTurnAngle);
             pivotSpeed = Math.abs(error) * Kpivot;
             pivotSpeed = Range.clip(pivotSpeed, PIVOT_MINSPEED, speed); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
@@ -602,6 +602,24 @@ abstract class MasterAutonomous extends MasterOpMode
             motorBL.setPower(pivotSpeed);
             motorBR.setPower(-pivotSpeed);
 
+            // allow some time for IMU to catch up
+            if (Math.abs(errorAngle) < 4.0)
+            {
+                sleep(15);
+                // stop motors
+                motorFL.setPower(0);
+                motorFR.setPower(0);
+                motorBL.setPower(0);
+                motorBR.setPower(0);
+                sleep(150);
+            }
+/*
+            sleep(100);
+            motorFL.setPower(0.0);
+            motorFR.setPower(0);
+            motorBL.setPower(0);
+            motorBR.setPower(0);
+*/
             if (isLogging) telemetry.log().add(String.format("StartAngle: %f, CurAngle: %f, error: %f", refAngle, currentAngle, errorAngle));
             idle();
 
