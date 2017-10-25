@@ -19,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
@@ -37,6 +38,7 @@ public class VuforiaHelper
     // Vuforia variables
     VuforiaLocalizer vuforiaLocalizer;
     VuforiaTrackables visionTargets;
+    VuforiaTrackable relicTemplate;
     VuforiaTrackable[] targets = new VuforiaTrackable[0];
     VuforiaTrackableDefaultListener[] listeners = new VuforiaTrackableDefaultListener[0];
 
@@ -44,18 +46,35 @@ public class VuforiaHelper
     public float leftJewelColorHSV[] = {0f, 0f, 0f};
     public float rightJewelColorHSV[] = {0f, 0f, 0f};
 
+    float[] colorTransfer = new float[]{0,0,0};
     //what we will eventually return
     float[] colorOutput = new float[]{0,0,0};
+    //sum of all colors from sample pixels
+    float[] colorSum = new float[]{0, 0, 0};
+
+    int color = 0;
     //intermediary jewel color arrays that will be used by getImage()
     float leftColorOutput[] = {0, 0, 0};
     float rightColorOutput[] = {0, 0, 0};
+
+    float avgLeftJewelColor;
+    float avgRightJewelColor;
+
+    float colorLeft;
+    float colorRight;
+
+    boolean isLeftJewelBlue;
 
     // necessary matrices
     OpenGLMatrix targetPosition;
     OpenGLMatrix lastKnownLocation;
     OpenGLMatrix phoneLocation;
 
+    Matrix34F rawPose;
+
     Bitmap bitMap;
+
+    OpenGLMatrix pose;
 
     // key needed to use vuforia
     public static final String VUFORIA_KEY = "ARnvYoH/////AAAAGQS+OAV8SElJhcYQ4Ud8LkNvhk/zpT8UiiVlkQOGgruNCfQryIqNOyyl6iYhvsCCVYMqHZPJJgORL7ZL3+Hl1VE/CJZiBI357gU4uSmFahasqA9UV/HVmd0Mze0j5cEaVgJ7w3dRhz4Lvdk7qcVwGQTMpAVFKdlpt0657wA0C2vFWzJgZZv3vk7Ouw6bfSltX1/Wgf15jcCcBPRLQs/KkIngbvc+rtBxtD5f4REyb9FuqtN00MoHKL8RIpFQagX/b39JbN8oFLDjUiC5smxchqIHYMIvt7JAQH0TT+fizeIYMnZk3/t8SfNg/gt1lJACY514k9TpM4UwfBvVZcfDVdXj1wKUsPWw8ndUQ6l5PtSq";
@@ -113,7 +132,7 @@ public class VuforiaHelper
         //telemetry.log().setCapacity(4);
 
         //setup for getting pixel information
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB888, true);
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         //make sure that vuforia doesn't begin racking up unnecessary frames
         vuforiaLocalizer.setFrameQueueCapacity(1);
 
@@ -217,12 +236,12 @@ public class VuforiaHelper
         // Location is unknown, so don't change anything
     }
 
-    void startTracking()
-    {
-        visionTargets.activate();
-    }
-
-    void stopTracking() {visionTargets.deactivate();}
+//    void startTracking()
+//    {
+//        visionTargets.activate();
+//    }
+//
+//    void stopTracking() {visionTargets.deactivate();}
 
     boolean isTracking()
     {
@@ -253,6 +272,109 @@ public class VuforiaHelper
         return OpenGLMatrix.translation(x, y, z)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
+    }
+
+
+
+    //encapsulates function necessary to average color values of jewels
+    public float getAverageJewelColor(int x, int y)
+    {
+        if (x >= 0 && x < 1280 - 32 && y >= 0 && y < 720 - 32)
+        {
+            for (int j = y - 32; j < y + 32; j++) // columns
+            {
+                for (int i = x - 32; i < x + 32; i++) // rows
+                {
+                    // get RGB color of pixel
+                    color = bitMap.getPixel(i, j);
+
+                    // convert RGB to HSV - hue, sat, val
+                    // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
+                    Color.colorToHSV(color, colorTransfer);
+
+                    // integrate HSV color of all pixels
+                    colorSum[0] += colorTransfer[0];
+
+                    // draw black border around sample region for debugging only
+                    if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31))
+                    {
+                        bitMap.setPixel(i, j, 0xff00ff00);
+                    }
+                }
+            }
+            // normalize output for 32x32 = 4096 integration above
+            colorOutput[0] = colorSum[0] / 4096;
+        }
+        return colorOutput[0]; // return the averaged sampled HSV color value
+    }
+
+    /*
+    Note:  this method references the color of left jewel for its output
+
+    uses getImageColor() to determine the colors of the jewels and compare them, then returns
+    information that tells you whether the left jewel is red or blue
+    */
+    public boolean getLeftJewelColor() throws InterruptedException
+    {
+        /**
+         * See if any of the instances of {@link relicTemplate} are currently visible.
+         * {@link RelicRecoveryVuMark} is an enum which can have the following values:
+         * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
+         * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
+         */
+
+        pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
+
+        if (pose!=null)
+        {
+            rawPose = new Matrix34F();
+            float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
+            rawPose.setData(poseData);
+            // image size is 254 mm x 184 mm
+            Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
+            Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(390, -180, -102));
+
+            // takes the frame at the head of the queue
+            frame = vuforiaLocalizer.getFrameQueue().take();
+
+            long numImages = frame.getNumImages();
+
+            for (int j = 0; j < numImages; j++)
+            {
+                image = frame.getImage(j);
+                imageFormat = image.getFormat();
+
+                if (imageFormat == PIXEL_FORMAT.RGB565) break;
+            }
+
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
+
+            // create bitmap of image to detect color
+            bitMap = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
+            bitMap.copyPixelsFromBuffer(image.getPixels());
+
+            // coordinates in image
+            // TODO: check to make sure x < 1280; y < 720
+            int lx = (int) jewelLeft.getData()[0];
+            int ly = (int) jewelLeft.getData()[1];
+
+            int rx = (int) jewelRight.getData()[0];
+            int ry = (int) jewelRight.getData()[1];
+
+            avgLeftJewelColor = getAverageJewelColor(lx, ly); // get the averaged jewel HSV color value for the left jewel
+            avgRightJewelColor = getAverageJewelColor(rx, ry);
+
+            // adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
+            colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 360 : avgLeftJewelColor;
+            colorRight = (avgRightJewelColor < 45) ? avgRightJewelColor + 360 : avgRightJewelColor;
+        }
+        //deltaColorHSV = colorLeft - colorRight;
+        // if left color is negative, then left side is blue
+        if ((colorLeft - colorRight) < 0) isLeftJewelBlue = true; // BLUE
+        else isLeftJewelBlue = false; // RED
+
+        return isLeftJewelBlue;
     }
 
     //finds color of image
