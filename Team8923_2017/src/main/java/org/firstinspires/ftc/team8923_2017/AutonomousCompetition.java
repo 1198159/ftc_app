@@ -20,11 +20,18 @@ public class AutonomousCompetition extends MasterAutonomous
 
         waitForStart();
 
-        //DropJJ();
-        //sleep(2000);
-        //RetreiveJJ();
+        //GetLeftJewelColor();
+        //if (IsLeftJewelRed)
+        DropJJ();
+        sleep(1000);
+        //IMUPivot(180, 0.4, 0.035);
+        //pivot(30, 0.3, 1);//moves 10 MM, speed, timeout
         //sleep(1000);
-        MoveIMU(50, 0.0, 0.085, 0.3, 1);//moveMM, targetAngle, kAngle, speed, timeout
+        pivot(40, 0.2, 0.5);
+        //sleep(1000);
+        //pivot(45, 0.3, 1);
+        //sleep(1000);
+        // MoveIMU(100, 180, 0.045, 0.3, 2);//moveMM, targetAngle, kAngle, speed, timeout
 
         while (opModeIsActive())
         {

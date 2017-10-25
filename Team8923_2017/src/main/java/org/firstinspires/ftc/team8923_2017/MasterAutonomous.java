@@ -4,38 +4,34 @@ package org.firstinspires.ftc.team8923_2017;
  * Holds all code necessary to run the robot in autonomous controlled mode
  */
 
+import android.graphics.Bitmap;
+
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.vuforia.Image;
+import com.vuforia.Matrix34F;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Tool;
+import com.vuforia.Vec2F;
+import com.vuforia.Vec3F;
+
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
+import java.util.Arrays;
 
 public abstract class MasterAutonomous extends Master
 {
+
+
     private ElapsedTime runtime = new ElapsedTime();
 
-    int newTargetFL;
-    int newTargetFR;
-    int newTargetBL;
-    int newTargetBR;
-    double currentFL;
-    double currentFR;
-    double currentBL;
-    double currentBR;
-    double moveErrorFL;
-    double moveErrorFR;
-    double moveErrorBL;
-    double moveErrorBR;
-    double speedFL;
-    double speedFR;
-    double speedBL;
-    double speedBR;
-    double kMove = 1/1200.0;
-    double TOL = 100.0;
-    double angleError;
-    double pivot;
-    double motorPowerFL;
-    double motorPowerFR;
-    double motorPowerBL;
-    double motorPowerBR;
+
 
     enum Alliance
     {
@@ -83,6 +79,40 @@ public abstract class MasterAutonomous extends Master
     private static final double MIN_DRIVE_POWER = 0.15;
     private static final double TURN_POWER_CONSTANT = 1.0 / 175.0;
     private static final double DRIVE_POWER_CONSTANT = 1.0 / 1750.0;
+
+    VuforiaLocalizer.CloseableFrame frame;
+    Image image = null;
+    Image imageRGB565 = null;
+    int imageFormat;
+    Bitmap bm; // android.graphics
+
+    VuforiaTrackables relicTrackables;
+    VuforiaTrackable relicTemplate;
+    public RelicRecoveryVuMark vuMark;
+    Matrix34F rawPose;
+
+    // old color variables for left and right jewels
+    public float leftColorHSV[] = {0f, 0f, 0f};
+    public float rightColorHSV[] = {0f, 0f, 0f};
+
+    int color = 0;
+    float[] colorHsvSum = {0,0,0};
+    float[] colorHSV = {0,0,0};
+    float[] colorHsvOut = {0,0,0};
+    float avgLeftJewelColor;
+    float avgRightJewelColor;
+
+    float colorLeft;
+    float colorRight;
+    float deltaColorHSV;
+
+    boolean isVuMarkVisible;
+    boolean isLeftJewelBlue;
+
+    VuforiaLocalizer vuforia;
+
+
+    OpenGLMatrix pose;
 
 
     void ChooseOptions()
@@ -169,7 +199,6 @@ public abstract class MasterAutonomous extends Master
 
     void MoveIMU(double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
     {
-
         currentFL = motorFL.getCurrentPosition();
         currentFR = motorFR.getCurrentPosition();
         currentBL = motorBL.getCurrentPosition();
@@ -205,8 +234,7 @@ public abstract class MasterAutonomous extends Master
             speedBR = Range.clip(speedBR, 0.15, maxSpeed);
             speedBR = speedBR * Math.signum(moveErrorBR);
 
-
-            targetAngle = adjustAngles(targetAngle);//Makes it so the target angle does not wrap
+            targetAngle = adjustAngles(targetAngle);//Makes it so target angle does not wrap
             angleError = currentRobotAngle - targetAngle;
             angleError = adjustAngles(angleError);
             pivot = angleError * kAngle;
@@ -244,6 +272,128 @@ public abstract class MasterAutonomous extends Master
         motorFR.setPower(0);
         motorBL.setPower(0);
         motorBR.setPower(0);
+    }
+
+    void pivot(double moveMM, double maxSpeed, double timeout)
+    {
+        currentFL = motorFL.getCurrentPosition();
+        currentFR = motorFR.getCurrentPosition();
+        currentBL = motorBL.getCurrentPosition();
+        currentBR = motorBR.getCurrentPosition();
+
+        //Sets motor encoder values
+        newTargetFL = motorFL.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetBL = motorBL.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+
+        runtime.reset(); // used for timeout
+
+        do {
+            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
+            moveErrorFL = newTargetFL - currentFL;
+            speedFL = Math.abs(kMove * moveErrorFL);
+            speedFL = Range.clip(speedFL, 0.15, maxSpeed);
+            speedFL = speedFL * Math.signum(moveErrorFL);
+
+            moveErrorFR = newTargetFR - currentFR;
+            speedFR = Math.abs(kMove * moveErrorFR);
+            speedFR = Range.clip(speedFR, 0.15, maxSpeed);
+            speedFR = speedFR * Math.signum(moveErrorFR);
+
+            moveErrorBL = newTargetBL - currentBL;
+            speedBL = Math.abs(kMove * moveErrorBL);
+            speedBL = Range.clip(speedBL, 0.15, maxSpeed);
+            speedBL = speedBL * Math.signum(moveErrorBL);
+
+            moveErrorBR = newTargetBR - currentBR;
+            speedBR = Math.abs(kMove * moveErrorBR);
+            speedBR = Range.clip(speedBR, 0.15, maxSpeed);
+            speedBR = speedBR * Math.signum(moveErrorBR);
+
+            //Sets values for motor power
+            motorPowerFL = speedFL;
+            motorPowerFR = speedFR;
+            motorPowerBL = speedBL;
+            motorPowerBR = speedBR;
+
+            motorFL.setPower(motorPowerFL);
+            motorFR.setPower(motorPowerFR);
+            motorBL.setPower(motorPowerBL);
+            motorBR.setPower(motorPowerBR);
+            idle();
+        }
+        while (opModeIsActive() &&
+                (runtime.seconds() < timeout) &&
+                (Math.abs(moveErrorFL) > TOL));
+
+        //Stop motors
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+    }
+
+    void pivotGoTo (double GoTO)
+    {
+
+    }
+
+    void IMUPivot(double targetAngle, double maxSpeed, double kAngle)
+    {
+        currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
+
+        targetAngle = adjustAngles(targetAngle);//Makes it so the target angle does not wrap
+        angleError = currentRobotAngle - targetAngle;
+        angleError = adjustAngles(angleError);
+        pivot = angleError * kAngle;
+
+        motorPowerFL = speedFL + pivot;
+        motorPowerFR = speedFR + pivot;
+        motorPowerBL = speedBL + pivot;
+        motorPowerBR = speedBR + pivot;
+
+        motorFL.setPower(motorPowerFL);
+        motorFR.setPower(motorPowerFR);
+        motorBL.setPower(motorPowerBL);
+        motorBR.setPower(motorPowerBR);
+
+        while (opModeIsActive() && (Math.abs(angleError) > TOL));
+
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+    }
+
+    public RelicRecoveryVuMark GetVumark()
+    {
+        vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        return vuMark;
+    }
+
+    public boolean GetLeftJewelColor() throws InterruptedException
+    {
+        pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
+
+        if (pose!=null)
+        {
+            float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
+            rawPose.setData(poseData);
+            // image size is 254 mm x 184 mm
+            //Project point at
+            Vec2F leftJewel = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
+            Vec2F rightJewel = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(390, -180, -102));
+            // takes the frame at the head of the queue
+
+            frame = vuforia.getFrameQueue().take();
+
+            long numImages = frame.getNumImages();
+
+
+        }
+
+        return isLeftJewelBlue;
     }
 
     void driveToPoint(double targetX, double targetY, double targetAngle, double maxPower) throws InterruptedException
@@ -291,7 +441,7 @@ public abstract class MasterAutonomous extends Master
         servoJJ.setPosition(SERVO_JJ_DOWN);
     }
 
-    void RetreiveJJ()
+    void RetrieveJJ()
     {
         servoJJ.setPosition(SERVO_JJ_UP);
     }

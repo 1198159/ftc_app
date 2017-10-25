@@ -13,6 +13,16 @@ public abstract class MasterTeleOp extends Master
     boolean slowModeActive = false;
     boolean liftMoving = false;
 
+    double robotAngle;
+    double anglePivot;
+
+    double jy;
+    double jx;
+    double error;
+    double pivot;
+    double kAngle;
+    double jpivot;//for pivoting
+
     ElapsedTime GGLiftTimer = new ElapsedTime();
 
 
@@ -23,7 +33,7 @@ public abstract class MasterTeleOp extends Master
             if(slowModeActive)
                 slowModeDivisor = 1.0;
             else if(!slowModeActive)
-                slowModeDivisor = 5.0; 
+                slowModeDivisor = 5.0;
 
             slowModeActive = !slowModeActive;
         }
@@ -38,6 +48,31 @@ public abstract class MasterTeleOp extends Master
         driveOmni45(angle, power, turnPower);
     }
 
+    void IMUDrive()//Drive for straighter movement. However, pivot is very slow For now, maybe don't use this method in TeleOp until faster pivot is made
+    {
+        jy = -gamepad1.left_stick_y;
+        jx = gamepad1.left_stick_x;
+        jpivot = gamepad1.right_stick_x;
+        anglePivot = 2 * (anglePivot - jpivot);
+        anglePivot = adjustAngles(anglePivot);
+
+
+        kAngle = 0.035;
+        robotAngle = imu.getAngularOrientation().firstAngle;
+        //robotAngle = adjustAngles(robotAngle);
+        error = robotAngle - anglePivot;
+        error = adjustAngles(error);
+        pivot = error * kAngle;
+        motorPowerFL = jx - jy - pivot;
+        motorPowerFR = -jx + jy - pivot;
+        motorPowerBL = jx + jy - pivot;
+        motorPowerBR = -jx - jy - pivot;
+
+        motorFL.setPower(motorPowerFL);
+        motorFL.setPower(motorPowerFR);
+        motorBL.setPower(motorPowerBL);
+        motorBR.setPower(motorPowerBR);
+    }
     void RunGG()
     {
         if((gamepad1.dpad_down || gamepad1.dpad_up) && !liftMoving)

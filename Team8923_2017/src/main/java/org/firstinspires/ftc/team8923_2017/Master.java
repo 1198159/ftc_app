@@ -46,13 +46,39 @@ public abstract class Master extends LinearOpMode
     static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/; //319.024/1120 = .28484
     //Servos constants
     double SERVO_JJ_UP = 0.8; //Port 5, Hub 1
-    double SERVO_JJ_DOWN = 0.1;
+    double SERVO_JJ_DOWN = 0.3;
 
     //declare IMU
     double currentRobotAngle;
     double jX;
     double jY;
     double kAngle;
+
+    int newTargetFL;
+    int newTargetFR;
+    int newTargetBL;
+    int newTargetBR;
+    double currentFL;
+    double currentFR;
+    double currentBL;
+    double currentBR;
+    double moveErrorFL;
+    double moveErrorFR;
+    double moveErrorBL;
+    double moveErrorBR;
+    double speedFL;
+    double speedFR;
+    double speedBL;
+    double speedBR;
+    double kMove = 1/800.0;
+    double TOL = 110.0;
+    double TOLAngle = 5;
+    double angleError;
+    double pivot;
+    double motorPowerFL;
+    double motorPowerFR;
+    double motorPowerBL;
+    double motorPowerBR;
 
 
     void InitHardware()
