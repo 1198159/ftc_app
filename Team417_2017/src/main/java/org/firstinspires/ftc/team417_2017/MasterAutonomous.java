@@ -571,7 +571,7 @@ abstract class MasterAutonomous extends MasterOpMode
     }
 
     // pivot using IMU, but with a reference start angle, but this angle has to be determined (read) before this method is called
-    public void pivotWithReference(double targetAngle, double refAngle, double speed)
+    public void pivotWithReference(double targetAngle, double refAngle, double maxSpeed)
     {
         double pivotSpeed;
         double currentAngle;
@@ -590,10 +590,12 @@ abstract class MasterAutonomous extends MasterOpMode
 
         do
         {
-            currentAngle = imu.getAngularOrientation().firstAngle - refAngle;
-            errorAngle = currentAngle - targetAngle;
+            // starting angle = -178; rotating CW
+
+            currentAngle = adjustAngles(imu.getAngularOrientation().firstAngle - refAngle);
+            errorAngle = adjustAngles(currentAngle - targetAngle); // question: should this be adjusted?
             pivotSpeed = Math.abs(errorAngle) * Kpivot;
-            pivotSpeed = Range.clip(pivotSpeed, PIVOT_MINSPEED, speed); // limit abs speed
+            pivotSpeed = Range.clip(pivotSpeed, PIVOT_MINSPEED, maxSpeed); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(errorAngle); // set the sign of speed
 
             // positive angle means CCW rotation
@@ -603,7 +605,7 @@ abstract class MasterAutonomous extends MasterOpMode
             motorBR.setPower(-pivotSpeed);
 
             // allow some time for IMU to catch up
-            if (Math.abs(errorAngle) < 4.0)
+            if (Math.abs(errorAngle) < 5.0)
             {
                 sleep(15);
                 // stop motors

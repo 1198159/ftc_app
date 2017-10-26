@@ -17,7 +17,7 @@ public class AutonomousMoveTests extends MasterAutonomous
 
         // Wait until we're told to go
         while (!isStarted())
-        {
+                {
             // allow driver to choose a team
             if (gamepad1.b) isRedTeam = true;
             if (gamepad1.x) isRedTeam = false;
@@ -71,7 +71,7 @@ public class AutonomousMoveTests extends MasterAutonomous
 
 // START OF AUTONOMOUS
 
-        TOL_ANGLE = 2.0;
+        TOL_ANGLE = 3.0;
         TOL = 60;
         Kmove = 1.0/1200.0;
         Kpivot = 1/200.0;
@@ -80,7 +80,7 @@ public class AutonomousMoveTests extends MasterAutonomous
 
         double refAngle = imu.getAngularOrientation().firstAngle;
         //pivot(90, 0.1);
-        sleep(1000);
+        //sleep(1000);
         pivotWithReference(-90, refAngle, 0.5);
 
 
