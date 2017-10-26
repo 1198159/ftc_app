@@ -45,7 +45,7 @@ public class EncoderTest extends MasterAutonomous
         motorBRCount = motorBR.getCurrentPosition();
 
         // display the encoder counts
-        telemetry.addData("FL %d", "FR %d", "BL %d", "BR %d", motorFLCount, motorFRCount, motorBLCount, motorBRCount);
+        telemetry.addData("Encoder:", "FL: %d, FR: %d, BL: %d, BR: %d", motorFLCount, motorFRCount, motorBLCount, motorBRCount);
         telemetry.update();
 
         sleep(5000);
