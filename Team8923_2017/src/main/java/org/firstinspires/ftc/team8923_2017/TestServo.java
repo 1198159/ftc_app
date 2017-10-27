@@ -53,11 +53,10 @@ public class TestServo extends LinearOpMode
 
             currentServoPos = currentServo.getPosition();
 
+            doTelemetry();
+
             while (!buttonsAreReleased(gamepad1))
-            {
-                doTelemetry();
                 idle();
-            }
         }
     }
 

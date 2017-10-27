@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public abstract class MasterTeleOp extends Master
 {
-    int GGLiftTicks = 250;
+    int GGLiftTicks = 750;
 
     boolean slowModeActive = false;
     boolean liftMoving = false;
@@ -80,13 +80,13 @@ public abstract class MasterTeleOp extends Master
             liftMoving = true;
             GGLiftTimer.reset();
 
-            if (gamepad1.dpad_up)
+            if (gamepad1.dpad_up && (motorGG.getCurrentPosition() + GGLiftTicks) < (GGZero + (4 * GGLiftTicks)))
                 motorGG.setTargetPosition(motorGG.getCurrentPosition() + GGLiftTicks);
 
-            else if (gamepad1.dpad_down)
+            else if (gamepad1.dpad_down && (motorGG.getCurrentPosition() - GGLiftTicks) > GGZero)
                 motorGG.setTargetPosition(motorGG.getCurrentPosition() - GGLiftTicks);
 
-            motorGG.setPower(Math.signum(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * 0.75);
+            motorGG.setPower(Math.signum(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * 0.85);
         }
 
         if(GGLiftTimer.milliseconds() > 250 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 50)
@@ -95,16 +95,16 @@ public abstract class MasterTeleOp extends Master
             liftMoving = false;
         }
 
-        if(gamepad1.x && !liftMoving)
+        if(gamepad1.y && !liftMoving)
         {
-            servoGGL.setPosition(0.0); //TODO value needs to be changed
-            servoGGR.setPosition(0.0); //TODO value to be changed
+            servoGGL.setPosition(0.2); //TODO value needs to be changed
+            servoGGR.setPosition(0.25); //TODO value to be changed
 
         }
-         else if(gamepad1.b && !liftMoving)
+         else if(gamepad1.a && !liftMoving)
         {
-            servoGGL.setPosition(0.0);//TODO value needs to be changed
-            servoGGR.setPosition(0.0);//TODO value needs to be changed
+            servoGGL.setPosition(0.45);//TODO value needs to be changed
+            servoGGR.setPosition(0.15);//TODO value needs to be changed
         }
     }
 }

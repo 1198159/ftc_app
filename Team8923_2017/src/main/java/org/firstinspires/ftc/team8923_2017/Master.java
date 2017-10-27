@@ -24,6 +24,7 @@ public abstract class Master extends LinearOpMode
 
 
     double slowModeDivisor;
+    int GGZero = 0;
 
     // Declare servos here
     Servo servoJJ = null;
@@ -88,11 +89,16 @@ public abstract class Master extends LinearOpMode
         motorFR = hardwareMap.get(DcMotor.class, "motorFR");
         motorBL = hardwareMap.get(DcMotor.class, "motorBL");
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
+        motorGG = hardwareMap.get(DcMotor.class, "motorGG");
 
         // Servos here
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
+        servoGGL = hardwareMap.get(Servo.class, "servoGGL");
+        servoGGR = hardwareMap.get(Servo.class, "servoGGR");
 
         servoJJ.setPosition(SERVO_JJ_UP);
+        servoGGL.setPosition(0.0);
+        servoGGR.setPosition(0.0);
 
         //Reset encoders
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -104,10 +110,9 @@ public abstract class Master extends LinearOpMode
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-
-
-        // Servos here
+        GGZero = motorGG.getCurrentPosition();
 
         // Sensors here
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -153,6 +158,12 @@ public abstract class Master extends LinearOpMode
         motorFR.setPower(powerFR);
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
+    }
+
+    void SendTelemetry()
+    {
+        telemetry.addLine("GG Up/Down : DPad up / DPad down");
+        telemetry.addData("Robot angle", imu.getAngularOrientation().firstAngle);
     }
 
 
