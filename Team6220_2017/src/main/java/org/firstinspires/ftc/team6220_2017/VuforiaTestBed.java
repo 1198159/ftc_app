@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Created by Cole Welch on 10/1/2017.
  */
 
-@Autonomous(name = "AutoCompetition", group = "Autonomous")
+@Autonomous(name = "Vuforia Test", group = "Autonomous")
 public class VuforiaTestBed extends MasterAutonomous
 {
     @Override
@@ -15,18 +15,18 @@ public class VuforiaTestBed extends MasterAutonomous
     {
         initializeAuto();
 
-        //vuforiaHelper.startTracking();
-
         waitForStart();
+
+        vuforiaHelper.getLeftJewelColor();
+        vuforiaHelper.getVumark();
+        telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
+        telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
     }
 
     //todo modify for jewels rather than beacons
     //we use this function to determine the color of jewels and knock them
     public void knockJewel (boolean redSide) throws InterruptedException
     {
-        /*
-        Color.colorToHSV(vuforiaHelper.getPixelColor(-127, 92, 0), );
-        Color.colorToHSV(vuforiaHelper.getPixelColor(127, 92, 0), colorRightSide);
-        */
+
     }
 }

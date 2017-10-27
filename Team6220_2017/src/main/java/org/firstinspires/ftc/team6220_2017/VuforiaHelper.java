@@ -46,6 +46,9 @@ public class VuforiaHelper
     public float leftJewelColorHSV[] = {0f, 0f, 0f};
     public float rightJewelColorHSV[] = {0f, 0f, 0f};
 
+    //target
+    public RelicRecoveryVuMark vuMark;
+
     float[] colorTransfer = new float[]{0,0,0};
     //what we will eventually return
     float[] colorOutput = new float[]{0,0,0};
@@ -57,8 +60,8 @@ public class VuforiaHelper
     float leftColorOutput[] = {0, 0, 0};
     float rightColorOutput[] = {0, 0, 0};
 
-    float avgLeftJewelColor;
-    float avgRightJewelColor;
+    float avgLeftJewelColor = 0;
+    float avgRightJewelColor = 0;
 
     float colorLeft;
     float colorRight;
@@ -141,6 +144,7 @@ public class VuforiaHelper
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         //for debugging, but not essential
         relicTemplate.setName("relicVuMarkTemplate");
+        //vuMark = getVumark();
 
         //Set phone location on robot. The center of the camera is the origin.
         //This location is 90 degrees less than the phone's actual rotation about the z-axis since we
@@ -158,6 +162,11 @@ public class VuforiaHelper
 
         // avoids nullpointer errors
         lastKnownLocation = createMatrix(0, 0, 0, 0, 0, 0);
+    }
+    public RelicRecoveryVuMark getVumark()
+    {
+        vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        return vuMark;
     }
 
     // Used to find pixel color from the camera. Parameters are actually a coordinate
@@ -274,8 +283,6 @@ public class VuforiaHelper
                         AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
     }
 
-
-
     //encapsulates function necessary to average color values of jewels
     public float getAverageJewelColor(int x, int y)
     {
@@ -309,7 +316,7 @@ public class VuforiaHelper
     }
 
     /*
-    Note:  this method references the color of left jewel for its output
+    Note:  this method references the color of the left jewel for its output
 
     uses getImageColor() to determine the colors of the jewels and compare them, then returns
     information that tells you whether the left jewel is red or blue
@@ -325,7 +332,7 @@ public class VuforiaHelper
 
         pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
 
-        if (pose!=null)
+        if (pose != null)
         {
             rawPose = new Matrix34F();
             float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
