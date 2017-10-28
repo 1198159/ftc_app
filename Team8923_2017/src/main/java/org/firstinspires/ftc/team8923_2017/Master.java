@@ -46,7 +46,8 @@ public abstract class Master extends LinearOpMode
     static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/; //319.024/1120 = .28484
     //Servos constants
     double SERVO_JJ_UP = 0.8; //Port 5, Hub 1
-    double SERVO_JJ_DOWN = 0.3;
+    double SERVO_JJ_DOWN = 0.15;
+    double SERVO_JJ_MIDDLE = 0.6;
 
     //declare IMU
     double currentRobotAngle;
@@ -72,7 +73,7 @@ public abstract class Master extends LinearOpMode
     double speedBR;
     double kMove = 1/800.0;
     double TOL = 110.0;
-    double TOLAngle = 5;
+    double AngleTOL = 3.0;
     double angleError;
     double pivot;
     double motorPowerFL;
@@ -105,7 +106,10 @@ public abstract class Master extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Servos here
 

@@ -48,7 +48,7 @@ public abstract class MasterTeleOp extends Master
         driveOmni45(angle, power, turnPower);
     }
 
-    void IMUDrive()//Drive for straighter movement. However, pivot is very slow For now, maybe don't use this method in TeleOp until faster pivot is made
+    /*void IMUDrive()//Drive for straighter movement. However, pivot is very slow For now, maybe don't use this method in TeleOp until faster pivot is made
     {
         jy = -gamepad1.left_stick_y;
         jx = gamepad1.left_stick_x;
@@ -73,6 +73,7 @@ public abstract class MasterTeleOp extends Master
         motorBL.setPower(motorPowerBL);
         motorBR.setPower(motorPowerBR);
     }
+    */
     void RunGG()
     {
         if((gamepad1.dpad_down || gamepad1.dpad_up) && !liftMoving)

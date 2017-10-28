@@ -7,6 +7,7 @@ package org.firstinspires.ftc.team8923_2017;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -87,6 +88,9 @@ public abstract class MasterAutonomous extends Master
     private static final double MIN_DRIVE_POWER = 0.15;
     private static final double TURN_POWER_CONSTANT = 1.0 / 175.0;
     private static final double DRIVE_POWER_CONSTANT = 1.0 / 1750.0;
+
+
+
 
     VuforiaLocalizer.CloseableFrame frame;
     Image image = null;
@@ -205,6 +209,7 @@ public abstract class MasterAutonomous extends Master
                 driveToPoint(610, 1490, 90.0, 0.8);
         }
     }
+
 
 
     void MoveIMU(double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
@@ -346,15 +351,16 @@ public abstract class MasterAutonomous extends Master
     }
 
 
-    void IMUPivot(double targetAngle, double maxSpeed, double kAngle)
+    void IMUPivot(double targetAngle, double MaxSpeed, double kAngle)
     {
-        currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
         do {
+            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
             targetAngle = adjustAngles(targetAngle);//Makes it so the target angle does not wrap
             angleError = currentRobotAngle - targetAngle;
             angleError = adjustAngles(angleError);
             pivot = angleError * kAngle;
 
+            pivot = Range.clip(pivot, 0.1, MaxSpeed);
             motorPowerFL = pivot;
             motorPowerFR = pivot;
             motorPowerBL = pivot;
@@ -365,8 +371,8 @@ public abstract class MasterAutonomous extends Master
             motorBL.setPower(motorPowerBL);
             motorBR.setPower(motorPowerBR);
         }
-        while (opModeIsActive() && (Math.abs(angleError) > TOL));
-
+        while (opModeIsActive() && (Math.abs(angleError) > AngleTOL));
+        
         motorFL.setPower(0);
         motorFR.setPower(0);
         motorBL.setPower(0);
@@ -417,6 +423,8 @@ public abstract class MasterAutonomous extends Master
 
     void DropJJ()
     {
+        servoJJ.setPosition(SERVO_JJ_MIDDLE);
+        sleep(500);
         servoJJ.setPosition(SERVO_JJ_DOWN);
     }
 
