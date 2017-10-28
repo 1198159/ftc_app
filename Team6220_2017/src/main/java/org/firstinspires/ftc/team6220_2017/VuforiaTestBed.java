@@ -17,10 +17,16 @@ public class VuforiaTestBed extends MasterAutonomous
 
         waitForStart();
 
-        vuforiaHelper.getLeftJewelColor();
         vuforiaHelper.getVumark();
-        telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
-        telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
+
+        if (vuforiaHelper.isVisible())
+        {
+            vuforiaHelper.getLeftJewelColor();
+            telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
+            telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
+        }
+        else
+            telemetry.addData("vuMark: ", "not visible");
     }
 
     //todo modify for jewels rather than beacons

@@ -6,7 +6,7 @@ package org.firstinspires.ftc.team6220_2017;
 abstract public class MasterTeleOp extends MasterOpMode
 {
     //                                             y = 0.0 + 1/2x + 0.0 + 1/2x^3
-    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.5, 0.0, 0.5 });
+    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.75, 0.0, 0.25 });
 
     //takes driver 1 stick input and uses it to move the robot
     void driveMecanumWithJoysticks()

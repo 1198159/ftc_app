@@ -67,6 +67,7 @@ public class VuforiaHelper
     float colorRight;
 
     boolean isLeftJewelBlue;
+    boolean isVuMarkVisible;
 
     // necessary matrices
     OpenGLMatrix targetPosition;
@@ -167,6 +168,17 @@ public class VuforiaHelper
     {
         vuMark = RelicRecoveryVuMark.from(relicTemplate);
         return vuMark;
+    }
+
+    //check to make sure we can see the vuMark
+    public boolean isVisible()
+    {
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN)
+            isVuMarkVisible = true;
+        else
+            isVuMarkVisible = false;
+
+        return isVuMarkVisible;
     }
 
     // Used to find pixel color from the camera. Parameters are actually a coordinate
