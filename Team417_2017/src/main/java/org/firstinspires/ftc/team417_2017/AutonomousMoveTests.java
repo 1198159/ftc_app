@@ -71,12 +71,12 @@ public class AutonomousMoveTests extends MasterAutonomous
 
 // START OF AUTONOMOUS
 
+        Kmove = 1.0/1200.0;
+        MINSPEED = 0.3;
         TOL_ANGLE = 3.0;
         TOL = 60;
-        Kmove = 1.0/1200.0;
-        Kpivot = 1/200.0;
-        MINSPEED = 0.3;
-        PIVOT_MINSPEED = 0.1;
+        Kpivot = 1/150.0;
+        PIVOT_MINSPEED = 0.2;
 
         double refAngle = imu.getAngularOrientation().firstAngle;
         //pivot(90, 0.1);
