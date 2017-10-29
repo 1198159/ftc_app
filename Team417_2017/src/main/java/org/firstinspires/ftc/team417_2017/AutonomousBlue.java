@@ -15,30 +15,7 @@ public class AutonomousBlue extends MasterAutonomous
         // Initialize hardware and other important things
         super.initializeHardware();
         VuforiaDetect.initVuforia(); // initialize Vuforia
-        VuforiaDetect.GetVumark(); // gets the vuMark
-        if (VuforiaDetect.isVisible()) // if vuMark seen is not unknown,
-        {
-            VuforiaDetect.GetLeftJewelColor();
-                /* Found an instance of the template. In the actual game, you will probably
-                 * loop until this condition occurs, then move on to act accordingly depending
-                 * on which VuMark was visible. */
-            telemetry.addData("VuMark", "%s visible", VuforiaDetect.vuMark);
-
-                /* We further illustrate how to decompose the pose into useful rotational and
-                 * translational components */
-            if (VuforiaDetect.pose != null) // if the pose is NOT null,
-            {
-                telemetry.addData("leftHue ", VuforiaDetect.avgLeftJewelColor);
-                telemetry.addData("rightHue ", VuforiaDetect.avgRightJewelColor);
-                telemetry.addData("isLeftJewelBlue", VuforiaDetect.isLeftJewelBlue);
-            }
-        }
-        else
-        {
-            telemetry.addData("VuMark", "not visible");
-        }
-        telemetry.update();
-
+        telemetry.addData("Done: ", "initializing");
 
 // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -50,7 +27,7 @@ public class AutonomousBlue extends MasterAutonomous
         servoJewelStore.setPosition(JEWEL_STORE_LOW);
         sleep(300);
         servoJewelDrop.setPosition(JEWEL_DROP_LOW);
-        sleep(5000);
+        sleep(300);
 
         Kmove = 1.0/1200.0;
         MINSPEED = 0.3;
@@ -61,6 +38,7 @@ public class AutonomousBlue extends MasterAutonomous
 
         if (VuforiaDetect.isVisible()) // if vuMark seen is not unknown,
         {
+            VuforiaDetect.GetVumark();
             VuforiaDetect.GetLeftJewelColor();
                 /* Found an instance of the template. In the actual game, you will probably
                  * loop until this condition occurs, then move on to act accordingly depending
@@ -81,19 +59,33 @@ public class AutonomousBlue extends MasterAutonomous
         }
         telemetry.update();
 
-
+        sleep(300);
 
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle;
 
-        if(VuforiaDetect.GetLeftJewelColor()) // if the left jewel is blue,
+        if(VuforiaDetect.isLeftJewelBlue) // if the left jewel is blue,
         {
-            pivotWithReference(-90, refAngle, 0.5); // then pivot right
+            pivotWithReference(-30, refAngle, 0.5); // then pivot right
+            sleep(300);
+            servoJewelStore.setPosition(JEWEL_STORE_INIT);
+            sleep(300);
+            servoJewelDrop.setPosition(JEWEL_DROP_INIT);
+            sleep(300);
+            pivotWithReference(0, refAngle, 0.5); // then pivot back
         }
         else // if the left jewel is red,
         {
-            pivotWithReference(90, refAngle, 0.5); // then pivot left
+            pivotWithReference(30, refAngle, 0.5); // then pivot left
+            sleep(300);
+            servoJewelStore.setPosition(JEWEL_STORE_INIT);
+            sleep(300);
+            servoJewelDrop.setPosition(JEWEL_DROP_INIT);
+            sleep(300);
+            pivotWithReference(0, refAngle, 0.5); // then pivot back
         }
+
+        sleep(6000);
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();

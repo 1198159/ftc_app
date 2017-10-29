@@ -17,7 +17,7 @@ public class AutonomousMoveTests extends MasterAutonomous
 
         // Wait until we're told to go
         while (!isStarted())
-                {
+        {
             // allow driver to choose a team
             if (gamepad1.b) isRedTeam = true;
             if (gamepad1.x) isRedTeam = false;

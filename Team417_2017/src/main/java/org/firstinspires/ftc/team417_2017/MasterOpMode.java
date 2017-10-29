@@ -37,7 +37,7 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4; // is 2.34
 
-    static final double JEWEL_STORE_INIT = 0.75;
+    static final double JEWEL_STORE_INIT = 0.80;
     static final double JEWEL_STORE_LOW = 0.99;
     static final double JEWEL_DROP_INIT = 0.02;
     static final double JEWEL_DROP_LOW = 0.65;
