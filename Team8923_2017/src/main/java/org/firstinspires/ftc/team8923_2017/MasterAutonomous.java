@@ -101,7 +101,8 @@ public abstract class MasterAutonomous extends Master
     VuforiaTrackables relicTrackables;
     VuforiaTrackable relicTemplate;
     public RelicRecoveryVuMark vuMark;
-    Matrix34F rawPose;
+    //Matrix34F rawPose;
+    //Matrix34F rawPose = new Matrix34F();
 
 
     public float leftColorHSV[] = {0f, 0f, 0f};
@@ -351,8 +352,10 @@ public abstract class MasterAutonomous extends Master
     }
 
 
-    void IMUPivot(double targetAngle, double MaxSpeed, double kAngle)
+    void IMUPivot(double referenceAngle, double targetAngle, double MaxSpeed, double kAngle)
     {
+        targetAngle =  referenceAngle + targetAngle;//Adds the current anlge to the target
+        targetAngle = adjustAngles(targetAngle);
         do {
             currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
             targetAngle = adjustAngles(targetAngle);//Makes it so the target angle does not wrap
@@ -360,7 +363,15 @@ public abstract class MasterAutonomous extends Master
             angleError = adjustAngles(angleError);
             pivot = angleError * kAngle;
 
-            pivot = Range.clip(pivot, 0.1, MaxSpeed);
+            if (pivot >= 0.0)
+            {
+                pivot = Range.clip(pivot, 0.05, MaxSpeed);
+            }
+            else
+            {
+                pivot = Range.clip(pivot, -MaxSpeed, -0.04);
+            }
+
             motorPowerFL = pivot;
             motorPowerFR = pivot;
             motorPowerBL = pivot;
@@ -370,9 +381,20 @@ public abstract class MasterAutonomous extends Master
             motorFR.setPower(motorPowerFR);
             motorBL.setPower(motorPowerBL);
             motorBR.setPower(motorPowerBR);
+            //Slows down to allow IMU to catch up
+            if (Math.abs(angleError) < 5.0)
+            {
+                sleep(30);
+                motorFL.setPower(0);
+                motorFR.setPower(0);
+                motorBL.setPower(0);
+                motorBR.setPower(0);
+                sleep(150);
+            }
+            idle();
         }
         while (opModeIsActive() && (Math.abs(angleError) > AngleTOL));
-        
+
         motorFL.setPower(0);
         motorFR.setPower(0);
         motorBL.setPower(0);
@@ -425,9 +447,12 @@ public abstract class MasterAutonomous extends Master
     {
         servoJJ.setPosition(SERVO_JJ_MIDDLE);
         sleep(500);
+        servoJJ.setPosition(SERVO_JJ_MIDDLE1);
+        sleep(500);
+        servoJJ.setPosition(SERVO_JJ_MIDDLE2);
+        sleep(500);
         servoJJ.setPosition(SERVO_JJ_DOWN);
     }
-
 
     void RetrieveJJ()
     {
@@ -494,9 +519,9 @@ public abstract class MasterAutonomous extends Master
         if (x>=0 && x<1280-32 && y>=0 && y<720-32)
         {
             HsvSum[0] = 0;
-            for (int j = y - 32; j < y + 32; j++) // "Scans" the columns
+            for (int j = y - 32; j < y + 32; j++) // "Draws" the columns
             {
-                for (int i = x - 32; i < x + 32; i++) // "Scans" the rows
+                for (int i = x - 32; i < x + 32; i++) // "Draws" the rows
                 {
                     // gets RGB color of the pixel
                     color = bm.getPixel(i, j);
@@ -514,7 +539,7 @@ public abstract class MasterAutonomous extends Master
                     //(For debugging code only)
                     if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31))
                     {
-                        bm.setPixel(i, j, 0xff00ff00);
+                        bm.setPixel(i, j, 0xff0000ff);//Blue Color()
                     }
                 }
             }
@@ -531,6 +556,7 @@ public abstract class MasterAutonomous extends Master
 
         if (pose!=null)
         {
+            Matrix34F rawPose = new Matrix34F();
             float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
             rawPose.setData(poseData);
             // image size is 254 mm x 184 mm

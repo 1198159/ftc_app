@@ -12,7 +12,6 @@ import java.lang.reflect.GenericSignatureFormatError;
 @TeleOp(name = "CapBot Teleop")
 public class TeleOpCompetition extends MasterTeleOp
 {
-    Servo servoJJ;
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -24,12 +23,9 @@ public class TeleOpCompetition extends MasterTeleOp
         {
             DriveOmni45TeleOp();
             RunGG();
+            //SendTelemetry();
             //idle();
         }
-    }
-    public void initServos()
-    {
-        servoJJ = hardwareMap.get(Servo.class, "servoL");
     }
 }
 

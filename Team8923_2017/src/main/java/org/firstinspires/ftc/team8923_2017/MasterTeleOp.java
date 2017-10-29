@@ -21,7 +21,7 @@ public abstract class MasterTeleOp extends Master
     double error;
     double pivot;
     double kAngle;
-    double jpivot;//for pivoting
+    double jPivot;//for pivoting
 
     ElapsedTime GGLiftTimer = new ElapsedTime();
 
