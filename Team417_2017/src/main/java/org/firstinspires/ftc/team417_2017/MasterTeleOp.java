@@ -30,7 +30,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     double y;
     double x;
     double power;
-    double turnPower;
+    double pivotPower;
     double angle;
 
     boolean isModeReversed = false;
@@ -61,17 +61,32 @@ abstract public class MasterTeleOp extends MasterOpMode
 
         y = -gamepad1.right_stick_y; // Y axis is negative when up
         x = gamepad1.right_stick_x;
-        power = calcDistance(x, y);
-        turnPower = gamepad1.left_stick_x; // Fix for clockwise being a negative rotation
+        pivotPower = gamepad1.left_stick_x;
 
-        angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
+        // calculate the power for each motor
 
-        omniDrive(angle, power, turnPower);
+        powerFL = x + y + pivotPower;
+        powerFR = -x + y - pivotPower;
+        powerBL = -x + y + pivotPower;
+        powerBR = x + y - pivotPower;
+
+/*
+        powerFL = px + 0*py + pivotPower;
+        powerFR = 0*px + py - pivotPower;
+        powerBL = 0*px + py + pivotPower;
+        powerBR = px + 0*py - pivotPower;
+*/
+
+        // set power to the motors
+        motorFL.setPower(powerFL);
+        motorFR.setPower(powerFR);
+        motorBL.setPower(powerBL);
+        motorBR.setPower(powerBR);
     }
 
-    public double modJoyStickInput(double x) // x is the raw joystick input, refer to "modJoyStickInput"
+    public double modJoyStickInput(double i) // i is the raw joystick input
     {
-        return Math.pow(x,2) * Math.signum(x);
+        return Math.pow(i,2) * Math.signum(i);
     }
 
     public void initializeRobot()

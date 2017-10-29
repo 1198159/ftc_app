@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team417_2017;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -15,10 +16,10 @@ import java.util.Locale;
 abstract public class MasterOpMode extends LinearOpMode
 {
     // Declare drive motors
-    DcMotor motorFL = null;
-    DcMotor motorFR = null;
-    DcMotor motorBL = null;
-    DcMotor motorBR = null;
+    DcMotor motorFL = null; // port 4
+    DcMotor motorFR = null; // port 3
+    DcMotor motorBL = null; // port 1
+    DcMotor motorBR = null; // port 2
 
     // Declare servos
     Servo servoJewelStore = null;
@@ -58,16 +59,24 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+/*
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+*/
+
         // reverse front and back right motors just for TeleOp
-        motorFL.setDirection(DcMotor.Direction.FORWARD);
-        motorBL.setDirection(DcMotor.Direction.FORWARD);
-        motorFR.setDirection(DcMotor.Direction.REVERSE);
-        motorBR.setDirection(DcMotor.Direction.REVERSE);
+        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        motorFR.setDirection(DcMotor.Direction.FORWARD);
+        motorBR.setDirection(DcMotor.Direction.FORWARD);
 
         motorFL.setPower(0);
         motorFR.setPower(0);
