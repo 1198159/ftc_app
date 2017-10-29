@@ -217,13 +217,6 @@ abstract public class MasterOpMode extends LinearOpMode {
         return correctedHeading;
     }
 
-    //uses vuforia instead of imu
-    double getRobotAngleUsingVuforia()
-    {
-        vuforiaHelper.updateLocation();
-        return Orientation.getOrientation(vuforiaHelper.lastKnownLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle + headingOffset;
-    }
-
     //finds distance between 2 points
     double calculateDistance(double dx, double dy)
     {

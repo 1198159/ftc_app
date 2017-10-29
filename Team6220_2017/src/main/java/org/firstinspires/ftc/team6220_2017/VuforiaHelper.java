@@ -37,17 +37,18 @@ public class VuforiaHelper
 {
     // Vuforia variables
     VuforiaLocalizer vuforiaLocalizer;
-    VuforiaTrackables visionTargets;
+
+    VuforiaTrackables relicTrackables;
     VuforiaTrackable relicTemplate;
-    VuforiaTrackable[] targets = new VuforiaTrackable[0];
-    VuforiaTrackableDefaultListener[] listeners = new VuforiaTrackableDefaultListener[0];
+    //enum which has 4 possible values: UNKNOWN, LEFT, CENTER, and RIGHT
+    public RelicRecoveryVuMark vuMark;
+    //VuforiaTrackable[] targets = new VuforiaTrackable[1];
+    //VuforiaTrackableDefaultListener[] listeners = new VuforiaTrackableDefaultListener[1];
+    //
 
     // colors of both jewels used in getJewelColor()
     public float leftJewelColorHSV[] = {0f, 0f, 0f};
     public float rightJewelColorHSV[] = {0f, 0f, 0f};
-
-    //target
-    public RelicRecoveryVuMark vuMark;
 
     float[] colorTransfer = new float[]{0,0,0};
     //what we will eventually return
@@ -87,13 +88,13 @@ public class VuforiaHelper
     VuforiaLocalizer.CloseableFrame frame;
 
     /*
-    Necessary image variables.  Note:  we are using RGB888 because it stores more pixels, so we suspect
+    Necessary image variables
+    Note:  we are using RGB888 because it stores more pixels, so we suspect
     that we will obtain more accurate colors by using it.  However, we are not certain about this
     and will need to look further into the issue
     */
     // todo find where to initialize and use
     Image image = null;
-    Image imageRGB565 = null;
     int imageFormat;
 
     // stores colors used as return values in getJewelColor()
@@ -103,6 +104,54 @@ public class VuforiaHelper
         blue,
         undetermined
     }
+
+    public void setupVuforia()
+    {
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.useExtendedTracking = false;
+        this.vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
+
+        //setup for getting pixel information
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+        //make sure that vuforia doesn't begin racking up unnecessary frames
+        vuforiaLocalizer.setFrameQueueCapacity(1);
+
+        //---------------------------
+        // Initialize vision targets; this is important!
+        relicTrackables = this.vuforiaLocalizer.loadTrackablesFromAsset("RelicVuMark");
+        relicTemplate = relicTrackables.get(0);
+        // for debugging, but not essential
+        relicTemplate.setName("relicVuMarkTemplate");
+        //----------------------------
+
+        /*
+         Set phone location on robot. The center of the camera is the origin.
+         This location is 90 degrees less than the phone's actual rotation about the z-axis since we
+         use the mathematical sense of absolute rotation (0 degrees located on the x-axis) while vuforia
+         uses compass coordinates for rotation (0 degrees located on the y-axis)
+        */
+        //todo adjust for this year's robot
+        phoneLocation = createMatrix(220, 0, 0, 90, 0, 180);
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+
+        /*
+        // Setup listeners
+        for(int i = 0; i < targets.length; i++)
+        {
+            listeners[i] = (VuforiaTrackableDefaultListener) targets[i].getListener();
+            listeners[i].setPhoneInformation(phoneLocation, parameters.cameraDirection);
+        }
+        */
+
+        // avoids nullpointer errors
+        lastKnownLocation = createMatrix(0, 0, 0, 0, 0, 0);
+
+        //start tracking targets
+        relicTrackables.activate();
+    }
+
+    /*
     // function for finding the location of robot
     public OpenGLMatrix getLatestLocation()
     {
@@ -124,46 +173,8 @@ public class VuforiaHelper
         // telemetry.addData("Tracking", "lost");
         return lastKnownLocation;
     }
+    */
 
-    public void setupVuforia()
-    {
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        parameters.useExtendedTracking = false;
-        vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
-
-        //telemetry.log().setCapacity(4);
-
-        //setup for getting pixel information
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
-        //make sure that vuforia doesn't begin racking up unnecessary frames
-        vuforiaLocalizer.setFrameQueueCapacity(1);
-
-        // Initialize vision targets
-        VuforiaTrackables relicTrackables = this.vuforiaLocalizer.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        //for debugging, but not essential
-        relicTemplate.setName("relicVuMarkTemplate");
-        //vuMark = getVumark();
-
-        //Set phone location on robot. The center of the camera is the origin.
-        //This location is 90 degrees less than the phone's actual rotation about the z-axis since we
-        //use the mathematical sense of absolute rotation (0 degrees located on the x-axis) while vuforia
-        //uses compass coordinates for rotation (0 degrees located on the y-axis)
-        //todo adjust for this year's robot
-        phoneLocation = createMatrix(220, 0, 0, 90, 0, 180);
-
-        // Setup listeners
-        for(int i = 0; i < targets.length; i++)
-        {
-            listeners[i] = (VuforiaTrackableDefaultListener) targets[i].getListener();
-            listeners[i].setPhoneInformation(phoneLocation, parameters.cameraDirection);
-        }
-
-        // avoids nullpointer errors
-        lastKnownLocation = createMatrix(0, 0, 0, 0, 0, 0);
-    }
     public RelicRecoveryVuMark getVumark()
     {
         vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -181,6 +192,8 @@ public class VuforiaHelper
         return isVuMarkVisible;
     }
 
+    //todo change formatting from targets (an array) to relictrackables (a list)
+    /*
     // Used to find pixel color from the camera. Parameters are actually a coordinate
     // relative to vision target origin. Will need to use Colors class to extract RGB values
     int getPixelColor(int x, int y, int z) throws InterruptedException
@@ -281,6 +294,7 @@ public class VuforiaHelper
         updateLocation();
         return lastKnownLocation.getTranslation().getData();
     }
+    */
 
     // Formats location to something readable
     String format(OpenGLMatrix transformationMatrix)
