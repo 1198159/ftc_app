@@ -32,4 +32,11 @@ public class Constants
     // vuforia image constants
     public static final float MM_IMAGE_SAMPLING_WIDTH = 650;
     public static final float MM_IMAGE_SAMPLING_HEIGHT = 300;
+
+    // drive mode constants
+    public static final double SLOW_MODE_T_FACTOR = 0.2;
+    public static final double SLOW_MODE_R_FACTOR = 0.3;
+    public static final double T_FACTOR = 1.0;
+    public static final double R_FACTOR = 0.75;
+
 }

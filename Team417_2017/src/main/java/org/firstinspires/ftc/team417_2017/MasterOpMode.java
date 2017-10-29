@@ -37,6 +37,12 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4; // is 2.34
 
+    static final double JEWEL_STORE_INIT = 0.75;
+    static final double JEWEL_STORE_LOW = 0.99;
+    static final double JEWEL_DROP_INIT = 0.02;
+    static final double JEWEL_DROP_LOW = 0.65;
+
+
     // declare motor powers
     double powerFL;
     double powerFR;
@@ -59,18 +65,18 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
+/*
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+*/
 
-/*
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-*/
+
 
         // reverse front and back right motors just for TeleOp
         motorFL.setDirection(DcMotor.Direction.REVERSE);
@@ -87,8 +93,8 @@ abstract public class MasterOpMode extends LinearOpMode
         servoJewelStore = hardwareMap.servo.get("servoJewelStore");
         servoJewelDrop = hardwareMap.servo.get("servoJewelDrop");
 
-        servoJewelStore.setPosition(0.85);
-        servoJewelDrop.setPosition(0.1);
+        servoJewelStore.setPosition(JEWEL_STORE_INIT);
+        servoJewelDrop.setPosition(JEWEL_DROP_INIT);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
