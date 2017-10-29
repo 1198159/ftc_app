@@ -47,7 +47,9 @@ public abstract class Master extends LinearOpMode
     //Servos constants
     double SERVO_JJ_UP = 0.8; //Port 5, Hub 1
     double SERVO_JJ_DOWN = 0.15;
-    double SERVO_JJ_MIDDLE = 0.6;
+    double SERVO_JJ_MIDDLE = 0.5;
+    double SERVO_JJ_MIDDLE1 = 0.4;
+    double SERVO_JJ_MIDDLE2 = 0.5;
 
     //declare IMU
     double currentRobotAngle;
