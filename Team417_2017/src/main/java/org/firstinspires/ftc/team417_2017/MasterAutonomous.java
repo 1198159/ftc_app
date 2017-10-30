@@ -28,7 +28,7 @@ abstract class MasterAutonomous extends MasterOpMode
 
     boolean isLogging = true;
     boolean isRedTeam; // are you on red team? (if not, you're blue)
-    boolean isStartingPosOne;  // are you on starting position one? (if not, you're on position two)
+    boolean isPosLeft;  // are you on starting position one? (if not, you're on position two)
 
     // speed is proportional to error
     double Kmove = 1.0f/1200.0f;
@@ -504,66 +504,22 @@ abstract class MasterAutonomous extends MasterOpMode
         motorBR.setPower(0);
     }
 
-
-    // pivot using IMU
-    public void pivot(double turnAngle, double speed)
+    // this method drives for seconds, and it can only pivot
+    public void moveTimed(double xPower, double yPower, int milliSeconds) throws InterruptedException
     {
-        double pivotSpeed;
-        double startAngle;
-        double curTurnAngle;
+        powerFL = xPower + yPower;
+        powerFR = -xPower + yPower;
+        powerBL = -xPower + yPower;
+        powerBR = xPower + yPower;
 
-        // run with encoder mode
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        startAngle = imu.getAngularOrientation().firstAngle;
-
-        // read angle, record in starting angle variable
-        // run motor
-        // loop, current angle - start angle = error
-        // if error is close to 0, stop motors
-
-        double error = 100;
-        double errorP1 = 100;
-        double errorP2 = 100;
-
-        do
-        {
-            errorP2 = errorP1;
-            errorP1 = error;
-            curTurnAngle = imu.getAngularOrientation().firstAngle - startAngle;
-            curTurnAngle = adjustAngles(curTurnAngle);
-            error =  adjustAngles(turnAngle - curTurnAngle);
-            pivotSpeed = Math.abs(error) * Kpivot;
-            pivotSpeed = Range.clip(pivotSpeed, PIVOT_MINSPEED, speed); // limit abs speed
-            pivotSpeed = pivotSpeed * Math.signum(error); // set the sign of speed
-
-            // positive angle means CCW rotation
-            motorFL.setPower(pivotSpeed);
-            motorFR.setPower(-pivotSpeed);
-            motorBL.setPower(pivotSpeed);
-            motorBR.setPower(-pivotSpeed);
-
-            // allow some time for IMU to catch up
-            if (Math.abs(error) < 2)
-            {
-                sleep(15);
-                // stop motors
-                motorFL.setPower(0);
-                motorFR.setPower(0);
-                motorBL.setPower(0);
-                motorBR.setPower(0);
-                sleep(150);
-            }
-
-            if (isLogging) telemetry.log().add(String.format("StartAngle: %f, CurAngle: %f, error: %f", startAngle, curTurnAngle, error));
-            idle();
-
-        } while (opModeIsActive() && (Math.abs(error) > TOL_ANGLE || Math.abs(errorP1) > TOL_ANGLE) );
-
-        // stop motors
+        // turn on power
+        motorFL.setPower(powerFL);
+        motorFR.setPower(powerFR);
+        motorBL.setPower(powerBL);
+        motorBR.setPower(powerBR);
+        // let it run for x seconds
+        sleep(milliSeconds);
+        // stop the motors after two seconds
         motorFL.setPower(0);
         motorFR.setPower(0);
         motorBL.setPower(0);
