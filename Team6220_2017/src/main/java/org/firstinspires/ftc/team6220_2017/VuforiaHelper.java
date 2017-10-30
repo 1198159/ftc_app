@@ -147,8 +147,8 @@ public class VuforiaHelper
         // avoids nullpointer errors
         lastKnownLocation = createMatrix(0, 0, 0, 0, 0, 0);
 
-        //start tracking targets
-        relicTrackables.activate();
+        //begin tracking targets before match
+        startTracking();
     }
 
     /*
@@ -173,6 +173,31 @@ public class VuforiaHelper
         // telemetry.addData("Tracking", "lost");
         return lastKnownLocation;
     }
+
+    //todo change formatting from targets (an array) to relictrackables (a list)
+    public void updateLocation()
+    {
+        // Checks each target to see if we can find our location. If none are visible, then it returns null
+        for(int i = 0; i < targets.length; i++)
+        {
+            // Try to find location from this target
+            OpenGLMatrix latestLocation = listeners[i].getUpdatedRobotLocation();
+
+            // We've found a target to track
+            if(latestLocation != null)
+            {
+                lastKnownLocation = latestLocation;
+                return;
+            }
+        }
+        // Location is unknown, so don't change anything
+    }
+
+    float[] getRobotLocation()
+    {
+        updateLocation();
+        return lastKnownLocation.getTranslation().getData();
+    }
     */
 
     public RelicRecoveryVuMark getVumark()
@@ -192,109 +217,9 @@ public class VuforiaHelper
         return isVuMarkVisible;
     }
 
-    //todo change formatting from targets (an array) to relictrackables (a list)
-    /*
-    // Used to find pixel color from the camera. Parameters are actually a coordinate
-    // relative to vision target origin. Will need to use Colors class to extract RGB values
-    int getPixelColor(int x, int y, int z) throws InterruptedException
-    {
-        // Get the latest frame object from Vuforia
-        VuforiaLocalizer.CloseableFrame frame = vuforiaLocalizer.getFrameQueue().take();
-        Bitmap bm = null;
+    void startTracking() {relicTrackables.activate();}
 
-        // The frame object contains multiple images in different formats. We want to store the
-        // RGB565 image in our bitmap object. Not sure what the other formats do
-        for(int i = 0; i < frame.getNumImages(); i++)
-        {
-            // We only want the rgb image
-            if(frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565)
-            {
-                // Store image in the bitmap
-                Image image = frame.getImage(i);
-                bm = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.RGB_565);
-                bm.copyPixelsFromBuffer(image.getPixels());
-                break;
-            }
-        }
-
-        // Make sure we actually have something
-        if(bm == null)
-        {
-            return 0;
-        }
-        // Check to see if any of the vision targets are being tracked
-        for(int i = 0; i < targets.length; i++)
-        {
-            targetPosition = listeners[i].getRawPose();
-
-            // If the vision target isn't being tracked, it will be null. If it's not null, we're tracking it
-            if(targetPosition != null)
-            {
-                Matrix34F matrixPose = new Matrix34F();
-                matrixPose.setData(Arrays.copyOfRange(targetPosition.transposed().getData(), 0, 12));
-
-                // Get the pixel that represents the specified point
-                Vec2F point = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), matrixPose, new Vec3F(x, y, z));
-
-                // Return the color of that pixel
-                try
-                {
-                    return bm.getPixel((int) point.getData()[0], (int) point.getData()[1]);
-                }
-                catch(IllegalArgumentException e)
-                {
-                    // Pixel location was outside of camera field of view
-                    return 0;
-                }
-            }
-        }
-        // None of the vision targets are being tracked
-        return 0;
-    }
-
-    public void updateLocation()
-    {
-        // Checks each target to see if we can find our location. If none are visible, then it returns null
-        for(int i = 0; i < targets.length; i++)
-        {
-            // Try to find location from this target
-            OpenGLMatrix latestLocation = listeners[i].getUpdatedRobotLocation();
-
-            // We've found a target to track
-            if(latestLocation != null)
-            {
-                lastKnownLocation = latestLocation;
-                return;
-            }
-        }
-        // Location is unknown, so don't change anything
-    }
-
-//    void startTracking()
-//    {
-//        visionTargets.activate();
-//    }
-//
-//    void stopTracking() {visionTargets.deactivate();}
-
-    boolean isTracking()
-    {
-        for(int i = 0; i < targets.length; i++)
-        {
-            if(listeners[i].isVisible())
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    float[] getRobotLocation()
-    {
-        updateLocation();
-        return lastKnownLocation.getTranslation().getData();
-    }
-    */
+    void stopTracking() {relicTrackables.deactivate();}
 
     // Formats location to something readable
     String format(OpenGLMatrix transformationMatrix)
@@ -321,17 +246,17 @@ public class VuforiaHelper
                     // get RGB color of pixel
                     color = bitMap.getPixel(i, j);
 
-                    // convert RGB to HSV - hue, sat, val
+                    // convert RGB to HSV (hue, sat, val)
                     // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
                     Color.colorToHSV(color, colorTransfer);
 
-                    // integrate HSV color of all pixels
+                    // sum the HSV values of all pixels
                     colorSum[0] += colorTransfer[0];
 
                     // draw black border around sample region for debugging only
                     if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31))
                     {
-                        bitMap.setPixel(i, j, 0xff00ff00);
+                        bitMap.setPixel(i, j, 0xffffffff);
                     }
                 }
             }
@@ -364,8 +289,8 @@ public class VuforiaHelper
             float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
             rawPose.setData(poseData);
             // image size is 254 mm x 184 mm
-            Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
-            Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(390, -180, -102));
+            Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(180, -200, -102));
+            Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(390, -200, -102));
 
             // takes the frame at the head of the queue
             frame = vuforiaLocalizer.getFrameQueue().take();
@@ -402,7 +327,7 @@ public class VuforiaHelper
             colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 360 : avgLeftJewelColor;
             colorRight = (avgRightJewelColor < 45) ? avgRightJewelColor + 360 : avgRightJewelColor;
         }
-        //deltaColorHSV = colorLeft - colorRight;
+
         // if left color is negative, then left side is blue
         if ((colorLeft - colorRight) < 0) isLeftJewelBlue = true; // BLUE
         else isLeftJewelBlue = false; // RED
