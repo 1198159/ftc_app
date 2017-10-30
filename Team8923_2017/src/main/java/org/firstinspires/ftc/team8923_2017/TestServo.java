@@ -15,9 +15,9 @@ public class TestServo extends LinearOpMode
 {
     Servo servoL;
     Servo servoR;
-    Servo currentServo;
-    String currentServoID = "Left Servo";
-    double currentServoPos  = 0.0;
+    char currentServoID = 'L';
+    double currentServoPosL  = 0.0;
+    double currentServoPosR  = 0.0;
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -33,30 +33,32 @@ public class TestServo extends LinearOpMode
         {
             if(gamepad1.dpad_left)
             {
-                currentServo = servoL;
-                currentServoID = "Left Servo";
+                currentServoID = 'L';
             }
             else if(gamepad1.dpad_right)
             {
-                currentServo = servoR;
-                currentServoID = "Right Servo";
+                currentServoID = 'R';
             }
 
             if (gamepad1.dpad_up)
             {
-                currentServo.setPosition(currentServo.getPosition() + 0.1);
+                if(currentServoID == 'R')
+                    servoR.setPosition(currentServoPosR += 0.1);
+                else if(currentServoID == 'L')
+                    servoL.setPosition(currentServoPosL += 0.1);
             }
-            else if(gamepad1.dpad_down)
+            else if (gamepad1.dpad_down)
             {
-                currentServo.setPosition(currentServo.getPosition() - 0.1);
+                if (currentServoID == 'R')
+                    servoR.setPosition(currentServoPosR -= 0.1);
+                else if (currentServoID == 'L')
+                    servoL.setPosition(currentServoPosL -= 0.1);
             }
-
-            currentServoPos = currentServo.getPosition();
 
             doTelemetry();
 
-            while (!buttonsAreReleased(gamepad1))
-                idle();
+            while (!buttonsAreReleased(gamepad1)){}
+
         }
     }
 
@@ -64,13 +66,19 @@ public class TestServo extends LinearOpMode
     {
         servoL = hardwareMap.get(Servo.class, "servoL");
         servoR = hardwareMap.get(Servo.class, "servoR");
-        currentServo = servoL;
     }
 
     void doTelemetry()
     {
         telemetry.addData("Current Servo", currentServoID);
-        telemetry.addData("Current Servo Position", currentServoPos);
+        if(currentServoID == 'L')
+            telemetry.addData("Current Servo Position", currentServoPosL);
+        else if(currentServoID == 'R')
+            telemetry.addData("Current Servo Position", currentServoPosR);
+        if(gamepad1.dpad_up)
+            telemetry.addLine("Dpad_Up");
+        else if(gamepad1.dpad_down)
+            telemetry.addLine("Dpad_Down");
         telemetry.update();
     }
 

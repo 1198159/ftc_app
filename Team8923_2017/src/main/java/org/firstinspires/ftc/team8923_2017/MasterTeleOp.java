@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public abstract class MasterTeleOp extends Master
 {
-    int GGLiftTicks = 250;
 
     boolean slowModeActive = false;
     boolean liftMoving = false;
@@ -30,12 +29,11 @@ public abstract class MasterTeleOp extends Master
     {
         if(gamepad1.guide)
         {
-            if(slowModeActive)
-                slowModeDivisor = 1.0;
-            else if(!slowModeActive)
-                slowModeDivisor = 5.0;
-
             slowModeActive = !slowModeActive;
+            if (slowModeDivisor == 1.0)
+                slowModeDivisor = 5.0;
+            else
+                slowModeDivisor = 1.0;
         }
 
         double y = -gamepad1.left_stick_y; // Y axis is negative when up
@@ -46,6 +44,12 @@ public abstract class MasterTeleOp extends Master
         double angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
 
         driveOmni45(angle, power, turnPower);
+    }
+
+    void SendTelemetry()
+    {
+        telemetry.addData("GG Lift Ticks", motorGG.getCurrentPosition());
+        telemetry.update();
     }
 
     /*void IMUDrive()//Drive for straighter movement. However, pivot is very slow For now, maybe don't use this method in TeleOp until faster pivot is made
@@ -87,25 +91,33 @@ public abstract class MasterTeleOp extends Master
             else if (gamepad1.dpad_down)
                 motorGG.setTargetPosition(motorGG.getCurrentPosition() - GGLiftTicks);
 
-            motorGG.setPower(Math.signum(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * 0.75);
+            if(motorGG.getCurrentPosition() - GGLiftTicks > GGZero)
+                motorGG.setTargetPosition(GGZero);
+            else if((motorGG.getCurrentPosition() + GGLiftTicks < GGZero + (GGLiftTicks * 4)))
+                motorGG.setTargetPosition(GGZero + (GGLiftTicks * 4));
         }
 
-        if(GGLiftTimer.milliseconds() > 250 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 50)
+        if(liftMoving)
+        {
+            motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 1000));
+        }
+
+        if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 10)
         {
             motorGG.setPower(0.0);
             liftMoving = false;
         }
 
-        if(gamepad1.x && !liftMoving)
+        if(gamepad1.y && !liftMoving)
         {
-            servoGGL.setPosition(0.0); //TODO value needs to be changed
-            servoGGR.setPosition(0.0); //TODO value to be changed
+            servoGGL.setPosition(0.5); //TODO value needs to be changed
+            servoGGR.setPosition(0.1); //TODO value to be changed
 
         }
-         else if(gamepad1.b && !liftMoving)
+         else if(gamepad1.a && !liftMoving)
         {
-            servoGGL.setPosition(0.0);//TODO value needs to be changed
-            servoGGR.setPosition(0.0);//TODO value needs to be changed
+            servoGGL.setPosition(0.3);//TODO value needs to be changed
+            servoGGR.setPosition(0.25);//TODO value needs to be changed
         }
     }
 }

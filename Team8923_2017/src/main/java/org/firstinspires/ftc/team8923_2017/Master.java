@@ -76,7 +76,7 @@ public abstract class Master extends LinearOpMode
     double speedFR;
     double speedBL;
     double speedBR;
-    double kMove = 1/800.0;
+    double kMove = 1/600.0;
     double TOL = 110.0;
     double AngleTOL = 3.0;
     double angleError;
@@ -102,6 +102,8 @@ public abstract class Master extends LinearOpMode
         servoGGR = hardwareMap.get(Servo.class, "servoGGR");
 
         servoJJ.setPosition(SERVO_JJ_UP);
+        servoGGL.setPosition(0.3);
+        servoGGR.setPosition(0.25);
 
         //Reset encoders
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
