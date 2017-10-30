@@ -35,6 +35,7 @@ public abstract class Master extends LinearOpMode
 
     // Declare any robot-wide variables here
     double SlowModeDivisor = 1.0;
+    int GGZero = 0;
 
     // Declare constants here
     private static  final double GEAR_RATIO = 1.0;
@@ -50,6 +51,8 @@ public abstract class Master extends LinearOpMode
     double SERVO_JJ_MIDDLE = 0.5;
     double SERVO_JJ_MIDDLE1 = 0.4;
     double SERVO_JJ_MIDDLE2 = 0.5;
+
+    int GGLiftTicks = 750;
 
     //declare IMU
     double currentRobotAngle;
@@ -91,9 +94,12 @@ public abstract class Master extends LinearOpMode
         motorFR = hardwareMap.get(DcMotor.class, "motorFR");
         motorBL = hardwareMap.get(DcMotor.class, "motorBL");
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
+        motorGG = hardwareMap.get(DcMotor.class, "motorGG");
 
         // Servos here
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
+        servoGGL = hardwareMap.get(Servo.class, "servoGGL");
+        servoGGR = hardwareMap.get(Servo.class, "servoGGR");
 
         servoJJ.setPosition(SERVO_JJ_UP);
 
@@ -108,12 +114,12 @@ public abstract class Master extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Servos here
 
         // Sensors here
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -121,6 +127,8 @@ public abstract class Master extends LinearOpMode
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+
+        GGZero = motorGG.getCurrentPosition();
     }
 
     // 45 denotes the angle at which the motors are mounted in referece to the chassis frame
