@@ -2,6 +2,8 @@ package org.firstinspires.ftc.team6220_2017;
 
 import android.graphics.Color;
 
+import java.util.ArrayList;
+
 /*
     Contains important methods for use in our autonomous programs
 */
@@ -13,14 +15,8 @@ abstract public class MasterAutonomous extends MasterOpMode
     RoutineOption routineOption = RoutineOption.;
     */
     int delay = 0;
-
-    //used for initializations only necessary in autonomous
-    public void initializeAuto()
-    {
-        initializeHardware();
-        vuforiaHelper = new VuforiaHelper();
-        vuforiaHelper.setupVuforia();
-    }
+    //use for more advanced auto
+    ArrayList<Alliance> routine = new ArrayList<>();
 
     //enums used for runSetUp
     enum Alliance
@@ -28,10 +24,50 @@ abstract public class MasterAutonomous extends MasterOpMode
         BLUE,
         RED
     }
+
+    public boolean isBlueSide = true;
+    //used for initializations only necessary in autonomous
+    public void initializeAuto()
+    {
+        /*boolean settingUp = true;
+
+        while(settingUp)
+        {
+            if(gamepad1.left_bumper)
+            {
+                isBlueSide = false;
+                telemetry.addLine("We are on red side!");
+                telemetry.update();
+            }
+            else if(gamepad1.right_bumper)
+            {
+                isBlueSide = true;
+                telemetry.addLine("We are on blue side!");
+                telemetry.update();
+            }
+            else if(gamepad1.start)
+                settingUp = false;
+
+            idle();
+        }*/
+        initializeHardware();
+        vuforiaHelper = new VuforiaHelper();
+        vuforiaHelper.setupVuforia();
+        //temporary
+        /*routine.add(Alliance.BLUE);
+        telemetry.addLine("We are on blue side!");
+        telemetry.update();*/
+    }
+
     enum RoutineOption
     {
-
+        BEACON_LEFT,
+        BEACON_RIGHT,
+        PARK_RAMP,
+        PARK_CENTER,
+        SHOOT_CENTER
     }
+
 
     //todo write setup for this year's autonomous
     //note: not currently in use
