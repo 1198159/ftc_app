@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class AutonomousBlue extends MasterAutonomous
 {
     VuforiaDetection VuforiaDetect = new VuforiaDetection();
+    double parkSpeed = 0.5;
 
 
     public void runOpMode() throws InterruptedException
@@ -16,6 +17,32 @@ public class AutonomousBlue extends MasterAutonomous
         super.initializeHardware();
         VuforiaDetect.initVuforia(); // initialize Vuforia
         telemetry.addData("Done: ", "initializing");
+        telemetry.update();
+
+        while (!isStarted())
+        {
+            // select position left or right, from drivers facing the field
+            if (gamepad1.x) isPosLeft = true;
+            if (gamepad1.b) isPosLeft = false;
+
+            if (isPosLeft) telemetry.addData("Alliance: ", "Blue Left");
+            else telemetry.addData("Alliance: ", "Blue Right");
+
+            telemetry.update();
+            idle();
+        }
+        telemetry.update();
+
+        if (isPosLeft)
+        {
+            // OPTION BLUE LEFT
+            parkSpeed = -0.6;
+        }
+        else
+        {
+            // OPTION BLUE RIGHT
+            parkSpeed = 0.6;
+        }
 
 // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -25,9 +52,9 @@ public class AutonomousBlue extends MasterAutonomous
 
         // lower the servos, putting jewel manipulator into position
         servoJewelStore.setPosition(JEWEL_STORE_LOW);
-        sleep(300);
+        sleep(200);
         servoJewelDrop.setPosition(JEWEL_DROP_LOW);
-        sleep(300);
+        sleep(200);
 
         Kmove = 1.0/1200.0;
         MINSPEED = 0.3;
@@ -59,7 +86,7 @@ public class AutonomousBlue extends MasterAutonomous
         }
         telemetry.update();
 
-        sleep(300);
+        sleep(200);
 
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle;
@@ -67,27 +94,35 @@ public class AutonomousBlue extends MasterAutonomous
         if(VuforiaDetect.isLeftJewelBlue) // if the left jewel is blue,
         {
             pivotWithReference(-30, refAngle, 0.5); // then pivot right
-            sleep(300);
+            sleep(200);
             servoJewelStore.setPosition(JEWEL_STORE_INIT);
-            sleep(300);
+            sleep(200);
             servoJewelDrop.setPosition(JEWEL_DROP_INIT);
-            sleep(300);
+            sleep(200);
             pivotWithReference(0, refAngle, 0.5); // then pivot back
+            sleep(200);
         }
         else // if the left jewel is red,
         {
             pivotWithReference(30, refAngle, 0.5); // then pivot left
-            sleep(300);
+            sleep(200);
             servoJewelStore.setPosition(JEWEL_STORE_INIT);
-            sleep(300);
+            sleep(200);
             servoJewelDrop.setPosition(JEWEL_DROP_INIT);
-            sleep(300);
+            sleep(200);
             pivotWithReference(0, refAngle, 0.5); // then pivot back
+            sleep(200);
         }
 
-        sleep(6000);
+        moveTimed(parkSpeed, 0, 1750);
+        sleep(200);
+        moveTimed(0, 0.4, 650);
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();
+
+
+        sleep(6000);
+
     }
 }
