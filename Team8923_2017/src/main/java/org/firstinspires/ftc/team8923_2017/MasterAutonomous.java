@@ -66,6 +66,12 @@ public abstract class MasterAutonomous extends Master
             val = i;
         }
     }
+    double SERVO_JJ_MIDDLE1 = 0.45;
+    double SERVO_JJ_MIDDLE2 = 0.4;
+    double SERVO_JJ_MIDDLE3 = 0.35;
+    double SERVO_JJ_MIDDLE4 = 0.3;
+    double SERVO_JJ_MIDDLE5 = 0.25;
+    double SERVO_JJ_MIDDLE6 = 0.2;
 
     Alliance alliance = Alliance.RED;
     StartPositions startPosition = StartPositions.LEFT;
@@ -75,6 +81,8 @@ public abstract class MasterAutonomous extends Master
     double robotX;
     double robotY;
     double robotAngle;
+    double kMove = 1/600.0;
+
 
     // Used to calculate distance traveled between loops
     int lastEncoderFL = 0;
@@ -211,9 +219,13 @@ public abstract class MasterAutonomous extends Master
         }
     }
 
+    void closeGG()
+    {
+        servoGGL.setPosition(0.5);
+        servoGGR.setPosition(0.1);
+    }
 
-
-    void MoveIMU(double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
+    void MoveIMU(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
     {
         currentFL = motorFL.getCurrentPosition();
         currentFR = motorFR.getCurrentPosition();
@@ -227,7 +239,8 @@ public abstract class MasterAutonomous extends Master
         newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
 
         runtime.reset(); // used for timeout
-
+        targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
+        targetAngle = adjustAngles(targetAngle);
         do {
             currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
             moveErrorFL = newTargetFL - currentFL;
@@ -256,9 +269,9 @@ public abstract class MasterAutonomous extends Master
             pivot = angleError * kAngle;
 
             //Sets values for motor power
-            motorPowerFL = speedFL + pivot;
-            motorPowerFR = speedFR + pivot;
-            motorPowerBL = speedBL + pivot;
+            motorPowerFL = -speedBR + pivot;
+            motorPowerFR = speedBR + pivot;
+            motorPowerBL = -speedBR + pivot;
             motorPowerBR = speedBR + pivot;
 
             //Sets motor power
@@ -281,7 +294,7 @@ public abstract class MasterAutonomous extends Master
         }
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
-                (Math.abs(moveErrorFL) > TOL));
+                (Math.abs(moveErrorBL) > TOL));
 
         //Stop motors
         motorFL.setPower(0);
@@ -290,6 +303,64 @@ public abstract class MasterAutonomous extends Master
         motorBR.setPower(0);
     }
 
+    void move(double moveMM, double maxSpeed, double timeout)
+    {
+        currentFL = motorFL.getCurrentPosition();
+        currentFR = motorFR.getCurrentPosition();
+        currentBL = motorBL.getCurrentPosition();
+        currentBR = motorBR.getCurrentPosition();
+
+        //Sets motor encoder values
+        newTargetFL = motorFL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetBL = motorBL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+
+        runtime.reset(); // used for timeout
+        do {
+            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
+            moveErrorFL = newTargetFL - currentFL;
+            speedFL = Math.abs(kMove * moveErrorFL);
+            speedFL = Range.clip(speedFL, 0.15, maxSpeed);
+            speedFL = speedFL * Math.signum(moveErrorFL);
+
+            moveErrorFR = newTargetFR - currentFR;
+            speedFR = Math.abs(kMove * moveErrorFR);
+            speedFR = Range.clip(speedFR, 0.15, maxSpeed);
+            speedFR = speedFR * Math.signum(moveErrorFR);
+
+            moveErrorBL = newTargetBL - currentBL;
+            speedBL = Math.abs(kMove * moveErrorBL);
+            speedBL = Range.clip(speedBL, 0.15, maxSpeed);
+            speedBL = speedBL * Math.signum(moveErrorBL);
+
+            moveErrorBR = newTargetBR - currentBR;
+            speedBR = Math.abs(kMove * moveErrorBR);
+            speedBR = Range.clip(speedBR, 0.15, maxSpeed);
+            speedBR = speedBR * Math.signum(moveErrorBR);
+
+            //Sets values for motor power
+            motorPowerFL = speedFL;
+            motorPowerFR = speedFR;
+            motorPowerBL = speedBL;
+            motorPowerBR = speedBR;
+
+            motorFL.setPower(-motorPowerBR);
+            motorFR.setPower(motorPowerBR);
+            motorBL.setPower(-motorPowerBR);
+            motorBR.setPower(motorPowerBR);
+            idle();
+        }
+        while (opModeIsActive() &&
+                (runtime.seconds() < timeout) &&
+                (Math.abs(moveErrorBL) > TOL));
+
+        //Stop motors
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+    }
 
     void pivot(double moveMM, double maxSpeed, double timeout)
     {
@@ -354,7 +425,7 @@ public abstract class MasterAutonomous extends Master
 
     void IMUPivot(double referenceAngle, double targetAngle, double MaxSpeed, double kAngle)
     {
-        targetAngle =  referenceAngle + targetAngle;//Adds the current anlge to the target
+        targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
         targetAngle = adjustAngles(targetAngle);
         do {
             currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
@@ -365,11 +436,11 @@ public abstract class MasterAutonomous extends Master
 
             if (pivot >= 0.0)
             {
-                pivot = Range.clip(pivot, 0.05, MaxSpeed);
+                pivot = Range.clip(pivot, 0.15, MaxSpeed);
             }
             else
             {
-                pivot = Range.clip(pivot, -MaxSpeed, -0.04);
+                pivot = Range.clip(pivot, -MaxSpeed, -0.15);
             }
 
             motorPowerFL = pivot;
@@ -382,7 +453,7 @@ public abstract class MasterAutonomous extends Master
             motorBL.setPower(motorPowerBL);
             motorBR.setPower(motorPowerBR);
             //Slows down to allow IMU to catch up
-            if (Math.abs(angleError) < 5.0)
+            /*if (Math.abs(angleError) < 5.0)
             {
                 sleep(30);
                 motorFL.setPower(0);
@@ -391,6 +462,7 @@ public abstract class MasterAutonomous extends Master
                 motorBR.setPower(0);
                 sleep(150);
             }
+            */
             idle();
         }
         while (opModeIsActive() && (Math.abs(angleError) > AngleTOL));
@@ -401,6 +473,18 @@ public abstract class MasterAutonomous extends Master
         motorBR.setPower(0);
     }
 
+    void pivotFixed(double speed)
+    {
+        motorFL.setPower(speed);
+        motorFR.setPower(speed);
+        motorBL.setPower(speed);
+        motorBR.setPower(speed);
+        sleep(3000);
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+    }
 
     void driveToPoint(double targetX, double targetY, double targetAngle, double maxPower) throws InterruptedException
     {
@@ -446,11 +530,19 @@ public abstract class MasterAutonomous extends Master
     void DropJJ()
     {
         servoJJ.setPosition(SERVO_JJ_MIDDLE);
-        sleep(500);
+        sleep(200);
         servoJJ.setPosition(SERVO_JJ_MIDDLE1);
-        sleep(500);
+        sleep(200);
         servoJJ.setPosition(SERVO_JJ_MIDDLE2);
-        sleep(500);
+        sleep(200);
+        servoJJ.setPosition(SERVO_JJ_MIDDLE3);
+        sleep(200);
+        servoJJ.setPosition(SERVO_JJ_MIDDLE4);
+        sleep(200);
+        servoJJ.setPosition(SERVO_JJ_MIDDLE5);
+        sleep(200);
+        servoJJ.setPosition(SERVO_JJ_MIDDLE6);
+        sleep(200);
         servoJJ.setPosition(SERVO_JJ_DOWN);
     }
 

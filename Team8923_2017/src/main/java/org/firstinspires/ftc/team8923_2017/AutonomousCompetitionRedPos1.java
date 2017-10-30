@@ -20,28 +20,37 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         initVuforia();//Initializes Vuforia
 
         waitForStart();
-
         DropJJ();
-        sleep(1000);
         GetLeftJewelColor();
-        sleep(1000);
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
-        if (isLeftJewelRed = true)
+        if (isLeftJewelRed == true)
         {
-            IMUPivot(referenceAngle, -20, 0.5, 0.001);
+            IMUPivot(referenceAngle, -20, 0.5, 0.015);
             RetrieveJJ();
-            IMUPivot(referenceAngle, 0, 0.5, 0.001);
+            IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
+
         else
         {
-            IMUPivot(referenceAngle, 20, 0.5, 0.001);
+            IMUPivot(referenceAngle, 20, 0.5, 0.015);
             RetrieveJJ();
-            IMUPivot(referenceAngle, 0, 0.5, 0.001);
+            IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
+        MoveIMU(referenceAngle, -50.0, 0.0, 0.015, 0.5, 3.0);//Go towards parking spot
+        IMUPivot(referenceAngle, -90, 0.5, 0.015);
+        referenceAngle -= 90.0;
+        referenceAngle = adjustAngles(referenceAngle);
+        MoveIMU(referenceAngle, -50.0, 0.0, 0.015, 0.5, 0.8);
+
 
         while (opModeIsActive())
         {
+            telemetry.addData("EncoderFL", motorFL.getCurrentPosition());
+            telemetry.addData("EncoderFR", motorFR.getCurrentPosition());
+            telemetry.addData("EncoderBL", motorBL.getCurrentPosition());
+            telemetry.addData("EncoderBR", motorBR.getCurrentPosition());
+            telemetry.update();
             //Run();
             idle();
         }

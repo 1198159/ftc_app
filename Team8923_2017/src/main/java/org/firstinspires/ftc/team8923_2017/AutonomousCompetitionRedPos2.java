@@ -24,22 +24,28 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
         DropJJ();
         sleep(1000);
         GetLeftJewelColor();
-        sleep(1000);
+        sleep(500);
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
-        if (isLeftJewelRed = true)
+        if (isLeftJewelRed == true)
         {
-            IMUPivot(referenceAngle, -20, 0.5, 0.001);
+            IMUPivot(referenceAngle, -20, 0.5, 0.015);//Pivot right
             RetrieveJJ();
-            IMUPivot(referenceAngle, 0, 0.5, 0.001);
+            IMUPivot(referenceAngle, 0, 0.5, 0.015);//Pivot left
         }
         else
         {
-            IMUPivot(referenceAngle, 20, 0.5, 0.001);
+            IMUPivot(referenceAngle, 20, 0.5, 0.015);
             RetrieveJJ();
-            IMUPivot(referenceAngle, 0, 0.5, 0.001);
+            IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
-
+        MoveIMU(referenceAngle, -50.0, 0.0, 0.015, 0.5, 2.5);//Go towards parking spot
+        IMUPivot(referenceAngle, -90, 0.5, 0.015);
+        referenceAngle -= 90.0;
+        referenceAngle = adjustAngles(referenceAngle);
+        MoveIMU(referenceAngle, 50.0, 0.0, 0.015, 0.5, 0.5);
+        IMUPivot(referenceAngle, 90, 0.5, 0.015);
+        //MoveIMU(referenceAngle, -50.0, 0.0, 0.015, 0.5, 1.0);
         while (opModeIsActive())
         {
             //Run();

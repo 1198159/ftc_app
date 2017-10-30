@@ -2,12 +2,12 @@ package org.firstinspires.ftc.team8923_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Autonomous Competition Blue Pos 2", group = "Swerve")
+@Autonomous(name="Move Test", group = "Swerve")
 /**
  * Runable shell for Master Autonomous code
  */
 //@Disabled
-public class AutonomousCompetitionBluePos2 extends MasterAutonomous
+public class MoveTest extends MasterAutonomous
 {
     //Declare variables here
 
@@ -21,27 +21,18 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
 
         waitForStart();
 
-        DropJJ();
-        sleep(1000);
-        GetLeftJewelColor();
-        sleep(500);
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
-
-        if (isLeftJewelRed == true)
-        {
-            IMUPivot(referenceAngle, 20, 0.5, 0.015);
-            RetrieveJJ();
-            IMUPivot(referenceAngle, 0, 0.5, 0.015);
-        }
-        else
-        {
-            IMUPivot(referenceAngle, -20, 0.5, 0.015);
-            RetrieveJJ();
-            IMUPivot(referenceAngle, 0, 0.5, 0.015);
-        }
+        MoveIMU(referenceAngle, -40.0, -90, 0.015, 0.5, 3.0);
+        //move(-20, 0.5, 3.0);
+        //move(-100, 0.5, 3.0);
 
         while (opModeIsActive())
         {
+            telemetry.addData("EncoderFL", motorFL.getCurrentPosition());
+            telemetry.addData("EncoderFR", motorFR.getCurrentPosition());
+            telemetry.addData("EncoderBL", motorBL.getCurrentPosition());
+            telemetry.addData("EncoderBR", motorBR.getCurrentPosition());
+            telemetry.update();
             //Run();
             idle();
         }
