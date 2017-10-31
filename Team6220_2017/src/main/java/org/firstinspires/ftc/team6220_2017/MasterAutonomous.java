@@ -140,6 +140,98 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         stopAllDriveMotors();
     }
+    //generates motor powers and writes values to them
+    /*public void moveRobot(double x, double y, double w)
+    {
+            writeToMotors(getMotorPowersFromMotion(new Transform2D(x, y, w)));
+    }
+    //gives the drive motors a command
+    public void writeToMotors(double[] powers)
+    {
+        //write motor powers
+        for (int corner = 0; corner < 4; corner++)
+        {
+            double power = powers[corner];
+            //power = 0.25; // test value for debugging
+            driveAssemblies[corner].setPower(power);
+
+            currentOpMode.telemetry.addData( corner + ": ", power);
+        }
+    }
+    //TODO: make assemblies.location represent their actual values
+    //returns an array with the motor powers for the requested motion
+    //                                      horizontal vertical  rotation
+    public double[] getMotorPowersFromMotion(Transform2D requestedMotion)
+    {
+        double[] rawPowers = new double[]{0.0,0.0,0.0,0.0};
+
+        //TODO: see beginning of MasterOpMode
+        //calculates motor powers proportionally
+        for (int corner = 0; corner < 4; corner++)
+        {
+            rawPowers[corner] =
+                    requestedMotion.rot
+                            + Math.signum(assemblies[corner].location.y) * requestedMotion.x         //assemblies[corner].location.y works as sine of the angle of each motor
+                            + Math.signum(assemblies[corner].location.x) * requestedMotion.y         //assemblies[corner].location.x works as cosine of the angle of each motor
+            ;
+            //currentOpMode.telemetry.addData("etime: ", )
+        }
+        //scales values so that they will remain in proportion in the case that they would "overflow"; e.g. [0.4,0.6,1.0,2.0] becomes [0.2,0.3,0.5,1.0]
+        double scalingFactor = 1.0;
+        double largest = SequenceUtilities.getLargestMagnitude(rawPowers);
+        if (largest > 1.0)
+        {
+            scalingFactor = largest;
+        }
+
+        return SequenceUtilities.scalarMultiply(rawPowers, 1/scalingFactor);
+    }
+    //tell the robot to turn to a specified distance
+    public void moveRobotDeadReckoning(double targetAngle)
+    {
+        double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
+        double turningPower;
+
+        //robot only stops when it is within angle tolerance
+        while(Math.abs(angleDiff) >= Constants.ANGLE_TOLERANCE && opModeIsActive())
+        {
+            currentAngle = getAngularOrientationWithOffset();
+
+            //gives robot its adjusted turning power
+            angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
+            turningPower = Constants.TURNING_POWER_FACTOR * angleDiff;
+
+            //sends turningPower through PID filter to increase precision of turning
+            RotationControlFilter.roll(turningPower);
+            turningPower = RotationControlFilter.getFilteredValue();
+
+            //makes sure turn power doesn't go above maximum power
+            if (Math.abs(turningPower) > 1.0)
+            {
+                turningPower = Math.signum(turningPower);
+            }
+
+            //makes sure turn power doesn't go below minimum power
+            if(turningPower > 0 && turningPower < Constants.MINIMUM_TURNING_POWER)
+            {
+                turningPower = Constants.MINIMUM_TURNING_POWER;
+            }
+            else if (turningPower < 0 && turningPower > -Constants.MINIMUM_TURNING_POWER)
+            {
+                turningPower = -Constants.MINIMUM_TURNING_POWER;
+            }
+
+            //turns robot
+            driveMecanum(0.0, 0.0, -turningPower);
+
+            telemetry.addData("angleDiff: ", angleDiff);
+            telemetry.update();
+
+            idle();
+        }
+
+        stopAllDriveMotors();
+    }*/
 
     //todo modify for jewels rather than beacons
     //we use this function to determine the color of jewels and knock them
@@ -165,6 +257,16 @@ abstract public class MasterAutonomous extends MasterOpMode
             telemetry.addData("Time Remaining:", time);
             updateCallback(eTime);
             telemetry.update();
+            idle();
+        }
+    }
+    //wait a number of milliseconds
+    public void pause(int t) throws InterruptedException
+    {
+        //we don't use System.currentTimeMillis() because it can be inconsistent
+        long initialTime = System.nanoTime();
+        while((System.nanoTime() - initialTime)/1000/1000 < t)
+        {
             idle();
         }
     }

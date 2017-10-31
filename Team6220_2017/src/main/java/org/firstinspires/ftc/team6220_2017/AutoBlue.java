@@ -28,7 +28,12 @@ public class AutoBlue extends MasterAutonomous
             knockJewel(isLeftBlue,isBlueSide);
         }
         else
+        {
+            //no matter what driveAngle I enter, it does not seem to register that and just moves straight (in the phone's direction)
+            moveRobot(270, 1, 500);
             telemetry.addData("vuMark: ", "not visible");
+        }
+
 
         telemetry.update();
     }
@@ -43,23 +48,36 @@ public class AutoBlue extends MasterAutonomous
         {
             if(isLeftBlue)
             {
-                turnTo(-30);
+                turnTo(-90);
+                moveRobot(90, 1, 500);
             }
             else
             {
-                turnTo(30);
+                turnTo(90);
+                moveRobot(-90, 1, 500);
             }
         }
         else
         {
             if(isLeftBlue)
             {
-                turnTo(30);
+                turnTo(90);
+                moveRobot(0, 1, 500);
             }
             else
             {
-                turnTo(-30);
+                turnTo(-90);
+                moveRobot(180, 1, 500);
             }
         }
+    }
+    //moves the robot based on input
+    public void moveRobot(double driveAngle, double drivePower, int pause) throws InterruptedException
+    {
+        driveMecanum(0, drivePower, 0.0);
+        pause(pause);
+        driveMecanum(0,0.0,0.0);
+        //stopAllDriveMotors();
+
     }
 }
