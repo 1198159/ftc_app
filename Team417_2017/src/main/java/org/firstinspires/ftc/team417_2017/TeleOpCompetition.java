@@ -15,28 +15,8 @@ public class TeleOpCompetition extends MasterTeleOp
         waitForStart();
         while (opModeIsActive())
         {
-            if (gamepad1.a)
-            {
-                motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-            if (gamepad1.b)
-            {
-                motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            }
+            servoJewelStore.setPosition(JEWEL_STORE_INIT);
+            servoJewelDrop.setPosition(JEWEL_DROP_INIT);
             omniDriveTeleOp();
             // TODO: add some telemetry to display the motor power
             idle();
