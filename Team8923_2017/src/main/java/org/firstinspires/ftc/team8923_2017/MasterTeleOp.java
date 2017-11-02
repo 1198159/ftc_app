@@ -91,18 +91,18 @@ public abstract class MasterTeleOp extends Master
             else if (gamepad1.dpad_down)
                 motorGG.setTargetPosition(motorGG.getCurrentPosition() - GGLiftTicks);
 
-            if(motorGG.getCurrentPosition() - GGLiftTicks > GGZero)
+            if(motorGG.getCurrentPosition() - GGLiftTicks < GGZero)
                 motorGG.setTargetPosition(GGZero);
-            else if((motorGG.getCurrentPosition() + GGLiftTicks < GGZero + (GGLiftTicks * 4)))
+            else if((motorGG.getCurrentPosition() + GGLiftTicks > GGZero + (GGLiftTicks * 4)))
                 motorGG.setTargetPosition(GGZero + (GGLiftTicks * 4));
         }
 
         if(liftMoving)
         {
-            motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 1000));
+            motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 1000.0));
         }
 
-        if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 10)
+        if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3)
         {
             motorGG.setPower(0.0);
             liftMoving = false;
