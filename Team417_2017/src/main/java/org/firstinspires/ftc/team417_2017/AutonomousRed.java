@@ -35,12 +35,12 @@ public class AutonomousRed extends MasterAutonomous
 
         if (isPosLeft)
         {
-            // OPTION BLUE LEFT
+            // OPTION RED LEFT
             parkSpeed = -0.6;
         }
         else
         {
-            // OPTION BLUE RIGHT
+            // OPTION RED RIGHT
             parkSpeed = 0.6;
         }
 
@@ -114,13 +114,21 @@ public class AutonomousRed extends MasterAutonomous
             sleep(200);
         }
 
-        moveTimed(parkSpeed, 0, 1750);
-        sleep(200);
-        moveTimed(0, 0.4, 650);
+        if (isPosLeft) // RED LEFT
+        {
+            moveTimed(-0.6, 0, 1750); // left
+            sleep(200);
+            moveTimed(0, 0.4, 650); // forwards
+        }
+        else // RED RIGHT
+        {
+            moveTimed(-0.6, 0, 1650); // left
+            sleep(200);
+            moveTimed(0, -0.3, 550); // back
+        }
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();
-
 
         sleep(6000);
 

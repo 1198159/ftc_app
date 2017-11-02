@@ -114,13 +114,22 @@ public class AutonomousBlue extends MasterAutonomous
             sleep(200);
         }
 
-        moveTimed(parkSpeed, 0, 1750);
-        sleep(200);
-        moveTimed(0, 0.4, 650);
+
+        if (isPosLeft) // BLUE LEFT
+        {
+            moveTimed(0.6, 0, 1650); // right
+            sleep(200);
+            moveTimed(0, -0.3, 550); // back
+        }
+        else // BLUE RIGHT
+        {
+            moveTimed(0.6, 0, 1750); // right
+            sleep(200);
+            moveTimed(0, 0.4, 650); // forwards
+        }
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();
-
 
         sleep(6000);
 
