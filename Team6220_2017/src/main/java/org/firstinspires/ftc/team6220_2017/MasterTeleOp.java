@@ -48,4 +48,12 @@ abstract public class MasterTeleOp extends MasterOpMode
 
         driveMecanum(angle, power, rotationPower);
     }
+
+    public void driveArm()
+    {
+        if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER))
+        {
+            hingeServo.setPosition(1);
+        }
+    }
 }

@@ -5,9 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 /**
  * Created by Mridula on 10/29/2017.
  */
-@Autonomous(name = "Auto Blue", group = "Autonomous")
+@Autonomous(name = "Auto Blue Left", group = "Autonomous")
 
-public class AutoBlue extends MasterAutonomous
+public class AutoBlueLeft extends MasterAutonomous
 {
     @Override
     public void runOpMode() throws InterruptedException
@@ -17,20 +17,19 @@ public class AutoBlue extends MasterAutonomous
         waitForStart();
 
         vuforiaHelper.getVumark();
+        boolean isBlueSide = true;
 
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
             boolean isLeftBlue = vuforiaHelper.getLeftJewelColor();
-            boolean isBlueSide = true;
             telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
             telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
             knockJewel(isLeftBlue,isBlueSide);
         }
         else
         {
-            //no matter what driveAngle I enter, it does not seem to register that and just moves straight (in the phone's direction)
-            moveRobot(90, 1, 500);
+            moveRobot(270, 1, 1000);
             telemetry.addData("vuMark: ", "not visible");
         }
 
@@ -42,19 +41,19 @@ public class AutoBlue extends MasterAutonomous
     //we use this function to determine the color of jewels and knock them
     public void knockJewel (boolean isLeftBlue, boolean isBlueSide) throws InterruptedException
     {
-        golfClubServo.setPosition(0.15);
+        golfClubServo.setPosition(0.25);
 
         if(isBlueSide)
         {
             if(isLeftBlue)
             {
                 turnTo(-90);
-                moveRobot(180, 1, 500);
+                moveRobot(0, 1, 1000);
             }
             else
             {
                 turnTo(90);
-                moveRobot(0, 1, 500);
+                moveRobot(180, 1, 1000);
             }
         }
         else
@@ -62,12 +61,12 @@ public class AutoBlue extends MasterAutonomous
             if(isLeftBlue)
             {
                 turnTo(-90);
-                moveRobot(180, 1, 500);
+                moveRobot(0, 1, 1000);
             }
             else
             {
                 turnTo(90);
-                moveRobot(0, 1, 500);
+                moveRobot(180, 1, 1000);
             }
         }
     }

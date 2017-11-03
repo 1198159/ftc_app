@@ -1,8 +1,85 @@
 package org.firstinspires.ftc.team6220_2017;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 /**
  * Created by Mridula on 11/1/2017.
  */
 
-public class AutoBlueRight {
+@Autonomous(name = "Auto Blue Right", group = "Autonomous")
+
+public class AutoBlueRight extends MasterAutonomous
+{
+    @Override
+    public void runOpMode() throws InterruptedException
+    {
+        initializeAuto();
+
+        waitForStart();
+
+        vuforiaHelper.getVumark();
+        boolean isBlueSide = true;
+
+        //if the vuMark is not visible, vuforia will tell us
+        if (vuforiaHelper.isVisible())
+        {
+            boolean isLeftBlue = vuforiaHelper.getLeftJewelColor();
+            telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
+            telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
+            knockJewel(isLeftBlue,isBlueSide);
+        }
+        else
+        {
+            //not 270, -270, 90
+            moveRobot(90, 1, 500);
+            stopAllDriveMotors();
+            telemetry.addData("vuMark: ", "not visible");
+        }
+
+
+        telemetry.update();
+    }
+
+    //todo modify for jewels rather than beacons
+    //we use this function to determine the color of jewels and knock them
+    public void knockJewel (boolean isLeftBlue, boolean isBlueSide) throws InterruptedException
+    {
+        golfClubServo.setPosition(0.20);
+
+        if(isBlueSide)
+        {
+            if(isLeftBlue)
+            {
+                turnTo(-90);
+                moveRobot(-270, 1, 1000);
+            }
+            else
+            {
+                turnTo(90);
+                moveRobot(-270, 1, 1000);
+            }
+        }
+        else
+        {
+            if(isLeftBlue)
+            {
+                turnTo(-90);
+                moveRobot(-270, 1, 1000);
+            }
+            else
+            {
+                turnTo(90);
+                moveRobot(-270, 1, 1000);
+            }
+        }
+    }
+    //moves the robot based on input
+    public void moveRobot(double driveAngle, double drivePower, int pause) throws InterruptedException
+    {
+        driveMecanum(driveAngle, drivePower, 0.0);
+        pause(pause);
+        driveMecanum(driveAngle,0.0,0.0);
+        //stopAllDriveMotors();
+
+    }
 }

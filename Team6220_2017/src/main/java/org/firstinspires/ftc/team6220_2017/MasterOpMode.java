@@ -47,6 +47,7 @@ abstract public class MasterOpMode extends LinearOpMode {
 
     //servo that operates the jewel arm
     Servo golfClubServo;
+    Servo hingeServo;
     //
 
     //create a list of tasks to accomplish in order
@@ -71,6 +72,7 @@ abstract public class MasterOpMode extends LinearOpMode {
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
 
         golfClubServo = hardwareMap.servo.get("servoGolfClub");
+        hingeServo = hardwareMap.servo.get("servoHinge");
         //
 
         // set modes and initial positions
@@ -85,6 +87,7 @@ abstract public class MasterOpMode extends LinearOpMode {
         motorFrontRight.setPower(0.0);
 
         golfClubServo.setPosition(0.5);
+        hingeServo.setPosition(0.5);
         //
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
