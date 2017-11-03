@@ -49,6 +49,8 @@ public abstract class MasterTeleOp extends Master
     void SendTelemetry()
     {
         telemetry.addData("GG Lift Ticks", motorGG.getCurrentPosition());
+        telemetry.addData("GG distance from target", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()));
+        telemetry.addData("GG at position", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3);
         telemetry.update();
     }
 
@@ -80,7 +82,7 @@ public abstract class MasterTeleOp extends Master
     */
     void RunGG()
     {
-        if((gamepad1.dpad_down || gamepad1.dpad_up) && !liftMoving)
+        if(!liftMoving && (gamepad1.dpad_down || gamepad1.dpad_up))
         {
             liftMoving = true;
             GGLiftTimer.reset();
@@ -91,18 +93,18 @@ public abstract class MasterTeleOp extends Master
             else if (gamepad1.dpad_down)
                 motorGG.setTargetPosition(motorGG.getCurrentPosition() - GGLiftTicks);
 
-            if(motorGG.getCurrentPosition() - GGLiftTicks < GGZero)
+            if((motorGG.getCurrentPosition() - GGLiftTicks < GGZero) && gamepad1.dpad_down)
                 motorGG.setTargetPosition(GGZero);
-            else if((motorGG.getCurrentPosition() + GGLiftTicks > GGZero + (GGLiftTicks * 4)))
+            else if((motorGG.getCurrentPosition() + GGLiftTicks > GGZero + (GGLiftTicks * 4)) && gamepad1.dpad_up)
                 motorGG.setTargetPosition(GGZero + (GGLiftTicks * 4));
         }
 
         if(liftMoving)
         {
-            motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 1000.0));
+            motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 500.0));
         }
 
-        if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3)
+        if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) <= 5)
         {
             motorGG.setPower(0.0);
             liftMoving = false;
