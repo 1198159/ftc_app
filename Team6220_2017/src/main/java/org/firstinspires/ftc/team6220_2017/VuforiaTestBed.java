@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.team6220_2017;
 
-import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
@@ -14,8 +13,6 @@ public class VuforiaTestBed extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         initializeAuto();
-
-        waitForStart();
 
         vuforiaHelper.getVumark();
 
@@ -32,23 +29,29 @@ public class VuforiaTestBed extends MasterAutonomous
             telemetry.addData("vuMark: ", "not visible");
 
         telemetry.update();
+
+        waitForStart();
     }
 
     //todo modify for jewels rather than beacons
     //we use this function to determine the color of jewels and knock them
     public void knockJewel (boolean isLeftBlue, boolean isBlueSide) throws InterruptedException
     {
-        golfClubServo.setPosition(0.1);
+        jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_DEPLOYED);
 
         if(isBlueSide)
         {
             if(isLeftBlue)
             {
                 turnTo(-30);
+                pauseWhileUpdating(500);
+                turnTo(0);
             }
             else
             {
                 turnTo(30);
+                pauseWhileUpdating(500);
+                turnTo(0);
             }
         }
         else
@@ -56,10 +59,14 @@ public class VuforiaTestBed extends MasterAutonomous
             if(isLeftBlue)
             {
                 turnTo(30);
+                pauseWhileUpdating(500);
+                turnTo(0);
             }
             else
             {
                 turnTo(-30);
+                pauseWhileUpdating(500);
+                turnTo(0);
             }
         }
     }

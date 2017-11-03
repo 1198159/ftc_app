@@ -274,13 +274,7 @@ public class VuforiaHelper
     */
     public boolean getLeftJewelColor() throws InterruptedException
     {
-        /**
-         * See if any of the instances of {@link relicTemplate} are currently visible.
-         * {@link RelicRecoveryVuMark} is an enum which can have the following values:
-         * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
-         * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
-         */
-
+        // vuforia code that uses the VuMark to determine relative positions of objects
         pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
 
         if (pose != null)

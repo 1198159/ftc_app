@@ -59,6 +59,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         telemetry.update();*/
     }
 
+    //todo change
     enum RoutineOption
     {
         BEACON_LEFT,

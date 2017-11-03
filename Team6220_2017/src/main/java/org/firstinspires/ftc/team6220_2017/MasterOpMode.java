@@ -5,12 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +42,7 @@ abstract public class MasterOpMode extends LinearOpMode {
     DcMotor motorArm;
 
     //servo that operates the jewel arm
-    Servo golfClubServo;
+    Servo jewelJostlerServo;
     Servo hingeServo;
     Servo turnTableServo;
     Servo grabberServo;
@@ -75,7 +71,7 @@ abstract public class MasterOpMode extends LinearOpMode {
 
         motorArm = hardwareMap.dcMotor.get("motorArmBase");
 
-        golfClubServo = hardwareMap.servo.get("servoGolfClub");
+        jewelJostlerServo = hardwareMap.servo.get("jewelJostlerServo");
         hingeServo = hardwareMap.servo.get("servoHinge");
         turnTableServo = hardwareMap.servo.get("servoTurnTable");
         grabberServo = hardwareMap.servo.get("servoGrabberServo");
@@ -94,8 +90,8 @@ abstract public class MasterOpMode extends LinearOpMode {
         motorFrontRight.setPower(0.0);
         motorArm.setPower(0.0);
 
-        golfClubServo.setPosition(0.5);
-        hingeServo.setPosition(0.5);
+        jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_RETRACTED);
+        hingeServo.setPosition(Constants.HINGE_SERVO_RETRACTED);
         turnTableServo.setPosition(0.5);
         grabberServo.setPosition(0.5);
         //

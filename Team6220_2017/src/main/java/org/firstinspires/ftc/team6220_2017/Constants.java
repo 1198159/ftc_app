@@ -39,4 +39,14 @@ public class Constants
     public static final double T_FACTOR = 1.0;
     public static final double R_FACTOR = 0.75;
 
+    // servo positions
+    public static final double JEWEL_JOSTLER_RETRACTED = 0.5;
+    public static final double JEWEL_JOSTLER_DEPLOYED = 0.25;
+    public static final double HINGE_SERVO_RETRACTED = 0.5;
+    //todo adjust
+    public static final double HINGE_SERVO_DEPLOYED = 0.1;
+
+
+
+
 }

@@ -2,6 +2,8 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.robotcore.external.Const;
+
 /**
  * Created by Mridula on 10/29/2017.
  */
@@ -33,7 +35,6 @@ public class AutoBlueLeft extends MasterAutonomous
             telemetry.addData("vuMark: ", "not visible");
         }
 
-
         telemetry.update();
     }
 
@@ -41,7 +42,7 @@ public class AutoBlueLeft extends MasterAutonomous
     //we use this function to determine the color of jewels and knock them
     public void knockJewel (boolean isLeftBlue, boolean isBlueSide) throws InterruptedException
     {
-        golfClubServo.setPosition(0.25);
+        jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_DEPLOYED);
 
         if(isBlueSide)
         {

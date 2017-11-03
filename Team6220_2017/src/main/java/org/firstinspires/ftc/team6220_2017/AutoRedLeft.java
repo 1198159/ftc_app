@@ -41,7 +41,7 @@ public class AutoRedLeft extends MasterAutonomous
     //we use this function to determine the color of jewels and knock them
     public void knockJewel (boolean isLeftBlue, boolean isBlueSide) throws InterruptedException
     {
-        golfClubServo.setPosition(0.25);
+        jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_DEPLOYED);
 
         if(isBlueSide)
         {
