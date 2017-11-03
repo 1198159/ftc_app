@@ -99,10 +99,10 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // reverse front and back right motors just for TeleOp
         motorFL.setDirection(DcMotor.Direction.FORWARD);
