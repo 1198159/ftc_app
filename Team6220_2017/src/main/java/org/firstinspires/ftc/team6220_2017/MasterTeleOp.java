@@ -59,7 +59,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             grabberServo.setPosition(1.0);
         }
-        else if (gamepad2.left_stick_y > 0.2)
+        else if (gamepad2.left_stick_y > Constants.MINIMUM_JOYSTICK_POWER_ARM)
         {
             double adjustedStickMagnitude = Range.clip(driver1.getRightStickMagnitude(), -1.0, 1.0);
             // stick inputs must be changed from x and y to angle and drive power
@@ -68,7 +68,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             //double rotationPower = Constants.R_FACTOR * stickCurve.getOuput(gamepad1.left_stick_x);
             motorArm.setPower(power);
         }
-        else if (gamepad2.left_stick_x > 0.2)
+        else if (gamepad2.left_stick_x > Constants.MINIMUM_JOYSTICK_POWER_ARM)
         {
             turnTableServo.setPosition(gamepad2.left_stick_x);
         }

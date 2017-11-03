@@ -69,7 +69,7 @@ abstract public class MasterOpMode extends LinearOpMode {
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
 
-        motorArm = hardwareMap.dcMotor.get("motorArmBase");
+        motorArm = hardwareMap.dcMotor.get("motorArm");
 
         jewelJostlerServo = hardwareMap.servo.get("jewelJostlerServo");
         hingeServo = hardwareMap.servo.get("servoHinge");
@@ -83,6 +83,8 @@ abstract public class MasterOpMode extends LinearOpMode {
         motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         motorFrontLeft.setPower(0.0);
         motorFrontRight.setPower(0.0);
@@ -92,8 +94,8 @@ abstract public class MasterOpMode extends LinearOpMode {
 
         jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_RETRACTED);
         hingeServo.setPosition(Constants.HINGE_SERVO_RETRACTED);
-        turnTableServo.setPosition(0.5);
-        grabberServo.setPosition(0.5);
+        //turnTableServo.setPosition(0.5);
+        //grabberServo.setPosition(0.5);
         //
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port

@@ -20,6 +20,9 @@ public class Constants
     // used for PID loops involving rotation and turning power adjustments
     public static final double TURNING_POWER_FACTOR = 1.0 / 700;    //not determined yet
 
+    public static final double MINIMUM_JOYSTICK_POWER_ARM = 0.1;
+
+
     public static final float MM_PER_INCH = 25.4f;
 
     // field specs
