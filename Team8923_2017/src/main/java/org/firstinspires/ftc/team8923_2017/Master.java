@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * Main robot code center, hold all the information needed to run the robot
@@ -12,13 +14,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public abstract class Master extends LinearOpMode
 {
+
     // Declare motors here
     DcMotor motorFL = null;
     DcMotor motorFR = null;
     DcMotor motorBL = null;
     DcMotor motorBR = null;
-
     DcMotor motorGG = null;
+
+
+    double slowModeDivisor;
 
     // Declare servos here
     Servo servoJJ = null;
@@ -29,16 +34,58 @@ public abstract class Master extends LinearOpMode
     BNO055IMU imu;
 
     // Declare any robot-wide variables here
-    double slowModeDivisor = 1.0;
+    double SlowModeDivisor = 1.0;
+    int GGZero = 0;
 
     // Declare constants here
     private static  final double GEAR_RATIO = 1.0;
     private static final double TICKS_PER_MOTOR_REVOLUTION = 1120.0; // Standard number for Andymark Neverest 40's
     private static final double TICKS_PER_WHEEL_REVOLUTION = TICKS_PER_MOTOR_REVOLUTION / GEAR_RATIO;
-    private static final double WHEEL_DIAMETER = 4 * 25.4; // 4 inch diameter
-    private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
+    private static final double WHEEL_DIAMETER = 4.0 * 25.4; // 4 inch diameter to MM = 101.6
+    private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;// = 319.024
     //private static final double CORRECTION_FACTOR = 0.92;
-    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/;
+    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/; //319.024/1120 = .28484
+    //Servos constants
+    double SERVO_JJ_UP = 0.8; //Port 5, Hub 1
+    double SERVO_JJ_DOWN = 0.15;
+    double SERVO_JJ_MIDDLE = 0.5;
+    double SERVO_JJ_MIDDLE1 = 0.4;
+    double SERVO_JJ_MIDDLE2 = 0.5;
+
+    int GGLiftTicks = 750;
+
+    //declare IMU
+    double currentRobotAngle;
+    double jX;
+    double jY;
+    double kAngle;
+
+    int newTargetFL;
+    int newTargetFR;
+    int newTargetBL;
+    int newTargetBR;
+    double currentFL;
+    double currentFR;
+    double currentBL;
+    double currentBR;
+    double moveErrorFL;
+    double moveErrorFR;
+    double moveErrorBL;
+    double moveErrorBR;
+    double speedFL;
+    double speedFR;
+    double speedBL;
+    double speedBR;
+    double kMove = 1/600.0;
+    double TOL = 110.0;
+    double AngleTOL = 3.0;
+    double angleError;
+    double pivot;
+    double motorPowerFL;
+    double motorPowerFR;
+    double motorPowerBL;
+    double motorPowerBR;
+
 
     void InitHardware()
     {
@@ -47,8 +94,22 @@ public abstract class Master extends LinearOpMode
         motorFR = hardwareMap.get(DcMotor.class, "motorFR");
         motorBL = hardwareMap.get(DcMotor.class, "motorBL");
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
-
         motorGG = hardwareMap.get(DcMotor.class, "motorGG");
+
+        // Servos here
+        servoJJ = hardwareMap.get(Servo.class, "servoJJ");
+        servoGGL = hardwareMap.get(Servo.class, "servoGGL");
+        servoGGR = hardwareMap.get(Servo.class, "servoGGR");
+
+        servoJJ.setPosition(SERVO_JJ_UP);
+        servoGGL.setPosition(0.3);
+        servoGGR.setPosition(0.25);
+
+        //Reset encoders
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -57,11 +118,10 @@ public abstract class Master extends LinearOpMode
 
         motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        // Servos here
-
-        servoJJ =  hardwareMap.get(Servo.class, "servoJJ");
-        servoGGL = hardwareMap.get(Servo.class, "servoGGL");
-        servoGGR = hardwareMap.get(Servo.class, "servoGGR");
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Sensors here
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -69,6 +129,8 @@ public abstract class Master extends LinearOpMode
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+
+        GGZero = motorGG.getCurrentPosition();
     }
 
     // 45 denotes the angle at which the motors are mounted in referece to the chassis frame
@@ -98,15 +160,27 @@ public abstract class Master extends LinearOpMode
         if(scalar < 1)
             scalar = 1;
 
-        powerFL /= (scalar * slowModeDivisor);
-        powerFR /= (scalar * slowModeDivisor);
-        powerBL /= (scalar * slowModeDivisor);
-        powerBR /= (scalar * slowModeDivisor);
+        powerFL /= (scalar * SlowModeDivisor);
+        powerFR /= (scalar * SlowModeDivisor);
+        powerBL /= (scalar * SlowModeDivisor);
+        powerBR /= (scalar * SlowModeDivisor);
 
         motorFL.setPower(powerFL);
         motorFR.setPower(powerFR);
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
+    }
+
+
+
+    // normalizing the angle to be between -180 to 180
+    public double adjustAngles(double angle)
+    {
+        while(angle > 180)
+            angle -= 360;
+        while(angle < -180)
+            angle += 360;
+        return angle;
     }
 
     void stopDriving()

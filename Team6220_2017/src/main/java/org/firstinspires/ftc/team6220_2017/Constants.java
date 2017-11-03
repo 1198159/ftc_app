@@ -20,6 +20,9 @@ public class Constants
     // used for PID loops involving rotation and turning power adjustments
     public static final double TURNING_POWER_FACTOR = 1.0 / 700;    //not determined yet
 
+    public static final double MINIMUM_JOYSTICK_POWER_ARM = 0.1;
+
+
     public static final float MM_PER_INCH = 25.4f;
 
     // field specs
@@ -32,4 +35,24 @@ public class Constants
     // vuforia image constants
     public static final float MM_IMAGE_SAMPLING_WIDTH = 650;
     public static final float MM_IMAGE_SAMPLING_HEIGHT = 300;
+
+    // drive mode constants
+    public static final double SLOW_MODE_T_FACTOR = 0.2;
+    public static final double SLOW_MODE_R_FACTOR = 0.3;
+    public static final double T_FACTOR = 1.0;
+    public static final double R_FACTOR = 0.75;
+
+    // servo positions
+    public static final double JEWEL_JOSTLER_RETRACTED = 0.5;
+    public static final double JEWEL_JOSTLER_DEPLOYED = 0.25;
+    public static final double HINGE_SERVO_DEPLOYED = 0.95;
+    public static final double HINGE_SERVO_RETRACTED = 0.15;
+    public static final double GRABBER_SERVO_RETRACTED = 0.10;
+    public static final double GRABBER_SERVO_DEPLOYED = 0.40;
+
+    //todo adjust
+
+
+
+
 }

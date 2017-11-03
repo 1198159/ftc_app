@@ -2,6 +2,8 @@ package org.firstinspires.ftc.team6220_2017;
 
 import android.graphics.Color;
 
+import java.util.ArrayList;
+
 /*
     Contains important methods for use in our autonomous programs
 */
@@ -13,14 +15,8 @@ abstract public class MasterAutonomous extends MasterOpMode
     RoutineOption routineOption = RoutineOption.;
     */
     int delay = 0;
-
-    //used for initializations only necessary in autonomous
-    public void initializeAuto()
-    {
-        initializeHardware();
-        vuforiaHelper = new VuforiaHelper();
-        vuforiaHelper.setupVuforia();
-    }
+    //use for more advanced auto
+    ArrayList<Alliance> routine = new ArrayList<>();
 
     //enums used for runSetUp
     enum Alliance
@@ -28,10 +24,51 @@ abstract public class MasterAutonomous extends MasterOpMode
         BLUE,
         RED
     }
+
+    public boolean isBlueSide = true;
+    //used for initializations only necessary in autonomous
+    public void initializeAuto()
+    {
+        /*boolean settingUp = true;
+
+        while(settingUp)
+        {
+            if(gamepad1.left_bumper)
+            {
+                isBlueSide = false;
+                telemetry.addLine("We are on red side!");
+                telemetry.update();
+            }
+            else if(gamepad1.right_bumper)
+            {
+                isBlueSide = true;
+                telemetry.addLine("We are on blue side!");
+                telemetry.update();
+            }
+            else if(gamepad1.start)
+                settingUp = false;
+
+            idle();
+        }*/
+        initializeHardware();
+        vuforiaHelper = new VuforiaHelper();
+        vuforiaHelper.setupVuforia();
+        //temporary
+        /*routine.add(Alliance.BLUE);
+        telemetry.addLine("We are on blue side!");
+        telemetry.update();*/
+    }
+
+    //todo change
     enum RoutineOption
     {
-
+        BEACON_LEFT,
+        BEACON_RIGHT,
+        PARK_RAMP,
+        PARK_CENTER,
+        SHOOT_CENTER
     }
+
 
     //todo write setup for this year's autonomous
     //note: not currently in use
@@ -107,12 +144,70 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     //todo modify for jewels rather than beacons
     //we use this function to determine the color of jewels and knock them
-    public void knockJewel (boolean redSide) throws InterruptedException
+    public void knockJewel (boolean isBlueSide, boolean isLeftJewelBlue, boolean isLeftBalancingStone) throws InterruptedException
     {
-        /*
-        Color.colorToHSV(vuforiaHelper.getPixelColor(-127, 92, 0), colorLeftSide);
-        Color.colorToHSV(vuforiaHelper.getPixelColor(127, 92, 0), colorRightSide);
-        */
+        jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_DEPLOYED);
+
+        // 1st nest
+        if(isBlueSide)
+        {
+            // 2nd nest
+            if (isLeftBalancingStone)
+            {
+                // 3rd nest
+                if (isLeftJewelBlue)
+                {
+                    turnTo(-90);
+                    moveRobot(0, 1, 1000);
+                }
+                else
+                {
+                    turnTo(90);
+                    moveRobot(180, 1, 1000);
+                }
+                // 3rd nest
+            }
+            else
+            {
+                // 3rd nest
+                if (isLeftJewelBlue)
+                {
+                    turnTo(-90);
+                    moveRobot(0, 1, 1000);
+                }
+                else
+                {
+                    turnTo(90);
+                    moveRobot(180, 1, 1000);
+                }
+                // 3rd nest
+            }
+            // 2nd nest
+        }
+        else
+        {
+            
+            if(isLeftJewelBlue)
+            {
+                turnTo(-90);
+                moveRobot(0, 1, 1000);
+            }
+            else
+            {
+                turnTo(90);
+                moveRobot(180, 1, 1000);
+            }
+        }
+        // 1st nest
+    }
+
+    //todo change to be based on encoder input
+    // specialized method for driving the robot in autonomous
+    public void moveRobot(double driveAngle, double drivePower, int pause) throws InterruptedException
+    {
+        driveMecanum(driveAngle, drivePower, 0.0);
+        pause(pause);
+        stopAllDriveMotors();
     }
 
     //gives the launcher time to update its state machine
@@ -129,6 +224,16 @@ abstract public class MasterAutonomous extends MasterOpMode
             telemetry.addData("Time Remaining:", time);
             updateCallback(eTime);
             telemetry.update();
+            idle();
+        }
+    }
+    //wait a number of milliseconds
+    public void pause(int t) throws InterruptedException
+    {
+        //we don't use System.currentTimeMillis() because it can be inconsistent
+        long initialTime = System.nanoTime();
+        while((System.nanoTime() - initialTime)/1000/1000 < t)
+        {
             idle();
         }
     }

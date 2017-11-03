@@ -163,7 +163,7 @@ public class VuMarkTests extends LinearOpMode
                     rawPose.setData(poseData);
                     // image size is 254 mm x 184 mm
                     //Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(140, -108, -102));
-                    Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(100, -90, 0));
+                    Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(140, -108, 0));
                     //Vec2F jewelRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(292, -108, -102));
 
                     // takes the frame at the head of the queue
@@ -216,9 +216,9 @@ public class VuMarkTests extends LinearOpMode
                             colorHsvSum[0] += colorHSV[0];
 
                             // draw black border around sample region for debugging only
-                            if ((j == y - 8) || (j == y + 7) || (i == x - 8) || (i == x + 7))
+                            if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31))
                             {
-                                bm.setPixel(i, j, 0);
+                                bm.setPixel(i, j, 0xFF00FF00);
                             }
                         }
                     }

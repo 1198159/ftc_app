@@ -7,13 +7,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 public class AutonomousTestsMove extends MasterAutonomous
 {
-    double speed;
-    double startAngle;
-
     public void runOpMode() throws InterruptedException
     {
         // Initialize hardware and other important things
         initializeRobot();
+        super.initializeHardware();
 
         VuforiaNav.initVuforia();
         telemetry.addData("Path", "Select Team and Pos...");

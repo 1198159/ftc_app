@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team8923_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import java.lang.reflect.GenericSignatureFormatError;
 
@@ -22,7 +23,9 @@ public class TeleOpCompetition extends MasterTeleOp
         {
             DriveOmni45TeleOp();
             RunGG();
+            SendTelemetry();
             //idle();
         }
     }
 }
+

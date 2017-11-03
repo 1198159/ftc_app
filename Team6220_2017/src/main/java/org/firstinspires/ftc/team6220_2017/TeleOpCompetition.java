@@ -26,10 +26,15 @@ public class TeleOpCompetition extends MasterTeleOp
             lTime = timer.seconds();
 
             //arcade drive; left stick rotates robot, right stick translates robot
-            driveMecanumWithJoysticks();
+            //driveMecanumWithJoysticks();
+            driveArm();
 
-            //updates that need to happen each loop
-            telemetry.addData("eTime:", eTime);
+            /*
+             updates that need to happen each loop
+             note:  eTime is not currently displayed (it interrupts other telemetry), but it may
+             be useful later
+            */
+            //telemetry.addData("eTime:", eTime);
             updateCallback(eTime);
             telemetry.update();
             idle();

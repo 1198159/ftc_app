@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team417_2017;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -15,10 +16,10 @@ import java.util.Locale;
 abstract public class MasterOpMode extends LinearOpMode
 {
     // Declare drive motors
-    DcMotor motorFL = null;
-    DcMotor motorFR = null;
-    DcMotor motorBL = null;
-    DcMotor motorBR = null;
+    DcMotor motorFL = null; // port 4
+    DcMotor motorFR = null; // port 3
+    DcMotor motorBL = null; // port 1
+    DcMotor motorBR = null; // port 2
 
     // Declare servos
     Servo servoJewelStore = null;
@@ -36,11 +37,20 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4; // is 2.34
 
+    static final double JEWEL_STORE_INIT = 0.44;
+    static final double JEWEL_STORE_LOW = 0.44;
+    static final double JEWEL_DROP_INIT = 0.11;
+    static final double JEWEL_DROP_LOW = 0.65;
+
+
     // declare motor powers
     double powerFL;
     double powerFR;
     double powerBL;
     double powerBR;
+
+    double px;
+    double py;
 
     public void initializeHardware()
     {
@@ -55,16 +65,24 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+/*
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+*/
+
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         // reverse front and back right motors just for TeleOp
-        motorFL.setDirection(DcMotor.Direction.FORWARD);
-        motorBL.setDirection(DcMotor.Direction.FORWARD);
-        motorFR.setDirection(DcMotor.Direction.REVERSE);
-        motorBR.setDirection(DcMotor.Direction.REVERSE);
+        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        motorFR.setDirection(DcMotor.Direction.FORWARD);
+        motorBR.setDirection(DcMotor.Direction.FORWARD);
 
         motorFL.setPower(0);
         motorFR.setPower(0);
@@ -75,18 +93,18 @@ abstract public class MasterOpMode extends LinearOpMode
         servoJewelStore = hardwareMap.servo.get("servoJewelStore");
         servoJewelDrop = hardwareMap.servo.get("servoJewelDrop");
 
-        servoJewelStore.setPosition(0.85);
-        servoJewelDrop.setPosition(0.1);
+        servoJewelStore.setPosition(JEWEL_STORE_INIT);
+        servoJewelDrop.setPosition(JEWEL_DROP_INIT);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
         // provide positional information.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.angleUnit            = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit            = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
 
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
+        parameters.loggingEnabled       = true;
+        parameters.loggingTag           = "IMU";
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
@@ -94,12 +112,6 @@ abstract public class MasterOpMode extends LinearOpMode
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
-        // get the heading 3 times because first readings aren't accurate (this was tested)
-        float angle;
-        for (int i = 0; i < 3; i++) {
-            sleep(100);
-            angle = imu.getAngularOrientation().firstAngle;
-        }
     } //-----------------------END OF INITIALIZATION SOFTWARE------------------------
 
 
@@ -128,22 +140,22 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         // x is right, or -90 degrees, while y is forwards, which is 0 degrees
         // Calculate drive power (px and py) for both x and y direction
-        double px = drivePower * -Math.sin(Math.toRadians(driveAngle));
-        double py = drivePower * Math.cos(Math.toRadians(driveAngle));
+        px = drivePower * -Math.sin(Math.toRadians(driveAngle));
+        py = drivePower * Math.cos(Math.toRadians(driveAngle));
 
         // calculate the power for each motor
-        /*
-        powerFL = px + py + pivotPower;
-        powerFR = -px + py - pivotPower; // reversed?
-        powerBL = -px + py + pivotPower;
-        powerBR = px + py - pivotPower; // reversed?
-        */
 
+        powerFL = px + py + pivotPower;
+        powerFR = -px + py - pivotPower;
+        powerBL = -px + py + pivotPower;
+        powerBR = px + py - pivotPower;
+
+/*
         powerFL = px + 0*py + pivotPower;
         powerFR = 0*px + py - pivotPower;
         powerBL = 0*px + py + pivotPower;
         powerBR = px + 0*py - pivotPower;
-
+*/
 
         // set power to the motors
         motorFL.setPower(powerFL);

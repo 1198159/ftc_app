@@ -2,35 +2,46 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-/**
- * Created by Cole Welch on 10/1/2017.
- */
+import org.firstinspires.ftc.robotcore.external.Const;
 
-@Autonomous(name = "Vuforia Test", group = "Autonomous")
-public class VuforiaTestBed extends MasterAutonomous
+/**
+ * Created by Mridula on 10/29/2017.
+ */
+@Autonomous(name = "Auto Red Right", group = "Autonomous")
+
+public class AutoRedRight extends MasterAutonomous
 {
     @Override
     public void runOpMode() throws InterruptedException
     {
-        initializeAuto();
+        boolean isBlueSide = false;
+        // must initialize to prevent errors; not necessarily true
+        boolean isLeftBlue = true;
 
         vuforiaHelper.getVumark();
 
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
-            boolean isLeftBlue = vuforiaHelper.getLeftJewelColor();
-            boolean isBlueSide = true;
+            isLeftBlue = vuforiaHelper.getLeftJewelColor();
             telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
             telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
-            knockJewel(isLeftBlue,isBlueSide);
         }
         else
+        {
+            moveRobot(270, 1, 1000);
             telemetry.addData("vuMark: ", "not visible");
+        }
 
         telemetry.update();
 
+        initializeAuto();
+
         waitForStart();
+
+        // auto code-----------------------------
+        knockJewel(isLeftBlue, isBlueSide);
+        //---------------------------------------
     }
 
     //todo modify for jewels rather than beacons
@@ -43,31 +54,28 @@ public class VuforiaTestBed extends MasterAutonomous
         {
             if(isLeftBlue)
             {
-                turnTo(-30);
-                pauseWhileUpdating(500);
-                turnTo(0);
+                turnTo(-90);
+                moveRobot(0, 1, 1000);
             }
             else
             {
-                turnTo(30);
-                pauseWhileUpdating(500);
-                turnTo(0);
+                turnTo(90);
+                moveRobot(180, 1, 1000);
             }
         }
         else
         {
             if(isLeftBlue)
             {
-                turnTo(30);
-                pauseWhileUpdating(500);
-                turnTo(0);
+                turnTo(-90);
+                moveRobot(0, 1, 1000);
             }
             else
             {
-                turnTo(-30);
-                pauseWhileUpdating(500);
-                turnTo(0);
+                turnTo(90);
+                moveRobot(180, 1, 1000);
             }
         }
     }
 }
+

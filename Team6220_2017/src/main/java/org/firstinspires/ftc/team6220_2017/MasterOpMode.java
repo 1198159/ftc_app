@@ -6,10 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +39,13 @@ abstract public class MasterOpMode extends LinearOpMode {
     DcMotor motorFrontRight;
     DcMotor motorBackLeft;
     DcMotor motorBackRight;
+    DcMotor motorArm;
 
     //servo that operates the jewel arm
-    Servo golfClubServo;
+    Servo jewelJostlerServo;
+    Servo hingeServo;
+    Servo turnTableServo;
+    Servo grabberServo;
     //
 
     //create a list of tasks to accomplish in order
@@ -52,30 +53,52 @@ abstract public class MasterOpMode extends LinearOpMode {
 
     public void initializeHardware()
     {
-        //encapsulation for gamepad objects and methods
+        // instantiated classes that must be updated each loop to callback
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
         callback.add(driver1);
         callback.add(driver2);
-
-        //initialize hardware devices
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-        motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
-        motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
-        motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
-        motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
-
-        golfClubServo = hardwareMap.servo.get("servoGolfClub");
         //
 
-        motorFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // initialize hardware devices
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
-        // Retrieves and initializes the IMU. We expect the IMU to be attached to an I2C port
+        /*motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
+        motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
+        motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
+        motorBackRight = hardwareMap.dcMotor.get("motorBackRight");*/
+
+        //motorArm = hardwareMap.dcMotor.get("motorArm");
+
+        //jewelJostlerServo = hardwareMap.servo.get("jewelJostlerServo");
+        hingeServo = hardwareMap.servo.get("servoHinge");
+        turnTableServo = hardwareMap.servo.get("servoTurnTable");
+        grabberServo = hardwareMap.servo.get("servoGrabber");
+
+        //
+
+        // set modes and initial positions
+        /*motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        motorFrontLeft.setPower(0.0);
+        motorFrontRight.setPower(0.0);
+        motorBackLeft.setPower(0.0);
+        motorFrontRight.setPower(0.0);
+        motorArm.setPower(0.0);
+
+        jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_RETRACTED);*/
+        hingeServo.setPosition(Constants.HINGE_SERVO_RETRACTED);
+        //turnTableServo.setPosition(0.5);
+        grabberServo.setPosition(Constants.GRABBER_SERVO_RETRACTED);
+        //
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu". Certain parameters must be specified before using the imu.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -96,25 +119,67 @@ abstract public class MasterOpMode extends LinearOpMode {
         }
     }
 
-    //general method for driving robot
-    //driveAngle = 0 when driving along robot's y-axis (like compass heading); positive angle values are
-    //counterclockwise from y-axis (like math heading)
+    /*
+    general method for driving robot
+    driveAngle = 0 when driving along robot's y-axis (like compass heading); positive angle values are
+    counterclockwise from y-axis (like math heading)
+
+    Table for mecanum drive motor directions (counterclockwise = positive):
+
+                 FL      FR      BL      BR
+    rotate -w    +        -      +        -
+    rotate +w    -        +      -        +
+    forward      +        +      +        +
+    backward     -        -      -        -
+    left         -        +      +        -
+    right        +        -      -        +
+    diag. left   0        +      +        0
+    diag. right  +        0      0        +
+    */
     void driveMecanum(double driveAngle, double drivePower, double w)
     {
-        double x = -drivePower * Math.sin(driveAngle);
-        double y = drivePower * Math.cos(driveAngle);
+        //convert drive angle to x and y components from gamepad input vector (drive angle and drive power);
+        //x and y are switched
+        double y = -drivePower * Math.sin(driveAngle);
+        double x = drivePower * Math.cos(driveAngle);
 
-        //signs for x, y, and w are based on inherent properties of mecanum drive
-        double powerMotorFL = x + y + w;
-        double powerMotorFR = x - y + w;
-        double powerMotorBL = -x + y + w;
-        double powerMotorBR = -x - y + w;
+        //signs for x, y, and w are based on inherent properties of mecanum drive and the gamepad
+        double powerFL = -x + y - w;
+        double powerFR = -x - y - w;
+        double powerBL = x + y - w;
+        double powerBR = x - y - w;
 
-        //power motors
-        motorFrontLeft.setPower(powerMotorFL);
-        motorFrontRight.setPower(powerMotorFR);
-        motorBackLeft.setPower(powerMotorBL);
-        motorBackRight.setPower(powerMotorBR);
+        //-------------------------
+        /*
+         Motor powers might be set above 1 (e.g., x + y = 1 and w = -0.8), so we must scale all of
+         the powers to ensure they are proportional and within the range {-1.0, 1.0}
+        */
+        double powScalar = Math.max(Math.abs(powerFL), Math.max(Math.abs(powerFR),
+                Math.max(Math.abs(powerBL), Math.abs(powerBR))));
+        /*
+         However, powScalar should only be applied if it is greater than 1. Otherwise, we could
+         unintentionally increase powers or even divide by 0
+        */
+        if(powScalar < 1)
+            powScalar = 1;
+
+        powerFL /= powScalar;
+        powerFR /= powScalar;
+        powerBL /= powScalar;
+        powerBR /= powScalar;
+        //-------------------------
+
+        //power motors with corrected inputs
+        motorFrontLeft.setPower(powerFL);
+        motorFrontRight.setPower(powerFR);
+        motorBackLeft.setPower(powerBL);
+        motorBackRight.setPower(powerBR);
+
+        //telemetry for debugging motor power inputs
+        telemetry.addData("translation power: ", x);
+        telemetry.addData("vertical power: ", y);
+        telemetry.addData("rotational power: ", w);
+        telemetry.update();
     }
 
     //updates every item with elapsed time at the end of the main loop; ensures that operations
@@ -161,13 +226,6 @@ abstract public class MasterOpMode extends LinearOpMode {
         double correctedHeading = normalizeAngle(imu.getAngularOrientation().firstAngle + headingOffset);
 
         return correctedHeading;
-    }
-
-    //uses vuforia instead of imu
-    double getRobotAngleUsingVuforia()
-    {
-        vuforiaHelper.updateLocation();
-        return Orientation.getOrientation(vuforiaHelper.lastKnownLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle + headingOffset;
     }
 
     //finds distance between 2 points

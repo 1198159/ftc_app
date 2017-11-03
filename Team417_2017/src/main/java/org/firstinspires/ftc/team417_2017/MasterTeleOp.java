@@ -27,6 +27,11 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     // angle is the arc tangent of (-jx/jy), considering that 0 degrees is forwards
     double driveAngle; // used to calculate the drive angle based on the x and y position on the joystick
+    double y;
+    double x;
+    double power;
+    double pivotPower;
+    double angle;
 
     boolean isModeReversed = false;
     boolean isLegatoMode = false;
@@ -54,19 +59,34 @@ abstract public class MasterTeleOp extends MasterOpMode
         isRightBumperPushed = gamepad1.right_bumper;
         */
 
-        double y = -gamepad1.right_stick_y; // Y axis is negative when up
-        double x = gamepad1.right_stick_x;
-        double power = calcDistance(x, y);
-        double turnPower = gamepad1.left_stick_x; // Fix for clockwise being a negative rotation
+        y = -gamepad1.right_stick_y; // Y axis is negative when up
+        x = gamepad1.right_stick_x;
+        pivotPower = gamepad1.left_stick_x;
 
-        double angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
+        // calculate the power for each motor
 
-        omniDrive(angle, power, turnPower);
+        powerFL = x + y + pivotPower;
+        powerFR = -x + y - pivotPower;
+        powerBL = -x + y + pivotPower;
+        powerBR = x + y - pivotPower;
+
+/*
+        powerFL = px + 0*py + pivotPower;
+        powerFR = 0*px + py - pivotPower;
+        powerBL = 0*px + py + pivotPower;
+        powerBR = px + 0*py - pivotPower;
+*/
+
+        // set power to the motors
+        motorFL.setPower(powerFL);
+        motorFR.setPower(powerFR);
+        motorBL.setPower(powerBL);
+        motorBR.setPower(powerBR);
     }
 
-    public double modJoyStickInput(double x) // x is the raw joystick input, refer to "modJoyStickInput"
+    public double modJoyStickInput(double i) // i is the raw joystick input
     {
-        return Math.pow(x,2) * Math.signum(x);
+        return Math.pow(i,2) * Math.signum(i);
     }
 
     public void initializeRobot()
@@ -79,10 +99,10 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // reverse front and back right motors just for TeleOp
         motorFL.setDirection(DcMotor.Direction.FORWARD);
