@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.team8923_2017;
 
+import android.hardware.Camera;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 @Autonomous(name="Autonomous Competition Red Pos 2", group = "Swerve")
 /**
@@ -19,12 +23,24 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
         InitAuto();//Initializes Hardware and sets position based on alliance
         initVuforia();//Initializes Vuforia
 
+        Camera cam = Camera.open();
+        Camera.Parameters p = cam.getParameters();
+        p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        cam.setParameters(p);
+        cam.startPreview();
+
         waitForStart();
 
+
+        moveGG(1500);
         DropJJ();
         sleep(1000);
+        GetVumark();
         GetLeftJewelColor();
-        sleep(500);
+        sleep(2000);
+        cam.stopPreview();
+        cam.release();
+        //sleep(500);
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
         if (isLeftJewelRed == true)
@@ -35,17 +51,53 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
         }
         else
         {
-            IMUPivot(referenceAngle, 20, 0.5, 0.015);
-            RetrieveJJ();
-            IMUPivot(referenceAngle, 0, 0.5, 0.015);
+            if (isLeftJewelRed == false)
+            {
+                IMUPivot(referenceAngle, 20, 0.5, 0.015);
+                RetrieveJJ();
+                IMUPivot(referenceAngle, 0, 0.5, 0.015);
+            }
+
         }
-        MoveIMU(referenceAngle, -50.0, 0.0, 0.015, 0.5, 2.5);//Go towards parking spot
+
+        MoveIMU(referenceAngle, -40.0, 0.0, 0.015, 0.5, 2.5);//Go towards parking spot
         IMUPivot(referenceAngle, -90, 0.5, 0.015);
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);
-        MoveIMU(referenceAngle, 50.0, 0.0, 0.015, 0.5, 0.5);
-        IMUPivot(referenceAngle, 90, 0.5, 0.015);
-        //MoveIMU(referenceAngle, -50.0, 0.0, 0.015, 0.5, 1.0);
+
+
+        //if loo[ here
+        if (vuMark == RelicRecoveryVuMark.LEFT)
+        {
+
+            MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.3, 1.9);
+            IMUPivot(referenceAngle, -90, 0.5, 0.015);
+            referenceAngle -= 90.0;
+            referenceAngle = adjustAngles(referenceAngle);
+            MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
+        }
+        else
+        {
+            if (vuMark == RelicRecoveryVuMark.CENTER)
+            {
+                //WORKS!
+                MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.5, 0.8);
+                IMUPivot(referenceAngle, -90, 0.5, 0.015);
+                referenceAngle -= 90.0;
+                referenceAngle = adjustAngles(referenceAngle);
+                MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
+            }
+            else
+            {
+                //WORKS!
+                MoveIMU(referenceAngle, 80.0, 0.0, 0.015, 0.5, 0.5);
+                IMUPivot(referenceAngle, -90, 0.5, 0.015);
+                referenceAngle -= 90.0;
+                referenceAngle = adjustAngles(referenceAngle);
+                MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
+            }
+        }
+
         while (opModeIsActive())
         {
             //Run();

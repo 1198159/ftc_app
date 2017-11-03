@@ -73,6 +73,9 @@ public abstract class MasterAutonomous extends Master
     double SERVO_JJ_MIDDLE5 = 0.25;
     double SERVO_JJ_MIDDLE6 = 0.2;
 
+    ElapsedTime GGLiftTimer = new ElapsedTime();
+    boolean liftMoving = false;
+
     Alliance alliance = Alliance.RED;
     StartPositions startPosition = StartPositions.LEFT;
     boolean setupFinished = false;
@@ -202,8 +205,9 @@ public abstract class MasterAutonomous extends Master
         }
 
         robotAngle = 90;
-
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
+        servoGGL.setPosition(0.5);
+        servoGGR.setPosition(0.1);
     }
 
 
@@ -221,8 +225,9 @@ public abstract class MasterAutonomous extends Master
 
     void closeGG()
     {
-        servoGGL.setPosition(0.5);
-        servoGGR.setPosition(0.1);
+        servoGGL.setPosition(0.5); //TODO value needs to be changed
+        servoGGR.setPosition(0.1); //TODO value to be changed
+
     }
 
     void MoveIMU(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
@@ -546,6 +551,24 @@ public abstract class MasterAutonomous extends Master
         servoJJ.setPosition(SERVO_JJ_DOWN);
     }
 
+    void moveGG(int ticks)
+    {
+        liftMoving = true;
+        GGLiftTimer.reset();
+        motorGG.setTargetPosition(motorGG.getCurrentPosition() + ticks);
+
+        if(liftMoving)
+        {
+            motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 1000.0));
+        }
+
+        if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3)
+        {
+            motorGG.setPower(0.0);
+            liftMoving = false;
+        }
+    }
+
     void RetrieveJJ()
     {
         servoJJ.setPosition(SERVO_JJ_UP);
@@ -698,6 +721,7 @@ public abstract class MasterAutonomous extends Master
         if (deltaHSVColor > 0) isLeftJewelRed = true;
         else isLeftJewelRed = false;
         return isLeftJewelRed;
+
     }
 
 

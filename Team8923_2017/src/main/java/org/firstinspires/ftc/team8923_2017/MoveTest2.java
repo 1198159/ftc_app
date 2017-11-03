@@ -2,14 +2,12 @@ package org.firstinspires.ftc.team8923_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-
-@Autonomous(name="Autonomous Competition Blue Pos 2", group = "Swerve")
+@Autonomous(name="Move Test 2", group = "Swerve")
 /**
  * Runable shell for Master Autonomous code
  */
 //@Disabled
-public class AutonomousCompetitionBluePos2 extends MasterAutonomous
+public class MoveTest2 extends MasterAutonomous
 {
     //Declare variables here
 
@@ -22,7 +20,6 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         initVuforia();//Initializes Vuforia
 
         waitForStart();
-
 
         moveGG(1500);
         DropJJ();
@@ -49,37 +46,12 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         IMUPivot(referenceAngle, -90, 0.5, 0.015);
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);
-        moveGG(-1500);
 
-        //if loo[ here
-        if (vuMark == RelicRecoveryVuMark.LEFT)
-        {
-
-            MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.3, 1.9);
-            IMUPivot(referenceAngle, -90, 0.5, 0.015);
-            referenceAngle -= 90.0;
-            referenceAngle = adjustAngles(referenceAngle);
-            MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
-        }
-        if (vuMark == RelicRecoveryVuMark.CENTER)
-        {
-            //WORKS!
-            MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.5, 0.8);
-            IMUPivot(referenceAngle, -90, 0.5, 0.015);
-            referenceAngle -= 90.0;
-            referenceAngle = adjustAngles(referenceAngle);
-            MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
-        }
-        if (vuMark == RelicRecoveryVuMark.RIGHT);
-        {
-            //WORKS!
-            MoveIMU(referenceAngle, 80.0, 0.0, 0.015, 0.5, 0.5);
-            IMUPivot(referenceAngle, -90, 0.5, 0.015);
-            referenceAngle -= 90.0;
-            referenceAngle = adjustAngles(referenceAngle);
-            MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
-        }
-
+        MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.3, 2.0);
+        IMUPivot(referenceAngle, -90, 0.5, 0.015);
+        referenceAngle -= 90.0;
+        referenceAngle = adjustAngles(referenceAngle);
+        MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
         while (opModeIsActive())
         {
             //Run();
@@ -88,4 +60,3 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
 
     }
 }
-
