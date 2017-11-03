@@ -144,12 +144,70 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     //todo modify for jewels rather than beacons
     //we use this function to determine the color of jewels and knock them
-    public void knockJewel (boolean redSide) throws InterruptedException
+    public void knockJewel (boolean isBlueSide, boolean isLeftJewelBlue, boolean isLeftBalancingStone) throws InterruptedException
     {
-        /*
-        Color.colorToHSV(vuforiaHelper.getPixelColor(-127, 92, 0), colorLeftSide);
-        Color.colorToHSV(vuforiaHelper.getPixelColor(127, 92, 0), colorRightSide);
-        */
+        jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_DEPLOYED);
+
+        // 1st nest
+        if(isBlueSide)
+        {
+            // 2nd nest
+            if (isLeftBalancingStone)
+            {
+                // 3rd nest
+                if (isLeftJewelBlue)
+                {
+                    turnTo(-90);
+                    moveRobot(0, 1, 1000);
+                }
+                else
+                {
+                    turnTo(90);
+                    moveRobot(180, 1, 1000);
+                }
+                // 3rd nest
+            }
+            else
+            {
+                // 3rd nest
+                if (isLeftJewelBlue)
+                {
+                    turnTo(-90);
+                    moveRobot(0, 1, 1000);
+                }
+                else
+                {
+                    turnTo(90);
+                    moveRobot(180, 1, 1000);
+                }
+                // 3rd nest
+            }
+            // 2nd nest
+        }
+        else
+        {
+            
+            if(isLeftJewelBlue)
+            {
+                turnTo(-90);
+                moveRobot(0, 1, 1000);
+            }
+            else
+            {
+                turnTo(90);
+                moveRobot(180, 1, 1000);
+            }
+        }
+        // 1st nest
+    }
+
+    //todo change to be based on encoder input
+    // specialized method for driving the robot in autonomous
+    public void moveRobot(double driveAngle, double drivePower, int pause) throws InterruptedException
+    {
+        driveMecanum(driveAngle, drivePower, 0.0);
+        pause(pause);
+        stopAllDriveMotors();
     }
 
     //gives the launcher time to update its state machine

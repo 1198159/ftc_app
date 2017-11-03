@@ -2,12 +2,14 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-/**
- * Created by Mridula on 11/1/2017.
- */
-@Autonomous(name = "Auto Red Left", group = "Autonomous")
+import org.firstinspires.ftc.robotcore.external.Const;
 
-public class AutoRedLeft extends MasterAutonomous
+/**
+ * Created by Mridula on 10/29/2017.
+ */
+@Autonomous(name = "Auto Red Right", group = "Autonomous")
+
+public class AutoRedRight extends MasterAutonomous
 {
     @Override
     public void runOpMode() throws InterruptedException
@@ -76,3 +78,4 @@ public class AutoRedLeft extends MasterAutonomous
         }
     }
 }
+

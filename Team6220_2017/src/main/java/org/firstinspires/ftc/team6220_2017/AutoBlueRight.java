@@ -13,31 +13,34 @@ public class AutoBlueRight extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        initializeAuto();
-
-        waitForStart();
+        boolean isBlueSide = true;
+        // must initialize to prevent errors; not necessarily true
+        boolean isLeftBlue = true;
 
         vuforiaHelper.getVumark();
-        boolean isBlueSide = true;
 
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
-            boolean isLeftBlue = vuforiaHelper.getLeftJewelColor();
+            isLeftBlue = vuforiaHelper.getLeftJewelColor();
             telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
             telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
-            knockJewel(isLeftBlue,isBlueSide);
         }
         else
         {
-            //not 270, -270, 90
-            moveRobot(90, 1, 500);
-            stopAllDriveMotors();
+            moveRobot(270, 1, 1000);
             telemetry.addData("vuMark: ", "not visible");
         }
 
-
         telemetry.update();
+
+        initializeAuto();
+
+        waitForStart();
+
+        // auto code-----------------------------
+        knockJewel(isLeftBlue, isBlueSide);
+        //---------------------------------------
     }
 
     //todo modify for jewels rather than beacons
@@ -72,14 +75,5 @@ public class AutoBlueRight extends MasterAutonomous
                 moveRobot(-270, 1, 1000);
             }
         }
-    }
-    //moves the robot based on input
-    public void moveRobot(double driveAngle, double drivePower, int pause) throws InterruptedException
-    {
-        driveMecanum(driveAngle, drivePower, 0.0);
-        pause(pause);
-        driveMecanum(driveAngle,0.0,0.0);
-        //stopAllDriveMotors();
-
     }
 }
