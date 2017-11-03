@@ -64,22 +64,22 @@ abstract public class MasterOpMode extends LinearOpMode {
         // initialize hardware devices
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
-        motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
+        /*motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
         motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
-        motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
+        motorBackRight = hardwareMap.dcMotor.get("motorBackRight");*/
 
-        motorArm = hardwareMap.dcMotor.get("motorArm");
+        //motorArm = hardwareMap.dcMotor.get("motorArm");
 
-        jewelJostlerServo = hardwareMap.servo.get("jewelJostlerServo");
+        //jewelJostlerServo = hardwareMap.servo.get("jewelJostlerServo");
         hingeServo = hardwareMap.servo.get("servoHinge");
         turnTableServo = hardwareMap.servo.get("servoTurnTable");
-        grabberServo = hardwareMap.servo.get("servoGrabberServo");
+        grabberServo = hardwareMap.servo.get("servoGrabber");
 
         //
 
         // set modes and initial positions
-        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        /*motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -92,10 +92,10 @@ abstract public class MasterOpMode extends LinearOpMode {
         motorFrontRight.setPower(0.0);
         motorArm.setPower(0.0);
 
-        jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_RETRACTED);
+        jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_RETRACTED);*/
         hingeServo.setPosition(Constants.HINGE_SERVO_RETRACTED);
         //turnTableServo.setPosition(0.5);
-        //grabberServo.setPosition(0.5);
+        grabberServo.setPosition(Constants.GRABBER_SERVO_RETRACTED);
         //
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
