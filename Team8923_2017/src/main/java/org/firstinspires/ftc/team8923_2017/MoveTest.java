@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.team8923_2017;
 
+import android.hardware.Camera;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 @Autonomous(name="Move Test", group = "Swerve")
 /**
@@ -19,20 +23,17 @@ public class MoveTest extends MasterAutonomous
         InitAuto();//Initializes Hardware and sets position based on alliance
         initVuforia();//Initializes Vuforia
 
+        Camera cam = Camera.open();
+        Camera.Parameters p = cam.getParameters();
+        p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        cam.setParameters(p);
+        cam.startPreview();
+
         waitForStart();
 
-        double referenceAngle =  imu.getAngularOrientation().firstAngle;
-        MoveIMU(referenceAngle, -40.0, -90, 0.015, 0.5, 3.0);
-        //move(-20, 0.5, 3.0);
-        //move(-100, 0.5, 3.0);
 
         while (opModeIsActive())
         {
-            telemetry.addData("EncoderFL", motorFL.getCurrentPosition());
-            telemetry.addData("EncoderFR", motorFR.getCurrentPosition());
-            telemetry.addData("EncoderBL", motorBL.getCurrentPosition());
-            telemetry.addData("EncoderBR", motorBR.getCurrentPosition());
-            telemetry.update();
             //Run();
             idle();
         }
