@@ -29,23 +29,22 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         sleep(1000);
         GetVumark();
         GetLeftJewelColor();
-        sleep(500);
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
         if (isLeftJewelRed == true)
         {
-            IMUPivot(referenceAngle, -20, 0.5, 0.015);//Pivot right
+            IMUPivot(referenceAngle, 20, 0.5, 0.015);//Pivot right
             RetrieveJJ();
             IMUPivot(referenceAngle, 0, 0.5, 0.015);//Pivot left
         }
         else
         {
-            IMUPivot(referenceAngle, 20, 0.5, 0.015);
+            IMUPivot(referenceAngle, -20, 0.5, 0.015);
             RetrieveJJ();
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
 
-        MoveIMU(referenceAngle, -40.0, 0.0, 0.015, 0.5, 2.5);//Go towards parking spot
+        MoveIMU(referenceAngle, 40.0, 0.0, 0.015, 0.5, 2.5);//Go towards parking spot
         IMUPivot(referenceAngle, -90, 0.5, 0.015);
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);
@@ -56,8 +55,8 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         {
 
             MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.3, 1.9);
-            IMUPivot(referenceAngle, -90, 0.5, 0.015);
-            referenceAngle -= 90.0;
+            IMUPivot(referenceAngle, 90, 0.5, 0.015);
+            referenceAngle += 90.0;
             referenceAngle = adjustAngles(referenceAngle);
             MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
         }
@@ -65,8 +64,8 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         {
             //WORKS!
             MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.5, 0.8);
-            IMUPivot(referenceAngle, -90, 0.5, 0.015);
-            referenceAngle -= 90.0;
+            IMUPivot(referenceAngle, 90, 0.5, 0.015);
+            referenceAngle += 90.0;
             referenceAngle = adjustAngles(referenceAngle);
             MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
         }
@@ -74,8 +73,8 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         {
             //WORKS!
             MoveIMU(referenceAngle, 80.0, 0.0, 0.015, 0.5, 0.5);
-            IMUPivot(referenceAngle, -90, 0.5, 0.015);
-            referenceAngle -= 90.0;
+            IMUPivot(referenceAngle, 90, 0.5, 0.015);
+            referenceAngle += 90.0;
             referenceAngle = adjustAngles(referenceAngle);
             MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
         }

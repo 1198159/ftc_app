@@ -21,7 +21,10 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
 
         waitForStart();
 
+        moveGG(1500);
         DropJJ();
+        sleep(1000);
+        GetVumark();
         GetLeftJewelColor();
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
@@ -42,6 +45,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);
         MoveIMU(referenceAngle, -50.0, 0.0, 0.015, 0.5, 0.8);
+        moveGG(-1500);
         while (opModeIsActive())
         {
             //Run();

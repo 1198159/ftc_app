@@ -23,24 +23,16 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
         InitAuto();//Initializes Hardware and sets position based on alliance
         initVuforia();//Initializes Vuforia
 
-        Camera cam = Camera.open();
-        Camera.Parameters p = cam.getParameters();
-        p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-        cam.setParameters(p);
-        cam.startPreview();
 
         waitForStart();
 
 
         moveGG(1500);
-        DropJJ();
-        sleep(1000);
+        //DropJJ();
+        //sleep(1000);
+        //turnOnFlash(4000);
         GetVumark();
-        GetLeftJewelColor();
-        sleep(2000);
-        cam.stopPreview();
-        cam.release();
-        //sleep(500);
+        //GetLeftJewelColor();
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
         if (isLeftJewelRed == true)
