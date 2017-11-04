@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public abstract class MasterTeleOp extends Master
 {
-
-    boolean slowModeActive = false;
     boolean liftMoving = false;
 
     double robotAngle;
@@ -23,13 +21,14 @@ public abstract class MasterTeleOp extends Master
     double jPivot;//for pivoting
 
     ElapsedTime GGLiftTimer = new ElapsedTime();
+    ElapsedTime SlowModeTimer = new ElapsedTime();
 
 
     void DriveOmni45TeleOp()
     {
-        if(gamepad1.guide)
+        if(gamepad1.right_bumper && SlowModeTimer.milliseconds() > 250)
         {
-            slowModeActive = !slowModeActive;
+            SlowModeTimer.reset();
             if (slowModeDivisor == 1.0)
                 slowModeDivisor = 5.0;
             else
@@ -51,6 +50,7 @@ public abstract class MasterTeleOp extends Master
         telemetry.addData("GG Lift Ticks", motorGG.getCurrentPosition());
         telemetry.addData("GG distance from target", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()));
         telemetry.addData("GG at position", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3);
+        telemetry.addData("SlowMode", slowModeDivisor);
         telemetry.update();
     }
 
@@ -112,8 +112,8 @@ public abstract class MasterTeleOp extends Master
 
         if(gamepad1.y && !liftMoving)
         {
-            servoGGL.setPosition(0.5); //TODO value needs to be changed
-            servoGGR.setPosition(0.1); //TODO value to be changed
+            servoGGL.setPosition(0.55); //TODO value needs to be changed
+            servoGGR.setPosition(0.05); //TODO value to be changed
 
         }
          else if(gamepad1.a && !liftMoving)
