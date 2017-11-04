@@ -50,11 +50,10 @@ abstract public class MasterTeleOp extends MasterOpMode
         driveMecanum(angle, power, rotationPower);
     }
 
+    //todo encapsulate in own class
+    // method for running arm system on robot
     public void driveArm()
     {
-        // stores input from sticks to properly power turnTableServo
-        double turnTablePosCount = 0.5;
-
         if (driver2.isButtonJustPressed(Button.LEFT_BUMPER))
         {
             hingeServoToggler.toggle();
@@ -70,30 +69,24 @@ abstract public class MasterTeleOp extends MasterOpMode
         else if (Math.abs(gamepad2.right_stick_y) > Constants.MINIMUM_JOYSTICK_POWER_ARM)
         {
             // adjust power inputs for the arm motor
-            double adjustedStickPower = 0.75 * Range.clip(gamepad2.right_stick_y, -1.0, 1.0);
+            double adjustedStickPower = Constants.ARM_POWER_CONSTANT * Range.clip(gamepad2.right_stick_y, -1.0, 1.0);
             double armPower = stickCurve.getOuput(adjustedStickPower);
             motorArm.setPower(armPower);
 
             telemetry.addData("armPower: ", armPower);
         }
-        else if (Math.abs(gamepad2.left_stick_x) >= Constants.MINIMUM_JOYSTICK_POWER_ARM)
-        {
-            turnTablePosCount += Constants.TURN_TABLE_POS_COUNT_STEP_SIZE * stickCurve.getOuput(gamepad2.left_stick_x);
 
-            // ensures turnTablePosCount does not go beyond acceptable servo position range
-            if (turnTablePosCount > 1.0)
-                turnTablePosCount = 1.0;
-            else if (turnTablePosCount < 0.0)
-                turnTablePosCount = 0.0;
+        // move turntable------------------
+        double pow = gamepad2.left_stick_x;
 
-            turnTableServo.setPosition(turnTablePosCount);
+        // ensure that tiny joystick twitches do not make the servo drift
+        if (Math.abs(pow) < Constants.MINIMUM_JOYSTICK_POWER_ARM)
+            pow = 0.0;
 
-            telemetry.addData("turnTablePosCount: ", turnTablePosCount);
-        }
-        else if (Math.abs(gamepad2.left_stick_x) < Constants.MINIMUM_JOYSTICK_POWER_ARM)  //todo change turnTableServo to CR to make code simpler; this is somewhat sloppy
-        {
-            turnTableServo.setPosition(turnTableServo.getPosition());
-        }
+        double adjustedPow = stickCurve.getOuput(pow);
+
+        turnTableServo.setPower(adjustedPow);
+        //---------------------------------
 
         telemetry.update();
     }

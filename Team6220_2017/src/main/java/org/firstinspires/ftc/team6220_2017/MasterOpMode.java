@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -49,7 +50,7 @@ abstract public class MasterOpMode extends LinearOpMode {
 
     Servo hingeServo;
     Servo grabberServo;
-    Servo turnTableServo;
+    CRServo turnTableServo;
     //
     //-----------------------------------------------
 
@@ -88,7 +89,7 @@ abstract public class MasterOpMode extends LinearOpMode {
         // servos
         //jewelJostlerServo = hardwareMap.servo.get("jewelJostlerServo");
         hingeServo = hardwareMap.servo.get("servoHinge");
-        turnTableServo = hardwareMap.servo.get("servoTurnTable");
+        turnTableServo = hardwareMap.crservo.get("servoTurnTable");
         grabberServo = hardwareMap.servo.get("servoGrabber");
         //
 
@@ -105,7 +106,9 @@ abstract public class MasterOpMode extends LinearOpMode {
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         */
+        //todo motor flings forward extremely fast when using encoder
         motorArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         /*
         motorFrontLeft.setPower(0.0);
@@ -118,7 +121,7 @@ abstract public class MasterOpMode extends LinearOpMode {
         */
         hingeServoToggler.setStartingPosition();
         grabberServoToggler.setStartingPosition();
-        turnTableServo.setPosition(0.5);
+        turnTableServo.setPower(0.0);
         //
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port

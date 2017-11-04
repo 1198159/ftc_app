@@ -53,6 +53,9 @@ public class Constants
     // ensures the arm isn't moving when no commands are given
     public static final double MINIMUM_JOYSTICK_POWER_ARM = 0.05;
 
+    // controls how much power is given to the arm
+    public static final double ARM_POWER_CONSTANT = 0.7;
+
     // defines the angular velocity of turnTableServo during TeleOp
-    public static final double TURN_TABLE_POS_COUNT_STEP_SIZE = 0.1;
+    public static final double TURN_TABLE_POS_COUNT_STEP_SIZE = 0.05;
 }
