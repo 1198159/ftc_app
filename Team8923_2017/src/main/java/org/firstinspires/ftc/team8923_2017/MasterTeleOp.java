@@ -39,7 +39,7 @@ public abstract class MasterTeleOp extends Master
         double y = -gamepad1.left_stick_y; // Y axis is negative when up
         double x = gamepad1.left_stick_x;
         double power = calculateDistance(x, y);
-        double turnPower = -gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
+        double turnPower = gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
 
         double angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
 
@@ -101,7 +101,7 @@ public abstract class MasterTeleOp extends Master
 
         if(liftMoving)
         {
-            motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 500.0));
+            motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 250.0), 1.0));
         }
 
         if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) <= 5)
