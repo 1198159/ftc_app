@@ -6,6 +6,7 @@ package org.firstinspires.ftc.team8923_2017;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.hardware.Camera;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -574,6 +575,21 @@ public abstract class MasterAutonomous extends Master
         servoJJ.setPosition(SERVO_JJ_UP);
     }
 
+    void turnOnFlash(int onMiliSec)
+    {
+        Camera cam = Camera.open();
+        Camera.Parameters p = cam.getParameters();
+        p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        cam.setParameters(p);
+        cam.startPreview();
+
+        sleep(onMiliSec);
+
+        cam.stopPreview();
+        cam.release();
+        telemetry.log().add(String.format("VuMarkVis", isVuMarkVisible));
+        telemetry.update();
+    }
 
     void UpdateRobotLocation()
     {

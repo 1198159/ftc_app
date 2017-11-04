@@ -23,13 +23,10 @@ public class MoveTest extends MasterAutonomous
         InitAuto();//Initializes Hardware and sets position based on alliance
         initVuforia();//Initializes Vuforia
 
-        Camera cam = Camera.open();
-        Camera.Parameters p = cam.getParameters();
-        p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-        cam.setParameters(p);
-        cam.startPreview();
+
 
         waitForStart();
+        turnOnFlash(1000);
 
 
         while (opModeIsActive())

@@ -494,10 +494,10 @@ abstract class MasterAutonomous extends MasterOpMode
                 )
                 );
 
-        if (isLogging) telemetry.log().add(String.format("avgDistError: %f , EA: %f", avgDistError, errorAngle));
-        telemetry.update();
+        if (isLogging)
 
-        // stop the motors
+        // stop the motorstelemetry.log().add(String.format("avgDistError: %f , EA: %f", avgDistError, errorAngle));
+        telemetry.update();
         motorFL.setPower(0);
         motorFR.setPower(0);
         motorBL.setPower(0);
