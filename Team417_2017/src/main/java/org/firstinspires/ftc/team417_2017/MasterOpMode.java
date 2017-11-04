@@ -39,7 +39,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     static final double JEWEL_STORE_INIT = 0.44;
     static final double JEWEL_STORE_LOW = 0.44;
-    static final double JEWEL_DROP_INIT = 0.11;
+    static final double JEWEL_DROP_INIT = 0.095;
     static final double JEWEL_DROP_LOW = 0.65;
 
 
