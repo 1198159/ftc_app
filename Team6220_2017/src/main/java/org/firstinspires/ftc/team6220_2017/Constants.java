@@ -20,9 +20,6 @@ public class Constants
     // used for PID loops involving rotation and turning power adjustments
     public static final double TURNING_POWER_FACTOR = 1.0 / 700;    //not determined yet
 
-    public static final double MINIMUM_JOYSTICK_POWER_ARM = 0.1;
-
-
     public static final float MM_PER_INCH = 25.4f;
 
     // field specs
@@ -42,17 +39,20 @@ public class Constants
     public static final double T_FACTOR = 1.0;
     public static final double R_FACTOR = 0.75;
 
+    //todo adjust
     // servo positions
     public static final double JEWEL_JOSTLER_RETRACTED = 0.5;
     public static final double JEWEL_JOSTLER_DEPLOYED = 0.25;
     public static final double HINGE_SERVO_DEPLOYED = 0.95;
     public static final double HINGE_SERVO_RETRACTED = 0.15;
-    public static final double GRABBER_SERVO_RETRACTED = 0.10;
+    public static final double GRABBER_SERVO_RETRACTED = 0.15;
     public static final double GRABBER_SERVO_DEPLOYED = 0.40;
+    public static final double GRABBER_SERVO_RELIC = 0.50;
+    //
 
-    //todo adjust
+    // ensures the arm isn't moving when no commands are given
+    public static final double MINIMUM_JOYSTICK_POWER_ARM = 0.05;
 
-
-
-
+    // defines the angular velocity of turnTableServo during TeleOp
+    public static final double TURN_TABLE_POS_COUNT_STEP_SIZE = 0.1;
 }

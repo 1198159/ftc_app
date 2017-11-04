@@ -32,20 +32,32 @@ abstract public class MasterOpMode extends LinearOpMode {
 
     PIDFilter RotationControlFilter;
 
-    //declare hardware devices
+    // declare hardware devices--------------------
     BNO055IMU imu;
 
+    // motors
     DcMotor motorFrontLeft;
     DcMotor motorFrontRight;
     DcMotor motorBackLeft;
     DcMotor motorBackRight;
-    DcMotor motorArm;
 
-    //servo that operates the jewel arm
+    DcMotor motorArm;
+    //
+
+    // servos
     Servo jewelJostlerServo;
+
     Servo hingeServo;
-    Servo turnTableServo;
     Servo grabberServo;
+    Servo turnTableServo;
+    //
+    //-----------------------------------------------
+
+    // servo togglers
+    ServoToggler jewelJostlerServoToggler;
+
+    ServoToggler hingeServoToggler;
+    ServoToggler grabberServoToggler;
     //
 
     //create a list of tasks to accomplish in order
@@ -61,41 +73,52 @@ abstract public class MasterOpMode extends LinearOpMode {
         callback.add(driver2);
         //
 
-        // initialize hardware devices
+        // initialize hardware devices--------------------------
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
+        // motors
         /*motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
         motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");*/
 
-        //motorArm = hardwareMap.dcMotor.get("motorArm");
+        motorArm = hardwareMap.dcMotor.get("motorArm");
+        //
 
+        // servos
         //jewelJostlerServo = hardwareMap.servo.get("jewelJostlerServo");
         hingeServo = hardwareMap.servo.get("servoHinge");
         turnTableServo = hardwareMap.servo.get("servoTurnTable");
         grabberServo = hardwareMap.servo.get("servoGrabber");
+        //
 
+        // servo togglers
+        //jewelJostlerToggler = new ServoToggler(jewelJostlerServo, Constants.JEWEL_JOSTLER_RETRACTED, Constants.JEWEL_JOSTLER_DEPLOYED);
+
+        hingeServoToggler = new ServoToggler(hingeServo, Constants.HINGE_SERVO_RETRACTED, Constants.HINGE_SERVO_DEPLOYED);
+        grabberServoToggler = new ServoToggler(grabberServo, Constants.GRABBER_SERVO_RETRACTED, Constants.GRABBER_SERVO_DEPLOYED);
         //
 
         // set modes and initial positions
-        /*motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        /* motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        */
+        motorArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
+        /*
         motorFrontLeft.setPower(0.0);
         motorFrontRight.setPower(0.0);
         motorBackLeft.setPower(0.0);
         motorFrontRight.setPower(0.0);
         motorArm.setPower(0.0);
 
-        jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_RETRACTED);*/
-        hingeServo.setPosition(Constants.HINGE_SERVO_RETRACTED);
-        //turnTableServo.setPosition(0.5);
-        grabberServo.setPosition(Constants.GRABBER_SERVO_RETRACTED);
+        jewelJostlerServoToggler.setStartingPosition();
+        */
+        hingeServoToggler.setStartingPosition();
+        grabberServoToggler.setStartingPosition();
+        turnTableServo.setPosition(0.5);
         //
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
@@ -108,11 +131,12 @@ abstract public class MasterOpMode extends LinearOpMode {
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
         imu.initialize(parameters);
+        //------------------------------------------------
 
         //todo adjust for robot
         RotationControlFilter = new PIDFilter(0.5, 0.0, 0.0);
 
-        //todo What is the purpose of this?
+        //todo change servo arm to separate class with objects initialized here
         for (ConcurrentOperation item : callback)
         {
             item.initialize(hardwareMap);

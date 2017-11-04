@@ -186,7 +186,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         }
         else
         {
-            
+
             if(isLeftJewelBlue)
             {
                 turnTo(-90);

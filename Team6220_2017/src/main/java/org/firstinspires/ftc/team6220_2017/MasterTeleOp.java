@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Const;
 */
 abstract public class MasterTeleOp extends MasterOpMode
 {
+    // polynomial for adjusting input from joysticks to allow for ease of use
     //                                         y = 0.0 + (3/10)x + 0.0 + (7/10)x^3
     Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.3, 0.0, 0.7 });
 
@@ -51,26 +52,49 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     public void driveArm()
     {
-        if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER))
+        // stores input from sticks to properly power turnTableServo
+        double turnTablePosCount = 0.5;
+
+        if (driver2.isButtonJustPressed(Button.LEFT_BUMPER))
         {
-            hingeServo.setPosition(Constants.HINGE_SERVO_DEPLOYED);
+            hingeServoToggler.toggle();
         }
-        else if(driver2.isButtonJustPressed(Button.LEFT_BUMPER))
+        else if(driver2.isButtonJustPressed(Button.RIGHT_BUMPER))    // for grabbing glyphs
         {
-            grabberServo.setPosition(Constants.GRABBER_SERVO_DEPLOYED);
+            grabberServoToggler.toggle();
         }
-        else if (gamepad2.left_stick_y > Constants.MINIMUM_JOYSTICK_POWER_ARM)
+        else if (driver2.isButtonJustPressed(Button.Y))              // for grabbing relic
         {
-            double adjustedStickMagnitude = Range.clip(driver1.getRightStickMagnitude(), -1.0, 1.0);
-            // stick inputs must be changed from x and y to angle and drive power
-            double angle = driver2.getRightStickAngle();
-            double power = Constants.T_FACTOR * stickCurve.getOuput(adjustedStickMagnitude);
-            double rotationPower = Constants.R_FACTOR * stickCurve.getOuput(gamepad1.left_stick_x);
-            //motorArm.setPower(power);
+            grabberServoToggler.deployToAlternatePosition(Constants.GRABBER_SERVO_RELIC);
         }
-        else if (gamepad2.left_stick_x > Constants.MINIMUM_JOYSTICK_POWER_ARM)
+        else if (Math.abs(gamepad2.right_stick_y) > Constants.MINIMUM_JOYSTICK_POWER_ARM)
         {
-            turnTableServo.setPosition(gamepad2.left_stick_x);
+            // adjust power inputs for the arm motor
+            double adjustedStickPower = 0.75 * Range.clip(gamepad2.right_stick_y, -1.0, 1.0);
+            double armPower = stickCurve.getOuput(adjustedStickPower);
+            motorArm.setPower(armPower);
+
+            telemetry.addData("armPower: ", armPower);
         }
+        else if (Math.abs(gamepad2.left_stick_x) >= Constants.MINIMUM_JOYSTICK_POWER_ARM)
+        {
+            turnTablePosCount += Constants.TURN_TABLE_POS_COUNT_STEP_SIZE * stickCurve.getOuput(gamepad2.left_stick_x);
+
+            // ensures turnTablePosCount does not go beyond acceptable servo position range
+            if (turnTablePosCount > 1.0)
+                turnTablePosCount = 1.0;
+            else if (turnTablePosCount < 0.0)
+                turnTablePosCount = 0.0;
+
+            turnTableServo.setPosition(turnTablePosCount);
+
+            telemetry.addData("turnTablePosCount: ", turnTablePosCount);
+        }
+        else if (Math.abs(gamepad2.left_stick_x) < Constants.MINIMUM_JOYSTICK_POWER_ARM)  //todo change turnTableServo to CR to make code simpler; this is somewhat sloppy
+        {
+            turnTableServo.setPosition(turnTableServo.getPosition());
+        }
+
+        telemetry.update();
     }
 }
