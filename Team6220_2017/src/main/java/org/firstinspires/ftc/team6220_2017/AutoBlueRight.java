@@ -28,7 +28,7 @@ public class AutoBlueRight extends MasterAutonomous
         }
         else
         {
-            moveRobot(270, 1, 1000);
+            //moveRobot(270, 1, 1000);
             telemetry.addData("vuMark: ", "not visible");
         }
 

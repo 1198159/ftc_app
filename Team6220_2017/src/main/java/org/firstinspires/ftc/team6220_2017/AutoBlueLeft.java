@@ -54,26 +54,26 @@ public class AutoBlueLeft extends MasterAutonomous
         {
             if(isLeftBlue)
             {
-                turnTo(-90);
+                turnTo(-180);
                 moveRobot(0, 1, 1000);
             }
             else
             {
-                turnTo(90);
-                moveRobot(180, 1, 1000);
+                turnTo(180);
+                moveRobot(0, 1, 1000);
             }
         }
         else
         {
             if(isLeftBlue)
             {
-                turnTo(-90);
+                turnTo(-180);
                 moveRobot(0, 1, 1000);
             }
             else
             {
-                turnTo(90);
-                moveRobot(180, 1, 1000);
+                turnTo(180);
+                moveRobot(0, 1, 1000);
             }
         }
     }
