@@ -26,7 +26,7 @@ public class TeleOpCompetition extends MasterTeleOp
             lTime = timer.seconds();
 
             //arcade drive; left stick rotates robot, right stick translates robot
-            //driveMecanumWithJoysticks();
+            driveMecanumWithJoysticks();
             driveArm();
 
             /*

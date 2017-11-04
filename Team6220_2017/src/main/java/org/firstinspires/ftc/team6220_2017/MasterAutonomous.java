@@ -144,61 +144,34 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     //todo modify for jewels rather than beacons
     //we use this function to determine the color of jewels and knock them
-    public void knockJewel (boolean isBlueSide, boolean isLeftJewelBlue, boolean isLeftBalancingStone) throws InterruptedException
+    public void knockJewel (boolean isBlueSide, boolean isLeftJewelBlue) throws InterruptedException
     {
-        jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_DEPLOYED);
+        jewelJostlerServoToggler.toggle();
 
-        // 1st nest
         if(isBlueSide)
         {
-            // 2nd nest
-            if (isLeftBalancingStone)
+            if (isLeftJewelBlue)
             {
-                // 3rd nest
-                if (isLeftJewelBlue)
-                {
-                    turnTo(-90);
-                    moveRobot(0, 1, 1000);
-                }
-                else
-                {
-                    turnTo(90);
-                    moveRobot(180, 1, 1000);
-                }
-                // 3rd nest
+                turnTo(0);
             }
             else
             {
-                // 3rd nest
-                if (isLeftJewelBlue)
-                {
-                    turnTo(-90);
-                    moveRobot(0, 1, 1000);
-                }
-                else
-                {
-                    turnTo(90);
-                    moveRobot(180, 1, 1000);
-                }
-                // 3rd nest
+                turnTo(360);
             }
-            // 2nd nest
         }
         else
         {
-
             if(isLeftJewelBlue)
             {
-                turnTo(-90);
-                moveRobot(0, 1, 1000);
+                turnTo(180);
             }
             else
             {
-                turnTo(90);
-                moveRobot(180, 1, 1000);
+                turnTo(-180);
             }
         }
-        // 1st nest
+
+        jewelJostlerServoToggler.toggle();
     }
 
     //todo change to be based on encoder input

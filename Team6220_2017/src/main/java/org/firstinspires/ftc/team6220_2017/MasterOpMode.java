@@ -78,39 +78,38 @@ abstract public class MasterOpMode extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         // motors
-        /*motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
+        motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
         motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
-        motorBackRight = hardwareMap.dcMotor.get("motorBackRight");*/
+        motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
 
         motorArm = hardwareMap.dcMotor.get("motorArm");
         //
 
         // servos
-        //jewelJostlerServo = hardwareMap.servo.get("jewelJostlerServo");
+        jewelJostlerServo = hardwareMap.servo.get("servoJewelJostler");
         hingeServo = hardwareMap.servo.get("servoHinge");
         turnTableServo = hardwareMap.crservo.get("servoTurnTable");
         grabberServo = hardwareMap.servo.get("servoGrabber");
         //
 
         // servo togglers
-        //jewelJostlerToggler = new ServoToggler(jewelJostlerServo, Constants.JEWEL_JOSTLER_RETRACTED, Constants.JEWEL_JOSTLER_DEPLOYED);
+        jewelJostlerServoToggler = new ServoToggler(jewelJostlerServo, Constants.JEWEL_JOSTLER_RETRACTED, Constants.JEWEL_JOSTLER_DEPLOYED);
 
         hingeServoToggler = new ServoToggler(hingeServo, Constants.HINGE_SERVO_RETRACTED, Constants.HINGE_SERVO_DEPLOYED);
         grabberServoToggler = new ServoToggler(grabberServo, Constants.GRABBER_SERVO_RETRACTED, Constants.GRABBER_SERVO_DEPLOYED);
         //
 
         // set modes and initial positions
-        /* motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        */
+
         //todo motor flings forward extremely fast when using encoder
         motorArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        /*
         motorFrontLeft.setPower(0.0);
         motorFrontRight.setPower(0.0);
         motorBackLeft.setPower(0.0);
@@ -118,7 +117,6 @@ abstract public class MasterOpMode extends LinearOpMode {
         motorArm.setPower(0.0);
 
         jewelJostlerServoToggler.setStartingPosition();
-        */
         hingeServoToggler.setStartingPosition();
         grabberServoToggler.setStartingPosition();
         turnTableServo.setPower(0.0);
