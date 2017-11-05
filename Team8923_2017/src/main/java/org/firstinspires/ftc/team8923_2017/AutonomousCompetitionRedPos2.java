@@ -28,11 +28,11 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
 
 
         moveGG(1500);
-        //DropJJ();
-        //sleep(1000);
+        DropJJ();
+        sleep(1000);
         //turnOnFlash(4000);
         GetVumark();
-        //GetLeftJewelColor();
+        GetLeftJewelColor();
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
         if (isLeftJewelRed == true)
