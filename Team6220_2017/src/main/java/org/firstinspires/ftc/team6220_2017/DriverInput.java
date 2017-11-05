@@ -51,6 +51,16 @@ public class DriverInput implements ConcurrentOperation
         return Math.atan2(-controller.right_stick_y, controller.right_stick_x);
     }
 
+    public double getRightTriggerValue()
+    {
+        return (controller.right_trigger);
+    }
+    public double getLeftTriggerValue()
+    {
+        return (controller.left_trigger);
+    }
+
+
     public double getLeftStickMagnitude()
     {
         return Math.sqrt(Math.pow(controller.left_stick_x, 2) + Math.pow(controller.left_stick_y, 2));

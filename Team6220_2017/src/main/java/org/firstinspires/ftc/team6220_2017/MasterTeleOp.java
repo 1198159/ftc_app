@@ -70,6 +70,16 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             grabberServoToggler.deployToAlternatePosition(Constants.GRABBER_SERVO_RELIC);
         }
+        else if(driver2.isButtonJustPressed(Button.B))
+        {
+            grabberServoToggler.servoDeployedPosition += 0.1;
+            grabberServoToggler.deploy();
+        }
+        else if(driver2.isButtonJustPressed(Button.X))
+        {
+            grabberServoToggler.servoDeployedPosition -= 0.1;
+            grabberServoToggler.deploy();
+        }
         else if (Math.abs(gamepad2.right_stick_y) > Constants.MINIMUM_JOYSTICK_POWER_ARM)
         {
             // adjust power inputs for the arm motor
