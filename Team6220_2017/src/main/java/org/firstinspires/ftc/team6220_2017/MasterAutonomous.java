@@ -144,7 +144,6 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopAllDriveMotors();
     }
 
-    //todo modify for jewels rather than beacons
     //we use this function to determine the color of jewels and knock them
     public void knockJewel (boolean isBlueSide, boolean isLeftJewelBlue) throws InterruptedException
     {
@@ -153,7 +152,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             return;
         }
         jewelJostlerServoToggler.toggle();
-        pause(2000);
+        pauseWhileUpdating(1000);
 
         if(isBlueSide)
         {
@@ -179,7 +178,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         }
 
         jewelJostlerServoToggler.toggle();
-        pause(2000);
+        pauseWhileUpdating(1000);
     }
 
     //todo change to be based on encoder input
@@ -187,7 +186,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     public void moveRobot(double driveAngle, double drivePower, int pause) throws InterruptedException
     {
         driveMecanum(driveAngle, drivePower, 0.0);
-        pause(pause);
+        pauseWhileUpdating(pause);
         stopAllDriveMotors();
     }
 

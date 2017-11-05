@@ -12,6 +12,12 @@ public class VuforiaTestBed extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
+        // initialize alliance booleans
+        boolean isBlueSide = true;
+        boolean isLeftBlue = true;
+
+        setRobotStartingOrientation(180);
+
         initializeAuto();
 
         vuforiaHelper.getVumark();
@@ -19,11 +25,10 @@ public class VuforiaTestBed extends MasterAutonomous
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
-            boolean isLeftBlue = vuforiaHelper.getLeftJewelColor();
-            boolean isBlueSide = true;
+            isLeftBlue = vuforiaHelper.getLeftJewelColor();
             telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
             telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
-            knockJewel(isLeftBlue,isBlueSide);
+            knockJewel(isLeftBlue, isBlueSide);
         }
         else
             telemetry.addData("vuMark: ", "not visible");
@@ -31,43 +36,5 @@ public class VuforiaTestBed extends MasterAutonomous
         telemetry.update();
 
         waitForStart();
-    }
-
-    //todo modify for jewels rather than beacons
-    //we use this function to determine the color of jewels and knock them
-    public void knockJewel (boolean isLeftBlue, boolean isBlueSide) throws InterruptedException
-    {
-        jewelJostlerServo.setPosition(Constants.JEWEL_JOSTLER_DEPLOYED);
-
-        if(isBlueSide)
-        {
-            if(isLeftBlue)
-            {
-                turnTo(-30);
-                pauseWhileUpdating(500);
-                turnTo(0);
-            }
-            else
-            {
-                turnTo(30);
-                pauseWhileUpdating(500);
-                turnTo(0);
-            }
-        }
-        else
-        {
-            if(isLeftBlue)
-            {
-                turnTo(30);
-                pauseWhileUpdating(500);
-                turnTo(0);
-            }
-            else
-            {
-                turnTo(-30);
-                pauseWhileUpdating(500);
-                turnTo(0);
-            }
-        }
     }
 }

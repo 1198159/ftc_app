@@ -15,6 +15,7 @@ public class AutoRedRight extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         initializeAuto();
+
         waitForStart();
 
         setRobotStartingOrientation(0);

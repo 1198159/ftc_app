@@ -14,7 +14,9 @@ public class AutoBlueRight extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         initializeAuto();
+
         waitForStart();
+
         setRobotStartingOrientation(180);
 
         boolean isBlueSide = true;
