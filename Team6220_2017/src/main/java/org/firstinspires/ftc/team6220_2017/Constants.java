@@ -14,7 +14,7 @@ public class Constants
 
     // robot tolerances used for autonomous
     public static final double MINIMUM_TURNING_POWER = 0.07;    //todo needs to be changed
-    public static final double ANGLE_TOLERANCE = 2.5;   //todo needs to be changed
+    public static final double ANGLE_TOLERANCE = 2.0;   //todo needs to be changed
     public static final double POSITION_TOLERANCE = .015;   //todo needs to be changed
 
     // used for PID loops involving rotation and turning power adjustments
