@@ -22,9 +22,6 @@ public abstract class Master extends LinearOpMode
     DcMotor motorBR = null;
     DcMotor motorGG = null;
 
-
-    double slowModeDivisor;
-
     // Declare servos here
     Servo servoJJ = null;
     Servo servoGGL = null;
@@ -34,7 +31,7 @@ public abstract class Master extends LinearOpMode
     BNO055IMU imu;
 
     // Declare any robot-wide variables here
-    double SlowModeDivisor = 1.0;
+    double slowModeDivisor = 1.0;
     int GGZero = 0;
 
     // Declare constants here
@@ -52,7 +49,7 @@ public abstract class Master extends LinearOpMode
     double SERVO_JJ_MIDDLE1 = 0.4;
     double SERVO_JJ_MIDDLE2 = 0.5;
 
-    int GGLiftTicks = 750;
+    int GGLiftTicks = 1750;
 
     //declare IMU
     double currentRobotAngle;
@@ -103,7 +100,7 @@ public abstract class Master extends LinearOpMode
 
         servoJJ.setPosition(SERVO_JJ_UP);
         servoGGL.setPosition(0.3);
-        servoGGR.setPosition(0.25);
+        servoGGR.setPosition(0.22);
 
         //Reset encoders
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -122,11 +119,6 @@ public abstract class Master extends LinearOpMode
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Sensors here
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -154,10 +146,10 @@ public abstract class Master extends LinearOpMode
          * from there
          */
 
-        double powerFL = y + x + turnPower;
-        double powerFR = -y + x + turnPower;
-        double powerBL = y - x + turnPower;
-        double powerBR = -y - x + turnPower;
+        double powerFL = y + x + (turnPower * 0.9);
+        double powerFR = -y + x + (turnPower * 0.9);
+        double powerBL = y - x + (turnPower * 0.9);
+        double powerBR = -y - x + (turnPower * 0.9);
 
         double scalar = Math.max(Math.abs(powerFL),  Math.max(Math.abs(powerFR),
                 Math.max(Math.abs(powerBL), Math.abs(powerBR))));
@@ -165,10 +157,10 @@ public abstract class Master extends LinearOpMode
         if(scalar < 1)
             scalar = 1;
 
-        powerFL /= (scalar * SlowModeDivisor);
-        powerFR /= (scalar * SlowModeDivisor);
-        powerBL /= (scalar * SlowModeDivisor);
-        powerBR /= (scalar * SlowModeDivisor);
+        powerFL /= (scalar * slowModeDivisor);
+        powerFR /= (scalar * slowModeDivisor);
+        powerBL /= (scalar * slowModeDivisor);
+        powerBR /= (scalar * slowModeDivisor);
 
         motorFL.setPower(powerFL);
         motorFR.setPower(powerFR);
