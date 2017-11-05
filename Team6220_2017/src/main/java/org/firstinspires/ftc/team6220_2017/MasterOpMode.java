@@ -19,7 +19,9 @@ abstract public class MasterOpMode extends LinearOpMode {
     //used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
     private double headingOffset = 0.0;
 
-    //used to ensure that the robot drives straight when not attempting to turn
+
+    // Note: not used
+    // used to ensure that the robot drives straight when not attempting to turn
     double targetHeading = 0.0 + headingOffset;
 
     //contains useful vuforia functions
@@ -66,10 +68,8 @@ abstract public class MasterOpMode extends LinearOpMode {
     //create a list of tasks to accomplish in order
     List<ConcurrentOperation> callback = new ArrayList<>();
 
-
     public void initializeHardware()
     {
-
         // instantiated classes that must be updated each loop to callback
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
@@ -88,19 +88,14 @@ abstract public class MasterOpMode extends LinearOpMode {
             motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
             motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
             motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
-
-
             //
 
             // servos
             jewelJostlerServo = hardwareMap.servo.get("servoJewelJostler");
-
             //
 
             // servo togglers
             jewelJostlerServoToggler = new ServoToggler(jewelJostlerServo, Constants.JEWEL_JOSTLER_RETRACTED, Constants.JEWEL_JOSTLER_DEPLOYED);
-
-
             //
 
             // set modes and initial positions
@@ -109,15 +104,12 @@ abstract public class MasterOpMode extends LinearOpMode {
             motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
-
             motorFrontLeft.setPower(0.0);
             motorFrontRight.setPower(0.0);
             motorBackLeft.setPower(0.0);
             motorFrontRight.setPower(0.0);
 
             jewelJostlerServoToggler.setStartingPosition();
-
         }
 
         if(isArmAttached)
@@ -205,8 +197,9 @@ abstract public class MasterOpMode extends LinearOpMode {
          Motor powers might be set above 1 (e.g., x + y = 1 and w = -0.8), so we must scale all of
          the powers to ensure they are proportional and within the range {-1.0, 1.0}
         */
-        double powScalar = Math.max(Math.abs(powerFL), Math.max(Math.abs(powerFR),
-                Math.max(Math.abs(powerBL), Math.abs(powerBR))));
+        double powScalar = Math.max(Math.abs(powerFL),
+                           Math.max(Math.abs(powerFR),
+                           Math.max(Math.abs(powerBL), Math.abs(powerBR))));
         /*
          However, powScalar should only be applied if it is greater than 1. Otherwise, we could
          unintentionally increase powers or even divide by 0

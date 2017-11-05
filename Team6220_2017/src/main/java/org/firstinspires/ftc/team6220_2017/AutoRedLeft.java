@@ -15,7 +15,7 @@ public class AutoRedLeft extends MasterAutonomous
         initializeAuto();
         waitForStart();
 
-        setRobotStartingOrientation(0);
+        //setRobotStartingOrientation(0);
 
         boolean isBlueSide = false;
         // must initialize to prevent errors; not necessarily true

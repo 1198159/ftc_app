@@ -35,6 +35,10 @@ abstract public class MasterTeleOp extends MasterOpMode
             tFactor = Constants.T_FACTOR;
             rFactor = Constants.R_FACTOR;
         }
+        if(driver1.isButtonPressed(Button.LEFT_BUMPER))
+        {
+            jewelJostlerServoToggler.retract();
+        }
 
         /*
          adjust stick magnitude, since stick magnitudes are not exactly
@@ -51,6 +55,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     }
 
     //todo encapsulate in own class
+    double lastTurntableValue = 0.0;
     // method for running arm system on robot
     public void driveArm()
     {
@@ -72,13 +77,26 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         else if(driver2.isButtonJustPressed(Button.B))
         {
-            grabberServoToggler.servoDeployedPosition += 0.1;
-            grabberServoToggler.deploy();
+            if(grabberServoToggler.servoDeployedPosition < 1.0) {
+                grabberServoToggler.servoDeployedPosition += 0.1;
+                grabberServoToggler.deploy();
+            }
+            else
+            {
+                grabberServoToggler.servoDeployedPosition = 1.0;
+            }
         }
         else if(driver2.isButtonJustPressed(Button.X))
         {
-            grabberServoToggler.servoDeployedPosition -= 0.1;
-            grabberServoToggler.deploy();
+            if(grabberServoToggler.servoDeployedPosition > 0.0) {
+
+                grabberServoToggler.servoDeployedPosition -= 0.1;
+                grabberServoToggler.deploy();
+            }
+            else
+            {
+                grabberServoToggler.servoDeployedPosition = 0.0;
+            }
         }
         else if (Math.abs(gamepad2.right_stick_y) > Constants.MINIMUM_JOYSTICK_POWER_ARM)
         {
@@ -99,7 +117,11 @@ abstract public class MasterTeleOp extends MasterOpMode
 
         double adjustedPow = stickCurve.getOuput(pow);
 
-        turnTableServo.setPower(adjustedPow);
+        //only send command to servo if the value has changed
+        if (lastTurntableValue != adjustedPow) {
+            lastTurntableValue = adjustedPow;
+            turnTableServo.setPower(lastTurntableValue);
+        }
         //---------------------------------
 
         telemetry.update();
