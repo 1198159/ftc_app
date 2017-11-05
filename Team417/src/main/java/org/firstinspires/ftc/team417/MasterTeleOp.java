@@ -174,7 +174,6 @@ public class MasterTeleOp extends MasterOpMode
            }
            isRightBumperPushed = gamepad1.right_bumper;
            telemetry.addData("legato: ", isLegatoMode);
-
            telemetry.update();
            idle();
 

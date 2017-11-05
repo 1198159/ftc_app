@@ -12,7 +12,6 @@ import org.firstinspires.ftc.robotcore.external.Func;
 
 abstract public class MasterTeleOp extends MasterOpMode
 {
-    boolean isLeftBumperPushed = false;
     boolean isLeftPusherUp = false;
     boolean isRightPusherUp = false;
     boolean isXButtonPressed = false;
@@ -32,43 +31,66 @@ abstract public class MasterTeleOp extends MasterOpMode
     double power;
     double pivotPower;
     double angle;
+    final double ADAGIO_POWER = 0.45;
 
-    boolean isModeReversed = false;
+    boolean isModeReversed = true;
     boolean isLegatoMode = false;
+    boolean isLeftBumperPushed = true;
     boolean isRightBumperPushed = false;
     private ElapsedTime runtime = new ElapsedTime();
     AvgFilter filterJoyStickInput = new AvgFilter();
 
     void omniDriveTeleOp()
     {
-        /*
-        // if the left bumper is pushed and it hasn't been pushed before,
-        if (gamepad1.left_bumper && !isLeftBumperPushed)
-        {
-            isLeftBumperPushed = true;
-            frontAngle -= 45; // shift the front 45 degrees to the left
-        }
-        isLeftBumperPushed = gamepad1.left_bumper;
-
-        // if the right bumper is pushed and it hasn't been pushed before,
+        // press button right bumper to toggle adagio legato mode
         if (gamepad1.right_bumper && !isRightBumperPushed)
         {
             isRightBumperPushed = true;
-            frontAngle += 45; // shift the front 45 degrees to the right
+            isLegatoMode = !isLegatoMode;
         }
         isRightBumperPushed = gamepad1.right_bumper;
-        */
+        telemetry.addData("legato: ", isLegatoMode);
 
-        y = -gamepad1.right_stick_y; // Y axis is negative when up
-        x = gamepad1.right_stick_x;
-        pivotPower = gamepad1.left_stick_x;
+        if (isLegatoMode) // Legato Mode
+        {
+            y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
+            x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.35, 0.35);
+        }
+        else // Staccato Mode
+        {
+            y = -gamepad1.right_stick_y; // Y axis is negative when up
+            x = gamepad1.right_stick_x;
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.8, 0.8);
+        }
 
-        // calculate the power for each motor
 
-        powerFL = x + y + pivotPower;
-        powerFR = -x + y - pivotPower;
-        powerBL = -x + y + pivotPower;
-        powerBR = x + y - pivotPower;
+        // Reverse mode, activated by GamePad1's left bumper
+        if (gamepad1.left_bumper && !isLeftBumperPushed)
+        {
+            isLeftBumperPushed = true;
+            isModeReversed = !isModeReversed;
+        }
+        isLeftBumperPushed = gamepad1.left_bumper;
+        telemetry.addData("Reverse: ", isModeReversed);
+        telemetry.update();
+
+        if (isModeReversed)
+        {
+            // calculate the power for each motor
+            powerFL = -x - y + pivotPower;
+            powerFR = x - y - pivotPower;
+            powerBL = x - y + pivotPower;
+            powerBR = -x - y - pivotPower;
+        }
+        else
+        {
+            // calculate the power for each motor
+            powerFL = x + y + pivotPower;
+            powerFR = -x + y - pivotPower;
+            powerBL = -x + y + pivotPower;
+            powerBR = x + y - pivotPower;
+        }
 
 /*
         powerFL = px + 0*py + pivotPower;
