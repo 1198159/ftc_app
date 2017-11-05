@@ -14,11 +14,15 @@ public class AutoBlueLeft extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        setRobotStartingOrientation(180);
+        initializeAuto();
+        waitForStart();
+
+        //setRobotStartingOrientation(180);
 
         boolean isBlueSide = true;
         // must initialize to prevent errors; not necessarily true
         boolean isLeftBlue = true;
+
 
         vuforiaHelper.getVumark();
 
@@ -35,10 +39,6 @@ public class AutoBlueLeft extends MasterAutonomous
         }
 
         telemetry.update();
-
-        initializeAuto();
-
-        waitForStart();
 
         // auto code-----------------------------
         knockJewel(isLeftBlue, isBlueSide);

@@ -54,6 +54,10 @@ abstract public class MasterTeleOp extends MasterOpMode
     // method for running arm system on robot
     public void driveArm()
     {
+        if(!isArmAttached)
+        {
+            return;
+        }
         if (driver2.isButtonJustPressed(Button.LEFT_BUMPER))
         {
             hingeServoToggler.toggle();

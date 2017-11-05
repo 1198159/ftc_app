@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class ServoToggler
 {
     Servo servo;
-    boolean isDeployed;
+    boolean isDeployed = false;
     double servoRetractedPosition;
     double servoDeployedPosition;
 

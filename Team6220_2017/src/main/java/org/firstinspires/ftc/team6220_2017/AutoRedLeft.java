@@ -12,6 +12,9 @@ public class AutoRedLeft extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
+        initializeAuto();
+        waitForStart();
+
         setRobotStartingOrientation(0);
 
         boolean isBlueSide = false;
@@ -33,10 +36,6 @@ public class AutoRedLeft extends MasterAutonomous
         }
 
         telemetry.update();
-
-        initializeAuto();
-
-        waitForStart();
 
         // auto code-----------------------------
         knockJewel(isLeftBlue, isBlueSide);

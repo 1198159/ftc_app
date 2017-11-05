@@ -56,6 +56,6 @@ public class Constants
     // controls how much power is given to the arm
     public static final double ARM_POWER_CONSTANT = 0.7;
 
-    // defines the angular velocity of turnTableServo during TeleOp
-    public static final double TURN_TABLE_POS_COUNT_STEP_SIZE = 0.05;
+    //public static final double CLAW_INCREMENT = 0.1;
+
 }

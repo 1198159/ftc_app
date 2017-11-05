@@ -9,6 +9,7 @@ import java.util.ArrayList;
 */
 abstract public class MasterAutonomous extends MasterOpMode
 {
+
     //variables used in autonomous setup
     Alliance alliance = Alliance.BLUE;
     /*
@@ -29,6 +30,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     //used for initializations only necessary in autonomous
     public void initializeAuto()
     {
+        isArmAttached = false;
         /*boolean settingUp = true;
 
         while(settingUp)
@@ -146,7 +148,12 @@ abstract public class MasterAutonomous extends MasterOpMode
     //we use this function to determine the color of jewels and knock them
     public void knockJewel (boolean isBlueSide, boolean isLeftJewelBlue) throws InterruptedException
     {
+        if(!isDriveTrainAttached)
+        {
+            return;
+        }
         jewelJostlerServoToggler.toggle();
+        pause(2000);
 
         if(isBlueSide)
         {
@@ -172,6 +179,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         }
 
         jewelJostlerServoToggler.toggle();
+        pause(2000);
     }
 
     //todo change to be based on encoder input
