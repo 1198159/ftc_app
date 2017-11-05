@@ -152,33 +152,33 @@ abstract public class MasterAutonomous extends MasterOpMode
             return;
         }
         jewelJostlerServoToggler.toggle();
-        pauseWhileUpdating(1000);
+        pause(1000);
 
         if(isBlueSide)
         {
             if (isLeftJewelBlue)
             {
-                turnTo(0);
+                turnTo(-90);
             }
             else
             {
-                turnTo(360);
+                turnTo(90);
             }
         }
         else
         {
             if(isLeftJewelBlue)
             {
-                turnTo(180);
+                turnTo(90);
             }
             else
             {
-                turnTo(-180);
+                turnTo(-90);
             }
         }
 
         jewelJostlerServoToggler.toggle();
-        pauseWhileUpdating(1000);
+        pause(1000);
     }
 
     //todo change to be based on encoder input
