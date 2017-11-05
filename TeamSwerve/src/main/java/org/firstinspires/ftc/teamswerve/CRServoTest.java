@@ -24,7 +24,7 @@ public class CRServoTest extends LinearOpMode {
 
         // Main loop
         while (opModeIsActive()) {
-            servo.setPower(0);
+            servo.setPower(-1);
             pause(1000);
             servo.setPower(1);
             pause(1000);
