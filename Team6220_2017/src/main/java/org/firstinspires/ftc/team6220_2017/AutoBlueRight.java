@@ -17,13 +17,15 @@ public class AutoBlueRight extends MasterAutonomous
 
         waitForStart();
 
-        setRobotStartingOrientation(180);
+        //setRobotStartingOrientation(180);
 
         boolean isBlueSide = true;
         // must initialize to prevent errors; not necessarily true
         boolean isLeftBlue = true;
 
+
         vuforiaHelper.getVumark();
+
 
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
@@ -38,6 +40,7 @@ public class AutoBlueRight extends MasterAutonomous
         }
 
         telemetry.update();
+
 
         // auto code-----------------------------
         knockJewel(isLeftBlue, isBlueSide);

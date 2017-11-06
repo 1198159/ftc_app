@@ -42,11 +42,11 @@ public class Constants
     //todo adjust
     // servo positions
     public static final double JEWEL_JOSTLER_RETRACTED = 0.5;
-    public static final double JEWEL_JOSTLER_DEPLOYED = 0.25;
+    public static final double JEWEL_JOSTLER_DEPLOYED = 0.21;
     public static final double HINGE_SERVO_DEPLOYED = 1.0;
-    public static final double HINGE_SERVO_RETRACTED = 0.08;
-    public static final double GRABBER_SERVO_RETRACTED = 0.15;
-    public static final double GRABBER_SERVO_DEPLOYED = 0.40;
+    public static final double HINGE_SERVO_RETRACTED = 0.0;
+    public static final double GRABBER_SERVO_RETRACTED = 0.25;
+    public static final double GRABBER_SERVO_DEPLOYED = 0.55;
     public static final double GRABBER_SERVO_RELIC = 0.50;
     //
 

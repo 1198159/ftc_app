@@ -21,7 +21,9 @@ public class AutoRedLeft extends MasterAutonomous
         // must initialize to prevent errors; not necessarily true
         boolean isLeftBlue = true;
 
+
         vuforiaHelper.getVumark();
+
 
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
@@ -36,6 +38,7 @@ public class AutoRedLeft extends MasterAutonomous
         }
 
         telemetry.update();
+
 
         // auto code-----------------------------
         knockJewel(isLeftBlue, isBlueSide);
