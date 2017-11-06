@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 @TeleOp(name="Test Bed Program", group = "6220")
 //@Disabled
-public class TeleOpTestBed extends MasterOpMode
+public class TeleOpTestBed extends MasterAutonomous
 {
     CRServo rightServo;
     CRServo leftServo;
@@ -24,12 +24,7 @@ public class TeleOpTestBed extends MasterOpMode
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
-        //telemetry.log().setCapacity(4);
-        /*rightServo = hardwareMap.crservo.get("servoRight");
-        leftServo = hardwareMap.crservo.get("servoLeft");*/
-        //servo = hardwareMap.servo.get("servo");
-
-        motorArm = hardwareMap.dcMotor.get("motorArm");
+        initializeHardware();
 
         vuforiaHelper.setupVuforia();
         // Wait until start button has been pressed
@@ -58,11 +53,13 @@ public class TeleOpTestBed extends MasterOpMode
             //for testing glyph collection; servos on either side of glyph pull or push it
             if(gamepad1.a)
             {
+                turnTo(90);
                 //rightServo.setPower(1.0);
                 //leftServo.setPower(-1.0);
             }
             if(gamepad1.b)
             {
+                turnTo(-90);
                 //rightServo.setPower(-1.0);
                 //leftServo.setPower(1.0);
             }

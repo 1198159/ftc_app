@@ -77,26 +77,21 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         else if(driver2.isButtonJustPressed(Button.B))
         {
-            if(grabberServoToggler.servoDeployedPosition < 1.0) {
                 grabberServoToggler.servoDeployedPosition += 0.1;
-                grabberServoToggler.deploy();
-            }
-            else
-            {
+
+            if (grabberServoToggler.servoDeployedPosition > 1.0)
                 grabberServoToggler.servoDeployedPosition = 1.0;
-            }
+
+            grabberServoToggler.deploy();
         }
         else if(driver2.isButtonJustPressed(Button.X))
         {
-            if(grabberServoToggler.servoDeployedPosition > 0.0) {
-
                 grabberServoToggler.servoDeployedPosition -= 0.1;
+
+                if (grabberServoToggler.servoDeployedPosition < 0.0)
+                    grabberServoToggler.servoDeployedPosition = 0.0;
+
                 grabberServoToggler.deploy();
-            }
-            else
-            {
-                grabberServoToggler.servoDeployedPosition = 0.0;
-            }
         }
         else if (Math.abs(gamepad2.right_stick_y) > Constants.MINIMUM_JOYSTICK_POWER_ARM)
         {

@@ -130,7 +130,7 @@ abstract public class MasterOpMode extends LinearOpMode {
             motorArm.setPower(0.0);
 
             hingeServoToggler.setStartingPosition();
-            grabberServoToggler.setStartingPosition();
+            grabberServoToggler.deploy();
             turnTableServo.setPower(0.0);
         }
         //
@@ -148,7 +148,7 @@ abstract public class MasterOpMode extends LinearOpMode {
         //------------------------------------------------
 
         //todo adjust for robot
-        RotationControlFilter = new PIDFilter(0.5, 0.0, 0.0);
+        RotationControlFilter = new PIDFilter(0.7, 0.0, 0.0);
 
         //todo change servo arm to separate class with objects initialized here
         for (ConcurrentOperation item : callback)
