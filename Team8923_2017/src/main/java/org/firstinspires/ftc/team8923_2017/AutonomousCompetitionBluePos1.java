@@ -23,7 +23,8 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         initVuforia();//Initializes Vuforia
 
         waitForStart();
-
+        closeGG();
+        sleep(500);
         moveGG(1500);
         DropJJ();
         sleep(1000);

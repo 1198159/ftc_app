@@ -23,7 +23,8 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
 
         waitForStart();
 
-
+        closeGG();
+        sleep(500);
         moveGG(1500);
         DropJJ();
         sleep(1000);
@@ -78,6 +79,9 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
             referenceAngle = adjustAngles(referenceAngle);
             MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
         }
+        openGG();
+        MoveIMU(referenceAngle, -50.0, 0.0, 0.015, 0.5, 0.3);//Go towards parking spot
+
 
         while (opModeIsActive())
         {

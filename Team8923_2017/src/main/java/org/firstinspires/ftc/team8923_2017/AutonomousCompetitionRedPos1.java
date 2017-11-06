@@ -21,6 +21,8 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
 
         waitForStart();
 
+        closeGG();
+        sleep(500);
         moveGG(1500);
         DropJJ();
         sleep(1000);
@@ -47,6 +49,7 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         referenceAngle = adjustAngles(referenceAngle);
         MoveIMU(referenceAngle, -50.0, 0.0, 0.015, 0.5, 0.8);
         moveGG(-1500);
+
 
         while (opModeIsActive())
         {

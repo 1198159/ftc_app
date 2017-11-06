@@ -259,8 +259,6 @@ public abstract class MasterAutonomous extends Master
 
         robotAngle = 90;
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
-        servoGGL.setPosition(0.5);
-        servoGGR.setPosition(0.1);
     }
 
 
@@ -281,6 +279,11 @@ public abstract class MasterAutonomous extends Master
         servoGGL.setPosition(0.5); //TODO value needs to be changed
         servoGGR.setPosition(0.1); //TODO value to be changed
 
+    }
+    void openGG()
+    {
+        servoGGL.setPosition(0.55); //TODO value needs to be changed
+        servoGGR.setPosition(0.05); //TODO value to be changed
     }
 
     void MoveIMU(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
