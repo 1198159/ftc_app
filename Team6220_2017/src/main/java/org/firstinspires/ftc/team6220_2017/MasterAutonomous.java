@@ -27,9 +27,10 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     public boolean isBlueSide = true;
-    //used for initializations only necessary in autonomous
+    // used for initializations only necessary in autonomous
     public void initializeAuto()
     {
+        // we don't want to run the arm during autonomous
         isArmAttached = false;
         /*boolean settingUp = true;
 
@@ -51,14 +52,17 @@ abstract public class MasterAutonomous extends MasterOpMode
                 settingUp = false;
 
             idle();
-        }*/
+        }
+        */
+
         initializeHardware();
         vuforiaHelper = new VuforiaHelper();
         vuforiaHelper.setupVuforia();
         //temporary
         /*routine.add(Alliance.BLUE);
         telemetry.addLine("We are on blue side!");
-        telemetry.update();*/
+        telemetry.update();
+        */
     }
 
     //todo change
@@ -73,8 +77,8 @@ abstract public class MasterAutonomous extends MasterOpMode
 
 
     //todo write setup for this year's autonomous
-    //note: not currently in use
-    //allows the driver to decide which autonomous routine should be run; not in use
+    // note: not currently in use
+    // allows the driver to decide which autonomous routine should be run; not in use
     public void runSetUp()
     {
 
@@ -91,13 +95,13 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     //todo needs to be changed for mecanum
-    //use vuforia to move to a location
-    public void vuforiaDriveToPosition(double targetX, double targetY)throws InterruptedException
+    // use encoders to make the robot drive to a specified location
+    public void driveToPosition(double targetX, double targetY) throws InterruptedException
     {
 
     }
 
-    //tell the robot to turn to a specified angle
+    // tell the robot to turn to a specified angle
     public void turnTo(double targetAngle)
     {
         double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);

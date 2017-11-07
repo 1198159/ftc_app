@@ -40,15 +40,11 @@ public class VuforiaHelper
 
     VuforiaTrackables relicTrackables;
     VuforiaTrackable relicTemplate;
-    //enum which has 4 possible values: UNKNOWN, LEFT, CENTER, and RIGHT
+    // enum which has 4 possible values: UNKNOWN, LEFT, CENTER, and RIGHT
     public RelicRecoveryVuMark vuMark;
     //VuforiaTrackable[] targets = new VuforiaTrackable[1];
     //VuforiaTrackableDefaultListener[] listeners = new VuforiaTrackableDefaultListener[1];
     //
-
-    // colors of both jewels used in getJewelColor()
-    public float leftJewelColorHSV[] = {0f, 0f, 0f};
-    public float rightJewelColorHSV[] = {0f, 0f, 0f};
 
     float[] colorTransfer = new float[]{0,0,0};
     //what we will eventually return
@@ -57,9 +53,6 @@ public class VuforiaHelper
     float[] colorSum = new float[]{0, 0, 0};
 
     int color = 0;
-    //intermediary jewel color arrays that will be used by getImage()
-    float leftColorOutput[] = {0, 0, 0};
-    float rightColorOutput[] = {0, 0, 0};
 
     float avgLeftJewelColor = 0;
     float avgRightJewelColor = 0;
@@ -96,14 +89,6 @@ public class VuforiaHelper
     // todo find where to initialize and use
     Image image = null;
     int imageFormat;
-
-    // stores colors used as return values in getJewelColor()
-    enum JewelColor
-    {
-        red,
-        blue,
-        undetermined
-    }
 
     public void setupVuforia()
     {
@@ -234,7 +219,8 @@ public class VuforiaHelper
                         AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
     }
 
-    //encapsulates function necessary to average color values of jewels
+    //todo make this utilize RGB rather than hue
+    // encapsulates function necessary to average color values of jewels
     public float getAverageJewelColor(int x, int y)
     {
         if (x >= 0 && x < 1280 - 32 && y >= 0 && y < 720 - 32)
@@ -250,7 +236,7 @@ public class VuforiaHelper
                     // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
                     Color.colorToHSV(color, colorTransfer);
 
-                    // sum the HSV values of all pixels
+                    // sum the HSV values of all pixels in bitmap
                     colorSum[0] += colorTransfer[0];
 
                     // draw black border around sample region for debugging only
@@ -266,10 +252,11 @@ public class VuforiaHelper
         return colorOutput[0]; // return the averaged sampled HSV color value
     }
 
+    //todo change to RGB and compare ratios of values rather than differences
     /*
     Note:  this method references the color of the left jewel for its output
 
-    uses getImageColor() to determine the colors of the jewels and compare them, then returns
+    uses a bitmap created by vuforia to determine the colors of the jewels and compare them, then returns
     information that tells you whether the left jewel is red or blue
     */
     public boolean getLeftJewelColor() throws InterruptedException
@@ -322,183 +309,20 @@ public class VuforiaHelper
             colorRight = (avgRightJewelColor < 45) ? avgRightJewelColor + 360 : avgRightJewelColor;
         }
 
-        // if left color is negative, then left side is blue
-        if ((colorLeft - colorRight) < 0) isLeftJewelBlue = true; // BLUE
-        else isLeftJewelBlue = false; // RED
+        //todo change for RGB and figure out way to incorporate undetermined value for jewel color
+        if (Math.abs(colorLeft - colorRight) >= 20)
+        {
+            // if value tested is negative, then left side is blue
+            if ((colorLeft - colorRight) < 0)
+                isLeftJewelBlue = true; // BLUE
+            else isLeftJewelBlue = false; // RED
+        }
+        else
+        {
+
+        }
+
 
         return isLeftJewelBlue;
-    }
-
-    //finds color of image
-    public float[] getImageColor(Image image, Vec2F targetUpperLeftCorner)
-    {
-        if (image != null)
-        {
-            int imageWidth = image.getWidth();
-            int imageHeight = image.getHeight();
-            //coordinates of corner of target area for acquiring color
-            int x = (int) targetUpperLeftCorner.getData()[0];
-            int y = (int) targetUpperLeftCorner.getData()[1];
-
-            //color of sample pixel from nested for loop below; will later be given an HSV value
-            int samplePixel = 0;
-
-            //sum of all colors from sample pixels
-            float[] colorSum = new float[]{0, 0, 0};
-
-            //intermediary array necessary for calculations below
-            float[] colorHSV = new float[]{0, 0, 0};
-
-            // create image bitmap to get color
-            //bitMap = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888);
-            //bitMap.copyPixelsFromBuffer(image.getPixels());
-            //ByteBuffer buffer = image.getPixels();
-            //bitMap.copyPixelsFromBuffer(buffer);
-
-            samplePixel = image.getPixels().get(0);
-
-            //todo figure out why values can be negative and all read identical values in telemetry
-            //samplePixel = bitMap.getPixel(0, 0);
-            int R = (samplePixel & 0xff0000) >> 16;
-            int G = (samplePixel & 0x00ff00) >> 8;
-            int B = (samplePixel & 0x0000ff) >> 0;
-            colorOutput[0] = image.getPixels().get(0);
-            colorOutput[1] = image.getPixels().get(1);
-            colorOutput[2] = image.getPixels().get(2);
-        }
-        return colorOutput;
-
-
-/*
-            //todo adjust pixel numbers when ready; maybe y = 30 and x = 65, since vuforia uses 1/10 pixels of jpeg
-            for (int yComp = y; yComp < y + 300; y += 30)
-            {
-                for (int xComp = x; xComp < x + 650; x += 65)
-                {
-                    samplePixel = bitMap.getPixel(xComp, yComp);
-
-                    Color.colorToHSV(samplePixel, colorHSV);
-
-                    // sum HSV colors of all sample pixels
-                    for (int i = 0; i < 3; i++)
-                    {
-                        colorSum[i] += colorHSV[i];
-                    }
-
-
-                    //add black border around pixel area for debugging.  Sets each pixel on border to black.
-                    if ((yComp == y) || (yComp == y + 300) || (xComp == x) || (xComp == x + 650))
-                    {
-                        bitMap.setPixel(xComp, yComp, 0);
-                    }
-                }
-            }
-
-            //average colors of sample pixels by dividing by # of samples
-            for (int i = 0; i < 3; i++)
-            {
-                colorOutput[i] = colorSum[i] / 121;
-            }
-        }
-        */
-
-            //return colorOutput;
-    }
-
-
-    /*
-    Note:  this method references the color of left jewel for its output
-
-    uses getImageColor() to determine the colors of the jewels and compare them, then returns
-    information that tells you whether the left jewel is red or blue
-    */
-    public JewelColor getJewelColor(OpMode opMode) throws InterruptedException
-    {
-        //initialize jewel color value to prevent possibility of a null pointer error
-        JewelColor leftJewelColor = JewelColor.undetermined;
-
-        //once again sets all array outputs to 0 to prevent holdover values from previous method calls
-        leftColorOutput[0] = 0;
-        leftColorOutput[1] = 0;
-        leftColorOutput[2] = 0;
-        rightColorOutput[0] = 0;
-        rightColorOutput[1] = 0;
-        rightColorOutput[2] = 0;
-
-        //todo uncomment and finish
-        //for (int i = 0; i < listeners.length; i++)
-        {
-            //check to make sure that we are tracking the image
-            //if (listeners[i].isVisible())
-            {
-                //frame that will be analyzed here
-                frame = vuforiaLocalizer.getFrameQueue().take();
-
-                long numberOfImages = frame.getNumImages();
-
-                //use j, since i is already used
-                /*for (int j = 0; j < numberOfImages; j++)
-                {
-                    image = frame.getImage(j);
-                    imageFormat = image.getFormat();
-
-                    if (imageFormat == PIXEL_FORMAT.RGB888) break;
-                }*/
-
-                image = frame.getImage(0);
-                imageFormat = image.getFormat();
-                opMode.telemetry.addData("image width", image.getWidth());
-                opMode.telemetry.addData("image height", image.getHeight());
-                opMode.telemetry.update();
-
-                //targetPosition = listeners[i].getRawPose();
-                //if (targetPosition != null)
-                {
-                    /*
-                    //math to get the position of of the current target point for vuforia
-                    Matrix34F rawPosition = new Matrix34F();
-                    float[] positionData = Arrays.copyOfRange(targetPosition.transposed().getData(), 0, 12);
-                    rawPosition.setData(positionData);
-
-                    //these are the coordinates for projected points in the upper left corner of each
-                    //of the jewels; our image size is 650mm x 300mm
-                    //todo check locations of projected points
-                    Vec2F cornerJewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPosition, new Vec3F(500, -800, 0));
-                    Vec2F cornerJewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPosition, new Vec3F(2000, -800, 0));
-                    */
-
-                    Vec2F cornerJewelLeft = new Vec2F(10, 10);
-                    Vec2F cornerJewelRight = new Vec2F(20, 20);
-
-                    leftColorOutput = getImageColor(image, cornerJewelLeft);
-                    rightColorOutput = getImageColor(image, cornerJewelRight);
-
-                    // close frame to free up memory space
-                   // frame.close();
-
-                    /*
-                    adjust color for red range (if red is between 0 and 90 degrees, shift by
-                    adding 360 so that red is greater than blue)
-                    Note:  logic is shorthand for if statement
-                    */
-                    float colorLeft = (leftColorOutput[0] < 90) ? leftColorOutput[0] + 360 : leftColorOutput[0];
-                    float colorRight = (rightColorOutput[0] < 90) ? rightColorOutput[0] + 360 : rightColorOutput[0];
-
-                    float deltaColorHSV = colorLeft - colorRight;
-                    // if left color is negative, then left side is blue
-                    if (deltaColorHSV < 0)
-                    {
-                        leftJewelColor = JewelColor.blue;
-                    }
-                    else
-                    {
-                        leftJewelColor = JewelColor.red;
-                    }
-                    // debug data
-                    //telemetry.log().add(String.format("LeftSideHue: %f RightSideHue: %f", leftColorOutput[0], rightColorOutput[0]));
-                }
-            }
-        }
-        return leftJewelColor;
     }
 }
