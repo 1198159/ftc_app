@@ -19,6 +19,9 @@ abstract public class MasterOpMode extends LinearOpMode {
     //used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
     private double headingOffset = 0.0;
 
+    // polynomial for adjusting input from joysticks to allow for ease of use
+    //                                         y = 0.0 + (3/10)x + 0.0 + (7/10)x^3
+    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.3, 0.0, 0.7 });
 
     // Note: not used
     // used to ensure that the robot drives straight when not attempting to turn

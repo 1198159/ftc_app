@@ -2,9 +2,6 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-/**
- * Created by Mridula on 11/1/2017.
- */
 
 @Autonomous(name = "Auto Blue Right", group = "Autonomous")
 
