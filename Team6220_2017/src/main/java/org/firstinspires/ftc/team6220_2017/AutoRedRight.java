@@ -18,13 +18,15 @@ public class AutoRedRight extends MasterAutonomous
 
         waitForStart();
 
-        setRobotStartingOrientation(0);
+        //setRobotStartingOrientation(0);
 
         boolean isBlueSide = false;
         // must initialize to prevent errors; not necessarily true
         boolean isLeftBlue = true;
 
+
         vuforiaHelper.getVumark();
+
 
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())

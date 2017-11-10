@@ -4,9 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.Const;
 
-/**
- * Created by Mridula on 10/29/2017.
- */
 @Autonomous(name = "Auto Blue Left", group = "Autonomous")
 
 public class AutoBlueLeft extends MasterAutonomous
@@ -27,6 +24,7 @@ public class AutoBlueLeft extends MasterAutonomous
 
         vuforiaHelper.getVumark();
 
+
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
@@ -40,6 +38,7 @@ public class AutoBlueLeft extends MasterAutonomous
         }
 
         telemetry.update();
+
 
         // auto code-----------------------------
         knockJewel(isLeftBlue, isBlueSide);

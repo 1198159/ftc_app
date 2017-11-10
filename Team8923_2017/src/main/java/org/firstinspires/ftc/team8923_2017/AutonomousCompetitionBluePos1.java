@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team8923_2017;
 
+import android.annotation.TargetApi;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name="Autonomous Competition Blue Pos 1", group = "Swerve")
@@ -7,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Runable shell for Master Autonomous code
  */
 //@Disabled
+@TargetApi(21)
 public class AutonomousCompetitionBluePos1 extends MasterAutonomous
 {
     //Declare variables here
@@ -20,7 +23,8 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         initVuforia();//Initializes Vuforia
 
         waitForStart();
-
+        closeGG();
+        sleep(500);
         moveGG(1500);
         DropJJ();
         sleep(1000);

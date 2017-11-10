@@ -2,9 +2,6 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-/**
- * Created by Mridula on 11/1/2017.
- */
 @Autonomous(name = "Auto Red Left", group = "Autonomous")
 
 public class AutoRedLeft extends MasterAutonomous
@@ -15,13 +12,15 @@ public class AutoRedLeft extends MasterAutonomous
         initializeAuto();
         waitForStart();
 
-        setRobotStartingOrientation(0);
+        //setRobotStartingOrientation(0);
 
         boolean isBlueSide = false;
         // must initialize to prevent errors; not necessarily true
         boolean isLeftBlue = true;
 
+
         vuforiaHelper.getVumark();
+
 
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
@@ -36,6 +35,7 @@ public class AutoRedLeft extends MasterAutonomous
         }
 
         telemetry.update();
+
 
         // auto code-----------------------------
         knockJewel(isLeftBlue, isBlueSide);

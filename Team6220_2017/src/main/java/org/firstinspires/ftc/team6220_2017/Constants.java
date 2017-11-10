@@ -36,17 +36,17 @@ public class Constants
     // drive mode constants
     public static final double SLOW_MODE_T_FACTOR = 0.2;
     public static final double SLOW_MODE_R_FACTOR = 0.3;
-    public static final double T_FACTOR = 1.0;
-    public static final double R_FACTOR = 0.75;
+    public static final double T_FACTOR = 0.85;
+    public static final double R_FACTOR = 0.65;
 
     //todo adjust
     // servo positions
     public static final double JEWEL_JOSTLER_RETRACTED = 0.5;
-    public static final double JEWEL_JOSTLER_DEPLOYED = 0.25;
-    public static final double HINGE_SERVO_DEPLOYED = 0.95;
-    public static final double HINGE_SERVO_RETRACTED = 0.15;
-    public static final double GRABBER_SERVO_RETRACTED = 0.15;
-    public static final double GRABBER_SERVO_DEPLOYED = 0.40;
+    public static final double JEWEL_JOSTLER_DEPLOYED = 0.21;
+    public static final double HINGE_SERVO_DEPLOYED = 1.0;
+    public static final double HINGE_SERVO_RETRACTED = 0.0;
+    public static final double GRABBER_SERVO_RETRACTED = 0.25;
+    public static final double GRABBER_SERVO_DEPLOYED = 0.55;
     public static final double GRABBER_SERVO_RELIC = 0.50;
     //
 

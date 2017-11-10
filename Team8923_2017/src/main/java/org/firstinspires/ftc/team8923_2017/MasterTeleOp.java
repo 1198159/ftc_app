@@ -30,7 +30,7 @@ public abstract class MasterTeleOp extends Master
         {
             SlowModeTimer.reset();
             if (slowModeDivisor == 1.0)
-                slowModeDivisor = 5.0;
+                slowModeDivisor = 3.0;
             else
                 slowModeDivisor = 1.0;
         }
@@ -110,16 +110,26 @@ public abstract class MasterTeleOp extends Master
             liftMoving = false;
         }
 
-        if(gamepad1.y && !liftMoving)
+        if(gamepad1.a && !liftMoving)
         {
             servoGGL.setPosition(0.55); //TODO value needs to be changed
             servoGGR.setPosition(0.05); //TODO value to be changed
 
         }
-         else if(gamepad1.a && !liftMoving)
+         else
         {
-            servoGGL.setPosition(0.3);//TODO value needs to be changed
-            servoGGR.setPosition(0.22);//TODO value needs to be changed
+            if(gamepad1.b && !liftMoving)
+            {
+                servoGGL.setPosition(0.3);//TODO value needs to be changed
+                servoGGR.setPosition(0.22);//TODO value needs to be changed
+            }
+
+            if(gamepad1.x && !liftMoving)
+            {
+                servoGGL.setPosition(0.45);//TODO value needs to be changed
+                servoGGR.setPosition(0.15);//TODO value needs to be changed
+            }
+
         }
     }
 }

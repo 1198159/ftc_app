@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Camera;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -34,7 +35,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.util.Arrays;
-
 public abstract class MasterAutonomous extends Master
 {
 
@@ -120,6 +120,7 @@ public abstract class MasterAutonomous extends Master
     public float leftColorHSV[] = {0f, 0f, 0f};
     public float rightColorHSV[] = {0f, 0f, 0f};
 
+    //Matrix34F rawPose;
     int color = 0;
     float[] HsvSum = {0,0,0};
     float[] HSV = {0,0,0};
@@ -172,9 +173,60 @@ public abstract class MasterAutonomous extends Master
         }
     }
 
+    void InitHardwareAutonomous()
+    {
+        // Motors here
+        motorFL = hardwareMap.get(DcMotor.class, "motorFL");
+        motorFR = hardwareMap.get(DcMotor.class, "motorFR");
+        motorBL = hardwareMap.get(DcMotor.class, "motorBL");
+        motorBR = hardwareMap.get(DcMotor.class, "motorBR");
+        motorGG = hardwareMap.get(DcMotor.class, "motorGG");
+
+        // Servos here
+        servoJJ = hardwareMap.get(Servo.class, "servoJJ");
+        servoGGL = hardwareMap.get(Servo.class, "servoGGL");
+        servoGGR = hardwareMap.get(Servo.class, "servoGGR");
+
+        servoJJ.setPosition(SERVO_JJ_UP);
+        servoGGL.setPosition(0.3);
+        servoGGR.setPosition(0.25);
+
+        //Reset encoders
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Sensors here
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+        GGZero = motorGG.getCurrentPosition();
+    }
+
     void InitAuto()
     {
-        InitHardware();
+        InitHardwareAutonomous();
 
         switch (alliance)
         {
@@ -207,8 +259,6 @@ public abstract class MasterAutonomous extends Master
 
         robotAngle = 90;
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
-        servoGGL.setPosition(0.5);
-        servoGGR.setPosition(0.1);
     }
 
 
@@ -229,6 +279,11 @@ public abstract class MasterAutonomous extends Master
         servoGGL.setPosition(0.5); //TODO value needs to be changed
         servoGGR.setPosition(0.1); //TODO value to be changed
 
+    }
+    void openGG()
+    {
+        servoGGL.setPosition(0.55); //TODO value needs to be changed
+        servoGGR.setPosition(0.05); //TODO value to be changed
     }
 
     void MoveIMU(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
@@ -577,6 +632,8 @@ public abstract class MasterAutonomous extends Master
 
     void turnOnFlash(int onMiliSec)
     {
+
+        /*
         Camera cam = Camera.open();
         Camera.Parameters p = cam.getParameters();
         p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
@@ -589,7 +646,22 @@ public abstract class MasterAutonomous extends Master
         cam.release();
         telemetry.log().add(String.format("VuMarkVis", isVuMarkVisible));
         telemetry.update();
+        */
+/*
+        {
+            CameraManager camManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+            String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position and back camera is 1.
+            camManager.setTorchMode(cameraId, true);
+        }
+
+
+        android.hardware.camera2.CameraDevice cameraDevice;
+        cameraDevice.Instance.SetFlashTorchMode(true);
+        //CameraDevice.Instance.SetFlashTorchMode(true);
+*/
     }
+
+
 
     void UpdateRobotLocation()
     {
@@ -688,6 +760,7 @@ public abstract class MasterAutonomous extends Master
         if (pose!=null)
         {
             Matrix34F rawPose = new Matrix34F();
+            //rawPose = new Matrix34F();
             float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
             rawPose.setData(poseData);
             // image size is 254 mm x 184 mm
@@ -696,6 +769,7 @@ public abstract class MasterAutonomous extends Master
             //Left: (165, -175, -102)
             Vec2F rightJewel = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(390, -180, -102));
             Vec2F leftJewel = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
+
 
             // Takes a frame
             frame = vuforia.getFrameQueue().take();
@@ -728,8 +802,8 @@ public abstract class MasterAutonomous extends Master
             avgRightJewelColor = GetAvgJewelColor(RightX, RightY);//Gets the averaged jewel HSV color value for the right jewel
 
             //adjusts color for red so that red is greater that blue by adding 300 since red is only 45
-            Leftcolor = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
-            Rightcolor = (avgRightJewelColor < 45) ? avgRightJewelColor + 300 : avgRightJewelColor;
+            Leftcolor = (avgLeftJewelColor < 80) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
+            Rightcolor = (avgRightJewelColor < 80) ? avgRightJewelColor + 300 : avgRightJewelColor;
         }
         //Gets the difference between left HSV and right HSV
         deltaHSVColor = Leftcolor - Rightcolor;
