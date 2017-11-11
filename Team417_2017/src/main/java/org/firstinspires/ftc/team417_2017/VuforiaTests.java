@@ -103,7 +103,17 @@ public class VuforiaTests extends LinearOpMode
                 {
                     telemetry.addData("leftHue ", VuforiaDetect.avgLeftJewelColor);
                     telemetry.addData("rightHue ", VuforiaDetect.avgRightJewelColor);
-                    telemetry.addData("isLeftJewelBlue", VuforiaDetect.isLeftJewelBlue);
+                    //telemetry.addData("isLeftJewelBlue", VuforiaDetect.isLeftJewelBlue);
+                    if (VuforiaDetect.isLeftJewelBlue) // if the left jewel is blue
+                    {
+                        telemetry.addData("Left Jewel: ", "blue");
+                        telemetry.addData("Right Jewel: ", "red");
+                    }
+                    else // if the left jewel is red
+                    {
+                        telemetry.addData("Left Jewel: ", "red");
+                        telemetry.addData("Right Jewel: ", "blue");
+                    }
                 }
             }
             else
