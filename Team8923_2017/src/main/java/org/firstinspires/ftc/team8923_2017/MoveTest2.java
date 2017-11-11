@@ -20,38 +20,27 @@ public class MoveTest2 extends MasterAutonomous
         initVuforia();//Initializes Vuforia
 
         waitForStart();
-
+        closeGG();
+        sleep(500);
         moveGG(1500);
         DropJJ();
         sleep(1000);
         GetVumark();
         GetLeftJewelColor();
-        sleep(500);
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
         if (isLeftJewelRed == true)
         {
-            IMUPivot(referenceAngle, -20, 0.5, 0.015);//Pivot right
+            IMUPivot(referenceAngle, 20, 0.5, 0.015);//Pivot right
             RetrieveJJ();
             IMUPivot(referenceAngle, 0, 0.5, 0.015);//Pivot left
         }
         else
         {
-            IMUPivot(referenceAngle, 20, 0.5, 0.015);
+            IMUPivot(referenceAngle, -20, 0.5, 0.015);
             RetrieveJJ();
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
-
-        MoveIMU(referenceAngle, -40.0, 0.0, 0.015, 0.5, 2.5);//Go towards parking spot
-        IMUPivot(referenceAngle, -90, 0.5, 0.015);
-        referenceAngle -= 90.0;
-        referenceAngle = adjustAngles(referenceAngle);
-
-        MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.3, 2.0);
-        IMUPivot(referenceAngle, -90, 0.5, 0.015);
-        referenceAngle -= 90.0;
-        referenceAngle = adjustAngles(referenceAngle);
-        MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
         while (opModeIsActive())
         {
             //Run();

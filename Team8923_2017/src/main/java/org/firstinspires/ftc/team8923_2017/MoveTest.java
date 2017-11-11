@@ -22,12 +22,11 @@ public class MoveTest extends MasterAutonomous
 
         InitAuto();//Initializes Hardware and sets position based on alliance
         initVuforia();//Initializes Vuforia
-
-
-
         waitForStart();
-        turnOnFlash(1000);
 
+        double referenceAngle =  imu.getAngularOrientation().firstAngle;
+        IMUPivot(referenceAngle, 20, 0.5, 0.015);//Pivot right
+        sleep(500);
 
         while (opModeIsActive())
         {

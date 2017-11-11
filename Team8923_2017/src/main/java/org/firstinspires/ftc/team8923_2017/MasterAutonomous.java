@@ -173,6 +173,44 @@ public abstract class MasterAutonomous extends Master
         }
     }
 
+    void InitAuto()
+    {
+        InitHardwareAutonomous();
+
+        switch (alliance)
+        {
+            case RED:
+                robotX = 3048;
+                switch (startPosition)
+                {
+                    case LEFT:
+                        robotY = 700;
+                        break;
+                    case RIGHT:
+                        robotY = 2470;
+                        break;
+                }
+                break;
+
+            case BLUE:
+                robotX = 610;
+                switch (startPosition)
+                {
+                    case LEFT:
+                        robotY = 2470;
+                        break;
+                    case RIGHT:
+                        robotY = 700;
+                        break;
+                }
+                break;
+        }
+
+        robotAngle = 90;
+        headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
+    }
+
+
     void InitHardwareAutonomous()
     {
         // Motors here
@@ -223,44 +261,6 @@ public abstract class MasterAutonomous extends Master
 
         GGZero = motorGG.getCurrentPosition();
     }
-
-    void InitAuto()
-    {
-        InitHardwareAutonomous();
-
-        switch (alliance)
-        {
-            case RED:
-                robotX = 3048;
-                switch (startPosition)
-                {
-                    case LEFT:
-                        robotY = 700;
-                        break;
-                    case RIGHT:
-                        robotY = 2470;
-                        break;
-                }
-                break;
-
-            case BLUE:
-                robotX = 610;
-                switch (startPosition)
-                {
-                    case LEFT:
-                        robotY = 2470;
-                        break;
-                    case RIGHT:
-                        robotY = 700;
-                        break;
-                }
-                break;
-        }
-
-        robotAngle = 90;
-        headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
-    }
-
 
     void Run() throws InterruptedException //Generic run method for testing purposes now
     {
@@ -602,9 +602,10 @@ public abstract class MasterAutonomous extends Master
         sleep(200);
         servoJJ.setPosition(SERVO_JJ_MIDDLE5);
         sleep(200);
-        servoJJ.setPosition(SERVO_JJ_MIDDLE6);
+        /*servoJJ.setPosition(SERVO_JJ_MIDDLE6);
         sleep(200);
         servoJJ.setPosition(SERVO_JJ_DOWN);
+        */
     }
 
     void moveGG(int ticks)
