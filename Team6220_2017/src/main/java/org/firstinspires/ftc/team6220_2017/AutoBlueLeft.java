@@ -4,9 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.Const;
 
-/**
- * Created by Mridula on 10/29/2017.
- */
 @Autonomous(name = "Auto Blue Left", group = "Autonomous")
 
 public class AutoBlueLeft extends MasterAutonomous

@@ -122,8 +122,8 @@ This method returns whether the left jewel is blue or not and the vumark (left, 
             float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
             rawPose.setData(poseData);
             // image size is 254 mm x 184 mm
-            Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
-            Vec2F jewelRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(390, -180, -102));
+            Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(150, -160, -102));
+            Vec2F jewelRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(375, -160, -102));
 
             // takes the frame at the head of the queue
             frame = vuforia.getFrameQueue().take();
