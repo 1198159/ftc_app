@@ -194,7 +194,7 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
     {
         index = 0; // reset the index value to 0
         sampleTime.reset(); // reset the sample timer
-        while (runtime.milliseconds() < 30000 + 60000) // while the motor hasn't been running for 30 seconds...
+        while (runtime.milliseconds() < 30000 + 30000) // while the motor hasn't been running for 30 seconds...
         {
             // if the sample time is less than the intended time between each sample...
             if (sampleTime.milliseconds() > waitTime)
@@ -319,7 +319,7 @@ This is where the OpMode starts, including the initializing process.  The runOpM
         // Tell the user that the motor is done initializing
         telemetry.addData(">", "Motor done initializing");
         telemetry.update();
-/*
+
         // Tell the user that the relay is initializing
         telemetry.addData("Relay", "Initializing");
         telemetry.update();
@@ -336,7 +336,7 @@ This is where the OpMode starts, including the initializing process.  The runOpM
         ina.doInitialize(); // initialize the INA219 current sensor
         telemetry.addData(">", "INA done initializing"); // write a message to indicate the initialization is done
         telemetry.update(); // update the message to display on the UI (the very bottom of the driver station phone screen)
-*/
+
 
 // wait until the start button is pushed
         waitForStart();
@@ -346,28 +346,28 @@ This is where the OpMode starts, including the initializing process.  The runOpM
 
 
         runtime.reset(); // restart the timer (used when running the motor for seconds)
-        //relay.setState(true); // turn relay on
-        motor.setPower(1.0);
+        relay.setState(true); // turn relay on
+        //motor.setPower(1.0);
 
-        sleep(10000);
+        //sleep(10000);
 
         //RampUpMotor(); // Ramp up the motor speed for 10 seconds
 
         //motor.setPower(motorSetPower); // turn on the motor to the set power
         //MotorTest(); // record encoder counts vs. time as well as current and voltage
-        //TimedSamplingTest();
+        TimedSamplingTest();
         //motor.setPower(0.0); // turn the motor off
 
-        //relay.setState(false); // turn relay off after 30 seconds
-        motor.setPower(0.0);
+        relay.setState(false); // turn relay off after 30 seconds
+        //motor.setPower(0.0);
 
         // Record data into arrays after the relay is turned off
         //MotorTest2();
-        //TimedSamplingTest2();
+        TimedSamplingTest2();
 
         // Record the Data from the arrays
-        //RecordData();
-        //RecordData2();
+        RecordData();
+        RecordData2();
 
 
         telemetry.addData( ">", "The test is over." ); // write final message to indicate the test is over
@@ -376,6 +376,6 @@ This is where the OpMode starts, including the initializing process.  The runOpM
         //sleep(2000); // wait so that the user can read that the test is done
 
         // for safety, just in case the relay doesn't power off by itself
-        //relay.setState(false); // turn relay off
+        relay.setState(false); // turn relay off
     }
 }
