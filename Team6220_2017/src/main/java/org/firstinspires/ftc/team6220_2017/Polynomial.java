@@ -6,8 +6,8 @@ package org.firstinspires.ftc.team6220_2017;
 
 public class Polynomial
 {
-    //array of coefficients, ordered by increasing power.
-    //e.g.  c[0] + c[1]x + c[2]x^2 +...
+    // array of coefficients, ordered by increasing power.
+    // i.e., c[0] + c[1]x + c[2]x^2 +...
     private double[] coefficients;
 
     public Polynomial(double[] c)

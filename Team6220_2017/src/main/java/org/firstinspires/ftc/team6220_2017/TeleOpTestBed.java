@@ -14,8 +14,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 //@Disabled
 public class TeleOpTestBed extends MasterAutonomous
 {
-    CRServo rightServo;
-    CRServo leftServo;
     Servo servo;
     VuforiaHelper vuforiaHelper = new VuforiaHelper();
 
@@ -39,7 +37,7 @@ public class TeleOpTestBed extends MasterAutonomous
         // Main loop
         while(opModeIsActive())
         {
-            //for motor that actuates arm
+            // for motor that actuates arm
             motorArm.setPower(gamepad1.left_stick_y);
 
             /*
@@ -62,20 +60,13 @@ public class TeleOpTestBed extends MasterAutonomous
                 glyphMotorLeft.setPower(1.0);
                 glyphMotorRight.setPower(-1.0);
                 //turnTo(90);
-                //rightServo.setPower(1.0);
-                //leftServo.setPower(-1.0);
             }
             if(driver1.isButtonPressed(Button.B))
             {
                 glyphMotorLeft.setPower(-1.0);
                 glyphMotorRight.setPower(1.0);
                 //turnTo(-90);
-                //rightServo.setPower(-1.0);
-                //leftServo.setPower(1.0);
             }
-
-            //for robot arm test
-            //servo.setPosition((gamepad1.left_stick_y + 1) / 2);
 
             idle();
         }
