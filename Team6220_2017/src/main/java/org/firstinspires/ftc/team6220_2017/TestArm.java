@@ -26,7 +26,7 @@ public class TestArm extends MasterTeleOp
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
-            driveArm();
+            armMechanism.driveArm();
 
             /*
              updates that need to happen each loop
