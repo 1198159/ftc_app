@@ -8,9 +8,8 @@ import com.qualcomm.robotcore.util.Range;
 
 abstract public class ArmMechanism extends MasterOpMode
 {
-    //todo encapsulate in own class
     double lastTurntableValue = 0.0;
-    // method for running arm system on robot
+    // Method for running arm system on robot
     public void driveArm()
     {
         if(!isArmAttached)
@@ -21,11 +20,11 @@ abstract public class ArmMechanism extends MasterOpMode
         {
             hingeServoToggler.toggle();
         }
-        else if(driver2.isButtonJustPressed(Button.RIGHT_BUMPER))    // for grabbing glyphs
+        else if(driver2.isButtonJustPressed(Button.RIGHT_BUMPER))    // For grabbing glyphs
         {
             grabberServoToggler.toggle();
         }
-        else if (driver2.isButtonJustPressed(Button.Y))              // for grabbing relic
+        else if (driver2.isButtonJustPressed(Button.Y))              // For grabbing relic
         {
             grabberServoToggler.deployToAlternatePosition(Constants.GRABBER_SERVO_RELIC);
         }
@@ -47,9 +46,9 @@ abstract public class ArmMechanism extends MasterOpMode
 
             grabberServoToggler.deploy();
         }
-        else if (Math.abs(gamepad2.right_stick_y) > Constants.MINIMUM_JOYSTICK_POWER_ARM)
+        else if (Math.abs(gamepad2.right_stick_y) > Constants.MINIMUM_JOYSTICK_POWER)
         {
-            // adjust power inputs for the arm motor
+            // Adjust power inputs for the arm motor
             double adjustedStickPower = Constants.ARM_POWER_CONSTANT * Range.clip(gamepad2.right_stick_y, -1.0, 1.0);
             double armPower = stickCurve.getOuput(adjustedStickPower);
             motorArm.setPower(armPower);
@@ -57,17 +56,18 @@ abstract public class ArmMechanism extends MasterOpMode
             telemetry.addData("armPower: ", armPower);
         }
 
-        // move turntable------------------
+        // Move turntable------------------
         double pow = gamepad2.left_stick_x;
 
-        // ensure that tiny joystick twitches do not make the servo drift
-        if (Math.abs(pow) < Constants.MINIMUM_JOYSTICK_POWER_ARM)
+        // Ensure that tiny joystick twitches do not make the servo drift
+        if (Math.abs(pow) < Constants.MINIMUM_JOYSTICK_POWER)
             pow = 0.0;
 
         double adjustedPow = stickCurve.getOuput(pow);
 
-        //only send command to servo if the value has changed
-        if (lastTurntableValue != adjustedPow) {
+        // Only send command to servo if the value has changed
+        if (lastTurntableValue != adjustedPow)
+        {
             lastTurntableValue = adjustedPow;
             turnTableServo.setPower(lastTurntableValue);
         }
