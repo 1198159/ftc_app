@@ -9,25 +9,36 @@ import java.util.ArrayList;
 */
 abstract public class MasterAutonomous extends MasterOpMode
 {
+    public boolean isBlueSide = true;
 
-    //variables used in autonomous setup
+    //todo redundant blue side declarations
+    // variables used in autonomous setup
     Alliance alliance = Alliance.BLUE;
     /*
     RoutineOption routineOption = RoutineOption.;
     */
     int delay = 0;
-    //use for more advanced auto
+    // use for more advanced auto
     ArrayList<Alliance> routine = new ArrayList<>();
 
-    //enums used for runSetUp
+    // enums used for runSetUp-------------
     enum Alliance
     {
         BLUE,
         RED
     }
+    /*
+     note:  position of balancing stone is relative to where the driver stands (which changes based
+     on alliance), so left and right are actually in opposite corners of the field
+    */
+    enum BalancingStone
+    {
+        LEFT,
+        RIGHT
+    }
+    // ------------------------------------
 
-    public boolean isBlueSide = true;
-    // used for initializations only necessary in autonomous
+    // used for object initializations only necessary in autonomous
     public void initializeAuto()
     {
         // we don't want to run the arm during autonomous
@@ -53,45 +64,29 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             idle();
         }
+
+        // temporary
+        routine.add(Alliance.BLUE);
+        telemetry.addLine("We are on blue side!");
+        telemetry.update();
         */
 
         initializeHardware();
         vuforiaHelper = new VuforiaHelper();
         vuforiaHelper.setupVuforia();
-        //temporary
-        /*routine.add(Alliance.BLUE);
-        telemetry.addLine("We are on blue side!");
-        telemetry.update();
-        */
     }
-
-    //todo change
-    enum RoutineOption
-    {
-        BEACON_LEFT,
-        BEACON_RIGHT,
-        PARK_RAMP,
-        PARK_CENTER,
-        SHOOT_CENTER
-    }
-
 
     //todo write setup for this year's autonomous
     // note: not currently in use
-    // allows the driver to decide which autonomous routine should be run; not in use
+    /*
+     allows the driver to decide which autonomous routine should be run during the match through
+     gamepad input
+    */
     public void runSetUp()
     {
 
 
         telemetry.log().add("Setup finished.");
-    }
-
-    //a function for finding the distance between two points
-    public double findDistance(double x1, double y1, double x2, double y2)
-    {
-        double Distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-
-        return Distance;
     }
 
     //todo needs to be changed for mecanum
@@ -148,7 +143,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopAllDriveMotors();
     }
 
-    //we use this function to determine the color of jewels and knock them
+    // we use this function to determine the color of jewels and knock them
     public void knockJewel (boolean isBlueSide, boolean isLeftJewelBlue) throws InterruptedException
     {
         if(!isDriveTrainAttached)
@@ -194,7 +189,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopAllDriveMotors();
     }
 
-    //gives the launcher time to update its state machine
+    // gives the robot time to update state machines
     void pauseWhileUpdating(double time)
     {
         lTime = timer.seconds();
@@ -208,16 +203,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             telemetry.addData("Time Remaining:", time);
             updateCallback(eTime);
             telemetry.update();
-            idle();
-        }
-    }
-    //wait a number of milliseconds
-    public void pause(int t) throws InterruptedException
-    {
-        //we don't use System.currentTimeMillis() because it can be inconsistent
-        long initialTime = System.nanoTime();
-        while((System.nanoTime() - initialTime)/1000/1000 < t)
-        {
             idle();
         }
     }
