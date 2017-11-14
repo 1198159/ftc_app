@@ -4,11 +4,11 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /*
-    Encapsulates gamepad for interpretation of control actions
+    Encapsulates gamepads for easy interpretation of driver input
 */
 public class DriverInput implements ConcurrentOperation
 {
-    private Gamepad controller;     //one state for each button; there are 13 buttons available
+    private Gamepad controller;     // One state for each button; there are 13 buttons available
     private boolean[] buttonStates = {false,false,false,false,false,false,false,false,false,false,false,false,false,false};
     private boolean[] lastButtonStates = {false,false,false,false,false,false,false,false,false,false,false,false,false,false};
     private double[] buttonHeldCounts = {0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -36,6 +36,20 @@ public class DriverInput implements ConcurrentOperation
         return !buttonStates[label.ordinal()] && lastButtonStates[label.ordinal()];
     }
 
+    // Check to see if any buttons on the gamepad are currently pressed
+    public boolean areAllButtonsReleased(Gamepad cont)
+    {
+        return !(isButtonPressed(Button.A) || isButtonPressed(Button.Y) || isButtonPressed(Button.X)
+                || isButtonPressed(Button.B) || isButtonPressed(Button.RIGHT_BUMPER)
+                || isButtonPressed(Button.LEFT_BUMPER) || isButtonPressed(Button.DPAD_DOWN)
+                || isButtonPressed(Button.DPAD_UP) || isButtonPressed(Button.DPAD_LEFT) ||
+                isButtonPressed(Button.DPAD_RIGHT) || getLeftStickMagnitude() > Constants.MINIMUM_JOYSTICK_POWER
+                || getRightStickMagnitude() > Constants.MINIMUM_JOYSTICK_POWER ||
+                getLeftTriggerValue() > Constants.MINIMUM_TRIGGER_VALUE  ||
+                getRightTriggerValue() > Constants.MINIMUM_TRIGGER_VALUE);
+    }
+
+
     public double getButtonHoldTime(Button label)
     {
         return buttonHeldCounts[label.ordinal()];
@@ -55,10 +69,8 @@ public class DriverInput implements ConcurrentOperation
     {
         return (controller.right_trigger);
     }
-    public double getLeftTriggerValue()
-    {
-        return (controller.left_trigger);
-    }
+
+    public double getLeftTriggerValue() { return (controller.left_trigger); }
 
 
     public double getLeftStickMagnitude()
@@ -71,7 +83,7 @@ public class DriverInput implements ConcurrentOperation
         return Math.sqrt(Math.pow(controller.right_stick_x, 2) + Math.pow(controller.right_stick_y, 2));
     }
 
-    //call at end of loop
+    // Call at end of loop
     public void update(double eTime)
     {
         for(int i=0; i < 14; i++)

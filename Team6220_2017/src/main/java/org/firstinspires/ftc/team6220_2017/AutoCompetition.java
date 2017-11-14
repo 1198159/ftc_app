@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+// todo Finish using setup routine created in MasterAutonomous
 @Autonomous(name = "AutoCompetition", group = "Autonomous")
 public class AutoCompetition extends MasterAutonomous
 {

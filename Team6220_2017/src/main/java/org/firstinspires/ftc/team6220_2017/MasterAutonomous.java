@@ -9,94 +9,88 @@ import java.util.ArrayList;
 */
 abstract public class MasterAutonomous extends MasterOpMode
 {
+    // Necessary for runSetup()
+    DriverInput driverInput;
+
+    // Initialize booleans/variables used in runSetup()
     public boolean isBlueSide = true;
+    public boolean isLeftBalancingStone = true;
 
-    //todo redundant blue side declarations
-    // variables used in autonomous setup
-    Alliance alliance = Alliance.BLUE;
     /*
-    RoutineOption routineOption = RoutineOption.;
-    */
-    int delay = 0;
-    // use for more advanced auto
+    // Use for more advanced auto
     ArrayList<Alliance> routine = new ArrayList<>();
-
-    // enums used for runSetUp-------------
-    enum Alliance
-    {
-        BLUE,
-        RED
-    }
-    /*
-     note:  position of balancing stone is relative to where the driver stands (which changes based
-     on alliance), so left and right are actually in opposite corners of the field
+    RoutineOption routineOption = RoutineOption.;
+    int delay = 0;
     */
-    enum BalancingStone
-    {
-        LEFT,
-        RIGHT
-    }
-    // ------------------------------------
 
-    // used for object initializations only necessary in autonomous
+    // todo Implement runSetup()
+    // Used for object initializations only necessary in autonomous
     public void initializeAuto()
     {
-        // we don't want to run the arm during autonomous
+        // We don't want to run the arm during autonomous
         isArmAttached = false;
-        /*boolean settingUp = true;
-
-        while(settingUp)
-        {
-            if(gamepad1.left_bumper)
-            {
-                isBlueSide = false;
-                telemetry.addLine("We are on red side!");
-                telemetry.update();
-            }
-            else if(gamepad1.right_bumper)
-            {
-                isBlueSide = true;
-                telemetry.addLine("We are on blue side!");
-                telemetry.update();
-            }
-            else if(gamepad1.start)
-                settingUp = false;
-
-            idle();
-        }
-
-        // temporary
-        routine.add(Alliance.BLUE);
-        telemetry.addLine("We are on blue side!");
-        telemetry.update();
-        */
 
         initializeHardware();
+
         vuforiaHelper = new VuforiaHelper();
         vuforiaHelper.setupVuforia();
     }
 
-    //todo write setup for this year's autonomous
-    // note: not currently in use
+    // Note: not currently in use
     /*
-     allows the driver to decide which autonomous routine should be run during the match through
+     Allows the 1st driver to decide which autonomous routine should be run during the match through
      gamepad input
     */
-    public void runSetUp()
+    public void runSetup()
     {
+        telemetry.log().add("Alliance Blue/Red = X/B");
+        telemetry.log().add("Balancing stone Left/Right = Left/Right bumper");
 
+        boolean settingUp = true;
+
+        while (settingUp)
+        {
+            // Select alliance
+            if (driver1.isButtonPressed(Button.X))
+                isBlueSide = true;
+            else if (driver1.isButtonPressed(Button.B))
+                isBlueSide = false;
+
+            // Select starting balancing stone
+            else if (driver1.isButtonPressed(Button.LEFT_BUMPER))
+                isLeftBalancingStone = true;
+            else if (driver1.isButtonPressed(Button.RIGHT_BUMPER))
+                isLeftBalancingStone = false;
+
+            // If the driver presses start, we exit setup
+            else if (gamepad1.start)
+                settingUp = false;
+
+            /*
+             Wait for all buttons to be released before continuing. Otherwise, buttons are read
+             continuously in setup and may cause issues (e.g., adding multiples of the same objective)
+            */
+            while(!driverInput.areAllButtonsReleased(gamepad1)) { idle(); }
+
+            // Display the current routine
+            telemetry.addData("Are we blue: ", isBlueSide);
+            telemetry.addData("Are we on left balancing stone: ", isLeftBalancingStone);
+
+            telemetry.update();
+            idle();
+        }
 
         telemetry.log().add("Setup finished.");
     }
 
-    //todo needs to be changed for mecanum
+    // todo needs to be changed for mecanum
     // use encoders to make the robot drive to a specified location
     public void driveToPosition(double targetX, double targetY) throws InterruptedException
     {
 
     }
 
-    // tell the robot to turn to a specified angle
+    // Tell the robot to turn to a specified angle
     public void turnTo(double targetAngle)
     {
         double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
@@ -143,7 +137,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopAllDriveMotors();
     }
 
-    // we use this function to determine the color of jewels and knock them
+    // We use this function to determine the color of jewels and score them
     public void knockJewel (boolean isBlueSide, boolean isLeftJewelBlue) throws InterruptedException
     {
         if(!isDriveTrainAttached)
@@ -180,8 +174,8 @@ abstract public class MasterAutonomous extends MasterOpMode
         pause(1000);
     }
 
-    //todo change to be based on encoder input
-    // specialized method for driving the robot in autonomous
+    // todo Change to be based on encoder input
+    // Specialized method for driving the robot in autonomous
     public void moveRobot(double driveAngle, double drivePower, int pause) throws InterruptedException
     {
         driveMecanum(driveAngle, drivePower, 0.0);
@@ -189,7 +183,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopAllDriveMotors();
     }
 
-    // gives the robot time to update state machines
+    // Gives the robot time to update state machines
     void pauseWhileUpdating(double time)
     {
         lTime = timer.seconds();

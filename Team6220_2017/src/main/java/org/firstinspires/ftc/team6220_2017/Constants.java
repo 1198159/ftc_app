@@ -50,10 +50,11 @@ public class Constants
     public static final double GRABBER_SERVO_RELIC = 0.50;
     //
 
-    // ensures the arm isn't moving when no commands are given
-    public static final double MINIMUM_JOYSTICK_POWER_ARM = 0.05;
+    // Ensure that input isn't used when no commands are given
+    public static final double MINIMUM_JOYSTICK_POWER = 0.05;
+    public static final double MINIMUM_TRIGGER_VALUE = 0.1;
 
-    // controls how much power is given to the arm
+    // Controls how much power is given to the arm
     public static final double ARM_POWER_CONSTANT = 0.7;
 
     //public static final double CLAW_INCREMENT = 0.1;
