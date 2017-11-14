@@ -48,6 +48,18 @@ public class VuforiaDetection
     public float rightColorHSV[] = {0f, 0f, 0f};
 
     int color = 0;
+    int colorRGB = 0;
+    int avgColorRGB = 0;
+    int sumColorRGB = 0;
+    int colorR = 0;
+    int colorG = 0;
+    int colorB = 0;
+    int avgColorR = 0;
+    int avgColorG = 0;
+    int avgColorB = 0;
+    int sumColorR = 0;
+    int sumColorG = 0;
+    int sumColorB = 0;
     float[] colorHsvSum = {0,0,0};
     float[] colorHSV = {0,0,0};
     float[] colorHsvOut = {0,0,0};
@@ -102,6 +114,56 @@ public class VuforiaDetection
         return colorHsvOut[0]; // return the averaged sampled HSV color value
     }
 
+    /*
+    This method returns the average RBG of the entire sampling area of one Jewel, then converts the
+    averaged RGB value into an HSV value.
+     */
+    public float GetAvgRGBColor(int x, int y)
+    {
+        sumColorR = 0;
+        sumColorG = 0;
+        sumColorB = 0;
+
+        if (x>=0 && x<1280-32 && y>=0 && y<720-32)
+        {
+            colorHsvSum[0] = 0;
+            for (int j = y - 32; j < y + 32; j++) // columns
+            {
+                for (int i = x - 32; i < x + 32; i++) // rows
+                {
+                    // get RGB color of pixel
+                    colorRGB = bm.getPixel(i, j);
+                    colorR = (colorRGB>>16) & 0x000000FF;
+                    colorG = (colorRGB>>8) & 0x000000FF;
+                    colorB = colorRGB & 0x000000FF;
+
+                    sumColorR += colorR;
+                    sumColorG += colorG;
+                    sumColorB += colorB;
+
+                    // draw black border around sample region for debugging only
+                    if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31))
+                    {
+                        bm.setPixel(i, j, 0xff00ff00);
+                    }
+                }
+            }
+            // normalize output for 32x32 = 4096 integration above
+            avgColorR = sumColorR / 4096;
+            avgColorR = (avgColorR & 0x000000FF) << 16;
+            avgColorG = sumColorG / 4096;
+            avgColorG = (avgColorG & 0x000000FF) << 8;
+            avgColorB = sumColorB / 4096;
+            avgColorB = avgColorB & 0x000000FF;
+            avgColorRGB = avgColorR + avgColorG + avgColorB;
+        }
+        // convert RGB to HSV - hue, sat, val
+        // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
+        Color.colorToHSV(avgColorRGB, colorHsvOut);
+
+        return colorHsvOut[0]; // return the averaged sampled HSV color value
+    }
+
 /*
 This method returns whether the left jewel is blue or not and the vumark (left, center, or right).
  */
@@ -153,8 +215,10 @@ This method returns whether the left jewel is blue or not and the vumark (left, 
             int rx = (int) jewelRight.getData()[0];
             int ry = (int) jewelRight.getData()[1];
 
-            avgLeftJewelColor = GetAvgJewelColor(lx, ly); // get the averaged jewel HSV color value for the left jewel
-            avgRightJewelColor = GetAvgJewelColor(rx, ry);
+            //avgLeftJewelColor = GetAvgJewelColor(lx, ly); // get the averaged jewel HSV color value for the left jewel
+            //avgRightJewelColor = GetAvgJewelColor(rx, ry);
+            avgLeftJewelColor = GetAvgRGBColor(lx, ly);
+            avgRightJewelColor = GetAvgRGBColor(lx, ly);
 
             // adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
             colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
