@@ -69,6 +69,13 @@ public class VuforiaDetection
     boolean isVuMarkVisible;
     boolean isLeftJewelBlue;
 
+    float leftRed;
+    float leftBlue;
+    float leftOther;
+    float rightRed;
+    float rightBlue;
+    float rightOther;
+
     float colorLeft;
     float colorRight;
     float deltaColorHSV;
@@ -168,6 +175,54 @@ public class VuforiaDetection
         return colorHsvOut[0]; // return the averaged sampled HSV color value
     }
 
+    /* garbage function */
+
+    public float sortPixels(int x, int y)
+    {
+        redPixels = 0;
+        bluePixels = 0;
+        otherPixels = 0;
+
+            if (x>=0 && x<1280-32 && y>=0 && y<720-32)
+            {
+                for (int j = y - 32; j < y + 32; j++) // columns
+                {
+                    for (int i = x - 32; i < x + 32; i++) // rows
+                    {
+                        // get RGB color of pixel
+                        color = bm.getPixel(i, j);
+
+                        // convert RGB to HSV - hue, sat, val
+                        // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
+                        Color.colorToHSV(color, colorHSV);
+
+                        // checks the pixels
+                        float hue = colorHSV[0];
+
+                        if(hue >= 330 && hue <= 30) // range of red pixels
+                        {
+                            redPixels++; // identify pixel as red
+                        }
+                        else if(hue >= 210 && hue <= 270) // range of blue pixels
+                        {
+                            bluePixels++; // identify pixel as blue
+                        }
+                        else // if the pixel is not in the red or blue ranges defined above, identify it as other
+                        {
+                            otherPixels++;
+                        }
+
+                        // draw black border around sample region for debugging only
+                        if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31))
+                        {
+                            bm.setPixel(i, j, 0xff00ff00);
+                        }
+                    }
+                }
+            }
+        return colorHsvOut[0]; // return the averaged sampled HSV color value
+    }
+
 /*
 This method returns whether the left jewel is blue or not and the vumark (left, center, or right).
  */
@@ -222,7 +277,7 @@ This method returns whether the left jewel is blue or not and the vumark (left, 
             //avgLeftJewelColor = GetAvgJewelColor(lx, ly); // get the averaged jewel HSV color value for the left jewel
             //avgRightJewelColor = GetAvgJewelColor(rx, ry);
             avgLeftJewelColor = GetAvgRGBColor(lx, ly);
-            avgRightJewelColor = GetAvgRGBColor(lx, ly);
+            avgRightJewelColor = GetAvgRGBColor(rx, ry);
 
             // adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
             colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
@@ -235,6 +290,7 @@ This method returns whether the left jewel is blue or not and the vumark (left, 
         return isLeftJewelBlue;
     }
 
+<<<<<<< HEAD
     public float adjustHue(float colorHsvOut[])
 {
     float hue = colorHsvOut[0];
@@ -252,6 +308,68 @@ This method returns whether the left jewel is blue or not and the vumark (left, 
         otherPixels++;
     }
     return hue;
+=======
+    /* more garbage */
+
+    public void arrangePixels() throws InterruptedException
+    {
+        /**
+         * See if any of the instances of {@link relicTemplate} are currently visible.
+         * {@link RelicRecoveryVuMark} is an enum which can have the following values:
+         * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
+         * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
+         */
+
+        pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
+
+        if (pose!=null)
+        {
+            rawPose = new Matrix34F();
+            float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
+            rawPose.setData(poseData);
+            // image size is 254 mm x 184 mm
+            Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(150, -160, -102));
+            Vec2F jewelRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(375, -160, -102));
+
+            // takes the frame at the head of the queue
+            frame = vuforia.getFrameQueue().take();
+
+            long numImages = frame.getNumImages();
+
+            for (int j = 0; j < numImages; j++)
+            {
+                image = frame.getImage(j);
+                imageFormat = image.getFormat();
+
+                if (imageFormat == PIXEL_FORMAT.RGB565) break;
+            }
+
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
+
+            // create bitmap of image to detect color
+            bm = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
+            bm.copyPixelsFromBuffer(image.getPixels());
+
+            // coordinates in image
+            // TODO: check to make sure x < 1280; y < 720
+            int lx = (int) jewelLeft.getData()[0];
+            int ly = (int) jewelLeft.getData()[1];
+
+            int rx = (int) jewelRight.getData()[0];
+            int ry = (int) jewelRight.getData()[1];
+
+            // calculate number of red, blue and other pixels for the LEFT JEWEL
+            sortPixels(lx, ly);
+            leftBlue = bluePixels;
+            leftRed = bluePixels;
+            leftOther = bluePixels;
+            sortPixels(rx, ry);
+            rightBlue = redPixels;
+            rightRed = redPixels;
+            rightOther = redPixels;
+        }
+>>>>>>> 81f11832539e83bb0e7c0bd106f1d9f57b6cc693
     }
 
     public RelicRecoveryVuMark GetVumark()

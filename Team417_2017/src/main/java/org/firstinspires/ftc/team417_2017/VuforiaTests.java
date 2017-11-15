@@ -101,19 +101,14 @@ public class VuforiaTests extends LinearOpMode
                  * translational components */
                 if (VuforiaDetect.pose != null) // if the pose is NOT null,
                 {
-                    telemetry.addData("leftHue ", VuforiaDetect.avgLeftJewelColor);
-                    telemetry.addData("rightHue ", VuforiaDetect.avgRightJewelColor);
-                    //telemetry.addData("isLeftJewelBlue", VuforiaDetect.isLeftJewelBlue);
-                    if (VuforiaDetect.isLeftJewelBlue) // if the left jewel is blue
-                    {
-                        telemetry.addData("Left Jewel: ", "blue");
-                        telemetry.addData("Right Jewel: ", "red");
-                    }
-                    else // if the left jewel is red
-                    {
-                        telemetry.addData("Left Jewel: ", "red");
-                        telemetry.addData("Right Jewel: ", "blue");
-                    }
+                    // left
+                    telemetry.addData("leftRed ", VuforiaDetect.leftRed);
+                    telemetry.addData("leftBlue ", VuforiaDetect.leftBlue);
+                    telemetry.addData("leftOther ", VuforiaDetect.leftOther);
+                    // right
+                    telemetry.addData("rightRed ", VuforiaDetect.rightRed);
+                    telemetry.addData("rightBlue ", VuforiaDetect.rightBlue);
+                    telemetry.addData("rightOther ", VuforiaDetect.rightOther);
                 }
             }
             else
