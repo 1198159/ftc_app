@@ -222,7 +222,7 @@ This method returns whether the left jewel is blue or not and the vumark (left, 
             //avgLeftJewelColor = GetAvgJewelColor(lx, ly); // get the averaged jewel HSV color value for the left jewel
             //avgRightJewelColor = GetAvgJewelColor(rx, ry);
             avgLeftJewelColor = GetAvgRGBColor(lx, ly);
-            avgRightJewelColor = GetAvgRGBColor(lx, ly);
+            avgRightJewelColor = GetAvgRGBColor(rx, ry);
 
             // adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
             colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
