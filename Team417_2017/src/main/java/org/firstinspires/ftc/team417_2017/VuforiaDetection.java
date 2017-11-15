@@ -236,22 +236,22 @@ This method returns whether the left jewel is blue or not and the vumark (left, 
     }
 
     public float adjustHue(float colorHsvOut[])
-    {
-        float hue = colorHsvOut[0];
+{
+    float hue = colorHsvOut[0];
 
-        if(hue >= 330 && hue <= 30) // range of red pixels
-        {
-            redPixels++; // identify pixel as red
-        }
-        else if(hue >= 210 && hue <= 270) // range of blue pixels
-        {
-            bluePixels++; // identify pixel as blue
-        }
-        else // if the pixel is not in the red or blue ranges defined above, identify it as other
-        {
-            otherPixels++;
-        }
-        return hue;
+    if(hue >= 330 && hue <= 30) // range of red pixels
+    {
+        redPixels++; // identify pixel as red
+    }
+    else if(hue >= 210 && hue <= 270) // range of blue pixels
+    {
+        bluePixels++; // identify pixel as blue
+    }
+    else // if the pixel is not in the red or blue ranges defined above, identify it as other
+    {
+        otherPixels++;
+    }
+    return hue;
     }
 
     public RelicRecoveryVuMark GetVumark()

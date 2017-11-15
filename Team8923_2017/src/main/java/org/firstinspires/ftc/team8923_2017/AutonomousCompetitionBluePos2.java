@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team8923_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
@@ -20,16 +21,19 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
 
         InitAuto();//Initializes Hardware and sets position based on alliance
         initVuforia();//Initializes Vuforia
+        GetVumark();
 
         waitForStart();
-
+        // turn on flash light
+        CameraDevice.getInstance().setFlashTorchMode(true);
+        // set false to turn off light
         closeGG();
         sleep(500);
         moveGG(1500);
         DropJJ();
         sleep(1000);
-        GetVumark();
         GetLeftJewelColor();
+        CameraDevice.getInstance().setFlashTorchMode(true);
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
         if (isLeftJewelRed == true)
