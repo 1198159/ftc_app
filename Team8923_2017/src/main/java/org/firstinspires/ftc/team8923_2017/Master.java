@@ -122,6 +122,7 @@ public abstract class Master extends LinearOpMode
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorGG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 

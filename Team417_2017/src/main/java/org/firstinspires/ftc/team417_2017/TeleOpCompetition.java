@@ -17,7 +17,8 @@ public class TeleOpCompetition extends MasterTeleOp
         {
             servoJewelStore.setPosition(JEWEL_STORE_INIT);
             servoJewelDrop.setPosition(JEWEL_DROP_INIT);
-            omniDriveTeleOp();
+            imuOmniTeleOp();
+            //omniDriveTeleOp();
             // TODO: add some telemetry to display the motor power
             idle();
         }

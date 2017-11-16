@@ -22,7 +22,7 @@ public class AutoRedLeft extends MasterAutonomous
         vuforiaHelper.getVumark();
 
 
-        //if the vuMark is not visible, vuforia will tell us
+        // if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
             isLeftBlue = vuforiaHelper.getLeftJewelColor();

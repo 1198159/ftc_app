@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team8923_2017;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -9,6 +10,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public abstract class MasterTeleOp extends Master
 {
     boolean liftMoving = false;
+    boolean liftModeStateChange = false;
+
+    int liftStage = 0;
 
     double robotAngle;
     double anglePivot;
@@ -51,6 +55,7 @@ public abstract class MasterTeleOp extends Master
         telemetry.addData("GG distance from target", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()));
         telemetry.addData("GG at position", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3);
         telemetry.addData("SlowMode", slowModeDivisor);
+        telemetry.addData("lift stage", liftStage);
         telemetry.update();
     }
 
@@ -82,26 +87,51 @@ public abstract class MasterTeleOp extends Master
     */
     void RunGG()
     {
-        if(!liftMoving && (gamepad1.dpad_down || gamepad1.dpad_up))
+        /*if(!liftMoving && (gamepad1.dpad_down || gamepad1.dpad_up))
         {
             liftMoving = true;
             GGLiftTimer.reset();
 
-            if (gamepad1.dpad_up)
-                motorGG.setTargetPosition(motorGG.getCurrentPosition() + GGLiftTicks);
+            if (gamepad1.dpad_up && liftStage < 2)
+                liftStage++;
 
-            else if (gamepad1.dpad_down)
-                motorGG.setTargetPosition(motorGG.getCurrentPosition() - GGLiftTicks);
+            else if (gamepad1.dpad_down && liftStage > 0)
+                liftStage--;
 
             if((motorGG.getCurrentPosition() - GGLiftTicks < GGZero) && gamepad1.dpad_down)
                 motorGG.setTargetPosition(GGZero);
-            else if((motorGG.getCurrentPosition() + GGLiftTicks > GGZero + /*(GGLiftTicks * 2)*/ 3500) && gamepad1.dpad_up)
-                motorGG.setTargetPosition(GGZero + /*(GGLiftTicks * 2)*/ 3500);
+            else if((motorGG.getCurrentPosition() + GGLiftTicks > GGZero + /*(GGLiftTicks * 2) 3500) && gamepad1.dpad_up)
+                motorGG.setTargetPosition(GGZero + /*(GGLiftTicks * 2) 3500);
         }
 
         if(liftMoving)
         {
-            motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 500.0), 1.0));
+            motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 125.0), 1.0));
+        }
+
+        if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) <= 5)
+        {
+            motorGG.setPower(0.0);
+            liftMoving = false;
+        }*/
+
+        if(!liftModeStateChange && !liftMoving && (gamepad1.dpad_up || gamepad1.dpad_down) && GGLiftTimer.milliseconds() > 500)
+        {
+            liftMoving = true;
+            GGLiftTimer.reset();
+
+            if(gamepad1.dpad_up && liftStage < 2)
+                liftStage++;
+            else if(gamepad1.dpad_down && liftStage > 0)
+                liftStage--;
+
+            motorGG.setTargetPosition(GGZero + (liftStage * 1700)/*(liftStage * GGLiftTicks)*/);
+
+        }
+
+        if(liftMoving)
+        {
+            motorGG.setPower(Math.min(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 500.0), 0.6), 1.0));
         }
 
         if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) <= 5)
@@ -112,24 +142,50 @@ public abstract class MasterTeleOp extends Master
 
         if(gamepad1.a && !liftMoving)
         {
-            servoGGL.setPosition(0.55); //TODO value needs to be changed
-            servoGGR.setPosition(0.05); //TODO value to be changed
+            servoGGL.setPosition(0.37); //TODO value needs to be changed
+            servoGGR.setPosition(0.10); //TODO value to be changed
 
         }
-         else
+        else if(gamepad1.b && !liftMoving)
         {
-            if(gamepad1.b && !liftMoving)
-            {
-                servoGGL.setPosition(0.3);//TODO value needs to be changed
-                servoGGR.setPosition(0.22);//TODO value needs to be changed
-            }
+            servoGGL.setPosition(0.1);//TODO value needs to be changed
+            servoGGR.setPosition(0.32);//TODO value needs to be changed
+        }
+        else if(gamepad1.x && !liftMoving)
+        {
+            servoGGL.setPosition(0.27);//TODO value needs to be changed
+            servoGGR.setPosition(0.25);//TODO value needs to be changed
+        }
 
-            if(gamepad1.x && !liftMoving)
-            {
-                servoGGL.setPosition(0.45);//TODO value needs to be changed
-                servoGGR.setPosition(0.15);//TODO value needs to be changed
-            }
+        if(liftModeStateChange && !(gamepad1.right_trigger > 0.35 || gamepad1.left_trigger > 0.35))
+        {
+            liftModeStateChange = false;
+            motorGG.setTargetPosition(motorGG.getCurrentPosition());
+            motorGG.setPower(0.0);
+        }
 
+        if(gamepad1.right_trigger > 0.35 && !liftMoving)
+        {
+            if(!liftModeStateChange)
+            {
+                motorGG.setTargetPosition(motorGG.getCurrentPosition() + 3000);
+                liftModeStateChange = true;
+            }
+            motorGG.setPower(0.25);
+        }
+        else if(gamepad1.left_trigger > 0.35 && !liftMoving)
+        {
+            if(!liftModeStateChange)
+            {
+                motorGG.setTargetPosition(motorGG.getCurrentPosition() - 3000);
+                liftModeStateChange = true;
+            }
+            motorGG.setPower(-0.25);
+        }
+
+        if(gamepad1.left_stick_button && gamepad1.right_stick_button && gamepad1.left_bumper)
+        {
+            GGZero = motorGG.getCurrentPosition();
         }
     }
 }

@@ -24,6 +24,13 @@ abstract public class MasterTeleOp extends MasterOpMode
      */
     int frontAngle = 0;
 
+    double anglePivot;
+    double robotAngle;
+    double jpivot;
+    double kAngle;
+    double pivot;
+    double error;
+
     // angle is the arc tangent of (-jx/jy), considering that 0 degrees is forwards
     double driveAngle; // used to calculate the drive angle based on the x and y position on the joystick
     double y;
@@ -105,7 +112,37 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
     }
+//////////////////////////////////////////
+    void imuOmniTeleOp()
+    {
+        y = -gamepad1.right_stick_y; // Y axis is negative when up
+        x = gamepad1.right_stick_x;
+        pivotPower = Range.clip(gamepad1.left_stick_x, -0.8, 0.8);
 
+        robotAngle = imu.getAngularOrientation().firstAngle;
+
+        anglePivot = 2 * (anglePivot - jpivot);
+        anglePivot = adjustAngles(anglePivot);
+
+        kAngle = 0.035;
+        //robotAngle = adjustAngles(robotAngle);
+        error = robotAngle - anglePivot;
+        error = adjustAngles(error);
+        pivot = error * kAngle;
+
+        // calculate the power for each motor
+        powerFL = x + y + pivotPower;
+        powerFR = -x + y - pivotPower;
+        powerBL = -x + y + pivotPower;
+        powerBR = x + y - pivotPower;
+
+        // set power to the motors
+        motorFL.setPower(powerFL);
+        motorFR.setPower(powerFR);
+        motorBL.setPower(powerBL);
+        motorBR.setPower(powerBR);
+}
+////////////////////////////////////////////
     public double modJoyStickInput(double i) // i is the raw joystick input
     {
         return Math.pow(i,2) * Math.signum(i);

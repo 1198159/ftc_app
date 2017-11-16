@@ -101,6 +101,7 @@ abstract public class MasterOpMode extends LinearOpMode {
             jewelJostlerServoToggler = new ServoToggler(jewelJostlerServo, Constants.JEWEL_JOSTLER_RETRACTED, Constants.JEWEL_JOSTLER_DEPLOYED);
             //
 
+            //todo Make sure to reset last encoder values in autonomous method driveToPosition
             // set modes and initial positions
             motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -256,7 +257,7 @@ abstract public class MasterOpMode extends LinearOpMode {
         return diff;
     }
 
-    //prevents a single angle from being outside the range -180 to 180 degrees
+    // prevents a single angle from being outside the range -180 to 180 degrees
     public double normalizeAngle(double rawAngle)
     {
         while (Math.abs(rawAngle) > 180)
@@ -267,7 +268,7 @@ abstract public class MasterOpMode extends LinearOpMode {
         return rawAngle;
     }
 
-    //takes into account headingOffset to utilize global orientation
+    // takes into account headingOffset to utilize global orientation
     double getAngularOrientationWithOffset()
     {
         double correctedHeading = normalizeAngle(imu.getAngularOrientation().firstAngle + headingOffset);
@@ -275,7 +276,7 @@ abstract public class MasterOpMode extends LinearOpMode {
         return correctedHeading;
     }
 
-    //finds distance between 2 points
+    // finds distance between 2 points
     double calculateDistance(double dx, double dy)
     {
         double distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
@@ -283,7 +284,7 @@ abstract public class MasterOpMode extends LinearOpMode {
         return distance;
     }
 
-    //wait a number of milliseconds
+    // wait a number of milliseconds
     void pause(int t) throws InterruptedException
     {
         //we don't use System.currentTimeMillis() because it can be inconsistent

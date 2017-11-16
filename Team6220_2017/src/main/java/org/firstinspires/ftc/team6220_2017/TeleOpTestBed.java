@@ -14,8 +14,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 //@Disabled
 public class TeleOpTestBed extends MasterAutonomous
 {
-    CRServo rightServo;
-    CRServo leftServo;
     Servo servo;
     VuforiaHelper vuforiaHelper = new VuforiaHelper();
 
@@ -24,7 +22,13 @@ public class TeleOpTestBed extends MasterAutonomous
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
-        initializeHardware();
+        //initializeHardware();
+
+        DcMotor glyphMotorLeft;
+        DcMotor glyphMotorRight;
+
+        glyphMotorLeft = hardwareMap.dcMotor.get("glyphMotorLeft");
+        glyphMotorRight = hardwareMap.dcMotor.get("glyphMotorRight");
 
         vuforiaHelper.setupVuforia();
         // Wait until start button has been pressed
@@ -33,7 +37,7 @@ public class TeleOpTestBed extends MasterAutonomous
         // Main loop
         while(opModeIsActive())
         {
-            //for motor that actuates arm
+            // for motor that actuates arm
             motorArm.setPower(gamepad1.left_stick_y);
 
             /*
@@ -51,21 +55,18 @@ public class TeleOpTestBed extends MasterAutonomous
             */
 
             //for testing glyph collection; servos on either side of glyph pull or push it
-            if(gamepad1.a)
+            if(driver1.isButtonPressed(Button.A))
             {
-                turnTo(90);
-                //rightServo.setPower(1.0);
-                //leftServo.setPower(-1.0);
+                glyphMotorLeft.setPower(1.0);
+                glyphMotorRight.setPower(-1.0);
+                //turnTo(90);
             }
-            if(gamepad1.b)
+            if(driver1.isButtonPressed(Button.B))
             {
-                turnTo(-90);
-                //rightServo.setPower(-1.0);
-                //leftServo.setPower(1.0);
+                glyphMotorLeft.setPower(-1.0);
+                glyphMotorRight.setPower(1.0);
+                //turnTo(-90);
             }
-
-            //for robot arm test
-            //servo.setPosition((gamepad1.left_stick_y + 1) / 2);
 
             idle();
         }

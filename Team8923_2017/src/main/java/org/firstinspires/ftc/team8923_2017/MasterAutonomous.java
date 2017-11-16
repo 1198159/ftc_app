@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.vuforia.CameraDevice;
 import com.vuforia.Image;
 import com.vuforia.Matrix34F;
 import com.vuforia.PIXEL_FORMAT;
@@ -127,10 +128,16 @@ public abstract class MasterAutonomous extends Master
     float[] HsvOut = {0,0,0};
     float avgLeftJewelColor;
     float avgRightJewelColor;
+    float leftJeweColor;
+    float rightJewelColor;
 
     float Leftcolor;
     float Rightcolor;
     float deltaHSVColor;
+
+    int numRedPixels = 0;
+    int numBluePixels = 0;
+    int numOtherPixels = 0;
 
     boolean isVuMarkVisible;
     boolean isLeftJewelRed;
@@ -173,57 +180,6 @@ public abstract class MasterAutonomous extends Master
         }
     }
 
-    void InitHardwareAutonomous()
-    {
-        // Motors here
-        motorFL = hardwareMap.get(DcMotor.class, "motorFL");
-        motorFR = hardwareMap.get(DcMotor.class, "motorFR");
-        motorBL = hardwareMap.get(DcMotor.class, "motorBL");
-        motorBR = hardwareMap.get(DcMotor.class, "motorBR");
-        motorGG = hardwareMap.get(DcMotor.class, "motorGG");
-
-        // Servos here
-        servoJJ = hardwareMap.get(Servo.class, "servoJJ");
-        servoGGL = hardwareMap.get(Servo.class, "servoGGL");
-        servoGGR = hardwareMap.get(Servo.class, "servoGGR");
-
-        servoJJ.setPosition(SERVO_JJ_UP);
-        servoGGL.setPosition(0.3);
-        servoGGR.setPosition(0.25);
-
-        //Reset encoders
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        //motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Sensors here
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-
-        GGZero = motorGG.getCurrentPosition();
-    }
-
     void InitAuto()
     {
         InitHardwareAutonomous();
@@ -261,6 +217,57 @@ public abstract class MasterAutonomous extends Master
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
     }
 
+
+    void InitHardwareAutonomous()
+    {
+        // Motors here
+        motorFL = hardwareMap.get(DcMotor.class, "motorFL");
+        motorFR = hardwareMap.get(DcMotor.class, "motorFR");
+        motorBL = hardwareMap.get(DcMotor.class, "motorBL");
+        motorBR = hardwareMap.get(DcMotor.class, "motorBR");
+        motorGG = hardwareMap.get(DcMotor.class, "motorGG");
+
+        // Servos here
+        servoJJ = hardwareMap.get(Servo.class, "servoJJ");
+        servoGGL = hardwareMap.get(Servo.class, "servoGGL");
+        servoGGR = hardwareMap.get(Servo.class, "servoGGR");
+
+        servoJJ.setPosition(SERVO_JJ_UP);
+        servoGGL.setPosition(0.3);
+        servoGGR.setPosition(0.25);
+
+        //Reset encoders
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);///
+
+        motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Sensors here
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+        GGZero = motorGG.getCurrentPosition();
+    }
 
     void Run() throws InterruptedException //Generic run method for testing purposes now
     {
@@ -602,9 +609,10 @@ public abstract class MasterAutonomous extends Master
         sleep(200);
         servoJJ.setPosition(SERVO_JJ_MIDDLE5);
         sleep(200);
-        servoJJ.setPosition(SERVO_JJ_MIDDLE6);
+        /*servoJJ.setPosition(SERVO_JJ_MIDDLE6);
         sleep(200);
         servoJJ.setPosition(SERVO_JJ_DOWN);
+        */
     }
 
     void moveGG(int ticks)
@@ -716,11 +724,27 @@ public abstract class MasterAutonomous extends Master
         return vuMark;
     }
 
+    public float countPixel(float colorHsvOut[]) {
+        float hue = colorHsvOut[0];
+
+        if (hue >= 333 && hue <= 20)//Range of Red Hue
+        {
+            numRedPixels ++;//Adds to num of red pixels
+        }
+        else if (hue >= 200 && hue <= 270)//Range of blue hue value
+        {
+            numBluePixels ++;//Adds to num of blue pixels
+        }
+        else//If the pixel value is not red or blue, it is identified as other.
+        {
+            numOtherPixels ++;//Adds to num of other pixels
+        }
+        return hue;
+    }
 
     public float GetAvgJewelColor(int x, int y)
     {
-        if (x>=0 && x<1280-32 && y>=0 && y<720-32)
-        {
+        if (x>=0 && x<1280-32 && y>=0 && y<720-32) {
             HsvSum[0] = 0;
             for (int j = y - 32; j < y + 32; j++) // "Draws" the columns
             {
@@ -740,18 +764,51 @@ public abstract class MasterAutonomous extends Master
 
                     // draws a 64 by 64 black border around sample region
                     //(For debugging code only)
-                    if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31))
-                    {
+                    if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31)) {
+                        bm.setPixel(i, j, 0xff0000ff);//Blue Color()
+                    }
+                }
+            }
+            //countPixel(HsvSum);
+            // Averages the HSV by dividing by 4096(64*64)
+            HsvOut[0] = HsvSum[0] / 4096;
+        }
+        return HsvOut[0]; // returns the now averaged sampled HSV color value
+
+    }
+
+    public float GetJewelColor(int x, int y) {
+        if (x >= 0 && x < 1280 - 32 && y >= 0 && y < 720 - 32) {
+            HsvSum[0] = 0;
+            for (int j = y - 32; j < y + 32; j++) // "Draws" the columns
+            {
+                for (int i = x - 32; i < x + 32; i++) // "Draws" the rows
+                {
+                    // gets RGB color of the pixel
+                    color = bm.getPixel(i, j);
+
+                    /* convert RGB to HSV - hue, sat, val
+                    The hue determines color in a 360 degree circle: 0 red, 60 is yellow, 120 is green
+                    , 180 is cyan, 240 is blue, 300 is magenta
+                    */
+                    Color.colorToHSV(color, HSV);
+
+                    // Adds the HSV color of all pixels
+                    HsvSum[0] += HSV[0];
+
+                    // draws a 64 by 64 black border around sample region
+                    //(For debugging code only)
+                    if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31)) {
                         bm.setPixel(i, j, 0xff0000ff);//Blue Color()
                     }
                 }
             }
             // Averages the HSV by dividing by 4096(64*64)
             HsvOut[0] = HsvSum[0] / 4096;
+            countPixel(HsvSum);
         }
         return HsvOut[0]; // returns the now averaged sampled HSV color value
     }
-
 
     public boolean GetLeftJewelColor() throws InterruptedException
     {
@@ -798,20 +855,33 @@ public abstract class MasterAutonomous extends Master
             int RightX = (int) rightJewel.getData()[0];
             int RightY = (int) rightJewel.getData()[1];
 
+            /*
             avgLeftJewelColor = GetAvgJewelColor(LeftX, LeftY); // gets the averaged jewel HSV color value for the left jewel
             avgRightJewelColor = GetAvgJewelColor(RightX, RightY);//Gets the averaged jewel HSV color value for the right jewel
 
             //adjusts color for red so that red is greater that blue by adding 300 since red is only 45
             Leftcolor = (avgLeftJewelColor < 80) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
             Rightcolor = (avgRightJewelColor < 80) ? avgRightJewelColor + 300 : avgRightJewelColor;
+            */
+
+            leftJeweColor = GetJewelColor(LeftX, LeftY);
+            //rightJewelColor = GetJewelColor(RightX, RightY);
+
         }
         //Gets the difference between left HSV and right HSV
-        deltaHSVColor = Leftcolor - Rightcolor;
+        //deltaHSVColor = Leftcolor - Rightcolor;
         // if the left jewel color is positive, the left side is red and the right side is blue
-        if (deltaHSVColor > 0) isLeftJewelRed = true;
-        else isLeftJewelRed = false;
+        //if (deltaHSVColor > 0) isLeftJewelRed = true;
+        //else isLeftJewelRed = false;
+        if (numRedPixels > numBluePixels)
+        {
+            isLeftJewelRed = true;
+        }
+        else
+        {
+            isLeftJewelRed = false;
+        }
         return isLeftJewelRed;
-
     }
 
 

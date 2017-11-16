@@ -9,7 +9,10 @@ import org.firstinspires.ftc.robotcore.external.Const;
 */
 abstract public class MasterTeleOp extends MasterOpMode
 {
-    //takes driver 1 stick input and uses it to give power and direction inputs to the drive
+    // class that will be used to manipulate the relic arm (only in TeleOp)
+    ArmMechanism armMechanism;
+
+    // takes driver 1 stick input and uses it to give power and direction inputs to the drive
     void driveMecanumWithJoysticks()
     {
         // factor changing magnitude of vertical and horizontal movement
