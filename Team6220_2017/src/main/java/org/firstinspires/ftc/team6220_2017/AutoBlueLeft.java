@@ -34,6 +34,7 @@ public class AutoBlueLeft extends MasterAutonomous
         }
         else
         {
+
             telemetry.addData("vuMark: ", "not visible");
         }
 

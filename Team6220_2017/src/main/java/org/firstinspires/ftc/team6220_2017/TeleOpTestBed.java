@@ -26,19 +26,23 @@ public class TeleOpTestBed extends MasterAutonomous
 
         DcMotor glyphMotorLeft;
         DcMotor glyphMotorRight;
+        Servo relicGrabberWrist;
 
-        glyphMotorLeft = hardwareMap.dcMotor.get("glyphMotorLeft");
-        glyphMotorRight = hardwareMap.dcMotor.get("glyphMotorRight");
+        //glyphMotorLeft = hardwareMap.dcMotor.get("glyphMotorLeft");
+        //glyphMotorRight = hardwareMap.dcMotor.get("glyphMotorRight");
+        relicGrabberWrist = hardwareMap.servo.get("relicGrabberServo");
+
 
         vuforiaHelper.setupVuforia();
         // Wait until start button has been pressed
         waitForStart();
+        relicGrabberWrist.setPosition(0.7);
 
         // Main loop
         while(opModeIsActive())
         {
             // for motor that actuates arm
-            motorArm.setPower(gamepad1.left_stick_y);
+            //motorArm.setPower(gamepad1.left_stick_y);
 
             /*
             if(gamepad1.x)
@@ -55,7 +59,7 @@ public class TeleOpTestBed extends MasterAutonomous
             */
 
             //for testing glyph collection; servos on either side of glyph pull or push it
-            if(driver1.isButtonPressed(Button.A))
+            /*if(driver1.isButtonPressed(Button.A))
             {
                 glyphMotorLeft.setPower(1.0);
                 glyphMotorRight.setPower(-1.0);
@@ -66,6 +70,10 @@ public class TeleOpTestBed extends MasterAutonomous
                 glyphMotorLeft.setPower(-1.0);
                 glyphMotorRight.setPower(1.0);
                 //turnTo(-90);
+            }*/
+            if(driver1.isButtonPressed(Button.X))
+            {
+                relicGrabberWrist.setPosition(1.0);
             }
 
             idle();
