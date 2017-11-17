@@ -68,7 +68,9 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 //@Disabled                            // Comment this out to add to the opmode list
 public class ColorSensorTest extends LinearOpMode {
 
-  ColorSensor sensorRGB;
+  ColorSensor sensorTopLeft;
+  ColorSensor sensorTopRight;
+  ColorSensor sensorBottomRight;
   //DeviceInterfaceModule cdim;
 
   // we assume that the LED pin of the RGB sensor is connected to
@@ -79,10 +81,12 @@ public class ColorSensorTest extends LinearOpMode {
   public void runOpMode() {
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
-    float hsvValues[] = {0F,0F,0F};
+    float hsvValuesTopLeft[] = {0F,0F,0F};
+    float hsvValuesTopRight[] = {0F,0F,0F};
+    float hsvValuesBottomRight[] = {0F,0F,0F};
 
     // values is a reference to the hsvValues array.
-    final float values[] = hsvValues;
+    //final float values[] = hsvValues;
 
     // get a reference to the RelativeLayout so we can change the background
     // color of the Robot Controller app to match the hue detected by the RGB sensor.
@@ -105,8 +109,9 @@ public class ColorSensorTest extends LinearOpMode {
     //cdim.setDigitalChannelMode(LED_CHANNEL, DigitalChannel.Mode.OUTPUT);
 
     // get a reference to our ColorSensor object.
-    sensorRGB = hardwareMap.colorSensor.get("sensor_color");
-
+    sensorTopRight = hardwareMap.colorSensor.get("sensorTopRight");
+    sensorTopLeft = hardwareMap.colorSensor.get("sensorTopLeft");
+    sensorBottomRight = hardwareMap.colorSensor.get("sensorBottomRight");
     // turn the LED on in the beginning, just so user will know that the sensor is active.
     //cdim.setDigitalChannelState(LED_CHANNEL, bLedOn);
 
@@ -132,7 +137,9 @@ public class ColorSensorTest extends LinearOpMode {
       bPrevState = bCurrState;
 
       // convert the RGB values to HSV values.
-      Color.RGBToHSV((sensorRGB.red() * 255) / 800, (sensorRGB.green() * 255) / 800, (sensorRGB.blue() * 255) / 800, hsvValues);
+      Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopRight);
+      Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopLeft);
+      Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesBottomRight);
 
       // send the info back to driver station using telemetry function.
       //telemetry.addData("LED", bLedOn ? "On" : "Off");
@@ -141,27 +148,14 @@ public class ColorSensorTest extends LinearOpMode {
       //telemetry.addData("Green", sensorRGB.green());
       //telemetry.addData("Blue ", sensorRGB.blue());
       //telemetry.addData("Hue", hsvValues[0]);
-      telemetry.addData("H: ", hsvValues[0]);
-      telemetry.addData("S: ", hsvValues[1]);
-      telemetry.addData("V: ", hsvValues[2]);
-
-      // change the background color to match the color detected by the RGB sensor.
-      // pass a reference to the hue, saturation, and value array as an argument
-      // to the HSVToColor method.
-      relativeLayout.post(new Runnable() {
-        public void run() {
-          relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
-        }
-      });
-
+      telemetry.addData("TopRight_S: ", hsvValuesTopRight[1]);
+      //telemetry.addData("V: ", hsvValuesTopLeft[2]);
+      telemetry.addData("TopLeft_S: ", hsvValuesTopLeft[1]);
+      telemetry.addData("BottomRight_S: ", hsvValuesBottomRight[1]);
       telemetry.update();
+
     }
 
-    // Set the panel back to the default color
-    relativeLayout.post(new Runnable() {
-      public void run() {
-        relativeLayout.setBackgroundColor(Color.WHITE);
-      }
-    });
   }
+
 }

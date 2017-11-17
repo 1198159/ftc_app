@@ -4,11 +4,14 @@ package org.firstinspires.ftc.team8923_2017;
  * Holds all code necessary to run the robot in autonomous controlled mode
  */
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Camera;
+import android.view.View;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -144,8 +147,38 @@ public abstract class MasterAutonomous extends Master
 
     VuforiaLocalizer vuforia;
 
-
     OpenGLMatrix pose;
+
+
+    //Color Sensors
+    ColorSensor sensorTopLeft;
+    ColorSensor sensorTopRight;
+    ColorSensor sensorBottomRight;
+    //DeviceInterfaceModule cdim;
+
+    // we assume that the LED pin of the RGB sensor is connected to
+    // digital port 5 (zero indexed).
+
+    // hsvValues is an array that will hold the hue, saturation, and value information.
+    float hsvValuesTopLeft[] = {0F,0F,0F};
+    float hsvValuesTopRight[] = {0F,0F,0F};
+    float hsvValuesBottomRight[] = {0F,0F,0F};
+
+    // get a reference to the RelativeLayout so we can change the background
+    // color of the Robot Controller app to match the hue detected by the RGB sensor.
+    int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
+    final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+
+    // bPrevState and bCurrState represent the previous and current state of the button.
+    boolean bPrevState = false;
+    boolean bCurrState = false;
+
+    // bLedOn represents the state of the LED.
+    boolean bLedOn = true;
+
+    // values is a reference to the hsvValues array.
+    //final float values[] = hsvValues;
+    //static final int LED_CHANNEL = 5;
 
 
     void ChooseOptions()
@@ -266,6 +299,10 @@ public abstract class MasterAutonomous extends Master
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        sensorTopRight = hardwareMap.colorSensor.get("sensorTopRight");
+        sensorTopLeft = hardwareMap.colorSensor.get("sensorTopLeft");
+        sensorBottomRight = hardwareMap.colorSensor.get("sensorBottomRight");
+
         GGZero = motorGG.getCurrentPosition();
     }
 
@@ -283,14 +320,14 @@ public abstract class MasterAutonomous extends Master
 
     void closeGG()
     {
-        servoGGL.setPosition(0.5); //TODO value needs to be changed
-        servoGGR.setPosition(0.1); //TODO value to be changed
+        servoGGL.setPosition(0.5); //
+        servoGGR.setPosition(0.1); //
 
     }
     void openGG()
     {
-        servoGGL.setPosition(0.55); //TODO value needs to be changed
-        servoGGR.setPosition(0.05); //TODO value to be changed
+        servoGGL.setPosition(0.55); //
+        servoGGR.setPosition(0.05); //
     }
 
     void MoveIMU(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
@@ -669,8 +706,6 @@ public abstract class MasterAutonomous extends Master
 */
     }
 
-
-
     void UpdateRobotLocation()
     {
         // Update robot angle
@@ -714,7 +749,57 @@ public abstract class MasterAutonomous extends Master
             delta += 360;
         return delta;
     }
+//------------------------------------------------------------------------------------------------------------------------------------
+//Color Sensor/Aligning methods
+    void colorSensorHSV()
+    {
+            // check the status of the x button on gamepad.
+            bCurrState = gamepad1.x;
 
+            // check for button-press state transitions.
+            if ((bCurrState == true) && (bCurrState != bPrevState))  {
+
+                // button is transitioning to a pressed state. Toggle the LED.
+                bLedOn = !bLedOn;
+                //cdim.setDigitalChannelState(LED_CHANNEL, bLedOn);
+            }
+
+            // update previous state variable.
+            bPrevState = bCurrState;
+
+            // convert the RGB values to HSV values.
+            Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopRight);
+            Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopLeft);
+            Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesBottomRight);
+
+
+            //Send current info back to driver
+            //telemetry.addData("H: ", hsvValuesTopRight[0]);
+            telemetry.addData("TopRight_S: ", hsvValuesTopRight[1]);
+            //telemetry.addData("V: ", hsvValuesTopLeft[2]);
+            telemetry.addData("TopLeft_S: ", hsvValuesTopLeft[1]);
+            telemetry.addData("BottomRight_S: ", hsvValuesBottomRight[1]);
+
+            telemetry.update();
+
+    }
+
+/*
+    void alignOnLineRed(boolean isItRedLine)
+    {
+        do
+        {
+            double referenceAngle =  imu.getAngularOrientation().firstAngle;
+            MoveIMU(referenceAngle, 50, 0, 0.015, 0.2, 3);
+        }
+        while(hsvValues[0] == 200.0 );//TODO Change value to correct Hue value
+
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+    }
+    */
 //-------------------------------------------------------------------------------------------------------------------------------------
 //Vuforia Methods
 

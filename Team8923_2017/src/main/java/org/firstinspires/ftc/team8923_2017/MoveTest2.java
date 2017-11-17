@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.team8923_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous(name="Move Test 2", group = "Swerve")
+@Disabled
 /**
  * Runable shell for Master Autonomous code
  */
