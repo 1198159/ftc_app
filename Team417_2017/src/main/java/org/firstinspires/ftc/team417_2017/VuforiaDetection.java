@@ -183,49 +183,49 @@ public class VuforiaDetection
         bluePixels = 0;
         otherPixels = 0;
 
-            if (x>=0 && x<1280-32 && y>=0 && y<720-32)
+        if (x>=0 && x<1280-32 && y>=0 && y<720-32)
+        {
+            for (int j = y - 32; j < y + 32; j++) // columns
             {
-                for (int j = y - 32; j < y + 32; j++) // columns
+                for (int i = x - 32; i < x + 32; i++) // rows
                 {
-                    for (int i = x - 32; i < x + 32; i++) // rows
+                    // get RGB color of pixel
+                    color = bm.getPixel(i, j);
+
+                    // convert RGB to HSV - hue, sat, val
+                    // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
+                    Color.colorToHSV(color, colorHSV);
+
+                    // checks the pixels
+                    float hue = colorHSV[0];
+
+                    if(hue >= 330 && hue <= 30) // range of red pixels
                     {
-                        // get RGB color of pixel
-                        color = bm.getPixel(i, j);
+                        redPixels++; // identify pixel as red
+                    }
+                    else if(hue >= 210 && hue <= 270) // range of blue pixels
+                    {
+                        bluePixels++; // identify pixel as blue
+                    }
+                    else // if the pixel is not in the red or blue ranges defined above, identify it as other
+                    {
+                        otherPixels++;
+                    }
 
-                        // convert RGB to HSV - hue, sat, val
-                        // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
-                        Color.colorToHSV(color, colorHSV);
-
-                        // checks the pixels
-                        float hue = colorHSV[0];
-
-                        if(hue >= 330 && hue <= 30) // range of red pixels
-                        {
-                            redPixels++; // identify pixel as red
-                        }
-                        else if(hue >= 210 && hue <= 270) // range of blue pixels
-                        {
-                            bluePixels++; // identify pixel as blue
-                        }
-                        else // if the pixel is not in the red or blue ranges defined above, identify it as other
-                        {
-                            otherPixels++;
-                        }
-
-                        // draw black border around sample region for debugging only
-                        if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31))
-                        {
-                            bm.setPixel(i, j, 0xff00ff00);
-                        }
+                    // draw black border around sample region for debugging only
+                    if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31))
+                    {
+                        bm.setPixel(i, j, 0xff00ff00);
                     }
                 }
             }
+        }
         return colorHsvOut[0]; // return the averaged sampled HSV color value
     }
 
-/*
-This method returns whether the left jewel is blue or not and the vumark (left, center, or right).
- */
+    /*
+    This method returns whether the left jewel is blue or not and the vumark (left, center, or right).
+     */
     public boolean GetLeftJewelColor() throws InterruptedException
     {
         /**
@@ -290,25 +290,6 @@ This method returns whether the left jewel is blue or not and the vumark (left, 
         return isLeftJewelBlue;
     }
 
-<<<<<<< HEAD
-    public float adjustHue(float colorHsvOut[])
-{
-    float hue = colorHsvOut[0];
-
-    if(hue >= 330 && hue <= 30) // range of red pixels
-    {
-        redPixels++; // identify pixel as red
-    }
-    else if(hue >= 210 && hue <= 270) // range of blue pixels
-    {
-        bluePixels++; // identify pixel as blue
-    }
-    else // if the pixel is not in the red or blue ranges defined above, identify it as other
-    {
-        otherPixels++;
-    }
-    return hue;
-=======
     /* more garbage */
 
     public void arrangePixels() throws InterruptedException
@@ -369,7 +350,6 @@ This method returns whether the left jewel is blue or not and the vumark (left, 
             rightRed = redPixels;
             rightOther = redPixels;
         }
->>>>>>> 81f11832539e83bb0e7c0bd106f1d9f57b6cc693
     }
 
     public RelicRecoveryVuMark GetVumark()
