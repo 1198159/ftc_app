@@ -19,6 +19,8 @@ public class TeleOpTestBed extends MasterAutonomous
 
     @Override public void runOpMode() throws InterruptedException
     {
+        double jointPosAdd = 0.5;
+
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
@@ -26,21 +28,27 @@ public class TeleOpTestBed extends MasterAutonomous
 
         DcMotor glyphMotorLeft;
         DcMotor glyphMotorRight;
-        Servo relicGrabberWrist;
+        Servo wristServo;
+        Servo jointServo;
 
         //glyphMotorLeft = hardwareMap.dcMotor.get("glyphMotorLeft");
         //glyphMotorRight = hardwareMap.dcMotor.get("glyphMotorRight");
-        relicGrabberWrist = hardwareMap.servo.get("relicGrabberServo");
-
+        //relicGrabberWrist = hardwareMap.servo.get("relicGrabberServo");
+        wristServo = hardwareMap.servo.get("servoWrist");
+        jointServo = hardwareMap.servo.get("servoJoint");
 
         vuforiaHelper.setupVuforia();
         // Wait until start button has been pressed
         waitForStart();
-        relicGrabberWrist.setPosition(0.7);
-
+        lTime = timer.seconds();
+        //relicGrabberWrist.setPosition(0.7);
+        jointServo.setPosition(0.5);
         // Main loop
         while(opModeIsActive())
         {
+
+            double eTime = timer.seconds() - lTime;
+            lTime = timer.seconds();
             // for motor that actuates arm
             //motorArm.setPower(gamepad1.left_stick_y);
 
@@ -59,23 +67,34 @@ public class TeleOpTestBed extends MasterAutonomous
             */
 
             //for testing glyph collection; servos on either side of glyph pull or push it
-            /*if(driver1.isButtonPressed(Button.A))
+            if(gamepad1.a)
             {
-                glyphMotorLeft.setPower(1.0);
-                glyphMotorRight.setPower(-1.0);
+                jointPosAdd += 0.05;
+                jointServo.setPosition(jointPosAdd);
+
+                //glyphMotorLeft.setPower(1.0);
+                //glyphMotorRight.setPower(-1.0);
+
                 //turnTo(90);
             }
-            if(driver1.isButtonPressed(Button.B))
+            if(gamepad1.b)
             {
-                glyphMotorLeft.setPower(-1.0);
-                glyphMotorRight.setPower(1.0);
+                jointPosAdd -= 0.05;
+                jointServo.setPosition(jointPosAdd);
+
+                //glyphMotorLeft.setPower(-1.0);
+                //glyphMotorRight.setPower(1.0);
+
                 //turnTo(-90);
-            }*/
-            if(driver1.isButtonPressed(Button.X))
+            }
+            if(gamepad1.x)
             {
-                relicGrabberWrist.setPosition(1.0);
+                wristServo.setPosition(Constants.WRIST_SERVO_DEPLOYED);
             }
 
+            telemetry.addData("jointPos: ", jointPosAdd);
+            updateCallback(eTime);
+            telemetry.update();
             idle();
         }
     }

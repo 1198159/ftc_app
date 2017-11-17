@@ -8,8 +8,7 @@ import com.qualcomm.robotcore.util.Range;
 
 abstract public class ArmMechanism extends MasterOpMode
 {
-    double lastTurntableValue = 0.0;
-    // Method for running arm system on robot
+    // Method for running entire arm system on robot
     public void driveArm()
     {
         if(!isArmAttached)
@@ -18,7 +17,7 @@ abstract public class ArmMechanism extends MasterOpMode
         }
         if (driver2.isButtonJustPressed(Button.LEFT_BUMPER))
         {
-            hingeServoToggler.toggle();
+            wristServoToggler.toggle();
         }
         else if(driver2.isButtonJustPressed(Button.RIGHT_BUMPER))    // For grabbing glyphs
         {
@@ -55,23 +54,6 @@ abstract public class ArmMechanism extends MasterOpMode
 
             telemetry.addData("armPower: ", armPower);
         }
-
-        // Move turntable------------------
-        double pow = gamepad2.left_stick_x;
-
-        // Ensure that tiny joystick twitches do not make the servo drift
-        if (Math.abs(pow) < Constants.MINIMUM_JOYSTICK_POWER)
-            pow = 0.0;
-
-        double adjustedPow = stickCurve.getOuput(pow);
-
-        // Only send command to servo if the value has changed
-        if (lastTurntableValue != adjustedPow)
-        {
-            lastTurntableValue = adjustedPow;
-            turnTableServo.setPower(lastTurntableValue);
-        }
-        //---------------------------------
 
         telemetry.update();
     }

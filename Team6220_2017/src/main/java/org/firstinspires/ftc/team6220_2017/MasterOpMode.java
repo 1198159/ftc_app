@@ -7,8 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Const;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +51,8 @@ abstract public class MasterOpMode extends LinearOpMode {
     // servos
     Servo jewelJostlerServo;
 
-    Servo hingeServo;
+    Servo wristServo;
+    Servo jointServo;
     Servo grabberServo;
     CRServo turnTableServo;
     //
@@ -62,8 +61,9 @@ abstract public class MasterOpMode extends LinearOpMode {
     // servo togglers
     ServoToggler jewelJostlerServoToggler;
 
-    ServoToggler hingeServoToggler;
+    ServoToggler wristServoToggler;
     ServoToggler grabberServoToggler;
+    ServoToggler jointServoToggler;
     //
     public boolean isDriveTrainAttached = true;
     public boolean isArmAttached = true;
@@ -73,7 +73,7 @@ abstract public class MasterOpMode extends LinearOpMode {
 
     public void initializeHardware()
     {
-        // instantiated classes that must be updated each loop to callback
+        // Instantiated classes that must be updated each loop in callback
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
@@ -81,37 +81,48 @@ abstract public class MasterOpMode extends LinearOpMode {
         callback.add(driver2);
         //
 
-        // initialize hardware devices--------------------------
+        // Initialize hardware devices--------------------------
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         if(isDriveTrainAttached)
         {
-            // motors
+            // Motors
             motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
             motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
             motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
             motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
             //
 
-            // servos
+            // Servos
             jewelJostlerServo = hardwareMap.servo.get("servoJewelJostler");
             //
 
-            // servo togglers
+            // Servo togglers
             jewelJostlerServoToggler = new ServoToggler(jewelJostlerServo, Constants.JEWEL_JOSTLER_RETRACTED, Constants.JEWEL_JOSTLER_DEPLOYED);
             //
 
-            //todo Make sure to reset last encoder values in autonomous method driveToPosition
-            // set modes and initial positions
+            //todo Make sure to create variables to store encoder values for autonomous method driveToPosition
+            // Set motor attributes and behaviors--------------------------
+            motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
             motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+            motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
             motorFrontLeft.setPower(0.0);
             motorFrontRight.setPower(0.0);
             motorBackLeft.setPower(0.0);
             motorFrontRight.setPower(0.0);
+            //--------------------------------------------------------
 
             jewelJostlerServoToggler.setStartingPosition();
         }
@@ -120,20 +131,24 @@ abstract public class MasterOpMode extends LinearOpMode {
         {
             motorArm = hardwareMap.dcMotor.get("motorArm");
 
-            hingeServo = hardwareMap.servo.get("servoHinge");
-            turnTableServo = hardwareMap.crservo.get("servoTurnTable");
-            grabberServo = hardwareMap.servo.get("servoGrabber");
+            wristServo = hardwareMap.servo.get("servoWrist");
+            jointServo = hardwareMap.servo.get("servoJoint");
 
-            hingeServoToggler = new ServoToggler(hingeServo, Constants.HINGE_SERVO_RETRACTED, Constants.HINGE_SERVO_DEPLOYED);
+            wristServoToggler = new ServoToggler(wristServo, Constants.WRIST_SERVO_RETRACTED, Constants.WRIST_SERVO_DEPLOYED);
+            jointServoToggler = new ServoToggler(jointServo, Constants.JOINT_SERVO_RETRACTED, Constants.WRIST_SERVO_DEPLOYED);
+
             grabberServoToggler = new ServoToggler(grabberServo, Constants.GRABBER_SERVO_RETRACTED, Constants.GRABBER_SERVO_DEPLOYED);
 
-            //todo motor flings forward extremely fast when using encoder
-            motorArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            // Set motor attributes and behaviors-------
+            motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
             motorArm.setPower(0.0);
+            //------------------------------------------
 
-            hingeServoToggler.setStartingPosition();
+            wristServoToggler.setStartingPosition();
+            jointServoToggler.setStartingPosition();
+
             grabberServoToggler.deploy();
             turnTableServo.setPower(0.0);
         }
