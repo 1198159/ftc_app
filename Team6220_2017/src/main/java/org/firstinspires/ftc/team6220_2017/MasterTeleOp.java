@@ -2,8 +2,6 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.Const;
-
 /*
     Contains methods for accepting and interpreting pilot and co-pilot input
 */
@@ -36,7 +34,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         if(driver1.isButtonPressed(Button.LEFT_BUMPER))
         {
-            jewelJostlerServoToggler.retract();
+            verticalJewelServoToggler.retract();
         }
 
         /*

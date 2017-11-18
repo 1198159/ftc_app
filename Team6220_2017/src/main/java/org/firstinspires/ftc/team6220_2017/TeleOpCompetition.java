@@ -16,17 +16,18 @@ public class TeleOpCompetition extends MasterTeleOp
 
         waitForStart();
 
-        // accounts for delay between initializing the program and starting TeleOp
+        // Accounts for delay between initializing the program and starting TeleOp
         lTime = timer.seconds();
 
         while (opModeIsActive())
         {
-            // finds the time elapsed each loop
+            // Finds the time elapsed each loop
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
-            // arcade drive; left stick rotates robot, right stick translates robot
+            // 1st driver input for moving robot; left stick rotates robot, right stick translates robot
             driveMecanumWithJoysticks();
+            // 2nd driver input for relic arm; right stick moves arm
             armMechanism.driveArm();
 
             /*

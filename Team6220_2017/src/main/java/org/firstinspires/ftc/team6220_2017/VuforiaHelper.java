@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.qualcomm.ftcrobotcontroller.R;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.vuforia.Image;
 import com.vuforia.Matrix34F;
 import com.vuforia.PIXEL_FORMAT;
@@ -25,7 +24,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 
@@ -219,49 +217,50 @@ public class VuforiaHelper
                         AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
     }
 
-    //todo make this utilize RGB rather than hue
-    // encapsulates function necessary to average color values of jewels
+    // todo Make this utilize RGB rather than hue
+    // Encapsulates method necessary to average color values of jewels
     public float getAverageJewelColor(int x, int y)
     {
-        if (x >= 0 && x < 1280 - 32 && y >= 0 && y < 720 - 32)
+        // Ensure that we do not attempt to take pixels from outside the image border
+        if (x >= 0 && x < Constants.IMAGE_WIDTH - Constants.JEWEL_SAMPLE_LENGTH / 2 && y >= 0 &&
+                y < Constants.IMAGE_HEIGHT - Constants.JEWEL_SAMPLE_LENGTH / 2)
         {
-            for (int j = y - 32; j < y + 32; j++) // columns
+            for (int j = y - Constants.JEWEL_SAMPLE_LENGTH / 2; j < y + Constants.JEWEL_SAMPLE_LENGTH / 2; j++) // Columns
             {
-                for (int i = x - 32; i < x + 32; i++) // rows
+                for (int i = x - Constants.JEWEL_SAMPLE_LENGTH / 2; i < x + Constants.JEWEL_SAMPLE_LENGTH / 2; i++) // Rows
                 {
-                    // get RGB color of pixel
+                    // Get RGB color of pixel
                     color = bitMap.getPixel(i, j);
 
-                    // convert RGB to HSV (hue, sat, val)
-                    // hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
+                    // Convert RGB to HSV (hue, sat, val)
+                    // Hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
                     Color.colorToHSV(color, colorTransfer);
 
-                    // sum the HSV values of all pixels in bitmap
+                    // Sum the HSV values of all pixels in bitmap
                     colorSum[0] += colorTransfer[0];
 
-                    // draw black border around sample region for debugging only
-                    if ((j == y - 32) || (j == y + 31) || (i == x - 32) || (i == x + 31))
+                    // Draw white border around sample region for debugging
+                    if ((j == y - Constants.JEWEL_SAMPLE_LENGTH + 1) || (j == y + Constants.JEWEL_SAMPLE_LENGTH - 1)
+                            || (i == x - Constants.JEWEL_SAMPLE_LENGTH + 1) || (i == x + Constants.JEWEL_SAMPLE_LENGTH - 1))
                     {
                         bitMap.setPixel(i, j, 0xffffffff);
                     }
                 }
             }
-            // normalize output for 32x32 = 4096 integration above
+            // Normalize output for 32x32 = 4096 pixel square above
             colorOutput[0] = colorSum[0] / 4096;
         }
-        return colorOutput[0]; // return the averaged sampled HSV color value
+        return colorOutput[0]; // Return the averaged sampled HSV color value
     }
 
-    //todo change to RGB and compare ratios of values rather than differences
+    // todo Change to RGB and compare ratios of values rather than differences
     /*
-    Note:  this method references the color of the left jewel for its output
-
-    uses a bitmap created by vuforia to determine the colors of the jewels and compare them, then returns
-    information that tells you whether the left jewel is red or blue
+     Uses a bitmap created by vuforia to determine the colors of the jewels and compare them, then returns
+     information that tells you whether the left jewel is red or blue
     */
     public boolean getLeftJewelColor() throws InterruptedException
     {
-        // vuforia code that uses the VuMark to determine relative positions of objects
+        // Vuforia code that uses the VuMark to determine relative positions of objects
         pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
 
         if (pose != null)
@@ -269,11 +268,11 @@ public class VuforiaHelper
             rawPose = new Matrix34F();
             float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
             rawPose.setData(poseData);
-            // image size is 254 mm x 184 mm
+            // Place points where we think the centers of the jewels are relative to the VuMark
             Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(150, -230, -102));
             Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(360, -230, -102));
 
-            // takes the frame at the head of the queue
+            // Gets the frame at the front of the queue
             frame = vuforiaLocalizer.getFrameQueue().take();
 
             long numImages = frame.getNumImages();
@@ -289,30 +288,29 @@ public class VuforiaHelper
             int imageWidth = image.getWidth();
             int imageHeight = image.getHeight();
 
-            // create bitmap of image to detect color
+            // Create bitmap of image to detect color
             bitMap = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
             bitMap.copyPixelsFromBuffer(image.getPixels());
 
-            // coordinates in image
-            // TODO: check to make sure x < 1280; y < 720
+            // Boundaries of image
             int lx = (int) jewelLeft.getData()[0];
             int ly = (int) jewelLeft.getData()[1];
 
             int rx = (int) jewelRight.getData()[0];
             int ry = (int) jewelRight.getData()[1];
 
-            avgLeftJewelColor = getAverageJewelColor(lx, ly); // get the averaged jewel HSV color value for the left jewel
+            avgLeftJewelColor = getAverageJewelColor(lx, ly);
             avgRightJewelColor = getAverageJewelColor(rx, ry);
 
-            // adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
+            // Adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
             colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 360 : avgLeftJewelColor;
             colorRight = (avgRightJewelColor < 45) ? avgRightJewelColor + 360 : avgRightJewelColor;
         }
 
         //todo change for RGB and figure out way to incorporate undetermined value for jewel color
-        if (Math.abs(colorLeft - colorRight) >= 20)
+        if (Math.abs(colorLeft - colorRight) >= 15)
         {
-            // if value tested is negative, then left side is blue
+            // If value tested is negative, then left side is blue
             if ((colorLeft - colorRight) < 0)
                 isLeftJewelBlue = true; // BLUE
             else isLeftJewelBlue = false; // RED

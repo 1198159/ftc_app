@@ -10,22 +10,22 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract public class MasterOpMode extends LinearOpMode {
-    //TODO: deal with angles at all starting positions
+abstract public class MasterOpMode extends LinearOpMode
+{
     double currentAngle = 0.0;
 
-    //used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
+    // Used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
     private double headingOffset = 0.0;
 
-    // polynomial for adjusting input from joysticks to allow for ease of use
+    // Polynomial for adjusting input from joysticks to allow for ease of driving
     //                                         y = 0.0 + (3/10)x + 0.0 + (7/10)x^3
     Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.3, 0.0, 0.7 });
 
     // Note: not used
-    // used to ensure that the robot drives straight when not attempting to turn
+    // Used to ensure that the robot drives straight when not attempting to turn
     double targetHeading = 0.0 + headingOffset;
 
-    //contains useful vuforia functions
+    // Contains useful vuforia methods
     VuforiaHelper vuforiaHelper;
 
     ElapsedTime timer = new ElapsedTime();
@@ -36,10 +36,10 @@ abstract public class MasterOpMode extends LinearOpMode {
 
     PIDFilter RotationControlFilter;
 
-    // declare hardware devices--------------------
+    // Declare hardware devices--------------------
     BNO055IMU imu;
 
-    // motors
+    // Motors
     DcMotor motorFrontLeft;
     DcMotor motorFrontRight;
     DcMotor motorBackLeft;
@@ -48,23 +48,20 @@ abstract public class MasterOpMode extends LinearOpMode {
     DcMotor motorArm;
     //
 
-    // servos
-    Servo jewelJostlerServo;
+    // Servos
+    Servo lateralJewelServo;
+    Servo verticalJewelServo;
 
     Servo wristServo;
     Servo jointServo;
-    Servo grabberServo;
-    CRServo turnTableServo;
     //
     //-----------------------------------------------
 
-    // servo togglers
-    ServoToggler jewelJostlerServoToggler;
-
-    ServoToggler wristServoToggler;
-    ServoToggler grabberServoToggler;
-    ServoToggler jointServoToggler;
+    // Servo togglers
+    ServoToggler verticalJewelServoToggler;
     //
+
+    // Booleans that allow us to choose what parts of the robot we are using in each OpMode
     public boolean isDriveTrainAttached = true;
     public boolean isArmAttached = true;
 
@@ -84,21 +81,27 @@ abstract public class MasterOpMode extends LinearOpMode {
         // Initialize hardware devices--------------------------
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
+        // Jewel servos
+        verticalJewelServo = hardwareMap.servo.get("servoVerticalJewel");
+        lateralJewelServo = hardwareMap.servo.get("servoLateralJewel");
+        //
+
+        // Servo togglers
+        verticalJewelServoToggler = new ServoToggler(verticalJewelServo, Constants.VERTICAL_JEWEL_SERVO_RETRACTED, Constants.VERTICAL_JEWEL_SERVO_DEPLOYED);
+        //
+
+        // Set initial servo positions
+        verticalJewelServoToggler.setToStartingPosition();
+        lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
+        //
+
         if(isDriveTrainAttached)
         {
-            // Motors
+            // Drive motors
             motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
             motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
             motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
             motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
-            //
-
-            // Servos
-            jewelJostlerServo = hardwareMap.servo.get("servoJewelJostler");
-            //
-
-            // Servo togglers
-            jewelJostlerServoToggler = new ServoToggler(jewelJostlerServo, Constants.JEWEL_JOSTLER_RETRACTED, Constants.JEWEL_JOSTLER_DEPLOYED);
             //
 
             //todo Make sure to create variables to store encoder values for autonomous method driveToPosition
@@ -122,35 +125,24 @@ abstract public class MasterOpMode extends LinearOpMode {
             motorFrontRight.setPower(0.0);
             motorBackLeft.setPower(0.0);
             motorFrontRight.setPower(0.0);
-            //--------------------------------------------------------
-
-            jewelJostlerServoToggler.setStartingPosition();
+            //------------------------------------------------------------
         }
 
         if(isArmAttached)
         {
+            // Arm devices-------------------------------------
             motorArm = hardwareMap.dcMotor.get("motorArm");
 
             wristServo = hardwareMap.servo.get("servoWrist");
             jointServo = hardwareMap.servo.get("servoJoint");
+            //-------------------------------------------------
 
-            wristServoToggler = new ServoToggler(wristServo, Constants.WRIST_SERVO_RETRACTED, Constants.WRIST_SERVO_DEPLOYED);
-            jointServoToggler = new ServoToggler(jointServo, Constants.JOINT_SERVO_RETRACTED, Constants.WRIST_SERVO_DEPLOYED);
-
-            grabberServoToggler = new ServoToggler(grabberServo, Constants.GRABBER_SERVO_RETRACTED, Constants.GRABBER_SERVO_DEPLOYED);
-
-            // Set motor attributes and behaviors-------
+            // Set motor attributes and behaviors--------------
             motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motorArm.setPower(0.0);
-            //------------------------------------------
-
-            wristServoToggler.setStartingPosition();
-            jointServoToggler.setStartingPosition();
-
-            grabberServoToggler.deploy();
-            turnTableServo.setPower(0.0);
+            //-------------------------------------------------
         }
         //
 
@@ -316,6 +308,7 @@ abstract public class MasterOpMode extends LinearOpMode {
         {
             return;
         }
+
         motorFrontLeft.setPower(0.0);
         motorFrontRight.setPower(0.0);
         motorBackLeft.setPower(0.0);

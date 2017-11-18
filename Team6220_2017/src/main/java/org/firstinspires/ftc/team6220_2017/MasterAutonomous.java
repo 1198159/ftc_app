@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.team6220_2017;
 
-import android.graphics.Color;
-
-import java.util.ArrayList;
-
 /*
     Contains important methods for use in our autonomous programs
 */
@@ -144,7 +140,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         {
             return;
         }
-        jewelJostlerServoToggler.toggle();
+        verticalJewelServoToggler.toggle();
         pause(1000);
 
         if(isBlueSide)
@@ -170,7 +166,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
         }
 
-        jewelJostlerServoToggler.toggle();
+        verticalJewelServoToggler.toggle();
         pause(1000);
     }
 

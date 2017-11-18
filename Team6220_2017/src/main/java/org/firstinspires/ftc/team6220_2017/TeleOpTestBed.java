@@ -14,85 +14,87 @@ import com.qualcomm.robotcore.hardware.Servo;
 //@Disabled
 public class TeleOpTestBed extends MasterAutonomous
 {
-    Servo servo;
     VuforiaHelper vuforiaHelper = new VuforiaHelper();
 
     @Override public void runOpMode() throws InterruptedException
     {
-        double jointPosAdd = 0.5;
+        double jointPosCount = 0.5;
 
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
-        //initializeHardware();
+        // Don't want to call nonexistent hardware devices in test program
+        isArmAttached = false;
+        isDriveTrainAttached = false;
+        initializeHardware();
 
         DcMotor glyphMotorLeft;
         DcMotor glyphMotorRight;
-        Servo wristServo;
-        Servo jointServo;
 
         //glyphMotorLeft = hardwareMap.dcMotor.get("glyphMotorLeft");
         //glyphMotorRight = hardwareMap.dcMotor.get("glyphMotorRight");
-        //relicGrabberWrist = hardwareMap.servo.get("relicGrabberServo");
-        wristServo = hardwareMap.servo.get("servoWrist");
-        jointServo = hardwareMap.servo.get("servoJoint");
+        //wristServo = hardwareMap.servo.get("servoWrist");
+        //jointServo = hardwareMap.servo.get("servoJoint");
 
-        vuforiaHelper.setupVuforia();
+        //vuforiaHelper.setupVuforia();
         // Wait until start button has been pressed
         waitForStart();
+
         lTime = timer.seconds();
-        //relicGrabberWrist.setPosition(0.7);
-        jointServo.setPosition(0.5);
+
+        //jointServo.setPosition(0.5);
+
         // Main loop
         while(opModeIsActive())
         {
-
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
             // for motor that actuates arm
             //motorArm.setPower(gamepad1.left_stick_y);
 
-            /*
-            if(gamepad1.x)
+            // Test jewel servos
+            if (driver1.isButtonJustPressed(Button.Y))
             {
-                vuforiaHelper.getJewelColor(this);
-                //output red hue values of both sides for debugging
-                telemetry.addData("LeftSideHue: ", vuforiaHelper.leftColorOutput[0]);
-                telemetry.addData("RightSideHue: ", vuforiaHelper.rightColorOutput[0]);
-                telemetry.addData("R: ", vuforiaHelper.colorOutput[0]);
-                telemetry.addData("G: ", vuforiaHelper.colorOutput[1]);
-                telemetry.addData("B: ", vuforiaHelper.colorOutput[2]);
-                telemetry.update();
+                verticalJewelServoToggler.toggle();
             }
-            */
-
-            //for testing glyph collection; servos on either side of glyph pull or push it
-            if(gamepad1.a)
+            else if (driver1.isButtonJustPressed(Button.DPAD_LEFT))
             {
-                jointPosAdd += 0.05;
-                jointServo.setPosition(jointPosAdd);
+                lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
+            }
+            else if (driver1.isButtonJustPressed(Button.DPAD_RIGHT))
+            {
+                lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
+            }
+
+            /*
+            // Test glyph collection; servos on either side of glyph pull or push it
+            if(driver1.isButtonJustPressed(Button.A))
+            {
+                jointPosCount += 0.02;
+                jointServo.setPosition(jointPosCount);
 
                 //glyphMotorLeft.setPower(1.0);
                 //glyphMotorRight.setPower(-1.0);
 
                 //turnTo(90);
             }
-            if(gamepad1.b)
+            if(driver1.isButtonJustPressed(Button.B))
             {
-                jointPosAdd -= 0.05;
-                jointServo.setPosition(jointPosAdd);
+                jointPosCount -= 0.02;
+                jointServo.setPosition(jointPosCount);
 
                 //glyphMotorLeft.setPower(-1.0);
                 //glyphMotorRight.setPower(1.0);
 
                 //turnTo(-90);
             }
-            if(gamepad1.x)
+            if(driver1.isButtonJustPressed(Button.X))
             {
                 wristServo.setPosition(Constants.WRIST_SERVO_DEPLOYED);
             }
+            */
 
-            telemetry.addData("jointPos: ", jointPosAdd);
+            telemetry.addData("jointPos: ", jointPosCount);
             updateCallback(eTime);
             telemetry.update();
             idle();

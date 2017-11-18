@@ -3,7 +3,7 @@ package org.firstinspires.ftc.team6220_2017;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
- * Created by Mridula on 11/4/2017.
+ * OpMode for running robot without drivetrain
  */
 
 @TeleOp(name = "Test Arm")
@@ -17,7 +17,7 @@ public class TestArm extends MasterTeleOp
         initializeHardware();
 
         waitForStart();
-        //accounts for delay between initializing the program and starting TeleOp
+        // Accounts for delay between initializing the program and starting TeleOp
         lTime = timer.seconds();
 
         while (opModeIsActive())

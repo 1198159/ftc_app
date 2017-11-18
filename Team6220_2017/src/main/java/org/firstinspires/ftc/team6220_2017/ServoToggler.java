@@ -18,10 +18,10 @@ public class ServoToggler
         servo = s;
         servoRetractedPosition = retractedPosition;
         servoDeployedPosition = deployedPostition;
-        setStartingPosition();
+        setToStartingPosition();
     }
 
-    public void setStartingPosition ()
+    public void setToStartingPosition()
     {
         retract();
     }

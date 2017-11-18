@@ -2,8 +2,9 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-// todo Finish using setup routine created in MasterAutonomous
+// todo Finish implementing setup routine created in MasterAutonomous
 @Autonomous(name = "AutoCompetition", group = "Autonomous")
+
 public class AutoCompetition extends MasterAutonomous
 {
     @Override
@@ -46,7 +47,7 @@ public class AutoCompetition extends MasterAutonomous
     //we use this function to determine the color of jewels and knock them
     public void knockJewel (boolean isLeftBlue, boolean isBlueSide) throws InterruptedException
     {
-        jewelJostlerServo.setPosition(0.25);
+        verticalJewelServoToggler.toggle();
 
         if(isBlueSide)
         {
@@ -72,5 +73,7 @@ public class AutoCompetition extends MasterAutonomous
                 turnTo(-90);
             }
         }
+
+        verticalJewelServoToggler.toggle();
     }
 }
