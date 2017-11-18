@@ -25,7 +25,7 @@ public class TeleOpTestBed extends MasterAutonomous
 
         // Don't want to call nonexistent hardware devices in test program
         isArmAttached = false;
-        isDriveTrainAttached = false;
+        isDriveTrainAttached = true;
         initializeHardware();
 
         DcMotor glyphMotorLeft;
@@ -56,14 +56,17 @@ public class TeleOpTestBed extends MasterAutonomous
             if (driver1.isButtonJustPressed(Button.Y))
             {
                 verticalJewelServoToggler.toggle();
+                pauseWhileUpdating(3.0);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_LEFT))
             {
-                lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
+                //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
+                moveRobot(0, 0.3, 1.0);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_RIGHT))
             {
-                lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
+                //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
+                moveRobot(90, 0.3, 1.0);
             }
 
             /*

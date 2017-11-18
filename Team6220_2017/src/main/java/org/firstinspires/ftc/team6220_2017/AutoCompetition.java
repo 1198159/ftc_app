@@ -43,37 +43,4 @@ public class AutoCompetition extends MasterAutonomous
 
         telemetry.update();
     }
-
-    //we use this function to determine the color of jewels and knock them
-    public void knockJewel (boolean isLeftBlue, boolean isBlueSide) throws InterruptedException
-    {
-        verticalJewelServoToggler.toggle();
-
-        if(isBlueSide)
-        {
-            if(isLeftBlue)
-            {
-                turnTo(-90);
-                //driveMecanum(180, 1.0, 0.0);
-                stopAllDriveMotors();
-            }
-            else
-            {
-                turnTo(90);
-            }
-        }
-        else
-        {
-            if(isLeftBlue)
-            {
-                turnTo(90);
-            }
-            else
-            {
-                turnTo(-90);
-            }
-        }
-
-        verticalJewelServoToggler.toggle();
-    }
 }

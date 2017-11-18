@@ -13,6 +13,8 @@ abstract public class ArmMechanism extends MasterOpMode
     {
         if(!isArmAttached)
         {
+            telemetry.addLine("Arm is not attached!");
+            telemetry.update();
             return;
         }
 

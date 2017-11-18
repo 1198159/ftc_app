@@ -7,20 +7,17 @@ import com.qualcomm.robotcore.util.Range;
 */
 abstract public class MasterTeleOp extends MasterOpMode
 {
-    // class that will be used to manipulate the relic arm (only in TeleOp)
-    ArmMechanism armMechanism;
-
-    // takes driver 1 stick input and uses it to give power and direction inputs to the drive
+    // Takes driver 1 stick input and uses it to give power and direction inputs to the drive
     void driveMecanumWithJoysticks()
     {
-        // factor changing magnitude of vertical and horizontal movement
+        // Factor that adjusts magnitudes of vertical and horizontal movement
         double tFactor;
-        // factor changing magnitude of rotational movement
+        // Factor that adjusts magnitude of rotational movement
         double rFactor;
 
         /*
-         slow mode functionality
-         note: factors are different for translation and rotation
+         Note: factors are different for translation and rotation
+         Slow mode functionality
         */
         if (driver1.isButtonPressed(Button.RIGHT_BUMPER))
         {
@@ -32,18 +29,20 @@ abstract public class MasterTeleOp extends MasterOpMode
             tFactor = Constants.T_FACTOR;
             rFactor = Constants.R_FACTOR;
         }
+
+        // Allows the driver to raise the vertical jewel servo if it fails during the match
         if(driver1.isButtonPressed(Button.LEFT_BUMPER))
         {
             verticalJewelServoToggler.retract();
         }
 
         /*
-         adjust stick magnitude, since stick magnitudes are not exactly
-         1 (they have been observed to be as large as 1.1)
+         Adjust stick magnitude, since magnitudes can be higher than 1
+         (they have been observed to be as large as 1.1 sometimes)
         */
         double adjustedStickMagnitude = Range.clip(driver1.getRightStickMagnitude(), -1.0, 1.0);
 
-        // stick inputs must be changed from x and y to angle and drive power
+        // Stick inputs must be changed from x and y to angle and drive power
         double angle = driver1.getRightStickAngle();
         double power = tFactor * stickCurve.getOuput(adjustedStickMagnitude);
         double rotationPower = rFactor * stickCurve.getOuput(gamepad1.left_stick_x);

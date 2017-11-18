@@ -12,8 +12,6 @@ import java.util.List;
 
 abstract public class MasterOpMode extends LinearOpMode
 {
-    double currentAngle = 0.0;
-
     // Used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
     private double headingOffset = 0.0;
 
@@ -33,6 +31,10 @@ abstract public class MasterOpMode extends LinearOpMode
 
     DriverInput driver1;
     DriverInput driver2;
+
+    // todo How to deal with this class being abstract?
+    // Class that is used to run the relic arm
+    ArmMechanism armMechanism;
 
     PIDFilter RotationControlFilter;
 
@@ -158,10 +160,10 @@ abstract public class MasterOpMode extends LinearOpMode
         imu.initialize(parameters);
         //------------------------------------------------
 
-        //todo adjust for robot
+        //todo Adjust for robot
         RotationControlFilter = new PIDFilter(0.7, 0.0, 0.0);
 
-        //todo change servo arm to separate class with objects initialized here
+        //todo Change servo arm to separate class with objects initialized here
         for (ConcurrentOperation item : callback)
         {
             item.initialize(hardwareMap);
@@ -189,6 +191,8 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         if(!isDriveTrainAttached)
         {
+            telemetry.addLine("Drive is not attached!");
+            telemetry.update();
             return;
         }
 
@@ -237,17 +241,7 @@ abstract public class MasterOpMode extends LinearOpMode
         telemetry.update();
     }
 
-    //updates every item with elapsed time at the end of the main loop; ensures that operations
-    //based on a timer are executed on time
-    public void updateCallback(double eTime)
-    {
-        for (ConcurrentOperation item : callback)
-        {
-            item.update(eTime);
-        }
-    }
-
-    //other opmodes must go through this method to prevent others from unnecessarily changing headingOffset
+    // Other opmodes must go through this method to prevent others from unnecessarily changing headingOffset
     void setRobotStartingOrientation(double newValue) {
         headingOffset = newValue;
     }
@@ -257,14 +251,15 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         double diff = finalAngle - initialAngle;
 
-        while (Math.abs(diff) > 180) {
+        while (Math.abs(diff) > 180)
+        {
             diff -= Math.signum(diff) * 360;
         }
 
         return diff;
     }
 
-    // prevents a single angle from being outside the range -180 to 180 degrees
+    // Prevents a single angle from being outside the range -180 to 180 degrees
     public double normalizeAngle(double rawAngle)
     {
         while (Math.abs(rawAngle) > 180)
@@ -275,7 +270,7 @@ abstract public class MasterOpMode extends LinearOpMode
         return rawAngle;
     }
 
-    // takes into account headingOffset to utilize global orientation
+    // Takes into account headingOffset to utilize global orientation
     double getAngularOrientationWithOffset()
     {
         double correctedHeading = normalizeAngle(imu.getAngularOrientation().firstAngle + headingOffset);
@@ -283,7 +278,7 @@ abstract public class MasterOpMode extends LinearOpMode
         return correctedHeading;
     }
 
-    // finds distance between 2 points
+    // Finds distance between 2 points
     double calculateDistance(double dx, double dy)
     {
         double distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
@@ -291,7 +286,19 @@ abstract public class MasterOpMode extends LinearOpMode
         return distance;
     }
 
-    // wait a number of milliseconds
+    /*
+     Updates every item with elapsed time at the end of the main loop; ensures that operations
+     based on a timer are executed on time
+    */
+    public void updateCallback(double eTime)
+    {
+        for (ConcurrentOperation item : callback)
+        {
+            item.update(eTime);
+        }
+    }
+
+    // Waits a number of milliseconds
     void pause(int t) throws InterruptedException
     {
         //we don't use System.currentTimeMillis() because it can be inconsistent
@@ -306,6 +313,8 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         if(!isDriveTrainAttached)
         {
+            telemetry.addLine("Drive is not attached!");
+            telemetry.update();
             return;
         }
 

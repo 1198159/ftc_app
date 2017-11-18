@@ -79,8 +79,8 @@ abstract public class MasterAutonomous extends MasterOpMode
         telemetry.log().add("Setup finished.");
     }
 
-    // todo needs to be changed for mecanum
-    // use encoders to make the robot drive to a specified location
+    // todo Needs to be changed for mecanum drive
+    // Use encoders to make the robot drive to a specified location
     public void driveToPosition(double targetX, double targetY) throws InterruptedException
     {
 
@@ -89,108 +89,104 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Tell the robot to turn to a specified angle
     public void turnTo(double targetAngle)
     {
-        double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
         double turningPower;
+        double currentAngle = getAngularOrientationWithOffset();
+        double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
 
-        //robot only stops when it is within angle tolerance
+        // Robot only stops turning when it is within angle tolerance
         while(Math.abs(angleDiff) >= Constants.ANGLE_TOLERANCE && opModeIsActive())
         {
             currentAngle = getAngularOrientationWithOffset();
 
-            //gives robot its adjusted turning power
+            // Gives robot its adjusted turning power
             angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
             turningPower = Constants.TURNING_POWER_FACTOR * angleDiff;
 
-            //sends turningPower through PID filter to increase precision of turning
+            // Sends turningPower through PID filter to prevent oscillation
             RotationControlFilter.roll(turningPower);
             turningPower = RotationControlFilter.getFilteredValue();
 
-            //makes sure turn power doesn't go above maximum power
+            // Makes sure turn power doesn't go above maximum power
             if (Math.abs(turningPower) > 1.0)
             {
                 turningPower = Math.signum(turningPower);
             }
 
-            //makes sure turn power doesn't go below minimum power
-            if(turningPower > 0 && turningPower < Constants.MINIMUM_TURNING_POWER)
+            // Makes sure turn power doesn't go below minimum power
+            if(Math.abs(turningPower) < Constants.MINIMUM_TURNING_POWER)
             {
-                turningPower = Constants.MINIMUM_TURNING_POWER;
-            }
-            else if (turningPower < 0 && turningPower > -Constants.MINIMUM_TURNING_POWER)
-            {
-                turningPower = -Constants.MINIMUM_TURNING_POWER;
+                turningPower = Math.signum(Constants.MINIMUM_TURNING_POWER) * Constants.MINIMUM_TURNING_POWER;
             }
 
-            //turns robot
+            // Turns robot
             driveMecanum(0.0, 0.0, -turningPower);
 
             telemetry.addData("angleDiff: ", angleDiff);
             telemetry.update();
-
             idle();
         }
 
         stopAllDriveMotors();
     }
 
-    // We use this function to determine the color of jewels and score them
-    public void knockJewel (boolean isBlueSide, boolean isLeftJewelBlue) throws InterruptedException
+    // We use this method to score a jewel once its color has been determined
+    public void knockJewel (boolean isLeftBlue, boolean isBlueSide) throws InterruptedException
     {
-        if(!isDriveTrainAttached)
-        {
-            return;
-        }
         verticalJewelServoToggler.toggle();
-        pause(1000);
+        pause(500);
 
         if(isBlueSide)
         {
-            if (isLeftJewelBlue)
+            if(isLeftBlue)
             {
-                turnTo(-90);
+                lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
+                //driveMecanum(180, 1.0, 0.0);
+                stopAllDriveMotors();
             }
             else
             {
-                turnTo(90);
+                lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
             }
         }
         else
         {
-            if(isLeftJewelBlue)
+            if(isLeftBlue)
             {
-                turnTo(90);
+                lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
             }
             else
             {
-                turnTo(-90);
+                lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
             }
         }
+        pause(500);
 
+        lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
         verticalJewelServoToggler.toggle();
-        pause(1000);
     }
 
     // todo Change to be based on encoder input
     // Specialized method for driving the robot in autonomous
-    public void moveRobot(double driveAngle, double drivePower, int pause) throws InterruptedException
+    public void moveRobot(double driveAngle, double drivePower, double pause) throws InterruptedException
     {
         driveMecanum(driveAngle, drivePower, 0.0);
         pauseWhileUpdating(pause);
         stopAllDriveMotors();
     }
 
+    // Note:  time parameter is in seconds
     // Gives the robot time to update state machines
     void pauseWhileUpdating(double time)
     {
         lTime = timer.seconds();
 
-        while(opModeIsActive() && (time > 0) )
+        while(opModeIsActive() && (time > 0))
         {
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
             time -= eTime;
             telemetry.addData("eTime:", eTime);
-            telemetry.addData("Time Remaining:", time);
+            telemetry.addData("Seconds Remaining:", time);
             updateCallback(eTime);
             telemetry.update();
             idle();
