@@ -12,6 +12,9 @@ abstract public class MasterAutonomous extends MasterOpMode
     public boolean isBlueSide = true;
     public boolean isLeftBalancingStone = true;
 
+    // Stores orientation of robot
+    double currentAngle = 0.0;
+
     /*
     // Use for more advanced auto
     ArrayList<Alliance> routine = new ArrayList<>();
@@ -21,12 +24,12 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     // todo Implement runSetup()
     // Used for object initializations only necessary in autonomous
-    public void initializeAuto()
+    void initializeAuto()
     {
         // We don't want to run the arm during autonomous
         isArmAttached = false;
 
-        initializeHardware();
+        initialize();
 
         vuforiaHelper = new VuforiaHelper();
         vuforiaHelper.setupVuforia();
@@ -37,7 +40,7 @@ abstract public class MasterAutonomous extends MasterOpMode
      Allows the 1st driver to decide which autonomous routine should be run during the match through
      gamepad input
     */
-    public void runSetup()
+    void runSetup()
     {
         telemetry.log().add("Alliance Blue/Red = X/B");
         telemetry.log().add("Balancing stone Left/Right = Left/Right bumper");
@@ -79,22 +82,15 @@ abstract public class MasterAutonomous extends MasterOpMode
         telemetry.log().add("Setup finished.");
     }
 
-    // todo Needs to be changed for mecanum drive
-    // Use encoders to make the robot drive to a specified location
-    public void driveToPosition(double targetX, double targetY) throws InterruptedException
-    {
-
-    }
-
     // Tell the robot to turn to a specified angle
     public void turnTo(double targetAngle)
     {
         double turningPower;
-        double currentAngle = getAngularOrientationWithOffset();
+        currentAngle = getAngularOrientationWithOffset();
         double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
 
         // Robot only stops turning when it is within angle tolerance
-        while(Math.abs(angleDiff) >= Constants.ANGLE_TOLERANCE && opModeIsActive())
+        while(Math.abs(angleDiff) >= Constants.ANGLE_TOLERANCE_DEG && opModeIsActive())
         {
             currentAngle = getAngularOrientationWithOffset();
 
@@ -103,8 +99,8 @@ abstract public class MasterAutonomous extends MasterOpMode
             turningPower = Constants.TURNING_POWER_FACTOR * angleDiff;
 
             // Sends turningPower through PID filter to prevent oscillation
-            RotationControlFilter.roll(turningPower);
-            turningPower = RotationControlFilter.getFilteredValue();
+            RotationFilter.roll(turningPower);
+            turningPower = RotationFilter.getFilteredValue();
 
             // Makes sure turn power doesn't go above maximum power
             if (Math.abs(turningPower) > 1.0)
@@ -167,11 +163,122 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     // todo Change to be based on encoder input
     // Specialized method for driving the robot in autonomous
-    public void moveRobot(double driveAngle, double drivePower, double pause) throws InterruptedException
+    void moveRobot(double driveAngle, double drivePower, double pause) throws InterruptedException
     {
         driveMecanum(driveAngle, drivePower, 0.0);
         pauseWhileUpdating(pause);
         stopAllDriveMotors();
+    }
+
+    // todo Add absolute coordinates and code to prevent turning while using driveToPosition
+    // Uses encoders to make the robot drive to a specified relative position
+    void driveToPosition(double deltaX, double deltaY, double maxPower) throws InterruptedException
+    {
+        // Useful for scaling powers properly
+        double initialDeltaX = deltaX;
+        double initialDeltaY = deltaY;
+
+        // Store old values for drive encoders
+        double lastEncoderFL = motorFL.getCurrentPosition();
+        double lastEncoderFR = motorFR.getCurrentPosition();
+        double lastEncoderBL = motorBL.getCurrentPosition();
+        double lastEncoderBR = motorBR.getCurrentPosition();
+
+        // Check to see if robot has arrived at destination within tolerances
+        while ((deltaX > Constants.POSITION_TOLERANCE_MM || deltaY > Constants.POSITION_TOLERANCE_MM) && opModeIsActive())
+        {
+            // Changes in encoder values between loops
+            double encDiffFL = motorFL.getCurrentPosition() - lastEncoderFL;
+            double encDiffFR = motorFR.getCurrentPosition() - lastEncoderFR;
+            double encDiffBL = motorBL.getCurrentPosition() - lastEncoderBL;
+            double encDiffBR = motorBR.getCurrentPosition() - lastEncoderBR;
+
+            // Save old encoder values for next loop
+            lastEncoderFL = motorFL.getCurrentPosition();
+            lastEncoderFR = motorFR.getCurrentPosition();
+            lastEncoderBL = motorBL.getCurrentPosition();
+            lastEncoderBR = motorBR.getCurrentPosition();
+
+            // Average encoder differences to find translational x and y components.  Motors turn
+            // differently when translating, so signs on FR and BL must be flipped
+            double encDiffX = (-encDiffFL - encDiffFR + encDiffBL + encDiffBR) / 4;
+            double encDiffY = (-encDiffFL + encDiffFR - encDiffBL + encDiffBR) / 4;
+
+            deltaX -= Constants.MM_PER_ANDYMARK_TICK * encDiffX;
+            deltaY -= Constants.MM_PER_ANDYMARK_TICK * encDiffY;
+
+            // Used to calculate drivePower
+            double xRatio = 0;
+            double yRatio = 0;
+            // Set values of ratios to ensure they are not undefined
+            if (initialDeltaX != 0)
+            {
+                xRatio = deltaX / initialDeltaX;
+            }
+            if (initialDeltaY != 0)
+            {
+                yRatio = deltaY / initialDeltaY;
+            }
+
+            double driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
+            // Power depends on the ratios of the current values of deltaX and deltaY to their initial values
+            double drivePower = maxPower * Math.sqrt(Math.pow(Math.abs(xRatio), 2) +
+                    Math.pow(Math.abs(yRatio), 2)) / Math.sqrt(2);
+            TranslationFilter.roll(drivePower);
+            double adjustedDrivePower = TranslationFilter.getFilteredValue();
+
+            // Ensure robot doesn't approach target position too slowly
+            if (Math.abs(adjustedDrivePower) < Constants.MINIMUM_DRIVE_POWER)
+            {
+                adjustedDrivePower = Math.signum(adjustedDrivePower) * Constants.MINIMUM_DRIVE_POWER;
+            }
+
+            driveMecanum(driveAngle, adjustedDrivePower, 0.0);
+
+            telemetry.addData("X remaining: ", deltaX);
+            telemetry.addData("Y remaining: ", deltaY);
+            telemetry.addData("Drive Angle: ", driveAngle);
+            telemetry.addData("Adjusted Drive Power: ", adjustedDrivePower);
+            telemetry.update();
+            idle();
+        }
+    }
+
+    // Updates robot's coordinates and angle
+    public void updateLocation()
+    {
+        currentAngle = getAngularOrientationWithOffset();
+
+        /*
+        // Calculate how much drive motors have turned since last update
+        int deltaFL = motorFL.getCurrentPosition() - lastEncoderFL;
+        int deltaFR = motorFR.getCurrentPosition() - lastEncoderFR;
+        int deltaBL = motorBL.getCurrentPosition() - lastEncoderBL;
+        int deltaBR = motorBR.getCurrentPosition() - lastEncoderBR;
+
+        // Average encoder ticks to find translational x and y components. deltaFR and deltaBL are
+        // negative because they turn differently when translating
+        double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4;
+        double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4;
+
+        // Convert to mm
+        deltaX *= Constants.MM_PER_ANDYMARK_TICK;
+        deltaY *= Constants.MM_PER_ANDYMARK_TICK;
+        */
+
+        /*
+         Delta x and y are local values, so they need to be converted to global.
+         Each local component has 2 global components, which are added to find the
+         total global components of displacement. The global displacement components
+         are then added to the previous position to set the new coordinates
+        */
+        /*
+        robotX += deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
+        robotY += deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
+        */
+
+        telemetry.addData("currentAngle: ", currentAngle);
+        telemetry.update();
     }
 
     // Note:  time parameter is in seconds

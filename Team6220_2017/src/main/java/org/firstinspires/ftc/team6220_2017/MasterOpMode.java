@@ -2,7 +2,6 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -16,8 +15,8 @@ abstract public class MasterOpMode extends LinearOpMode
     private double headingOffset = 0.0;
 
     // Polynomial for adjusting input from joysticks to allow for ease of driving
-    //                                         y = 0.0 + (3/10)x + 0.0 + (7/10)x^3
-    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.3, 0.0, 0.7 });
+    //                                            y = 0.0 + (1/4)x + 0.0 + (3/4)x^3
+    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.25, 0.0, 0.75 });
 
     // Note: not used
     // Used to ensure that the robot drives straight when not attempting to turn
@@ -36,16 +35,17 @@ abstract public class MasterOpMode extends LinearOpMode
     // Class that is used to run the relic arm
     ArmMechanism armMechanism;
 
-    PIDFilter RotationControlFilter;
+    PIDFilter RotationFilter;
+    PIDFilter TranslationFilter;
 
     // Declare hardware devices--------------------
     BNO055IMU imu;
 
     // Motors
-    DcMotor motorFrontLeft;
-    DcMotor motorFrontRight;
-    DcMotor motorBackLeft;
-    DcMotor motorBackRight;
+    DcMotor motorFL;
+    DcMotor motorFR;
+    DcMotor motorBL;
+    DcMotor motorBR;
 
     DcMotor motorArm;
     //
@@ -70,7 +70,7 @@ abstract public class MasterOpMode extends LinearOpMode
     //create a list of tasks to accomplish in order
     List<ConcurrentOperation> callback = new ArrayList<>();
 
-    public void initializeHardware()
+    public void initialize()
     {
         // Instantiated classes that must be updated each loop in callback
         driver1 = new DriverInput(gamepad1);
@@ -100,33 +100,33 @@ abstract public class MasterOpMode extends LinearOpMode
         if(isDriveTrainAttached)
         {
             // Drive motors
-            motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
-            motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
-            motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
-            motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
+            motorFL = hardwareMap.dcMotor.get("motorFrontLeft");
+            motorFR = hardwareMap.dcMotor.get("motorFrontRight");
+            motorBL = hardwareMap.dcMotor.get("motorBackLeft");
+            motorBR = hardwareMap.dcMotor.get("motorBackRight");
             //
 
             //todo Make sure to create variables to store encoder values for autonomous method driveToPosition
             // Set motor attributes and behaviors--------------------------
-            motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            motorFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            motorFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            motorBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            motorBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            motorFrontLeft.setPower(0.0);
-            motorFrontRight.setPower(0.0);
-            motorBackLeft.setPower(0.0);
-            motorFrontRight.setPower(0.0);
+            motorFL.setPower(0.0);
+            motorFR.setPower(0.0);
+            motorBL.setPower(0.0);
+            motorFR.setPower(0.0);
             //------------------------------------------------------------
         }
 
@@ -160,8 +160,9 @@ abstract public class MasterOpMode extends LinearOpMode
         imu.initialize(parameters);
         //------------------------------------------------
 
-        //todo Adjust for robot
-        RotationControlFilter = new PIDFilter(0.7, 0.0, 0.0);
+        //todo Adjust these experimentally
+        RotationFilter = new PIDFilter(0.7, 0.0, 0.0);
+        TranslationFilter = new PIDFilter(1.0, 0.0, 0.2);
 
         //todo Change servo arm to separate class with objects initialized here
         for (ConcurrentOperation item : callback)
@@ -171,21 +172,20 @@ abstract public class MasterOpMode extends LinearOpMode
     }
 
     /*
-    general method for driving robot
-    driveAngle = 0 when driving along robot's y-axis (like compass heading); positive angle values are
-    counterclockwise from y-axis (like math heading)
+     General method for driving robot
+     Input is given as a vector in polar form with (r,theta)=(drivePower,driveAngle)
 
-    Table for mecanum drive motor directions (counterclockwise = positive):
+     Table for mecanum drive motor directions (counterclockwise = positive):
 
-                 FL      FR      BL      BR
-    rotate -w    +        -      +        -
-    rotate +w    -        +      -        +
-    forward      +        +      +        +
-    backward     -        -      -        -
-    left         -        +      +        -
-    right        +        -      -        +
-    diag. left   0        +      +        0
-    diag. right  +        0      0        +
+                  FL      FR      BL      BR
+     rotate -w    +        -      +        -
+     rotate +w    -        +      -        +
+     forward      +        +      +        +
+     backward     -        -      -        -
+     left         -        +      +        -
+     right        +        -      -        +
+     diag. left   0        +      +        0
+     diag. right  +        0      0        +
     */
     void driveMecanum(double driveAngle, double drivePower, double w)
     {
@@ -196,18 +196,17 @@ abstract public class MasterOpMode extends LinearOpMode
             return;
         }
 
-        //convert drive angle to x and y components from gamepad input vector (drive angle and drive power);
-        //x and y are switched
-        double y = -drivePower * Math.sin(driveAngle);
+        // Convert drive angle and power to x and y components
+        double y = drivePower * Math.sin(driveAngle);
         double x = drivePower * Math.cos(driveAngle);
 
-        //signs for x, y, and w are based on inherent properties of mecanum drive and the gamepad
-        double powerFL = -x + y - w;
-        double powerFR = -x - y - w;
-        double powerBL = x + y - w;
-        double powerBR = x - y - w;
+        // Signs for x, y, and w are based on the motor configuration and inherent properties of mecanum drive
+        double powerFL = -x - y - w;
+        double powerFR = -x + y - w;
+        double powerBL = x - y - w;
+        double powerBR = x + y - w;
 
-        //-------------------------
+        // Scale powers-------------------------
         /*
          Motor powers might be set above 1 (e.g., x + y = 1 and w = -0.8), so we must scale all of
          the powers to ensure they are proportional and within the range {-1.0, 1.0}
@@ -226,19 +225,22 @@ abstract public class MasterOpMode extends LinearOpMode
         powerFR /= powScalar;
         powerBL /= powScalar;
         powerBR /= powScalar;
-        //-------------------------
+        //--------------------------------------
 
-        //power motors with corrected inputs
-        motorFrontLeft.setPower(powerFL);
-        motorFrontRight.setPower(powerFR);
-        motorBackLeft.setPower(powerBL);
-        motorBackRight.setPower(powerBR);
+        // Power motors with corrected inputs
+        motorFL.setPower(powerFL);
+        motorFR.setPower(powerFR);
+        motorBL.setPower(powerBL);
+        motorBR.setPower(powerBR);
 
-        //telemetry for debugging motor power inputs
+        // todo How to make this telemetry not interfere with that of other classes?
+        /*
+        // Telemetry for debugging motor power inputs
         telemetry.addData("translation power: ", x);
         telemetry.addData("vertical power: ", y);
         telemetry.addData("rotational power: ", w);
         telemetry.update();
+        */
     }
 
     // Other opmodes must go through this method to prevent others from unnecessarily changing headingOffset
@@ -246,7 +248,7 @@ abstract public class MasterOpMode extends LinearOpMode
         headingOffset = newValue;
     }
 
-    //prevents angle differences from being out of range
+    // Prevents angle differences from being out of range
     public double normalizeRotationTarget(double finalAngle, double initialAngle)
     {
         double diff = finalAngle - initialAngle;
@@ -303,7 +305,7 @@ abstract public class MasterOpMode extends LinearOpMode
     {
         //we don't use System.currentTimeMillis() because it can be inconsistent
         long initialTime = System.nanoTime();
-        while((System.nanoTime() - initialTime)/1000/1000 < t)
+        while((System.nanoTime() - initialTime)/1000/1000 < t && opModeIsActive())
         {
             idle();
         }
@@ -318,9 +320,9 @@ abstract public class MasterOpMode extends LinearOpMode
             return;
         }
 
-        motorFrontLeft.setPower(0.0);
-        motorFrontRight.setPower(0.0);
-        motorBackLeft.setPower(0.0);
-        motorBackRight.setPower(0.0);
+        motorFL.setPower(0.0);
+        motorFR.setPower(0.0);
+        motorBL.setPower(0.0);
+        motorBR.setPower(0.0);
     }
 }

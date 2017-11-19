@@ -45,7 +45,7 @@ public class PIDFilter implements Filter
     {
         //update calculated values
         sum += values[0];
-        dV = values[0]-values[1];
+        dV = values[0] - values[1];
 
         //introduce new value
         values[1] = values[0];

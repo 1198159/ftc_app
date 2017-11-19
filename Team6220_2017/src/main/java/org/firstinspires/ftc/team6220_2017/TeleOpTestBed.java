@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.team6220_2017;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 
 /**
@@ -26,7 +23,7 @@ public class TeleOpTestBed extends MasterAutonomous
         // Don't want to call nonexistent hardware devices in test program
         isArmAttached = false;
         isDriveTrainAttached = true;
-        initializeHardware();
+        initialize();
 
         DcMotor glyphMotorLeft;
         DcMotor glyphMotorRight;
@@ -58,15 +55,19 @@ public class TeleOpTestBed extends MasterAutonomous
                 verticalJewelServoToggler.toggle();
                 pauseWhileUpdating(3.0);
             }
-            else if (driver1.isButtonJustPressed(Button.DPAD_LEFT))
+            else if (driver1.isButtonJustPressed(Button.DPAD_UP))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
-                moveRobot(0, 0.3, 1.0);
+                driveToPosition(0, 500, 0.5);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_RIGHT))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
-                moveRobot(90, 0.3, 1.0);
+                driveToPosition(500, 0, 0.5);
+            }
+            else if (driver1.isButtonJustPressed(Button.RIGHT_BUMPER))
+            {
+                driveToPosition(350, 350, 0.5);
             }
 
             /*

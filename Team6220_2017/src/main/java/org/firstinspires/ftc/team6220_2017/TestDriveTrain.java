@@ -14,7 +14,7 @@ public class TestDriveTrain extends MasterTeleOp
     public void runOpMode() throws InterruptedException
     {
         isArmAttached = false;
-        initializeHardware();
+        initialize();
 
         waitForStart();
 
@@ -36,6 +36,11 @@ public class TestDriveTrain extends MasterTeleOp
             */
             //telemetry.addData("eTime:", eTime);
             updateCallback(eTime);
+
+            telemetry.addData("FL", motorFL.getCurrentPosition());
+            telemetry.addData("FR", motorFR.getCurrentPosition());
+            telemetry.addData("BL", motorBL.getCurrentPosition());
+            telemetry.addData("BR", motorBR.getCurrentPosition());
             telemetry.update();
             idle();
         }

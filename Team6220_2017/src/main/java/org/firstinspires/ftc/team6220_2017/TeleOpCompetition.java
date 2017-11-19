@@ -12,7 +12,7 @@ public class TeleOpCompetition extends MasterTeleOp
     @Override
     public void runOpMode() throws InterruptedException
     {
-        initializeHardware();
+        initialize();
 
         waitForStart();
 
