@@ -160,9 +160,8 @@ abstract public class MasterOpMode extends LinearOpMode
         imu.initialize(parameters);
         //------------------------------------------------
 
-        //todo Adjust these experimentally
-        RotationFilter = new PIDFilter(0.7, 0.0, 0.0);
-        TranslationFilter = new PIDFilter(1.0, 0.0, 0.2);
+        RotationFilter = new PIDFilter(Constants.ROTATION_P, Constants.ROTATION_I, Constants.ROTATION_D);
+        TranslationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);
 
         //todo Change servo arm to separate class with objects initialized here
         for (ConcurrentOperation item : callback)
@@ -248,7 +247,7 @@ abstract public class MasterOpMode extends LinearOpMode
         headingOffset = newValue;
     }
 
-    // Prevents angle differences from being out of range
+    // Prevents angle differences from being outside the range -180 to 180 degrees
     public double normalizeRotationTarget(double finalAngle, double initialAngle)
     {
         double diff = finalAngle - initialAngle;
@@ -311,7 +310,7 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
-    void stopAllDriveMotors()
+    void stopDriveMotors()
     {
         if(!isDriveTrainAttached)
         {

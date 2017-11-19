@@ -94,35 +94,37 @@ abstract public class MasterAutonomous extends MasterOpMode
         {
             currentAngle = getAngularOrientationWithOffset();
 
-            // Gives robot its adjusted turning power
+            // Give robot its adjusted turning power
             angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
             turningPower = Constants.TURNING_POWER_FACTOR * angleDiff;
 
-            // Sends turningPower through PID filter to prevent oscillation
+            // Send turningPower through PID filter to prevent oscillation
             RotationFilter.roll(turningPower);
             turningPower = RotationFilter.getFilteredValue();
 
-            // Makes sure turn power doesn't go above maximum power
+            // Make sure turningPower doesn't go above maximum power
             if (Math.abs(turningPower) > 1.0)
             {
                 turningPower = Math.signum(turningPower);
             }
 
-            // Makes sure turn power doesn't go below minimum power
+            // Makes sure turningPower doesn't go below minimum power
             if(Math.abs(turningPower) < Constants.MINIMUM_TURNING_POWER)
             {
-                turningPower = Math.signum(Constants.MINIMUM_TURNING_POWER) * Constants.MINIMUM_TURNING_POWER;
+                turningPower = Math.signum(turningPower) * Constants.MINIMUM_TURNING_POWER;
             }
 
             // Turns robot
             driveMecanum(0.0, 0.0, -turningPower);
 
             telemetry.addData("angleDiff: ", angleDiff);
+            telemetry.addData("Turning Power: ", turningPower);
+            telemetry.addData("Orientation: ", currentAngle);
             telemetry.update();
             idle();
         }
 
-        stopAllDriveMotors();
+        stopDriveMotors();
     }
 
     // We use this method to score a jewel once its color has been determined
@@ -137,7 +139,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             {
                 lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
                 //driveMecanum(180, 1.0, 0.0);
-                stopAllDriveMotors();
+                stopDriveMotors();
             }
             else
             {
@@ -167,16 +169,15 @@ abstract public class MasterAutonomous extends MasterOpMode
     {
         driveMecanum(driveAngle, drivePower, 0.0);
         pauseWhileUpdating(pause);
-        stopAllDriveMotors();
+        stopDriveMotors();
     }
 
     // todo Add absolute coordinates and code to prevent turning while using driveToPosition
     // Uses encoders to make the robot drive to a specified relative position
     void driveToPosition(double deltaX, double deltaY, double maxPower) throws InterruptedException
     {
-        // Useful for scaling powers properly
-        double initialDeltaX = deltaX;
-        double initialDeltaY = deltaY;
+        // Find distance between robot and its destination
+        double distanceToTarget = calculateDistance(deltaX, deltaY);
 
         // Store old values for drive encoders
         double lastEncoderFL = motorFL.getCurrentPosition();
@@ -185,7 +186,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         double lastEncoderBR = motorBR.getCurrentPosition();
 
         // Check to see if robot has arrived at destination within tolerances
-        while ((deltaX > Constants.POSITION_TOLERANCE_MM || deltaY > Constants.POSITION_TOLERANCE_MM) && opModeIsActive())
+        while (distanceToTarget > Constants.POSITION_TOLERANCE_MM && opModeIsActive())
         {
             // Changes in encoder values between loops
             double encDiffFL = motorFL.getCurrentPosition() - lastEncoderFL;
@@ -207,23 +208,19 @@ abstract public class MasterAutonomous extends MasterOpMode
             deltaX -= Constants.MM_PER_ANDYMARK_TICK * encDiffX;
             deltaY -= Constants.MM_PER_ANDYMARK_TICK * encDiffY;
 
-            // Used to calculate drivePower
-            double xRatio = 0;
-            double yRatio = 0;
-            // Set values of ratios to ensure they are not undefined
-            if (initialDeltaX != 0)
-            {
-                xRatio = deltaX / initialDeltaX;
-            }
-            if (initialDeltaY != 0)
-            {
-                yRatio = deltaY / initialDeltaY;
-            }
+            // Recalculate value each loop
+            distanceToTarget = calculateDistance(deltaX, deltaY);
 
-            double driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
-            // Power depends on the ratios of the current values of deltaX and deltaY to their initial values
-            double drivePower = maxPower * Math.sqrt(Math.pow(Math.abs(xRatio), 2) +
-                    Math.pow(Math.abs(yRatio), 2)) / Math.sqrt(2);
+            double driveAngle;
+            // Deals with the fact that inverse tangent only returns an angle between -90 and 90
+            // degrees.  We want to be able to drive at angles greater than 90 degrees, so the
+            // output of atan must be shifted
+            if (deltaX >= 0)
+                driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
+            else
+                driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX)) + 180;
+            // Power is proportional to distance from target
+            double drivePower = maxPower * Constants.DRIVE_POWER_FACTOR * distanceToTarget;
             TranslationFilter.roll(drivePower);
             double adjustedDrivePower = TranslationFilter.getFilteredValue();
 
@@ -242,6 +239,8 @@ abstract public class MasterAutonomous extends MasterOpMode
             telemetry.update();
             idle();
         }
+
+        stopDriveMotors();
     }
 
     // Updates robot's coordinates and angle

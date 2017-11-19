@@ -67,7 +67,11 @@ public class TeleOpTestBed extends MasterAutonomous
             }
             else if (driver1.isButtonJustPressed(Button.RIGHT_BUMPER))
             {
-                driveToPosition(350, 350, 0.5);
+                turnTo(-90);
+            }
+            else  if (driver1.isButtonJustPressed(Button.LEFT_BUMPER))
+            {
+                turnTo(90);
             }
 
             /*
