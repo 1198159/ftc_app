@@ -114,8 +114,8 @@ public class VuforiaHelper
          use the mathematical sense of absolute rotation (0 degrees located on the x-axis) while vuforia
          uses compass coordinates for rotation (0 degrees located on the y-axis)
         */
-        //todo adjust for this year's robot
-        phoneLocation = createMatrix(220, 0, 0, 90, 0, 180);
+        // todo Finish adjusting for this year's robot; check y-axis rot fix for phone camera being rotated 180 deg
+        phoneLocation = createMatrix(220, 0, 0, -90, 0, 180);
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
         /*
@@ -240,8 +240,8 @@ public class VuforiaHelper
                     colorSum[0] += colorTransfer[0];
 
                     // Draw white border around sample region for debugging
-                    if ((j == y - Constants.JEWEL_SAMPLE_LENGTH + 1) || (j == y + Constants.JEWEL_SAMPLE_LENGTH - 1)
-                            || (i == x - Constants.JEWEL_SAMPLE_LENGTH + 1) || (i == x + Constants.JEWEL_SAMPLE_LENGTH - 1))
+                    if ((j == y - Constants.JEWEL_SAMPLE_LENGTH / 2 + 1) || (j == y + Constants.JEWEL_SAMPLE_LENGTH / 2 - 1)
+                            || (i == x - Constants.JEWEL_SAMPLE_LENGTH / 2 + 1) || (i == x + Constants.JEWEL_SAMPLE_LENGTH / 2 - 1))
                     {
                         bitMap.setPixel(i, j, 0xffffffff);
                     }
@@ -269,8 +269,8 @@ public class VuforiaHelper
             float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
             rawPose.setData(poseData);
             // Place points where we think the centers of the jewels are relative to the VuMark
-            Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(150, -230, -102));
-            Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(360, -230, -102));
+            Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(150, -190, -102));
+            Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(370, -190, -102));
 
             // Gets the frame at the front of the queue
             frame = vuforiaLocalizer.getFrameQueue().take();
@@ -307,8 +307,8 @@ public class VuforiaHelper
             colorRight = (avgRightJewelColor < 45) ? avgRightJewelColor + 360 : avgRightJewelColor;
         }
 
-        //todo change for RGB and figure out way to incorporate undetermined value for jewel color
-        if (Math.abs(colorLeft - colorRight) >= 15)
+        // todo Change for RGB and figure out way to incorporate undetermined value for jewel color
+        if (Math.abs(colorLeft - colorRight) >= 3)
         {
             // If value tested is negative, then left side is blue
             if ((colorLeft - colorRight) < 0)

@@ -15,13 +15,14 @@ public class Constants
     // Robot specifications
     public static final float WHEEL_DIAMETER_MM = 4 * MM_PER_INCH;    // 4 inch diameter wheel
     public static final double GEAR_RATIO = 48.0 / 84.0;            // Driven to driving gear
-    public static final double MM_PER_ANDYMARK_TICK = (Math.PI * WHEEL_DIAMETER_MM) / (ANDYMARK_TICKS_PER_ROTATION * GEAR_RATIO);
+    //the numerator and the denominator might be switched, but it seems to be going the correct distance
+    public static final double MM_PER_ANDYMARK_TICK = (ANDYMARK_TICKS_PER_ROTATION * GEAR_RATIO)/(Math.PI * WHEEL_DIAMETER_MM);
 
 
     // Drive control constants-----------------------
     public static final double MINIMUM_DRIVE_POWER = 0.05;
-    public static final double MINIMUM_TURNING_POWER = 0.1;    // todo Adjust
-    public static final double ANGLE_TOLERANCE_DEG = 2.5;   // todo Adjust
+    public static final double MINIMUM_TURNING_POWER = 0.1;
+    public static final double ANGLE_TOLERANCE_DEG = 2.5;
     public static final double POSITION_TOLERANCE_MM = 15.0;   // todo Adjust
     // Constants for adjusting powers that are proportional to angle and position differences
     public static final double TURNING_POWER_FACTOR = 1.0 / 100;    // todo Adjust
@@ -58,12 +59,11 @@ public class Constants
 
 
     // Servo positions--------------------------------
-    // todo Adjust
-    public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.25;
+    public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.27;
     public static final double LATERAL_JEWEL_SERVO_LEFT = 0.18;
-    public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.32;
-    public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.35;
-    public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.66;
+    public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.36;
+    public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.3;
+    public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.69;
 
     // todo Adjust
     public static final double WRIST_SERVO_DEPLOYED = 0.9;

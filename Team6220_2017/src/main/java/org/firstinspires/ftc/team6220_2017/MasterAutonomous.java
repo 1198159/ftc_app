@@ -131,15 +131,13 @@ abstract public class MasterAutonomous extends MasterOpMode
     public void knockJewel (boolean isLeftBlue, boolean isBlueSide) throws InterruptedException
     {
         verticalJewelServoToggler.toggle();
-        pause(500);
+        pauseWhileUpdating(1.5);
 
         if(isBlueSide)
         {
             if(isLeftBlue)
             {
                 lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
-                //driveMecanum(180, 1.0, 0.0);
-                stopDriveMotors();
             }
             else
             {
@@ -157,7 +155,7 @@ abstract public class MasterAutonomous extends MasterOpMode
                 lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
             }
         }
-        pause(500);
+        pauseWhileUpdating(1.8);
 
         lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
         verticalJewelServoToggler.toggle();

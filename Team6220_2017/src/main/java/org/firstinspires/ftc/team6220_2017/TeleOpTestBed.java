@@ -34,10 +34,35 @@ public class TeleOpTestBed extends MasterAutonomous
         //jointServo = hardwareMap.servo.get("servoJoint");
 
         //vuforiaHelper.setupVuforia();
+
         // Wait until start button has been pressed
         waitForStart();
 
+        /*
         lTime = timer.seconds();
+
+
+        boolean isBlueSide = true;
+        // Must initialize to prevent errors; not necessarily true
+        boolean isLeftBlue = true;
+
+
+        vuforiaHelper.getVumark();
+
+
+        // If the vuMark is not visible, vuforia will tell us
+        if (vuforiaHelper.isVisible())
+        {
+            isLeftBlue = vuforiaHelper.getLeftJewelColor();
+            telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
+            telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
+        }
+        else
+        {
+            telemetry.addData("vuMark: ", "not visible");
+        }
+        telemetry.update();
+        */
 
         //jointServo.setPosition(0.5);
 
@@ -74,7 +99,6 @@ public class TeleOpTestBed extends MasterAutonomous
                 turnTo(90);
             }
 
-            /*
             // Test glyph collection; servos on either side of glyph pull or push it
             if(driver1.isButtonJustPressed(Button.A))
             {
@@ -100,7 +124,6 @@ public class TeleOpTestBed extends MasterAutonomous
             {
                 wristServo.setPosition(Constants.WRIST_SERVO_DEPLOYED);
             }
-            */
 
             telemetry.addData("jointPos: ", jointPosCount);
             updateCallback(eTime);

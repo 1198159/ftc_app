@@ -18,33 +18,26 @@ public class AutoBlueLeft extends MasterAutonomous
         //setRobotStartingOrientation(180);
 
         boolean isBlueSide = true;
-        // must initialize to prevent errors; not necessarily true
+        // Must initialize to prevent errors; not necessarily true
         boolean isLeftBlue = true;
 
 
         vuforiaHelper.getVumark();
 
 
-        // if the vuMark is not visible, vuforia will tell us
+        // If the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
             isLeftBlue = vuforiaHelper.getLeftJewelColor();
             telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
             telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
+
+            knockJewel(isLeftBlue, isBlueSide);
         }
         else
         {
-
             telemetry.addData("vuMark: ", "not visible");
         }
-
         telemetry.update();
-
-
-        // auto code-----------------------------
-        knockJewel(isLeftBlue, isBlueSide);
-
-        //moveRobot(0, 1, 1000);
-        //---------------------------------------
     }
 }
