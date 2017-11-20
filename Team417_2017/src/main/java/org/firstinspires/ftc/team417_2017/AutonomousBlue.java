@@ -75,9 +75,7 @@ public class AutonomousBlue extends MasterAutonomous
             if (VuforiaDetect.pose != null) // if the pose is NOT null,
             {
                 // lower the servos, putting jewel manipulator into position
-                servoJewelStore.setPosition(JEWEL_STORE_LOW);
-                sleep(200);
-                servoJewelDrop.setPosition(JEWEL_DROP_LOW);
+                servoJewel.setPosition(JEWEL_LOW);
                 sleep(200);
 
                 telemetry.addData("leftHue ", VuforiaDetect.avgLeftJewelColor);
@@ -93,9 +91,7 @@ public class AutonomousBlue extends MasterAutonomous
                 {
                     pivotWithReference(-15, refAngle, 0.5); // then pivot right
                     sleep(200);
-                    servoJewelStore.setPosition(JEWEL_STORE_INIT);
-                    sleep(200);
-                    servoJewelDrop.setPosition(JEWEL_DROP_INIT);
+                    servoJewel.setPosition(JEWEL_LOW);
                     sleep(200);
                     pivotWithReference(0, refAngle, 0.5); // then pivot back
                     sleep(200);
@@ -104,16 +100,13 @@ public class AutonomousBlue extends MasterAutonomous
                 {
                     pivotWithReference(15, refAngle, 0.5); // then pivot left
                     sleep(200);
-                    servoJewelStore.setPosition(JEWEL_STORE_INIT);
-                    sleep(200);
-                    servoJewelDrop.setPosition(JEWEL_DROP_INIT);
+                    servoJewel.setPosition(JEWEL_LOW);
                     sleep(200);
                     pivotWithReference(0, refAngle, 0.5); // then pivot back
                     sleep(200);
                 }
                 // move servos back
-                servoJewelStore.setPosition(JEWEL_STORE_INIT);
-                servoJewelDrop.setPosition(JEWEL_DROP_INIT);
+                servoJewel.setPosition(JEWEL_INIT);
             }
         }
         else

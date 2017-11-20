@@ -591,6 +591,25 @@ abstract class MasterAutonomous extends MasterOpMode
     }
 
 
+    public void moveUntilColor(double x, double y, float hue, float saturation)
+    {
+        // move straight in one direction
+        // calculate the power for each motor
+        powerFL = x + y;
+        powerFR = -x + y;
+        powerBL = -x + y;
+        powerBR = x + y;
+
+        // while the current hue and saturation is not what the passed in parameters are, keep driving in that direction
+        //while (sensorColorRight.red())
+        // set power to the motors
+        motorFL.setPower(powerFL);
+        motorFR.setPower(powerFR);
+        motorBL.setPower(powerBL);
+        motorBR.setPower(powerBR);
+    }
+
+
 
     public void configureDashboard()
     {

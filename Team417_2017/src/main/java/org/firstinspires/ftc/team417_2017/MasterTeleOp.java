@@ -112,7 +112,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
     }
-//////////////////////////////////////////
+
     void imuOmniTeleOp()
     {
         y = -gamepad1.right_stick_y; // Y axis is negative when up
@@ -142,7 +142,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
 }
-////////////////////////////////////////////
+
     public double modJoyStickInput(double i) // i is the raw joystick input
     {
         return Math.pow(i,2) * Math.signum(i);

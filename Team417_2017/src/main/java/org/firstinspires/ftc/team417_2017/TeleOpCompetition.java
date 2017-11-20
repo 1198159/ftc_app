@@ -15,10 +15,9 @@ public class TeleOpCompetition extends MasterTeleOp
         waitForStart();
         while (opModeIsActive())
         {
-            servoJewelStore.setPosition(JEWEL_STORE_INIT);
-            servoJewelDrop.setPosition(JEWEL_DROP_INIT);
-            imuOmniTeleOp();
-            //omniDriveTeleOp();
+            servoJewel.setPosition(JEWEL_INIT);
+            //imuOmniTeleOp();
+            omniDriveTeleOp();
             // TODO: add some telemetry to display the motor power
             idle();
         }

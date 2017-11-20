@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team417_2017;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
@@ -21,14 +22,13 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorBL = null; // port 1
     DcMotor motorBR = null; // port 2
 
-    // Declare servos
-    Servo servoJewelStore = null;
-    // servoJewelStore is in servo port 0
-    Servo servoJewelDrop = null;
-    // servoJewelDrop is in servo port 1
+    // Declare servo, jewel servo in port 1
+    Servo servoJewel = null;
 
     // Declare sensors
-    BNO055IMU imu; // inertial measurement unit (located within the REV Hub
+    BNO055IMU imu; // inertial measurement unit (located within the REV Hub)
+    ColorSensor sensorColorLeft;
+    ColorSensor sensorColorRight;
 
     // Declare constants
     static final double COUNTS_PER_MOTOR_REV = 1120;
@@ -37,11 +37,9 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4; // is 2.34
 
-    static final double JEWEL_STORE_INIT = 0.44;
-    static final double JEWEL_STORE_LOW = 0.44;
-    static final double JEWEL_DROP_INIT = 0.095;
-    static final double JEWEL_DROP_LOW = 0.65;
-
+    // Servo init and low positions
+    static final double JEWEL_INIT = 0.965;
+    static final double JEWEL_LOW = 0.4;
 
     // declare motor powers
     double powerFL;
@@ -59,6 +57,9 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
+        // get a reference to the color sensor.
+        sensorColorLeft = hardwareMap.get(ColorSensor.class, "sensorColorLeft");
+        sensorColorRight = hardwareMap.get(ColorSensor.class, "sensorColorRight");
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -90,11 +91,9 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBR.setPower(0);
 
         // Initialize servos
-        servoJewelStore = hardwareMap.servo.get("servoJewelStore");
-        servoJewelDrop = hardwareMap.servo.get("servoJewelDrop");
+        servoJewel = hardwareMap.servo.get("servoJewel");
 
-        servoJewelStore.setPosition(JEWEL_STORE_INIT);
-        servoJewelDrop.setPosition(JEWEL_DROP_INIT);
+        servoJewel.setPosition(JEWEL_INIT);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -136,39 +135,6 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
-    public void omniDrive(double driveAngle, double drivePower, double pivotPower)
-    {
-        // x is right, or -90 degrees, while y is forwards, which is 0 degrees
-        // Calculate drive power (px and py) for both x and y direction
-        px = drivePower * -Math.sin(Math.toRadians(driveAngle));
-        py = drivePower * Math.cos(Math.toRadians(driveAngle));
-
-        // calculate the power for each motor
-
-        powerFL = px + py + pivotPower;
-        powerFR = -px + py - pivotPower;
-        powerBL = -px + py + pivotPower;
-        powerBR = px + py - pivotPower;
-
-/*
-        powerFL = px + 0*py + pivotPower;
-        powerFR = 0*px + py - pivotPower;
-        powerBL = 0*px + py + pivotPower;
-        powerBR = px + 0*py - pivotPower;
-*/
-
-        // set power to the motors
-        motorFL.setPower(powerFL);
-        motorFR.setPower(powerFR);
-        motorBL.setPower(powerBL);
-        motorBR.setPower(powerBR);
-    }
-
-    // Used for calculating distances between 2 points
-    double calcDistance(double deltaX, double deltaY)
-    {
-        return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-    }
 
     String formatAngle(AngleUnit angleUnit, double angle)
     {

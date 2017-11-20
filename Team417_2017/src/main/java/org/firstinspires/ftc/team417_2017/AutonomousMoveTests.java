@@ -29,9 +29,11 @@ public class AutonomousMoveTests extends MasterAutonomous
         PIVOT_MINSPEED = 0.2;
 
         double refAngle = imu.getAngularOrientation().firstAngle;
-        //sleep(1000);
-        //pivotWithReference(-90, refAngle, 0.5);
-        moveTimed(0.5, 0, 3000);
+        sleep(10);
+        moveTimed(0.5, 0, 3000); // moe left with seconds
+        sleep(100);
+        // go left until the right sensor sees red; it should be on the right side of the triangle
+
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();
