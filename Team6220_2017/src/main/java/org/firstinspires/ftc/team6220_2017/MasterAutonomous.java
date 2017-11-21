@@ -42,6 +42,9 @@ abstract public class MasterAutonomous extends MasterOpMode
     */
     void runSetup()
     {
+        // Accounts for delay between initializing the program and starting TeleOp
+        lTime = timer.seconds();
+
         telemetry.log().add("Alliance Blue/Red = X/B");
         telemetry.log().add("Balancing stone Left/Right = Left/Right bumper");
 
@@ -49,20 +52,25 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         while (settingUp)
         {
+            // Finds the time elapsed each loop
+            double eTime = timer.seconds() - lTime;
+            lTime = timer.seconds();
+
+
             // Select alliance
-            if (driver1.isButtonPressed(Button.X))
+            if (driver1.isButtonJustPressed(Button.X))
                 isBlueSide = true;
-            else if (driver1.isButtonPressed(Button.B))
+            else if (driver1.isButtonJustPressed(Button.B))
                 isBlueSide = false;
 
             // Select starting balancing stone
-            else if (driver1.isButtonPressed(Button.LEFT_BUMPER))
+            else if (driver1.isButtonJustPressed(Button.LEFT_BUMPER))
                 isLeftBalancingStone = true;
-            else if (driver1.isButtonPressed(Button.RIGHT_BUMPER))
+            else if (driver1.isButtonJustPressed(Button.RIGHT_BUMPER))
                 isLeftBalancingStone = false;
 
             // If the driver presses start, we exit setup
-            else if (gamepad1.start)
+            else if (driver1.isButtonJustPressed(Button.START))
                 settingUp = false;
 
             /*
@@ -71,10 +79,12 @@ abstract public class MasterAutonomous extends MasterOpMode
             */
             while(!driverInput.areAllButtonsReleased(gamepad1)) { idle(); }
 
-            // Display the current routine
-            telemetry.addData("Are we blue: ", isBlueSide);
-            telemetry.addData("Are we on left balancing stone: ", isLeftBalancingStone);
+            // Display the current setup
+            telemetry.addData("Is robot on blue alliance: ", isBlueSide);
+            telemetry.addData("Is robot on left balancing stone: ", isLeftBalancingStone);
 
+
+            updateCallback(eTime);
             telemetry.update();
             idle();
         }

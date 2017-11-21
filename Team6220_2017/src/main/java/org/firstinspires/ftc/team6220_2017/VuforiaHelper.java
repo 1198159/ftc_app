@@ -38,10 +38,8 @@ public class VuforiaHelper
 
     VuforiaTrackables relicTrackables;
     VuforiaTrackable relicTemplate;
-    // enum which has 4 possible values: UNKNOWN, LEFT, CENTER, and RIGHT
+    // Enum that has 4 possible values: UNKNOWN, LEFT, CENTER, and RIGHT
     public RelicRecoveryVuMark vuMark;
-    //VuforiaTrackable[] targets = new VuforiaTrackable[1];
-    //VuforiaTrackableDefaultListener[] listeners = new VuforiaTrackableDefaultListener[1];
     //
 
     float[] colorTransfer = new float[]{0,0,0};
@@ -104,7 +102,7 @@ public class VuforiaHelper
         // Initialize vision targets; this is important!
         relicTrackables = this.vuforiaLocalizer.loadTrackablesFromAsset("RelicVuMark");
         relicTemplate = relicTrackables.get(0);
-        // for debugging, but not essential
+        // For debugging purposes
         relicTemplate.setName("relicVuMarkTemplate");
         //----------------------------
 
