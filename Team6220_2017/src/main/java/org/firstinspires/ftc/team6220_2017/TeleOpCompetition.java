@@ -12,6 +12,8 @@ public class TeleOpCompetition extends MasterTeleOp
     @Override
     public void runOpMode() throws InterruptedException
     {
+        // todo Take this out when the arm is operational again
+        isArmAttached = false;
         initialize();
 
         waitForStart();
@@ -19,17 +21,21 @@ public class TeleOpCompetition extends MasterTeleOp
         // Accounts for delay between initializing the program and starting TeleOp
         lTime = timer.seconds();
 
+
         while (opModeIsActive())
         {
             // Finds the time elapsed each loop
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
-
             // 1st driver input for moving robot; left stick rotates robot, right stick translates robot
             driveMecanumWithJoysticks();
             // 2nd driver input for relic arm; right stick moves arm
             armMechanism.driveArm();
+            // 1st and 2nd driver input for glyph mechanism
+            // 1st driver:  dpad up collects and dpad up scores
+            // 2nd driver:  TBD
+            glyphMechanism.driveGlyphMech();
 
             /*
              updates that need to happen each loop

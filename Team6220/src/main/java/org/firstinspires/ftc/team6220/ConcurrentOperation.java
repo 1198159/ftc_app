@@ -8,10 +8,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 */
 public interface ConcurrentOperation
 {
-    //called once at startup
+    // Robot hardware and software setup called once before match
     public void initialize(HardwareMap hMap);
 
-    //called at the end of each cycle
+    // Called at the end of each cycle
     public void update(double eTime);
-
 }

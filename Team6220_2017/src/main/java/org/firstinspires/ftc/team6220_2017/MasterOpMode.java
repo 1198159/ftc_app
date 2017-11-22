@@ -18,7 +18,7 @@ abstract public class MasterOpMode extends LinearOpMode
     //                                            y = 0.0 + (1/4)x + 0.0 + (3/4)x^3
     Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.25, 0.0, 0.75 });
 
-    // Note: not used
+    // Note: not currently in use
     // Used to ensure that the robot drives straight when not attempting to turn
     double targetHeading = 0.0 + headingOffset;
 
@@ -31,14 +31,17 @@ abstract public class MasterOpMode extends LinearOpMode
     DriverInput driver1;
     DriverInput driver2;
 
-    // todo How to deal with this class being abstract?
-    // Class that is used to run the relic arm
+    // Classes that encapsulate distinct hardware systems
     ArmMechanism armMechanism;
+    GlyphMechanism glyphMechanism;
+    //
 
+    // PID filters.  We have one for turning and one for encoder navigation
     PIDFilter RotationFilter;
     PIDFilter TranslationFilter;
+    //
 
-    // Declare hardware devices--------------------
+    // Declare hardware devices-------------------------
     BNO055IMU imu;
 
     // Motors
@@ -46,6 +49,12 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
+
+    DcMotor motorGlyphter;
+     // Motor orientations are from top view of robot with glyph mechanism in front
+    DcMotor motorCollectorLeft;
+    DcMotor motorCollectorRight;
+     //
 
     DcMotor motorArm;
     //
@@ -57,7 +66,7 @@ abstract public class MasterOpMode extends LinearOpMode
     Servo wristServo;
     Servo jointServo;
     //
-    //-----------------------------------------------
+    //----------------------------------------------------
 
     // Servo togglers
     ServoToggler verticalJewelServoToggler;
@@ -66,12 +75,21 @@ abstract public class MasterOpMode extends LinearOpMode
     // Booleans that allow us to choose what parts of the robot we are using in each OpMode
     public boolean isDriveTrainAttached = true;
     public boolean isArmAttached = true;
+    public boolean isGlyphMechAttached = true;
+    //
 
     //create a list of tasks to accomplish in order
     List<ConcurrentOperation> callback = new ArrayList<>();
 
+
+
     public void initialize()
     {
+        // Initialize robot mechanism classes
+        armMechanism = new ArmMechanism(this);
+        glyphMechanism = new GlyphMechanism(this);
+        //
+
         // Instantiated classes that must be updated each loop in callback
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
@@ -97,7 +115,9 @@ abstract public class MasterOpMode extends LinearOpMode
         lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
         //
 
-        if(isDriveTrainAttached)
+        // Check to see what parts of the robot are attached.  Some programs (e.g., autonomous and-------------------------
+        // tests) may want to ignore parts of the robot that don't need to be used
+        if (isDriveTrainAttached)
         {
             // Drive motors
             motorFL = hardwareMap.dcMotor.get("motorFrontLeft");
@@ -106,7 +126,6 @@ abstract public class MasterOpMode extends LinearOpMode
             motorBR = hardwareMap.dcMotor.get("motorBackRight");
             //
 
-            //todo Make sure to create variables to store encoder values for autonomous method driveToPosition
             // Set motor attributes and behaviors--------------------------
             motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -130,9 +149,31 @@ abstract public class MasterOpMode extends LinearOpMode
             //------------------------------------------------------------
         }
 
-        if(isArmAttached)
+        if (isGlyphMechAttached)
         {
-            // Arm devices-------------------------------------
+            // Initialize glyph mechanism devices
+                motorGlyphter = hardwareMap.dcMotor.get("glyphterMotor");
+                motorCollectorLeft = hardwareMap.dcMotor.get("leftCollectorMotor");
+                motorCollectorRight = hardwareMap.dcMotor.get("rightCollectorMotor");
+            //
+
+            // Set motor attributes and behaviors--------------
+             // This motor needs encoders to determine the correct position to lift glyphs to
+            motorGlyphter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorGlyphter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorGlyphter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            motorCollectorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorCollectorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorCollectorLeft.setPower(0.0);
+            motorCollectorRight.setPower(0.0);
+            //-------------------------------------------------
+        }
+
+        if (isArmAttached)
+        {
+            // Initialize arm devices-------------------------------------
+            // todo This seems incorrect; look at robot config
             motorArm = hardwareMap.dcMotor.get("motorArm");
 
             wristServo = hardwareMap.servo.get("servoWrist");
@@ -143,10 +184,9 @@ abstract public class MasterOpMode extends LinearOpMode
             motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            motorArm.setPower(0.0);
             //-------------------------------------------------
         }
-        //
+        //--------------------------------------------------------------------------------------------------------------
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
@@ -158,7 +198,7 @@ abstract public class MasterOpMode extends LinearOpMode
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
         imu.initialize(parameters);
-        //------------------------------------------------
+        //
 
         RotationFilter = new PIDFilter(Constants.ROTATION_P, Constants.ROTATION_I, Constants.ROTATION_D);
         TranslationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);
