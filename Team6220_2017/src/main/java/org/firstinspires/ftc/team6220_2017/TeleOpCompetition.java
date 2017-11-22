@@ -25,6 +25,7 @@ public class TeleOpCompetition extends MasterTeleOp
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
+
             // 1st driver input for moving robot; left stick rotates robot, right stick translates robot
             driveMecanumWithJoysticks();
             // 2nd driver input for relic arm; right stick moves arm
