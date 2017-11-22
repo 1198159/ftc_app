@@ -36,6 +36,9 @@ abstract public class MasterOpMode extends LinearOpMode
     GlyphMechanism glyphMechanism;
     //
 
+    // Stores the encoder values for each of the 4 heights that glyphs can be scored at
+    int[] glyphHeights;
+
     // PID filters.  We have one for turning and one for encoder navigation
     PIDFilter RotationFilter;
     PIDFilter TranslationFilter;
@@ -85,9 +88,14 @@ abstract public class MasterOpMode extends LinearOpMode
 
     public void initialize()
     {
+        glyphHeights[0] = Constants.GROUND_HEIGHT;
+        glyphHeights[1] = Constants.HEIGHT_DIFF + Constants.GROUND_HEIGHT;
+        glyphHeights[2] = 2 * Constants.HEIGHT_DIFF + Constants.GROUND_HEIGHT;
+        glyphHeights[3] = 3 * Constants.HEIGHT_DIFF + Constants.GROUND_HEIGHT;
+
         // Initialize robot mechanism classes
         armMechanism = new ArmMechanism(this);
-        glyphMechanism = new GlyphMechanism(this);
+        glyphMechanism = new GlyphMechanism(this, glyphHeights);
         //
 
         // Instantiated classes that must be updated each loop in callback
@@ -160,7 +168,7 @@ abstract public class MasterOpMode extends LinearOpMode
             // Set motor attributes and behaviors--------------
              // This motor needs encoders to determine the correct position to lift glyphs to
             motorGlyphter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorGlyphter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorGlyphter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorGlyphter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             motorCollectorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
