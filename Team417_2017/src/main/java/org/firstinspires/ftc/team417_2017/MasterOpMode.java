@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team417_2017;
 
+import android.graphics.Color;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -40,6 +42,12 @@ abstract public class MasterOpMode extends LinearOpMode
     // Servo init and low positions
     static final double JEWEL_INIT = 0.965;
     static final double JEWEL_LOW = 0.4;
+
+    // declare color sensor variables
+    // hsvValues is an array that will hold the hue, saturation, and value information.
+    float hsvValues[] = {0F,0F,0F};
+    float hsvLeft[] = {0F,0F,0F};
+    float hsvRight[] = {0F,0F,0F};
 
     // declare motor powers
     double powerFL;
@@ -135,6 +143,12 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
+    public float DetermineLineHue(ColorSensor sensorColor)
+    {
+        // Convert the RGB values to HSV values
+        Color.RGBToHSV((sensorColor.red() * 255) / 800, (sensorColor.green() * 255) / 800, (sensorColor.blue() * 255) / 800, hsvValues);
+        return hsvValues[0]; // return the hue (index 0) of HSV
+    }
 
     String formatAngle(AngleUnit angleUnit, double angle)
     {
