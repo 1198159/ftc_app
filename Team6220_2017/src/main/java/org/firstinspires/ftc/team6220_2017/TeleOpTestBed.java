@@ -23,7 +23,7 @@ public class TeleOpTestBed extends MasterAutonomous
         // Don't want to call nonexistent hardware devices in test program
         isArmAttached = false;
         isDriveTrainAttached = true;
-        initialize();
+        initializeRobot();
 
         DcMotor glyphMotorLeft;
         DcMotor glyphMotorRight;
@@ -43,7 +43,7 @@ public class TeleOpTestBed extends MasterAutonomous
 
 
         boolean isBlueSide = true;
-        // Must initialize to prevent errors; not necessarily true
+        // Must initializeRobot to prevent errors; not necessarily true
         boolean isLeftBlue = true;
 
 
@@ -54,8 +54,8 @@ public class TeleOpTestBed extends MasterAutonomous
         if (vuforiaHelper.isVisible())
         {
             isLeftBlue = vuforiaHelper.getLeftJewelColor();
-            telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
-            telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
+            telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelRG);
+            telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelRG);
         }
         else
         {

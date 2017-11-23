@@ -13,7 +13,7 @@ public class EncoderTest extends MasterOpMode
     public void runOpMode() throws InterruptedException
     {
         isArmAttached = false;
-        initialize();
+        initializeRobot();
 
         waitForStart();
 

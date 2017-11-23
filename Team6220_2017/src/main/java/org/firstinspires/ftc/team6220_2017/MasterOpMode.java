@@ -86,7 +86,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
 
 
-    public void initialize()
+    public void initializeRobot()
     {
         glyphHeights[0] = Constants.GROUND_HEIGHT;
         glyphHeights[1] = Constants.HEIGHT_DIFF + Constants.GROUND_HEIGHT;

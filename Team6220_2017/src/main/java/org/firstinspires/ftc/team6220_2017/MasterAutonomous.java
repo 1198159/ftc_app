@@ -29,7 +29,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         // We don't want to run the arm during autonomous
         isArmAttached = false;
 
-        initialize();
+        initializeRobot();
 
         vuforiaHelper = new VuforiaHelper();
         vuforiaHelper.setupVuforia();
@@ -138,32 +138,34 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     // We use this method to score a jewel once its color has been determined
-    public void knockJewel (boolean isLeftBlue, boolean isBlueSide) throws InterruptedException
+    public void knockJewel (VuforiaHelper.BlueJewel blueJewel, boolean isBlueSide) throws InterruptedException
     {
         verticalJewelServoToggler.toggle();
         pauseWhileUpdating(1.5);
 
         if(isBlueSide)
         {
-            if(isLeftBlue)
+            if (blueJewel == VuforiaHelper.BlueJewel.LEFT)
             {
                 lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
             }
-            else
+            else if (blueJewel == VuforiaHelper.BlueJewel.RIGHT)
             {
                 lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
             }
+            // Do nothing if undetermined
         }
         else
         {
-            if(isLeftBlue)
+            if(blueJewel == VuforiaHelper.BlueJewel.LEFT)
             {
                 lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
             }
-            else
+            else if (blueJewel == VuforiaHelper.BlueJewel.RIGHT)
             {
                 lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
             }
+            // Once again, do nothing if undetermined
         }
         pauseWhileUpdating(1.8);
 
@@ -251,6 +253,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopDriveMotors();
     }
 
+    // todo Implement global coordinates (not a priority)
     // Updates robot's coordinates and angle
     public void updateLocation()
     {

@@ -15,7 +15,7 @@ public class TeleOpCompetition extends MasterTeleOp
         // todo Take this out when the arm is operational again
         isArmAttached = false;
         isDriveTrainAttached = false;
-        initialize();
+        initializeRobot();
 
         waitForStart();
 

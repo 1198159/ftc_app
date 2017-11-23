@@ -2,8 +2,6 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.robotcore.external.Const;
-
 @Autonomous(name = "Auto Blue Left", group = "Autonomous")
 
 public class AutoBlueLeft extends MasterAutonomous
@@ -18,21 +16,19 @@ public class AutoBlueLeft extends MasterAutonomous
         //setRobotStartingOrientation(180);
 
         boolean isBlueSide = true;
-        // Must initialize to prevent errors; not necessarily true
-        boolean isLeftBlue = true;
+        VuforiaHelper.BlueJewel blueJewel = VuforiaHelper.BlueJewel.UNDETERMINED;
 
 
         vuforiaHelper.getVumark();
 
-
         // If the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
-            isLeftBlue = vuforiaHelper.getLeftJewelColor();
-            telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
-            telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
+            blueJewel = vuforiaHelper.getLeftJewelColor();
+            telemetry.addData("Left Hue: ", vuforiaHelper.avgLeftJewelColor);
+            telemetry.addData("Right Hue: ", vuforiaHelper.avgRightJewelColor);
 
-            knockJewel(isLeftBlue, isBlueSide);
+            knockJewel(blueJewel, isBlueSide);
         }
         else
         {

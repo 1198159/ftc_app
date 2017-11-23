@@ -12,26 +12,22 @@ public class VuforiaTestBed extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        // initialize alliance booleans
-        boolean isBlueSide = true;
-        boolean isLeftBlue = true;
+        VuforiaHelper.BlueJewel blueJewel = VuforiaHelper.BlueJewel.UNDETERMINED;
 
-        setRobotStartingOrientation(180);
-
-        initializeAuto();
+        vuforiaHelper = new VuforiaHelper();
+        vuforiaHelper.setupVuforia();
 
         vuforiaHelper.getVumark();
 
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
-            isLeftBlue = vuforiaHelper.getLeftJewelColor();
-            telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
-            telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
-            knockJewel(isLeftBlue, isBlueSide);
+            blueJewel = vuforiaHelper.getLeftJewelColor();
+            telemetry.addData("Left Hue: ", vuforiaHelper.avgLeftJewelColor);
+            telemetry.addData("Right Hue: ", vuforiaHelper.avgRightJewelColor);
         }
         else
-            telemetry.addData("vuMark: ", "not visible");
+            telemetry.addData("vuMark ", "not visible");
 
         telemetry.update();
 

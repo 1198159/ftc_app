@@ -81,7 +81,7 @@ public class Constants
     // Controls how much power is given to the arm
     public static final double ARM_POWER_CONSTANT = 0.7;
 
-    // todo Adjust through testing
+    // todo Adjust and test values
     // Glyph mechanism constants
      // Units are in andymark encoder ticks
     public static final int GROUND_HEIGHT = 420;
