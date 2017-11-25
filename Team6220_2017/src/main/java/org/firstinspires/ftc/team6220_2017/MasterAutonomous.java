@@ -24,7 +24,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     // todo Implement runSetup()
     // Used for object initializations only necessary in autonomous
-    void initializeAuto()
+    void initializeAuto() throws InterruptedException
     {
         // We don't want to run the arm during autonomous
         isArmAttached = false;
@@ -141,7 +141,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     public void knockJewel (VuforiaHelper.BlueJewel blueJewel, boolean isBlueSide) throws InterruptedException
     {
         verticalJewelServoToggler.toggle();
-        pauseWhileUpdating(1.5);
+        pauseWhileUpdating(0.7);
 
         if(isBlueSide)
         {
@@ -167,7 +167,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
             // Once again, do nothing if undetermined
         }
-        pauseWhileUpdating(1.8);
+        pauseWhileUpdating(0.5);
 
         lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
         verticalJewelServoToggler.toggle();

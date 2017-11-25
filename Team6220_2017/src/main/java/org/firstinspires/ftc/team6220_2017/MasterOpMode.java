@@ -37,7 +37,7 @@ abstract public class MasterOpMode extends LinearOpMode
     //
 
     // Stores the encoder values for each of the 4 heights that glyphs can be scored at
-    int[] glyphHeights;
+    int[] glyphHeights = new int[4];
 
     // PID filters.  We have one for turning and one for encoder navigation
     PIDFilter RotationFilter;
@@ -110,8 +110,8 @@ abstract public class MasterOpMode extends LinearOpMode
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         // Jewel servos
-        verticalJewelServo = hardwareMap.servo.get("servoVerticalJewel");
-        lateralJewelServo = hardwareMap.servo.get("servoLateralJewel");
+        verticalJewelServo = hardwareMap.servo.get("verticalJewelServo");
+        lateralJewelServo = hardwareMap.servo.get("lateralJewelServo");
         //
 
         // Servo togglers
@@ -160,9 +160,9 @@ abstract public class MasterOpMode extends LinearOpMode
         if (isGlyphMechAttached)
         {
             // Initialize glyph mechanism devices
-                motorGlyphter = hardwareMap.dcMotor.get("glyphterMotor");
-                motorCollectorLeft = hardwareMap.dcMotor.get("leftCollectorMotor");
-                motorCollectorRight = hardwareMap.dcMotor.get("rightCollectorMotor");
+                motorGlyphter = hardwareMap.dcMotor.get("motorGlyphter");
+                motorCollectorLeft = hardwareMap.dcMotor.get("motorLeftCollector");
+                motorCollectorRight = hardwareMap.dcMotor.get("motorRightCollector");
             //
 
             // Set motor attributes and behaviors--------------
@@ -184,8 +184,8 @@ abstract public class MasterOpMode extends LinearOpMode
             // todo This seems incorrect; look at robot config
             motorArm = hardwareMap.dcMotor.get("motorArm");
 
-            wristServo = hardwareMap.servo.get("servoWrist");
-            jointServo = hardwareMap.servo.get("servoJoint");
+            wristServo = hardwareMap.servo.get("wristServo");
+            jointServo = hardwareMap.servo.get("jointServo");
             //-------------------------------------------------
 
             // Set motor attributes and behaviors--------------

@@ -42,6 +42,7 @@ public class VuforiaHelper
     public RelicRecoveryVuMark vuMark;
 
     boolean isVuMarkVisible;
+    boolean isTracking = false;
     //------------------------------------------------------
 
     // Variables for jewel color determination--------------
@@ -100,23 +101,25 @@ public class VuforiaHelper
 
     public void setupVuforia()
     {
+        // Set parameters for VuforiaLocalizer (an interface supporting localization through visual
+        // means) and create it
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.useExtendedTracking = false;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
 
-        //setup for getting pixel information
+        // Setup for getting pixel information
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
-        //make sure that vuforia doesn't begin racking up unnecessary frames
+        // Make sure that vuforia doesn't begin racking up unnecessary frames
         vuforiaLocalizer.setFrameQueueCapacity(1);
 
-        //---------------------------
-        // Initialize vision targets; this is important!
+        // Initialize vision targets; this is important!-----------------
         relicTrackables = this.vuforiaLocalizer.loadTrackablesFromAsset("RelicVuMark");
         relicTemplate = relicTrackables.get(0);
-        // For debugging purposes
+         // For debugging purposes
         relicTemplate.setName("relicVuMarkTemplate");
-        //----------------------------
+        //---------------------------------------------------------------
 
         /*
          Set phone location on robot. The center of the camera is the origin.
@@ -126,21 +129,11 @@ public class VuforiaHelper
         */
         // todo Finish adjusting for this year's robot; check y-axis rot fix for phone camera being rotated 180 deg
         phoneLocation = createMatrix(220, 0, 0, -90, 0, 180);
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
-        /*
-        // Setup listeners
-        for(int i = 0; i < targets.length; i++)
-        {
-            listeners[i] = (VuforiaTrackableDefaultListener) targets[i].getListener();
-            listeners[i].setPhoneInformation(phoneLocation, parameters.cameraDirection);
-        }
-        */
-
-        // avoids nullpointer errors
+        // Avoids nullpointer errors
         lastKnownLocation = createMatrix(0, 0, 0, 0, 0, 0);
 
-        //begin tracking targets before match
+        // Begin tracking targets before match
         startTracking();
     }
 
@@ -167,7 +160,7 @@ public class VuforiaHelper
         return lastKnownLocation;
     }
 
-    //todo change formatting from targets (an array) to relictrackables (a list)
+    //todo change formatting from targets (an array) to relictrackables (an arrayList)
     public void updateLocation()
     {
         // Checks each target to see if we can find our location. If none are visible, then it returns null
@@ -210,9 +203,17 @@ public class VuforiaHelper
         return isVuMarkVisible;
     }
 
-    void startTracking() {relicTrackables.activate();}
+    void startTracking()
+    {
+        relicTrackables.activate();
+        isTracking = true;
+    }
 
-    void stopTracking() {relicTrackables.deactivate();}
+    void stopTracking()
+    {
+        relicTrackables.deactivate();
+        isTracking = false;
+    }
 
     // Formats location to something readable
     String format(OpenGLMatrix transformationMatrix)

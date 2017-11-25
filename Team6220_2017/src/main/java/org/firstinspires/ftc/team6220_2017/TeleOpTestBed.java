@@ -22,47 +22,19 @@ public class TeleOpTestBed extends MasterAutonomous
 
         // Don't want to call nonexistent hardware devices in test program
         isArmAttached = false;
-        isDriveTrainAttached = true;
+        isDriveTrainAttached = false;
+        isGlyphMechAttached = false;
         initializeRobot();
 
-        DcMotor glyphMotorLeft;
-        DcMotor glyphMotorRight;
+        DcMotor motorCollectorLeft;
+        DcMotor motorCollectorRight;
 
-        //glyphMotorLeft = hardwareMap.dcMotor.get("glyphMotorLeft");
-        //glyphMotorRight = hardwareMap.dcMotor.get("glyphMotorRight");
-        //wristServo = hardwareMap.servo.get("servoWrist");
-        //jointServo = hardwareMap.servo.get("servoJoint");
+        //motorCollectorLeft = hardwareMap.dcMotor.get("motorCollectorLeft");
+        //motorCollectorRight = hardwareMap.dcMotor.get("motorCollectorRight");
+        //wristServo = hardwareMap.servo.get("wristServo");
+        //jointServo = hardwareMap.servo.get("jointServo");
 
-        //vuforiaHelper.setupVuforia();
-
-        // Wait until start button has been pressed
         waitForStart();
-
-        /*
-        lTime = timer.seconds();
-
-
-        boolean isBlueSide = true;
-        // Must initializeRobot to prevent errors; not necessarily true
-        boolean isLeftBlue = true;
-
-
-        vuforiaHelper.getVumark();
-
-
-        // If the vuMark is not visible, vuforia will tell us
-        if (vuforiaHelper.isVisible())
-        {
-            isLeftBlue = vuforiaHelper.getLeftJewelColor();
-            telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelRG);
-            telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelRG);
-        }
-        else
-        {
-            telemetry.addData("vuMark: ", "not visible");
-        }
-        telemetry.update();
-        */
 
         //jointServo.setPosition(0.5);
 
@@ -78,7 +50,7 @@ public class TeleOpTestBed extends MasterAutonomous
             if (driver1.isButtonJustPressed(Button.Y))
             {
                 verticalJewelServoToggler.toggle();
-                pauseWhileUpdating(3.0);
+                pauseWhileUpdating(0.5);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_UP))
             {

@@ -9,31 +9,33 @@ public class AutoBlueLeft extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
+        boolean isBlueSide = true;
+        VuforiaHelper.BlueJewel blueJewel = VuforiaHelper.BlueJewel.UNDETERMINED;
+        //setRobotStartingOrientation(180);
+
+        isGlyphMechAttached = false;
+        isDriveTrainAttached = false;
         initializeAuto();
 
         waitForStart();
 
-        //setRobotStartingOrientation(180);
-
-        boolean isBlueSide = true;
-        VuforiaHelper.BlueJewel blueJewel = VuforiaHelper.BlueJewel.UNDETERMINED;
-
-
+        // Get jewel info before the match starts-----------------------------
         vuforiaHelper.getVumark();
-
         // If the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
             blueJewel = vuforiaHelper.getLeftJewelColor();
             telemetry.addData("Left Hue: ", vuforiaHelper.avgLeftJewelColor);
             telemetry.addData("Right Hue: ", vuforiaHelper.avgRightJewelColor);
-
-            knockJewel(blueJewel, isBlueSide);
         }
         else
         {
             telemetry.addData("vuMark: ", "not visible");
         }
         telemetry.update();
+        //---------------------------------------------------------------------
+
+
+        knockJewel(blueJewel, isBlueSide);
     }
 }

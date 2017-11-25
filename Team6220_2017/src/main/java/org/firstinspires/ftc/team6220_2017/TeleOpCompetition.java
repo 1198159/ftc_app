@@ -3,7 +3,7 @@ package org.firstinspires.ftc.team6220_2017;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
- *  uses driver input to operate robot
+ *  Uses driver input to operate robot during TeleOp period
  */
 
 @TeleOp(name = "TeleOp Competition")
@@ -14,7 +14,7 @@ public class TeleOpCompetition extends MasterTeleOp
     {
         // todo Take this out when the arm is operational again
         isArmAttached = false;
-        isDriveTrainAttached = false;
+        isGlyphMechAttached = false;
         initializeRobot();
 
         waitForStart();
@@ -31,12 +31,14 @@ public class TeleOpCompetition extends MasterTeleOp
 
             // 1st driver input for moving robot; left stick rotates robot, right stick translates robot
             driveMecanumWithJoysticks();
+            /*
             // 2nd driver input for relic arm; right stick moves arm
             armMechanism.driveArm();
             // 1st and 2nd driver input for glyph mechanism
             // 1st driver:  dpad up collects and dpad up scores
             // 2nd driver:  TBD
             glyphMechanism.driveGlyphMech();
+            */
 
             /*
              updates that need to happen each loop
