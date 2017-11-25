@@ -22,7 +22,6 @@ public class TeleOpCompetition extends MasterTeleOp
         // Accounts for delay between initializing the program and starting TeleOp
         lTime = timer.seconds();
 
-
         while (opModeIsActive())
         {
             // Finds the time elapsed each loop

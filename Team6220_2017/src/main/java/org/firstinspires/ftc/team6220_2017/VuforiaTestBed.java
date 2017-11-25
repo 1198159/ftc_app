@@ -19,6 +19,8 @@ public class VuforiaTestBed extends MasterAutonomous
 
         vuforiaHelper.getVumark();
 
+        double MM_PER_ANDYMARK_TICK = (Math.PI * Constants.WHEEL_DIAMETER_MM) / (Constants.ANDYMARK_TICKS_PER_ROTATION * Constants.GEAR_RATIO);
+
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {

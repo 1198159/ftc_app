@@ -36,15 +36,17 @@ abstract public class MasterTeleOp extends MasterOpMode
             verticalJewelServoToggler.retract();
         }
 
+        double adjustedDriveMagnitude = driver1.getRightStickMagnitude();
         /*
-         Adjust stick magnitude, since magnitudes can be higher than 1
-         (they have been observed to be as large as 1.1 sometimes)
+         Scale right stick magnitude, since magnitudes are not uniform for all stick positions
+         (they have been observed to be as large as 1.1)
         */
-        double adjustedStickMagnitude = Range.clip(driver1.getRightStickMagnitude(), -1.0, 1.0);
+        if (adjustedDriveMagnitude > 1.0)
+            adjustedDriveMagnitude = 1.0;
 
         // Stick inputs must be changed from x and y to angle and drive power
         double angle = driver1.getRightStickAngle();
-        double power = tFactor * stickCurve.getOuput(adjustedStickMagnitude);
+        double power = tFactor * stickCurve.getOuput(adjustedDriveMagnitude);
         double rotationPower = rFactor * stickCurve.getOuput(gamepad1.left_stick_x);
 
         driveMecanum(angle, power, rotationPower);

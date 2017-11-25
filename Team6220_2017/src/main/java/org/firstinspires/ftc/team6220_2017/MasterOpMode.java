@@ -107,34 +107,33 @@ abstract public class MasterOpMode extends LinearOpMode
         //
 
         // Initialize hardware devices--------------------------
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
-        // Jewel servos
+         // Jewel servos
         verticalJewelServo = hardwareMap.servo.get("verticalJewelServo");
         lateralJewelServo = hardwareMap.servo.get("lateralJewelServo");
-        //
+         //
 
-        // Servo togglers
+         // Servo togglers
         verticalJewelServoToggler = new ServoToggler(verticalJewelServo, Constants.VERTICAL_JEWEL_SERVO_RETRACTED, Constants.VERTICAL_JEWEL_SERVO_DEPLOYED);
-        //
+         //
 
-        // Set initial servo positions
+         // Set initial servo positions
         verticalJewelServoToggler.setToStartingPosition();
         lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
-        //
+         //
 
-        // Check to see what parts of the robot are attached.  Some programs (e.g., autonomous and-------------------------
-        // tests) may want to ignore parts of the robot that don't need to be used
+         // Check to see what parts of the robot are attached.  Some programs (e.g., autonomous and-------------------------
+         // tests) may want to ignore parts of the robot that don't need to be used
         if (isDriveTrainAttached)
         {
-            // Drive motors
+             // Drive motors
             motorFL = hardwareMap.dcMotor.get("motorFrontLeft");
             motorFR = hardwareMap.dcMotor.get("motorFrontRight");
             motorBL = hardwareMap.dcMotor.get("motorBackLeft");
             motorBR = hardwareMap.dcMotor.get("motorBackRight");
-            //
+             //
 
-            // Set motor attributes and behaviors--------------------------
+             // Set motor attributes and behaviors--------------------------
             motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -154,19 +153,19 @@ abstract public class MasterOpMode extends LinearOpMode
             motorFR.setPower(0.0);
             motorBL.setPower(0.0);
             motorFR.setPower(0.0);
-            //------------------------------------------------------------
+             //------------------------------------------------------------
         }
 
         if (isGlyphMechAttached)
         {
-            // Initialize glyph mechanism devices
+             // Initialize glyph mechanism devices
                 motorGlyphter = hardwareMap.dcMotor.get("motorGlyphter");
                 motorCollectorLeft = hardwareMap.dcMotor.get("motorLeftCollector");
                 motorCollectorRight = hardwareMap.dcMotor.get("motorRightCollector");
-            //
+             //
 
-            // Set motor attributes and behaviors--------------
-             // This motor needs encoders to determine the correct position to lift glyphs to
+             // Set motor attributes and behaviors--------------
+              // This motor needs encoders to determine the correct position to lift glyphs to
             motorGlyphter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorGlyphter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorGlyphter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -175,30 +174,33 @@ abstract public class MasterOpMode extends LinearOpMode
             motorCollectorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motorCollectorLeft.setPower(0.0);
             motorCollectorRight.setPower(0.0);
-            //-------------------------------------------------
+             //-------------------------------------------------
         }
 
         if (isArmAttached)
         {
-            // Initialize arm devices-------------------------------------
-            // todo This seems incorrect; look at robot config
+             // Initialize arm devices-------------------------------------
+             // todo This seems incorrect; look at robot config
             motorArm = hardwareMap.dcMotor.get("motorArm");
 
             wristServo = hardwareMap.servo.get("wristServo");
             jointServo = hardwareMap.servo.get("jointServo");
-            //-------------------------------------------------
+             //-------------------------------------------------
 
-            // Set motor attributes and behaviors--------------
+             // Set motor attributes and behaviors--------------
             motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            //-------------------------------------------------
+             //-------------------------------------------------
         }
         //--------------------------------------------------------------------------------------------------------------
 
+        // todo REV imu is currently taking a long time to initialize or even failing to do so; why is this?
+        /*
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu". Certain parameters must be specified before using the imu.
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -207,11 +209,12 @@ abstract public class MasterOpMode extends LinearOpMode
         parameters.loggingTag = "IMU";
         imu.initialize(parameters);
         //
+        */
 
         RotationFilter = new PIDFilter(Constants.ROTATION_P, Constants.ROTATION_I, Constants.ROTATION_D);
         TranslationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);
 
-        //todo Change servo arm to separate class with objects initialized here
+        //todo Initialize all separate hardware systems here
         for (ConcurrentOperation item : callback)
         {
             item.initialize(hardwareMap);
@@ -281,13 +284,13 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBR.setPower(powerBR);
 
         // todo How to make this telemetry not interfere with that of other classes?
-        /*
         // Telemetry for debugging motor power inputs
+        /*
         telemetry.addData("translation power: ", x);
         telemetry.addData("vertical power: ", y);
         telemetry.addData("rotational power: ", w);
-        telemetry.update();
         */
+        telemetry.update();
     }
 
     // Other opmodes must go through this method to prevent others from unnecessarily changing headingOffset

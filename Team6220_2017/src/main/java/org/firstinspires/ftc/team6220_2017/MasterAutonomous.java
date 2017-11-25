@@ -104,12 +104,11 @@ abstract public class MasterAutonomous extends MasterOpMode
         {
             currentAngle = getAngularOrientationWithOffset();
 
-            // Give robot its adjusted turning power
+            // Give robot raw value for turning power
             angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
-            turningPower = Constants.TURNING_POWER_FACTOR * angleDiff;
 
-            // Send turningPower through PID filter to prevent oscillation
-            RotationFilter.roll(turningPower);
+            // Send raw turning power through PID filter to adjust range and minimize oscillation
+            RotationFilter.roll(angleDiff);
             turningPower = RotationFilter.getFilteredValue();
 
             // Make sure turningPower doesn't go above maximum power
@@ -215,7 +214,8 @@ abstract public class MasterAutonomous extends MasterOpMode
             double encDiffX = (-encDiffFL - encDiffFR + encDiffBL + encDiffBR) / 4;
             double encDiffY = (-encDiffFL + encDiffFR - encDiffBL + encDiffBR) / 4;
 
-            deltaX -= Constants.MM_PER_ANDYMARK_TICK * encDiffX;
+            // Translation distance is reduced by a factor of sqrt(2) due to mecanum wheels
+            deltaX -= Constants.MM_PER_ANDYMARK_TICK * encDiffX / Math.sqrt(2);
             deltaY -= Constants.MM_PER_ANDYMARK_TICK * encDiffY;
 
             // Recalculate value each loop
@@ -224,13 +224,15 @@ abstract public class MasterAutonomous extends MasterOpMode
             double driveAngle;
             // Deals with the fact that inverse tangent only returns an angle between -90 and 90
             // degrees.  We want to be able to drive at angles greater than 90 degrees, so the
-            // output of atan must be shifted
+            // range of atan2 must be modified
             if (deltaX >= 0)
                 driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
             else
                 driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX)) + 180;
+
             // Power is proportional to distance from target
-            double drivePower = maxPower * Constants.DRIVE_POWER_FACTOR * distanceToTarget;
+            double drivePower = maxPower * distanceToTarget;
+            // Send drivePower through PID filter to adjust range and minimize oscillation
             TranslationFilter.roll(drivePower);
             double adjustedDrivePower = TranslationFilter.getFilteredValue();
 
@@ -240,6 +242,7 @@ abstract public class MasterAutonomous extends MasterOpMode
                 adjustedDrivePower = Math.signum(adjustedDrivePower) * Constants.MINIMUM_DRIVE_POWER;
             }
 
+            // todo DRIVE ANGLE HELD CONSTANT FOR TESTING
             driveMecanum(driveAngle, adjustedDrivePower, 0.0);
 
             telemetry.addData("X remaining: ", deltaX);
