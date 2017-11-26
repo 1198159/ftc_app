@@ -175,7 +175,7 @@ public class VuforiaDetection
         return colorHsvOut[0]; // return the averaged sampled HSV color value
     }
 
-    /* garbage function */
+    /* sortPixels */
 
     public float sortPixels(int x, int y)
     {
@@ -290,7 +290,7 @@ public class VuforiaDetection
         return isLeftJewelBlue;
     }
 
-    /* more garbage */
+    /* arrangePixels */
 
     public void arrangePixels() throws InterruptedException
     {
