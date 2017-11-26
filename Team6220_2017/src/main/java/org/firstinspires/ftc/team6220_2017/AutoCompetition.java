@@ -2,7 +2,8 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-// todo Finish implementing setup routine created in MasterAutonomous
+// todo Test setupRoutine
+// todo Move jewel identification to before start of match
 @Autonomous(name = "AutoCompetition", group = "Autonomous")
 
 public class AutoCompetition extends MasterAutonomous
@@ -11,6 +12,7 @@ public class AutoCompetition extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         initializeAuto();
+        VuforiaHelper.BlueJewel blueJewel = VuforiaHelper.BlueJewel.UNDETERMINED;
 
         runSetup();
 
@@ -20,13 +22,13 @@ public class AutoCompetition extends MasterAutonomous
 
 
         // Score jewel-------------------------------------------------
-        // If the vuMark is not visible, vuforia will tell us and the robot will not score the jewel
+         // If the vuMark is not visible, vuforia will tell us and the robot will not score the jewel
         if (vuforiaHelper.isVisible())
         {
-            boolean isLeftBlue = vuforiaHelper.getLeftJewelColor();
-            telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
-            telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
-            knockJewel(isLeftBlue, isBlueSide);
+            blueJewel = vuforiaHelper.getLeftJewelColor();
+            telemetry.addData("Blue Jewel: ", blueJewel);
+
+            knockJewel(blueJewel, isBlueSide);
         }
         else
             telemetry.addData("vuMark: ", "not visible");
@@ -57,6 +59,7 @@ public class AutoCompetition extends MasterAutonomous
             }
         }
         //--------------------------------------------------------------
+
 
         // Score glyph in key column------------------------------------
         if (isBlueSide)

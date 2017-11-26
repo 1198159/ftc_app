@@ -134,6 +134,8 @@ public abstract class Master extends LinearOpMode
         imu.initialize(parameters);
 
         GGZero = motorGG.getCurrentPosition();
+
+
     }
 
     // 45 denotes the angle at which the motors are mounted in referece to the chassis frame

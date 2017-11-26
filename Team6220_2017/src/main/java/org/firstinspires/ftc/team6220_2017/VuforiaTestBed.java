@@ -3,7 +3,7 @@ package org.firstinspires.ftc.team6220_2017;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
- * Created by Cole Welch on 10/1/2017.
+ *  For testing jewel identification without robot hardware
  */
 
 @Autonomous(name = "Vuforia Test", group = "Autonomous")
@@ -12,26 +12,24 @@ public class VuforiaTestBed extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        // initialize alliance booleans
-        boolean isBlueSide = true;
-        boolean isLeftBlue = true;
+        VuforiaHelper.BlueJewel blueJewel = VuforiaHelper.BlueJewel.UNDETERMINED;
 
-        setRobotStartingOrientation(180);
-
-        initializeAuto();
+        vuforiaHelper = new VuforiaHelper();
+        vuforiaHelper.setupVuforia();
 
         vuforiaHelper.getVumark();
+
+        double MM_PER_ANDYMARK_TICK = (Math.PI * Constants.WHEEL_DIAMETER_MM) / (Constants.ANDYMARK_TICKS_PER_ROTATION * Constants.GEAR_RATIO);
 
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
-            isLeftBlue = vuforiaHelper.getLeftJewelColor();
-            telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
-            telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
-            knockJewel(isLeftBlue, isBlueSide);
+            blueJewel = vuforiaHelper.getLeftJewelColor();
+            telemetry.addData("Left Hue: ", vuforiaHelper.avgLeftJewelColor);
+            telemetry.addData("Right Hue: ", vuforiaHelper.avgRightJewelColor);
         }
         else
-            telemetry.addData("vuMark: ", "not visible");
+            telemetry.addData("vuMark ", "not visible");
 
         telemetry.update();
 

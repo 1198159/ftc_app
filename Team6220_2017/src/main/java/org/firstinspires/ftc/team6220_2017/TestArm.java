@@ -14,7 +14,7 @@ public class TestArm extends MasterTeleOp
     public void runOpMode() throws InterruptedException
     {
         isDriveTrainAttached = false;
-        initialize();
+        initializeRobot();
 
         waitForStart();
         // Accounts for delay between initializing the program and starting TeleOp

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 /**
  * A test program used to try out any new ideas.
  */
-@TeleOp(name="Test Bed Program", group = "6220")
+@TeleOp(name="TeleOp TestBed", group = "6220")
 //@Disabled
 public class TeleOpTestBed extends MasterAutonomous
 {
@@ -23,46 +23,18 @@ public class TeleOpTestBed extends MasterAutonomous
         // Don't want to call nonexistent hardware devices in test program
         isArmAttached = false;
         isDriveTrainAttached = true;
-        initialize();
+        isGlyphMechAttached = false;
+        initializeRobot();
 
-        DcMotor glyphMotorLeft;
-        DcMotor glyphMotorRight;
+        DcMotor motorCollectorLeft;
+        DcMotor motorCollectorRight;
 
-        //glyphMotorLeft = hardwareMap.dcMotor.get("glyphMotorLeft");
-        //glyphMotorRight = hardwareMap.dcMotor.get("glyphMotorRight");
-        //wristServo = hardwareMap.servo.get("servoWrist");
-        //jointServo = hardwareMap.servo.get("servoJoint");
+        //motorCollectorLeft = hardwareMap.dcMotor.get("motorCollectorLeft");
+        //motorCollectorRight = hardwareMap.dcMotor.get("motorCollectorRight");
+        //wristServo = hardwareMap.servo.get("wristServo");
+        //jointServo = hardwareMap.servo.get("jointServo");
 
-        //vuforiaHelper.setupVuforia();
-
-        // Wait until start button has been pressed
         waitForStart();
-
-        /*
-        lTime = timer.seconds();
-
-
-        boolean isBlueSide = true;
-        // Must initialize to prevent errors; not necessarily true
-        boolean isLeftBlue = true;
-
-
-        vuforiaHelper.getVumark();
-
-
-        // If the vuMark is not visible, vuforia will tell us
-        if (vuforiaHelper.isVisible())
-        {
-            isLeftBlue = vuforiaHelper.getLeftJewelColor();
-            telemetry.addData("leftColor ", vuforiaHelper.avgLeftJewelColor);
-            telemetry.addData("RightColor ", vuforiaHelper.avgRightJewelColor);
-        }
-        else
-        {
-            telemetry.addData("vuMark: ", "not visible");
-        }
-        telemetry.update();
-        */
 
         //jointServo.setPosition(0.5);
 
@@ -78,17 +50,17 @@ public class TeleOpTestBed extends MasterAutonomous
             if (driver1.isButtonJustPressed(Button.Y))
             {
                 verticalJewelServoToggler.toggle();
-                pauseWhileUpdating(3.0);
+                pauseWhileUpdating(0.5);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_UP))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
-                driveToPosition(0, 500, 0.5);
+                driveToPosition(0, 1000, 0.5);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_RIGHT))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
-                driveToPosition(500, 0, 0.5);
+                driveToPosition(1000, 0, 0.5);
             }
             else if (driver1.isButtonJustPressed(Button.RIGHT_BUMPER))
             {
@@ -99,6 +71,7 @@ public class TeleOpTestBed extends MasterAutonomous
                 turnTo(90);
             }
 
+            /*
             // Test glyph collection; servos on either side of glyph pull or push it
             if(driver1.isButtonJustPressed(Button.A))
             {
@@ -124,6 +97,7 @@ public class TeleOpTestBed extends MasterAutonomous
             {
                 wristServo.setPosition(Constants.WRIST_SERVO_DEPLOYED);
             }
+            */
 
             telemetry.addData("jointPos: ", jointPosCount);
             updateCallback(eTime);

@@ -43,7 +43,8 @@ public class DriverInput implements ConcurrentOperation
                 || isButtonPressed(Button.B) || isButtonPressed(Button.RIGHT_BUMPER)
                 || isButtonPressed(Button.LEFT_BUMPER) || isButtonPressed(Button.DPAD_DOWN)
                 || isButtonPressed(Button.DPAD_UP) || isButtonPressed(Button.DPAD_LEFT) ||
-                isButtonPressed(Button.DPAD_RIGHT) || getLeftStickMagnitude() > Constants.MINIMUM_JOYSTICK_POWER
+                isButtonPressed(Button.DPAD_RIGHT) || isButtonPressed(Button.START) ||
+                isButtonPressed(Button.BACK)|| getLeftStickMagnitude() > Constants.MINIMUM_JOYSTICK_POWER
                 || getRightStickMagnitude() > Constants.MINIMUM_JOYSTICK_POWER ||
                 getLeftTriggerValue() > Constants.MINIMUM_TRIGGER_VALUE  ||
                 getRightTriggerValue() > Constants.MINIMUM_TRIGGER_VALUE);
