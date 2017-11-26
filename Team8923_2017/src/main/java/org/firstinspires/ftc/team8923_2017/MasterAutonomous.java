@@ -166,8 +166,8 @@ public abstract class MasterAutonomous extends Master
 
     // get a reference to the RelativeLayout so we can change the background
     // color of the Robot Controller app to match the hue detected by the RGB sensor.
-    int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
-    final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+    //int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
+    //final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
 
     // bPrevState and bCurrState represent the previous and current state of the button.
     boolean bPrevState = false;
@@ -180,7 +180,7 @@ public abstract class MasterAutonomous extends Master
     //final float values[] = hsvValues;
     //static final int LED_CHANNEL = 5;
 
-
+/*
     void ChooseOptions()
     {
         while (!setupFinished)
@@ -212,11 +212,11 @@ public abstract class MasterAutonomous extends Master
                 idle();
         }
     }
-
+*/
     void InitAuto()
     {
         InitHardwareAutonomous();
-
+/*
         switch (alliance)
         {
             case RED:
@@ -245,7 +245,7 @@ public abstract class MasterAutonomous extends Master
                 }
                 break;
         }
-
+*/
         robotAngle = 90;
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
     }
@@ -283,7 +283,7 @@ public abstract class MasterAutonomous extends Master
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);///
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -299,9 +299,14 @@ public abstract class MasterAutonomous extends Master
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        sensorTopRight = hardwareMap.get(ColorSensor.class, "sensorTopRight");
+        sensorTopLeft = hardwareMap.get(ColorSensor.class, "sensorTopLeft");
+        sensorBottomRight = hardwareMap.get(ColorSensor.class, "sensorBottomRight");
+        /*
         sensorTopRight = hardwareMap.colorSensor.get("sensorTopRight");
         sensorTopLeft = hardwareMap.colorSensor.get("sensorTopLeft");
         sensorBottomRight = hardwareMap.colorSensor.get("sensorBottomRight");
+        */
 
         GGZero = motorGG.getCurrentPosition();
     }
@@ -399,6 +404,162 @@ public abstract class MasterAutonomous extends Master
         }
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
+                (Math.abs(moveErrorBL) > TOL));
+
+        //Stop motors
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+    }
+
+    void MoveIMULeft(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
+    {
+        currentFL = motorFL.getCurrentPosition();
+        currentFR = motorFR.getCurrentPosition();
+        currentBL = motorBL.getCurrentPosition();
+        currentBR = motorBR.getCurrentPosition();
+
+        //Sets motor encoder values
+        newTargetFL = motorFL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetBL = motorBL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+
+        runtime.reset(); // used for timeout
+        targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
+        targetAngle = adjustAngles(targetAngle);
+        do {
+            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
+            moveErrorFL = newTargetFL - currentFL;
+            speedFL = Math.abs(kMove * moveErrorFL);
+            speedFL = Range.clip(speedFL, 0.15, maxSpeed);
+            speedFL = speedFL * Math.signum(moveErrorFL);
+
+            moveErrorFR = newTargetFR - currentFR;
+            speedFR = Math.abs(kMove * moveErrorFR);
+            speedFR = Range.clip(speedFR, 0.15, maxSpeed);
+            speedFR = speedFR * Math.signum(moveErrorFR);
+
+            moveErrorBL = newTargetBL - currentBL;
+            speedBL = Math.abs(kMove * moveErrorBL);
+            speedBL = Range.clip(speedBL, 0.15, maxSpeed);
+            speedBL = speedBL * Math.signum(moveErrorBL);
+
+            moveErrorBR = newTargetBR - currentBR;
+            speedBR = Math.abs(kMove * moveErrorBR);
+            speedBR = Range.clip(speedBR, 0.15, maxSpeed);
+            speedBR = speedBR * Math.signum(moveErrorBR);
+
+            targetAngle = adjustAngles(targetAngle);//Makes it so target angle does not wrap
+            angleError = currentRobotAngle - targetAngle;
+            angleError = adjustAngles(angleError);
+            pivot = angleError * kAngle;
+
+            //Sets values for motor power
+            motorPowerFL = speedBR + pivot;
+            motorPowerFR = speedBR + pivot;
+            motorPowerBL = -speedBR + pivot;
+            motorPowerBR = -speedBR + pivot;
+
+            //Sets motor power
+            //motorFL.setPower(0.5);
+            //motorFR.setPower(-0.5);
+            //motorBL.setPower(0.5);
+            //motorBR.setPower(-0.5);
+            motorFL.setPower(motorPowerFL);
+            motorFR.setPower(motorPowerFR);
+            motorBL.setPower(motorPowerBL);
+            motorBR.setPower(motorPowerBR);
+            //sleep(100);
+
+            //motorFL.setPower(0.0);
+            //motorFR.setPower(0.0);
+            //motorBL.setPower(0.0);
+            //motorBR.setPower(0.0);
+
+            idle();
+        }
+        while (opModeIsActive() &&
+                (runtime.seconds() < timeout) &&
+                (Math.abs(moveErrorBL) > TOL));
+
+        //Stop motors
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+    }
+
+    void MoveIMURight(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
+    {
+        currentFL = motorFL.getCurrentPosition();
+        currentFR = motorFR.getCurrentPosition();
+        currentBL = motorBL.getCurrentPosition();
+        currentBR = motorBR.getCurrentPosition();
+
+        //Sets motor encoder values
+        newTargetFL = motorFL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetBL = motorBL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+
+        runtime.reset(); // used for timeout
+        targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
+        targetAngle = adjustAngles(targetAngle);
+        do {
+            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
+            moveErrorFL = newTargetFL - currentFL;
+            speedFL = Math.abs(kMove * moveErrorFL);
+            speedFL = Range.clip(speedFL, 0.15, maxSpeed);
+            speedFL = speedFL * Math.signum(moveErrorFL);
+
+            moveErrorFR = newTargetFR - currentFR;
+            speedFR = Math.abs(kMove * moveErrorFR);
+            speedFR = Range.clip(speedFR, 0.15, maxSpeed);
+            speedFR = speedFR * Math.signum(moveErrorFR);
+
+            moveErrorBL = newTargetBL - currentBL;
+            speedBL = Math.abs(kMove * moveErrorBL);
+            speedBL = Range.clip(speedBL, 0.15, maxSpeed);
+            speedBL = speedBL * Math.signum(moveErrorBL);
+
+            moveErrorBR = newTargetBR - currentBR;
+            speedBR = Math.abs(kMove * moveErrorBR);
+            speedBR = Range.clip(speedBR, 0.15, maxSpeed);
+            speedBR = speedBR * Math.signum(moveErrorBR);
+
+            targetAngle = adjustAngles(targetAngle);//Makes it so target angle does not wrap
+            angleError = currentRobotAngle - targetAngle;
+            angleError = adjustAngles(angleError);
+            pivot = angleError * kAngle;
+
+            //Sets values for motor power
+            motorPowerFL = -speedBR + pivot;
+            motorPowerFR = -speedBR + pivot;
+            motorPowerBL = speedBR + pivot;
+            motorPowerBR = speedBR + pivot;
+
+            //Sets motor power
+            //motorFL.setPower(0.5);
+            //motorFR.setPower(-0.5);
+            //motorBL.setPower(0.5);
+            //motorBR.setPower(-0.5);
+            motorFL.setPower(motorPowerFL);
+            motorFR.setPower(motorPowerFR);
+            motorBL.setPower(motorPowerBL);
+            motorBR.setPower(motorPowerBR);
+            //sleep(100);
+
+            //motorFL.setPower(0.0);
+            //motorFR.setPower(0.0);
+            //motorBL.setPower(0.0);
+            //motorBR.setPower(0.0);
+
+            idle();
+        }
+        while (opModeIsActive() &&
+                (runtime.milliseconds() < timeout) &&
                 (Math.abs(moveErrorBL) > TOL));
 
         //Stop motors
@@ -631,6 +792,23 @@ public abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
+    void moveGG(int ticks)
+    {
+        liftMoving = true;
+        GGLiftTimer.reset();
+        motorGG.setTargetPosition(motorGG.getCurrentPosition() + ticks);
+
+        if(liftMoving)
+        {
+            motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 1000.0));
+        }
+
+        if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3)
+        {
+            motorGG.setPower(0.0);
+            liftMoving = false;
+        }
+    }
 
     void DropJJ()
     {
@@ -652,58 +830,9 @@ public abstract class MasterAutonomous extends Master
         */
     }
 
-    void moveGG(int ticks)
-    {
-        liftMoving = true;
-        GGLiftTimer.reset();
-        motorGG.setTargetPosition(motorGG.getCurrentPosition() + ticks);
-
-        if(liftMoving)
-        {
-            motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 1000.0));
-        }
-
-        if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3)
-        {
-            motorGG.setPower(0.0);
-            liftMoving = false;
-        }
-    }
-
     void RetrieveJJ()
     {
         servoJJ.setPosition(SERVO_JJ_UP);
-    }
-
-    void turnOnFlash(int onMiliSec)
-    {
-
-        /*
-        Camera cam = Camera.open();
-        Camera.Parameters p = cam.getParameters();
-        p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-        cam.setParameters(p);
-        cam.startPreview();
-
-        sleep(onMiliSec);
-
-        cam.stopPreview();
-        cam.release();
-        telemetry.log().add(String.format("VuMarkVis", isVuMarkVisible));
-        telemetry.update();
-        */
-/*
-        {
-            CameraManager camManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-            String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position and back camera is 1.
-            camManager.setTorchMode(cameraId, true);
-        }
-
-
-        android.hardware.camera2.CameraDevice cameraDevice;
-        cameraDevice.Instance.SetFlashTorchMode(true);
-        //CameraDevice.Instance.SetFlashTorchMode(true);
-*/
     }
 
     void UpdateRobotLocation()
@@ -754,8 +883,8 @@ public abstract class MasterAutonomous extends Master
     void colorSensorHSV()
     {
             // check the status of the x button on gamepad.
-            bCurrState = gamepad1.x;
-
+            //bCurrState = gamepad1.x;
+/*
             // check for button-press state transitions.
             if ((bCurrState == true) && (bCurrState != bPrevState))  {
 
@@ -766,11 +895,11 @@ public abstract class MasterAutonomous extends Master
 
             // update previous state variable.
             bPrevState = bCurrState;
-
+*/
             // convert the RGB values to HSV values.
-            Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopRight);
-            Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopLeft);
-            Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesBottomRight);
+            Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopLeft);
+            Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopRight);
+            Color.RGBToHSV((sensorBottomRight.red() * 255) / 800, (sensorBottomRight.green() * 255) / 800, (sensorBottomRight.blue() * 255) / 800, hsvValuesBottomRight);
 
 
             //Send current info back to driver
@@ -784,22 +913,167 @@ public abstract class MasterAutonomous extends Master
 
     }
 
-/*
-    void alignOnLineRed(boolean isItRedLine)
+
+    void alignOnLine(double saturationValue)
     {
+        float currentAngle;
+        //Go forwards until any sensor sees the line
+        double referenceAngle =  imu.getAngularOrientation().firstAngle;//TODO declare this in init hardware auto
+
         do
         {
-            double referenceAngle =  imu.getAngularOrientation().firstAngle;
-            MoveIMU(referenceAngle, 50, 0, 0.015, 0.2, 3);
-        }
-        while(hsvValues[0] == 200.0 );//TODO Change value to correct Hue value
+            do
+            {
+                MoveIMU(referenceAngle, 50, 0, 0.015, 0.2, 3);
+                colorSensorHSV();
+            }
+            while((hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue)); //TODO Change value to correct Hue value
+            stopDriving();
 
-        motorFL.setPower(0);
-        motorFR.setPower(0);
-        motorBL.setPower(0);
-        motorBR.setPower(0);
+
+            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
+            //Top right sensor is on the line, but rest aren't
+            {
+                do
+                {
+                    //Pivot about front right wheel until bottom right sensor sees the line
+                    motorFL.setPower(0.2);
+                    motorFR.setPower(0);
+                    motorBL.setPower(0.2);
+                    motorBR.setPower(0.2);
+                    colorSensorHSV();
+                }
+                while(hsvValuesBottomRight[1] < saturationValue);
+                stopDriving();
+                //Move right until the left sensor sees the line, then move half that distance left
+                runtime.reset();
+                do
+                {
+                    MoveIMURight(referenceAngle, 30, 0, 0.015, 0.2, 3);
+                    colorSensorHSV();
+                }
+                while(hsvValuesTopLeft[1] < saturationValue);
+                MoveIMULeft(referenceAngle, 30, 0, 0.015, 0.2, runtime.milliseconds() / 2);
+            }
+
+
+            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
+            //Top and bottom right sensors are on the line, but left isn't
+            {
+                runtime.reset();
+                do
+                {
+                    MoveIMURight(referenceAngle, 30, 0, 0.015, 0.2, 3);
+                    colorSensorHSV();
+                }
+                while(hsvValuesTopLeft[1] < saturationValue);
+                MoveIMULeft(referenceAngle, 30, 0, 0.015, 0.2, runtime.milliseconds() / 2);
+            }
+
+
+            if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
+            //Only top left sensor sees line
+            {
+                do
+                {
+                    //Pivot about front left wheel until front right sensor sees the line
+                    motorFL.setPower(0);
+                    motorFR.setPower(-0.2);
+                    motorBL.setPower(-0.2);
+                    motorBR.setPower(-0.2);
+                    colorSensorHSV();
+                }
+                while(hsvValuesTopRight[1] < saturationValue);
+                stopDriving();
+
+                //Pivots until current angle is 0
+                do
+                {
+                    motorFL.setPower(0);
+                    motorFR.setPower(0.2);
+                    motorBL.setPower(0.2);
+                    motorBR.setPower(0.2);
+                    currentAngle = imu.getAngularOrientation().firstAngle;
+                    colorSensorHSV();
+                }
+                while((currentAngle > referenceAngle + TOL) && (currentAngle < referenceAngle - TOL));
+                stopDriving();
+                runtime.reset();
+
+                do
+                {
+                    MoveIMULeft(referenceAngle, 30, 0, 0.015, 0.2, 3);
+                    colorSensorHSV();
+                }
+                while((hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
+                MoveIMURight(referenceAngle, 30, 0, 0.015, 0.2, runtime.milliseconds() / 2);
+            }
+
+
+            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
+            //Top left and right sensor on line
+            {
+                //Pivots until current angle is 0
+                do {
+                    motorFL.setPower(0);
+                    motorFR.setPower(0.2);
+                    motorBL.setPower(0.2);
+                    motorBR.setPower(0.2);
+                    currentAngle = imu.getAngularOrientation().firstAngle;
+                    colorSensorHSV();
+                }
+                while((currentAngle < referenceAngle + TOL) && (currentAngle > referenceAngle - TOL));
+                stopDriving();
+                runtime.reset();
+
+                do
+                {
+                    MoveIMULeft(referenceAngle, 30, 0, 0.015, 0.2, 3);
+                    colorSensorHSV();
+                }
+                while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
+                stopDriving();
+                MoveIMURight(referenceAngle, 30, 0, 0.015, 0.2, runtime.milliseconds() / 2);
+
+
+                if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] > saturationValue)) {
+                    do {
+                        //Pivot about front left wheel until front right sensor sees the line
+                        motorFL.setPower(0);
+                        motorFR.setPower(-0.2);
+                        motorBL.setPower(-0.2);
+                        motorBR.setPower(-0.2);
+                        colorSensorHSV();
+                    }
+                    while (hsvValuesTopRight[1] < saturationValue);
+                    stopDriving();
+
+                    //Pivots until current angle is 0
+                    do {
+                        motorFL.setPower(0);
+                        motorFR.setPower(0.2);
+                        motorBL.setPower(0.2);
+                        motorBR.setPower(0.2);
+                        currentAngle = imu.getAngularOrientation().firstAngle;
+                    }
+                    while ((currentAngle < referenceAngle) && (currentAngle < referenceAngle));
+                    stopDriving();
+                    runtime.reset();
+
+                    do {
+                        MoveIMULeft(referenceAngle, 30, 0, 0.015, 0.2, 3);
+                        colorSensorHSV();
+                    }
+                    while ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue));
+                    stopDriving();
+                    MoveIMURight(referenceAngle, 30, 0, 0.015, 0.2, runtime.milliseconds() / 2);
+                }
+            }
+        }
+        while((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] > saturationValue));
+        stopDriving();
     }
-    */
+
 //-------------------------------------------------------------------------------------------------------------------------------------
 //Vuforia Methods
 
@@ -940,24 +1214,26 @@ public abstract class MasterAutonomous extends Master
             int RightX = (int) rightJewel.getData()[0];
             int RightY = (int) rightJewel.getData()[1];
 
-            /*
+
             avgLeftJewelColor = GetAvgJewelColor(LeftX, LeftY); // gets the averaged jewel HSV color value for the left jewel
             avgRightJewelColor = GetAvgJewelColor(RightX, RightY);//Gets the averaged jewel HSV color value for the right jewel
 
             //adjusts color for red so that red is greater that blue by adding 300 since red is only 45
             Leftcolor = (avgLeftJewelColor < 80) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
             Rightcolor = (avgRightJewelColor < 80) ? avgRightJewelColor + 300 : avgRightJewelColor;
-            */
 
-            leftJeweColor = GetJewelColor(LeftX, LeftY);
+            /*
+            leftJewelColor = GetJewelColor(LeftX, LeftY);
+            */
             //rightJewelColor = GetJewelColor(RightX, RightY);
 
         }
         //Gets the difference between left HSV and right HSV
         //deltaHSVColor = Leftcolor - Rightcolor;
         // if the left jewel color is positive, the left side is red and the right side is blue
-        //if (deltaHSVColor > 0) isLeftJewelRed = true;
-        //else isLeftJewelRed = false;
+        if (deltaHSVColor > 0) isLeftJewelRed = true;
+        else isLeftJewelRed = false;
+        /*
         if (numRedPixels > numBluePixels)
         {
             isLeftJewelRed = true;
@@ -966,7 +1242,9 @@ public abstract class MasterAutonomous extends Master
         {
             isLeftJewelRed = false;
         }
+        */
         return isLeftJewelRed;
+
     }
 
 
