@@ -14,6 +14,7 @@ public class TestDriveTrain extends MasterTeleOp
     public void runOpMode() throws InterruptedException
     {
         isArmAttached = false;
+        isGlyphMechAttached = false;
         initializeRobot();
 
         waitForStart();

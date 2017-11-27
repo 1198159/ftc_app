@@ -24,6 +24,11 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorBL = null; // port 1
     DcMotor motorBR = null; // port 2
 
+    // Declare Glyph manipulator motors
+    DcMotor motorGlyphUp = null; // port 1
+    DcMotor motorGlyphDown = null; // port 2
+    DcMotor motorGlyphGrab = null; // port 3
+
     // Declare servo, jewel servo in port 1
     Servo servoJewel = null;
 
@@ -65,6 +70,10 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorGlyphUp = hardwareMap.dcMotor.get("motorGlyphUp");
+        motorGlyphDown = hardwareMap.dcMotor.get("motorGlyphDown");
+        motorGlyphGrab = hardwareMap.dcMotor.get("motorGlyphGrab");
+
         // get a reference to the color sensor.
         sensorColorLeft = hardwareMap.get(ColorSensor.class, "sensorColorLeft");
         sensorColorRight = hardwareMap.get(ColorSensor.class, "sensorColorRight");
@@ -73,6 +82,10 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motorGlyphUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorGlyphDown.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorGlyphGrab.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 /*
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -86,6 +99,9 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        motorGlyphUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorGlyphDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorGlyphGrab.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // reverse front and back right motors just for TeleOp
         motorFL.setDirection(DcMotor.Direction.REVERSE);
@@ -97,6 +113,10 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR.setPower(0);
         motorBL.setPower(0);
         motorBR.setPower(0);
+
+        motorGlyphUp.setPower(0);
+        motorGlyphDown.setPower(0);
+        motorGlyphGrab.setPower(0);
 
         // Initialize servos
         servoJewel = hardwareMap.servo.get("servoJewel");
