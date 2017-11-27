@@ -22,27 +22,9 @@ public class MoveTest2 extends MasterAutonomous
         initVuforia();//Initializes Vuforia
 
         waitForStart();
-        closeGG();
-        sleep(500);
-        moveGG(1500);
-        DropJJ();
-        sleep(1000);
-        GetVumark();
-        GetLeftJewelColor();
-        double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
-        if (isLeftJewelRed == true)
-        {
-            IMUPivot(referenceAngle, 20, 0.5, 0.015);//Pivot right
-            RetrieveJJ();
-            IMUPivot(referenceAngle, 0, 0.5, 0.015);//Pivot left
-        }
-        else
-        {
-            IMUPivot(referenceAngle, -20, 0.5, 0.015);
-            RetrieveJJ();
-            IMUPivot(referenceAngle, 0, 0.5, 0.015);
-        }
+        alignOnLine55(0.5);
+
         while (opModeIsActive())
         {
             //Run();
