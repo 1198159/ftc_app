@@ -99,6 +99,34 @@ abstract public class MasterTeleOp extends MasterOpMode
             powerBR = x + y - pivotPower;
         }
 
+        // Glyph lift up/down
+        if(-gamepad1.right_stick_y < 0.0)
+        {
+            motorGlyphUp.setPower(powerGlyphUp);
+        }
+        else if(gamepad1.right_stick_y > 0.0)
+        {
+            motorGlyphDown.setPower(powerGlyphDown);
+        }
+        else
+        {
+            motorGlyphUp.setPower(0.0);
+        }
+
+        // Glyph grabber open/close
+        if(gamepad2.right_bumper)
+        {
+            motorGlyphGrab.setPower(powerGlyphGrab);
+        }
+        else if(gamepad2.left_bumper)
+        {
+            motorGlyphGrab.setPower(-powerGlyphGrab);
+        }
+        else
+        {
+            motorGlyphGrab.setPower(0.0);
+        }
+
 /*
         powerFL = px + 0*py + pivotPower;
         powerFR = 0*px + py - pivotPower;
@@ -141,36 +169,12 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorFR.setPower(powerFR);
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
-}
+    }
 
     public double modJoyStickInput(double i) // i is the raw joystick input
     {
         return Math.pow(i,2) * Math.signum(i);
     }
-
-    public void initializeRobot()
-    {
-        // Initialize motors to be the hardware motors
-        super.initializeHardware(); // comment out this line if blank config
-        // run to position mode
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // reverse front and back right motors just for TeleOp
-        motorFL.setDirection(DcMotor.Direction.FORWARD);
-        motorBL.setDirection(DcMotor.Direction.FORWARD);
-
-        // Set up telemetry data
-        configureDashboard();
-    }
-
 
     public void configureDashboard()
     {

@@ -60,6 +60,10 @@ abstract public class MasterOpMode extends LinearOpMode
     double powerBL;
     double powerBR;
 
+    double powerGlyphUp = 0.2;
+    double powerGlyphDown = 0.2;
+    double powerGlyphGrab = 0.2;
+
     double px;
     double py;
 
@@ -108,6 +112,10 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setDirection(DcMotor.Direction.REVERSE);
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
+
+        motorGlyphUp.setDirection(DcMotor.Direction.FORWARD);
+        motorGlyphDown.setDirection(DcMotor.Direction.FORWARD);
+        motorGlyphGrab.setDirection(DcMotor.Direction.FORWARD);
 
         motorFL.setPower(0);
         motorFR.setPower(0);
