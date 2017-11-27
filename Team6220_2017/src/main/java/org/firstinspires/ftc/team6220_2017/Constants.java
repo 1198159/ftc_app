@@ -85,6 +85,8 @@ public class Constants
     // todo Adjust and test values
     // Glyph mechanism constants
      // Units are in andymark encoder ticks
-    public static final int GROUND_HEIGHT = 420;
-    public static final int HEIGHT_DIFF = 80;
+    public static final int GROUND_HEIGHT = -768;
+    public static final int HEIGHT_DIFF1 = 80;
+    public static final int HEIGHT_DIFF2 = 80;
+    public static final int HEIGHT_DIFF3 = 80;
 }

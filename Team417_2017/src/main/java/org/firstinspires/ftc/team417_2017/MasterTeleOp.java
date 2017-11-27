@@ -12,10 +12,6 @@ import org.firstinspires.ftc.robotcore.external.Func;
 
 abstract public class MasterTeleOp extends MasterOpMode
 {
-    boolean isLeftPusherUp = false;
-    boolean isRightPusherUp = false;
-    boolean isXButtonPressed = false;
-    boolean isYButtonPressed = false;
 
     /*
     This keeps track of the side or corner of the robot that is considered "forwards" by the driver.
