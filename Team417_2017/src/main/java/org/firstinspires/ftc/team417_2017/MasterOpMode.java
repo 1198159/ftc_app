@@ -19,23 +19,23 @@ import java.util.Locale;
 abstract public class MasterOpMode extends LinearOpMode
 {
     // Declare drive motors
-    DcMotor motorFL = null; // port 4
+    DcMotor motorFL = null; // port 0
     DcMotor motorFR = null; // port 3
     DcMotor motorBL = null; // port 1
     DcMotor motorBR = null; // port 2
 
     // Declare Glyph manipulator motors
-    DcMotor motorGlyphUp = null; // port 1
-    DcMotor motorGlyphDown = null; // port 2
-    DcMotor motorGlyphGrab = null; // port 3
+    DcMotor motorGlyphUp = null; // port 0
+    DcMotor motorGlyphDown = null; // port 1
+    DcMotor motorGlyphGrab = null; // port 2
 
-    // Declare servo, jewel servo in port 1
-    Servo servoJewel = null;
+    // Declare servo, jewel servo
+    Servo servoJewel = null; // port 1
 
     // Declare sensors
     BNO055IMU imu; // inertial measurement unit (located within the REV Hub)
-    ColorSensor sensorColorLeft;
-    ColorSensor sensorColorRight;
+    //ColorSensor sensorColorLeft; // port 1
+    //ColorSensor sensorColorRight; // port 2
 
     // Declare constants
     static final double COUNTS_PER_MOTOR_REV = 1120;
@@ -75,8 +75,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorGlyphGrab = hardwareMap.dcMotor.get("motorGlyphGrab");
 
         // get a reference to the color sensor.
-        sensorColorLeft = hardwareMap.get(ColorSensor.class, "sensorColorLeft");
-        sensorColorRight = hardwareMap.get(ColorSensor.class, "sensorColorRight");
+        //sensorColorLeft = hardwareMap.get(ColorSensor.class, "sensorColorLeft");
+        //sensorColorRight = hardwareMap.get(ColorSensor.class, "sensorColorRight");
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
