@@ -108,18 +108,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         // Initialize hardware devices--------------------------
 
-         // Jewel servos
-        verticalJewelServo = hardwareMap.servo.get("verticalJewelServo");
-        lateralJewelServo = hardwareMap.servo.get("lateralJewelServo");
-         //
 
-         // Servo togglers
-        verticalJewelServoToggler = new ServoToggler(verticalJewelServo, Constants.VERTICAL_JEWEL_SERVO_RETRACTED, Constants.VERTICAL_JEWEL_SERVO_DEPLOYED);
-         //
-
-         // Set initial servo positions
-        verticalJewelServoToggler.setToStartingPosition();
-        lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
          //
 
          // Check to see what parts of the robot are attached.  Some programs (e.g., autonomous and-------------------------
@@ -132,6 +121,19 @@ abstract public class MasterOpMode extends LinearOpMode
             motorBL = hardwareMap.dcMotor.get("motorBackLeft");
             motorBR = hardwareMap.dcMotor.get("motorBackRight");
              //
+
+            // Jewel servos
+            verticalJewelServo = hardwareMap.servo.get("verticalJewelServo");
+            lateralJewelServo = hardwareMap.servo.get("lateralJewelServo");
+            //
+
+            // Servo togglers
+            verticalJewelServoToggler = new ServoToggler(verticalJewelServo, Constants.VERTICAL_JEWEL_SERVO_RETRACTED, Constants.VERTICAL_JEWEL_SERVO_DEPLOYED);
+            //
+
+            // Set initial servo positions
+            verticalJewelServoToggler.setToStartingPosition();
+            lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
 
              // Set motor attributes and behaviors--------------------------
             motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

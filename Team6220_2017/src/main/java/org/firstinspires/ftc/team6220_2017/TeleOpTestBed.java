@@ -22,7 +22,7 @@ public class TeleOpTestBed extends MasterAutonomous
 
         // Don't want to call nonexistent hardware devices in test program
         isArmAttached = false;
-        isDriveTrainAttached = true;
+        isDriveTrainAttached = false;
         isGlyphMechAttached = false;
         initializeRobot();
 
@@ -31,12 +31,12 @@ public class TeleOpTestBed extends MasterAutonomous
 
         //motorCollectorLeft = hardwareMap.dcMotor.get("motorCollectorLeft");
         //motorCollectorRight = hardwareMap.dcMotor.get("motorCollectorRight");
-        //wristServo = hardwareMap.servo.get("wristServo");
-        //jointServo = hardwareMap.servo.get("jointServo");
+        wristServo = hardwareMap.servo.get("wristServo");
+        jointServo = hardwareMap.servo.get("jointServo");
 
         waitForStart();
 
-        //jointServo.setPosition(0.5);
+        jointServo.setPosition(0.5);
 
         // Main loop
         while(opModeIsActive())
@@ -47,7 +47,7 @@ public class TeleOpTestBed extends MasterAutonomous
             //motorArm.setPower(gamepad1.left_stick_y);
 
             // Test jewel servos
-            if (driver1.isButtonJustPressed(Button.Y))
+            /*if (driver1.isButtonJustPressed(Button.Y))
             {
                 verticalJewelServoToggler.toggle();
                 pauseWhileUpdating(0.5);
@@ -69,9 +69,9 @@ public class TeleOpTestBed extends MasterAutonomous
             else  if (driver1.isButtonJustPressed(Button.LEFT_BUMPER))
             {
                 turnTo(90);
-            }
+            }*/
 
-            /*
+
             // Test glyph collection; servos on either side of glyph pull or push it
             if(driver1.isButtonJustPressed(Button.A))
             {
@@ -97,7 +97,7 @@ public class TeleOpTestBed extends MasterAutonomous
             {
                 wristServo.setPosition(Constants.WRIST_SERVO_DEPLOYED);
             }
-            */
+
 
             telemetry.addData("jointPos: ", jointPosCount);
             updateCallback(eTime);
