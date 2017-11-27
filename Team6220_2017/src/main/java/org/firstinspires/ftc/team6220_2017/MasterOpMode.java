@@ -89,9 +89,9 @@ abstract public class MasterOpMode extends LinearOpMode
     public void initializeRobot()
     {
         glyphHeights[0] = Constants.GROUND_HEIGHT;
-        glyphHeights[1] = Constants.HEIGHT_DIFF + Constants.GROUND_HEIGHT;
-        glyphHeights[2] = 2 * Constants.HEIGHT_DIFF + Constants.GROUND_HEIGHT;
-        glyphHeights[3] = 3 * Constants.HEIGHT_DIFF + Constants.GROUND_HEIGHT;
+        glyphHeights[1] = Constants.GROUND_HEIGHT + Constants.HEIGHT_DIFF1;
+        glyphHeights[2] = Constants.GROUND_HEIGHT + Constants.HEIGHT_DIFF1 + Constants.HEIGHT_DIFF2;
+        glyphHeights[3] = Constants.GROUND_HEIGHT + Constants.HEIGHT_DIFF1 + Constants.HEIGHT_DIFF2 + Constants.HEIGHT_DIFF3;
 
         // Initialize robot mechanism classes
         armMechanism = new ArmMechanism(this);
@@ -160,14 +160,14 @@ abstract public class MasterOpMode extends LinearOpMode
 
         if (isGlyphMechAttached)
         {
-             // Initialize glyph mechanism devices
-                motorGlyphter = hardwareMap.dcMotor.get("motorGlyphter");
-                motorCollectorLeft = hardwareMap.dcMotor.get("motorLeftCollector");
-                motorCollectorRight = hardwareMap.dcMotor.get("motorRightCollector");
-             //
+            // Initialize glyph mechanism devices--------------------------------
+            motorGlyphter = hardwareMap.dcMotor.get("motorGlyphter");
+            motorCollectorLeft = hardwareMap.dcMotor.get("motorLeftCollector");
+            motorCollectorRight = hardwareMap.dcMotor.get("motorRightCollector");
+            //-------------------------------------------------------------------
 
-             // Set motor attributes and behaviors--------------
-              // This motor needs encoders to determine the correct position to lift glyphs to
+            // Set motor attributes and behaviors--------------
+             // This motor needs encoders to determine the correct position to lift glyphs to
             motorGlyphter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorGlyphter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorGlyphter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -176,7 +176,7 @@ abstract public class MasterOpMode extends LinearOpMode
             motorCollectorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motorCollectorLeft.setPower(0.0);
             motorCollectorRight.setPower(0.0);
-             //-------------------------------------------------
+            //-------------------------------------------------
         }
 
         if (isArmAttached)

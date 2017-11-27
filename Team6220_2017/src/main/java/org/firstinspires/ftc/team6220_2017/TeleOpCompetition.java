@@ -14,7 +14,7 @@ public class TeleOpCompetition extends MasterTeleOp
     {
         // todo Take this out when the arm is operational again
         isArmAttached = false;
-        isGlyphMechAttached = false;
+        isGlyphMechAttached = true;
         initializeRobot();
 
         waitForStart();
@@ -30,14 +30,12 @@ public class TeleOpCompetition extends MasterTeleOp
 
             // 1st driver input for moving robot; left stick rotates robot, right stick translates robot
             driveMecanumWithJoysticks();
-            /*
             // 2nd driver input for relic arm; right stick moves arm
-            armMechanism.driveArm();
+            //armMechanism.driveArm();
             // 1st and 2nd driver input for glyph mechanism
             // 1st driver:  dpad up collects and dpad up scores
             // 2nd driver:  TBD
             glyphMechanism.driveGlyphMech();
-            */
 
             /*
              updates that need to happen each loop

@@ -197,22 +197,29 @@ abstract public class MasterAutonomous extends MasterOpMode
         // Check to see if robot has arrived at destination within tolerances
         while (distanceToTarget > Constants.POSITION_TOLERANCE_MM && opModeIsActive())
         {
+            // Store current encoder values as temporary variables
+            double posFL = motorFL.getCurrentPosition();
+            double posFR = motorFR.getCurrentPosition();
+            double posBL = motorBL.getCurrentPosition();
+            double posBR = motorBR.getCurrentPosition();
             // Changes in encoder values between loops
-            double encDiffFL = motorFL.getCurrentPosition() - lastEncoderFL;
-            double encDiffFR = motorFR.getCurrentPosition() - lastEncoderFR;
-            double encDiffBL = motorBL.getCurrentPosition() - lastEncoderBL;
-            double encDiffBR = motorBR.getCurrentPosition() - lastEncoderBR;
+            double encDiffFL = posFL - lastEncoderFL;
+            double encDiffFR = posFR - lastEncoderFR;
+            double encDiffBL = posBL - lastEncoderBL;
+            double encDiffBR = posBR - lastEncoderBR;
 
             // Save old encoder values for next loop
-            lastEncoderFL = motorFL.getCurrentPosition();
-            lastEncoderFR = motorFR.getCurrentPosition();
-            lastEncoderBL = motorBL.getCurrentPosition();
-            lastEncoderBR = motorBR.getCurrentPosition();
+            lastEncoderFL = posFL;
+            lastEncoderFR = posFR;
+            lastEncoderBL = posBL;
+            lastEncoderBR = posBR;
 
             // Average encoder differences to find translational x and y components.  Motors turn
             // differently when translating, so signs on FR and BL must be flipped
-            double encDiffX = (-encDiffFL - encDiffFR + encDiffBL + encDiffBR) / 4;
-            double encDiffY = (-encDiffFL + encDiffFR - encDiffBL + encDiffBR) / 4;
+            //double encDiffX = (-encDiffFL - encDiffFR + encDiffBL + encDiffBR) / 4;
+            //double encDiffY = (-encDiffFL + encDiffFR - encDiffBL + encDiffBR) / 4;
+            double encDiffY = -encDiffFL;
+            double encDiffX = -encDiffFR;
 
             // Translation distance is reduced by a factor of sqrt(2) due to mecanum wheels
             deltaX -= Constants.MM_PER_ANDYMARK_TICK * encDiffX / Math.sqrt(2);
