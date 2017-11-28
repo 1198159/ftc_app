@@ -33,31 +33,44 @@ import java.util.Arrays;
 
 public class VuforiaHelper
 {
-    // Vuforia variables
+    // Vuforia variables-----------------------------------
     VuforiaLocalizer vuforiaLocalizer;
 
     VuforiaTrackables relicTrackables;
     VuforiaTrackable relicTemplate;
     // Enum that has 4 possible values: UNKNOWN, LEFT, CENTER, and RIGHT
     public RelicRecoveryVuMark vuMark;
-    //
 
+    boolean isVuMarkVisible;
+    boolean isTracking = false;
+    //------------------------------------------------------
+
+    // Variables for jewel color determination--------------
     float[] colorTransfer = new float[]{0,0,0};
-    //what we will eventually return
+     // What we will eventually return
     float[] colorOutput = new float[]{0,0,0};
-    //sum of all colors from sample pixels
+     // Sum of all colors from sample pixels
     float[] colorSum = new float[]{0, 0, 0};
 
+     // Integer that will be used to store individual pixel colors each loop of getAverageJewelColor()
     int color = 0;
+
+    float colorLeft = 0;
+    float colorRight = 0;
 
     float avgLeftJewelColor = 0;
     float avgRightJewelColor = 0;
 
-    float colorLeft;
-    float colorRight;
+    BlueJewel blueJewel = BlueJewel.UNDETERMINED;
 
-    boolean isLeftJewelBlue;
-    boolean isVuMarkVisible;
+     // Will be used to tell us which jewel is blue
+    enum BlueJewel
+    {
+        LEFT,
+        RIGHT,
+        UNDETERMINED
+    }
+    //-------------------------------------------------------
 
     // necessary matrices
     OpenGLMatrix targetPosition;
@@ -88,23 +101,25 @@ public class VuforiaHelper
 
     public void setupVuforia()
     {
+        // Set parameters for VuforiaLocalizer (an interface supporting localization through visual
+        // means) and create it
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.useExtendedTracking = false;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
 
-        //setup for getting pixel information
+        // Setup for getting pixel information
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
-        //make sure that vuforia doesn't begin racking up unnecessary frames
+        // Make sure that vuforia doesn't begin racking up unnecessary frames
         vuforiaLocalizer.setFrameQueueCapacity(1);
 
-        //---------------------------
-        // Initialize vision targets; this is important!
+        // Initialize vision targets; this is important!-----------------
         relicTrackables = this.vuforiaLocalizer.loadTrackablesFromAsset("RelicVuMark");
         relicTemplate = relicTrackables.get(0);
-        // For debugging purposes
+         // For debugging purposes
         relicTemplate.setName("relicVuMarkTemplate");
-        //----------------------------
+        //---------------------------------------------------------------
 
         /*
          Set phone location on robot. The center of the camera is the origin.
@@ -114,21 +129,11 @@ public class VuforiaHelper
         */
         // todo Finish adjusting for this year's robot; check y-axis rot fix for phone camera being rotated 180 deg
         phoneLocation = createMatrix(220, 0, 0, -90, 0, 180);
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
-        /*
-        // Setup listeners
-        for(int i = 0; i < targets.length; i++)
-        {
-            listeners[i] = (VuforiaTrackableDefaultListener) targets[i].getListener();
-            listeners[i].setPhoneInformation(phoneLocation, parameters.cameraDirection);
-        }
-        */
-
-        // avoids nullpointer errors
+        // Avoids nullpointer errors
         lastKnownLocation = createMatrix(0, 0, 0, 0, 0, 0);
 
-        //begin tracking targets before match
+        // Begin tracking targets before match
         startTracking();
     }
 
@@ -155,7 +160,7 @@ public class VuforiaHelper
         return lastKnownLocation;
     }
 
-    //todo change formatting from targets (an array) to relictrackables (a list)
+    //todo change formatting from targets (an array) to relictrackables (an arrayList)
     public void updateLocation()
     {
         // Checks each target to see if we can find our location. If none are visible, then it returns null
@@ -198,9 +203,17 @@ public class VuforiaHelper
         return isVuMarkVisible;
     }
 
-    void startTracking() {relicTrackables.activate();}
+    void startTracking()
+    {
+        relicTrackables.activate();
+        isTracking = true;
+    }
 
-    void stopTracking() {relicTrackables.deactivate();}
+    void stopTracking()
+    {
+        relicTrackables.deactivate();
+        isTracking = false;
+    }
 
     // Formats location to something readable
     String format(OpenGLMatrix transformationMatrix)
@@ -215,10 +228,21 @@ public class VuforiaHelper
                         AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
     }
 
-    // todo Make this utilize RGB rather than hue
-    // Encapsulates method necessary to average color values of jewels
+    // todo Add capability to throw out pixels that are bad (e.g., off jewels or inside jewel holes)
+    // Returns the average hue determined from a sample pixel area
     public float getAverageJewelColor(int x, int y)
     {
+        // Reset transfer, sum, and output arrays to ensure that we don't accidentally reuse old values
+        colorTransfer[0] = 0;
+        colorTransfer[1] = 0;
+        colorTransfer[2] = 0;
+        colorSum[0] = 0;
+        colorSum[1] = 0;
+        colorSum[2] = 0;
+        colorOutput[0] = 0;
+        colorOutput[1] = 0;
+        colorOutput[2] = 0;
+
         // Ensure that we do not attempt to take pixels from outside the image border
         if (x >= 0 && x < Constants.IMAGE_WIDTH - Constants.JEWEL_SAMPLE_LENGTH / 2 && y >= 0 &&
                 y < Constants.IMAGE_HEIGHT - Constants.JEWEL_SAMPLE_LENGTH / 2)
@@ -227,10 +251,11 @@ public class VuforiaHelper
             {
                 for (int i = x - Constants.JEWEL_SAMPLE_LENGTH / 2; i < x + Constants.JEWEL_SAMPLE_LENGTH / 2; i++) // Rows
                 {
-                    // Get RGB color of pixel
+                    // Get color of pixel.  This is actually a single integer that stores
+                    // ARGB values in 4 bytes
                     color = bitMap.getPixel(i, j);
 
-                    // Convert RGB to HSV (hue, sat, val)
+                    // Convert color integer to HSV (hue, sat, val)
                     // Hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
                     Color.colorToHSV(color, colorTransfer);
 
@@ -248,17 +273,14 @@ public class VuforiaHelper
             // Normalize output for 32x32 = 4096 pixel square above
             colorOutput[0] = colorSum[0] / 4096;
         }
-        return colorOutput[0]; // Return the averaged sampled HSV color value
+        return colorOutput[0]; // Return the average hue
     }
 
-    // todo Change to RGB and compare ratios of values rather than differences
-    /*
-     Uses a bitmap created by vuforia to determine the colors of the jewels and compare them, then returns
-     information that tells you whether the left jewel is red or blue
-    */
-    public boolean getLeftJewelColor() throws InterruptedException
+    // Uses a bitmap created by vuforia to determine the saturations of the jewels and compare them,
+    // then returns information that tells you whether the left jewel is red or blue
+    public BlueJewel getLeftJewelColor() throws InterruptedException
     {
-        // Vuforia code that uses the VuMark to determine relative positions of objects
+        // Vuforia code that uses the vuMark to determine relative positions of objects
         pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
 
         if (pose != null)
@@ -266,11 +288,11 @@ public class VuforiaHelper
             rawPose = new Matrix34F();
             float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
             rawPose.setData(poseData);
-            // Place points where we think the centers of the jewels are relative to the VuMark
+            // Place points where we think the centers of the jewels are relative to the vuMark
             Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(150, -190, -102));
             Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(370, -190, -102));
 
-            // Gets the frame at the front of the queue
+            // Get the latest frame from vuforia
             frame = vuforiaLocalizer.getFrameQueue().take();
 
             long numImages = frame.getNumImages();
@@ -300,25 +322,25 @@ public class VuforiaHelper
             avgLeftJewelColor = getAverageJewelColor(lx, ly);
             avgRightJewelColor = getAverageJewelColor(rx, ry);
 
-            // Adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
+            // Adjust color for red range.  Red color on the jewel is often between 0 and 45,
+            // so we must add 360 to ensure red is always greater than blue
             colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 360 : avgLeftJewelColor;
             colorRight = (avgRightJewelColor < 45) ? avgRightJewelColor + 360 : avgRightJewelColor;
         }
 
-        // todo Change for RGB and figure out way to incorporate undetermined value for jewel color
-        if (Math.abs(colorLeft - colorRight) >= 3)
+        //todo Adjust value
+        // Check to see if our color samples were actually on the jewel
+        if (Math.abs(colorLeft - colorRight) >= 30)
         {
-            // If value tested is negative, then left side is blue
+            // If value tested is negative, then left jewel is blue.  Otherwise, right is blue
             if ((colorLeft - colorRight) < 0)
-                isLeftJewelBlue = true; // BLUE
-            else isLeftJewelBlue = false; // RED
+                blueJewel = BlueJewel.LEFT;
+            else
+                blueJewel = BlueJewel.RIGHT;
         }
-        else
-        {
-
-        }
+        else {}     // If the values are too close, leave blueJewel undetermined
 
 
-        return isLeftJewelBlue;
+        return blueJewel;
     }
 }

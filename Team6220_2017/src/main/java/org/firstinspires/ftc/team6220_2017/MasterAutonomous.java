@@ -24,12 +24,12 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     // todo Implement runSetup()
     // Used for object initializations only necessary in autonomous
-    void initializeAuto()
+    void initializeAuto() throws InterruptedException
     {
         // We don't want to run the arm during autonomous
         isArmAttached = false;
 
-        initialize();
+        initializeRobot();
 
         vuforiaHelper = new VuforiaHelper();
         vuforiaHelper.setupVuforia();
@@ -104,12 +104,11 @@ abstract public class MasterAutonomous extends MasterOpMode
         {
             currentAngle = getAngularOrientationWithOffset();
 
-            // Give robot its adjusted turning power
+            // Give robot raw value for turning power
             angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
-            turningPower = Constants.TURNING_POWER_FACTOR * angleDiff;
 
-            // Send turningPower through PID filter to prevent oscillation
-            RotationFilter.roll(turningPower);
+            // Send raw turning power through PID filter to adjust range and minimize oscillation
+            RotationFilter.roll(angleDiff);
             turningPower = RotationFilter.getFilteredValue();
 
             // Make sure turningPower doesn't go above maximum power
@@ -138,34 +137,36 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     // We use this method to score a jewel once its color has been determined
-    public void knockJewel (boolean isLeftBlue, boolean isBlueSide) throws InterruptedException
+    public void knockJewel (VuforiaHelper.BlueJewel blueJewel, boolean isBlueSide) throws InterruptedException
     {
         verticalJewelServoToggler.toggle();
-        pauseWhileUpdating(1.5);
+        pauseWhileUpdating(0.7);
 
         if(isBlueSide)
         {
-            if(isLeftBlue)
+            if (blueJewel == VuforiaHelper.BlueJewel.LEFT)
             {
                 lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
             }
-            else
+            else if (blueJewel == VuforiaHelper.BlueJewel.RIGHT)
             {
                 lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
             }
+            // Do nothing if undetermined
         }
         else
         {
-            if(isLeftBlue)
+            if(blueJewel == VuforiaHelper.BlueJewel.LEFT)
             {
                 lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
             }
-            else
+            else if (blueJewel == VuforiaHelper.BlueJewel.RIGHT)
             {
                 lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
             }
+            // Once again, do nothing if undetermined
         }
-        pauseWhileUpdating(1.8);
+        pauseWhileUpdating(0.5);
 
         lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
         verticalJewelServoToggler.toggle();
@@ -196,24 +197,32 @@ abstract public class MasterAutonomous extends MasterOpMode
         // Check to see if robot has arrived at destination within tolerances
         while (distanceToTarget > Constants.POSITION_TOLERANCE_MM && opModeIsActive())
         {
+            // Store current encoder values as temporary variables
+            double posFL = motorFL.getCurrentPosition();
+            double posFR = motorFR.getCurrentPosition();
+            double posBL = motorBL.getCurrentPosition();
+            double posBR = motorBR.getCurrentPosition();
             // Changes in encoder values between loops
-            double encDiffFL = motorFL.getCurrentPosition() - lastEncoderFL;
-            double encDiffFR = motorFR.getCurrentPosition() - lastEncoderFR;
-            double encDiffBL = motorBL.getCurrentPosition() - lastEncoderBL;
-            double encDiffBR = motorBR.getCurrentPosition() - lastEncoderBR;
+            double encDiffFL = posFL - lastEncoderFL;
+            double encDiffFR = posFR - lastEncoderFR;
+            double encDiffBL = posBL - lastEncoderBL;
+            double encDiffBR = posBR - lastEncoderBR;
 
             // Save old encoder values for next loop
-            lastEncoderFL = motorFL.getCurrentPosition();
-            lastEncoderFR = motorFR.getCurrentPosition();
-            lastEncoderBL = motorBL.getCurrentPosition();
-            lastEncoderBR = motorBR.getCurrentPosition();
+            lastEncoderFL = posFL;
+            lastEncoderFR = posFR;
+            lastEncoderBL = posBL;
+            lastEncoderBR = posBR;
 
             // Average encoder differences to find translational x and y components.  Motors turn
             // differently when translating, so signs on FR and BL must be flipped
-            double encDiffX = (-encDiffFL - encDiffFR + encDiffBL + encDiffBR) / 4;
-            double encDiffY = (-encDiffFL + encDiffFR - encDiffBL + encDiffBR) / 4;
+            //double encDiffX = (-encDiffFL - encDiffFR + encDiffBL + encDiffBR) / 4;
+            //double encDiffY = (-encDiffFL + encDiffFR - encDiffBL + encDiffBR) / 4;
+            double encDiffY = -encDiffFL;
+            double encDiffX = -encDiffFR;
 
-            deltaX -= Constants.MM_PER_ANDYMARK_TICK * encDiffX;
+            // Translation distance is reduced by a factor of sqrt(2) due to mecanum wheels
+            deltaX -= Constants.MM_PER_ANDYMARK_TICK * encDiffX / Math.sqrt(2);
             deltaY -= Constants.MM_PER_ANDYMARK_TICK * encDiffY;
 
             // Recalculate value each loop
@@ -222,13 +231,15 @@ abstract public class MasterAutonomous extends MasterOpMode
             double driveAngle;
             // Deals with the fact that inverse tangent only returns an angle between -90 and 90
             // degrees.  We want to be able to drive at angles greater than 90 degrees, so the
-            // output of atan must be shifted
+            // range of atan2 must be modified
             if (deltaX >= 0)
                 driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
             else
                 driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX)) + 180;
+
             // Power is proportional to distance from target
-            double drivePower = maxPower * Constants.DRIVE_POWER_FACTOR * distanceToTarget;
+            double drivePower = maxPower * distanceToTarget;
+            // Send drivePower through PID filter to adjust range and minimize oscillation
             TranslationFilter.roll(drivePower);
             double adjustedDrivePower = TranslationFilter.getFilteredValue();
 
@@ -238,6 +249,7 @@ abstract public class MasterAutonomous extends MasterOpMode
                 adjustedDrivePower = Math.signum(adjustedDrivePower) * Constants.MINIMUM_DRIVE_POWER;
             }
 
+            // todo DRIVE ANGLE HELD CONSTANT FOR TESTING
             driveMecanum(driveAngle, adjustedDrivePower, 0.0);
 
             telemetry.addData("X remaining: ", deltaX);
@@ -251,6 +263,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopDriveMotors();
     }
 
+    // todo Implement global coordinates (not a priority)
     // Updates robot's coordinates and angle
     public void updateLocation()
     {
