@@ -87,7 +87,7 @@ public abstract class MasterTeleOp extends Master
     */
     void RunGG()
     {
-        /*if(!liftMoving && (gamepad1.dpad_down || gamepad1.dpad_up))
+        if(!liftMoving && (gamepad1.dpad_down || gamepad1.dpad_up))
         {
             liftMoving = true;
             GGLiftTimer.reset();
@@ -100,8 +100,8 @@ public abstract class MasterTeleOp extends Master
 
             if((motorGG.getCurrentPosition() - GGLiftTicks < GGZero) && gamepad1.dpad_down)
                 motorGG.setTargetPosition(GGZero);
-            else if((motorGG.getCurrentPosition() + GGLiftTicks > GGZero + /*(GGLiftTicks * 2) 3500) && gamepad1.dpad_up)
-                motorGG.setTargetPosition(GGZero + /*(GGLiftTicks * 2) 3500);
+            else if((motorGG.getCurrentPosition() + GGLiftTicks > GGZero + (GGLiftTicks * 2)) && gamepad1.dpad_up)
+                motorGG.setTargetPosition(GGZero + (GGLiftTicks * 2));
         }
 
         if(liftMoving)
@@ -113,7 +113,7 @@ public abstract class MasterTeleOp extends Master
         {
             motorGG.setPower(0.0);
             liftMoving = false;
-        }*/
+        }
 
         if(!liftModeStateChange && !liftMoving && (gamepad1.dpad_up || gamepad1.dpad_down) && GGLiftTimer.milliseconds() > 500)
         {
