@@ -30,24 +30,42 @@ public class GlyphMechanism
          // Score glyphs
         else if (masterOpMode.driver1.isButtonJustPressed(Button.DPAD_UP))
         {
-            masterOpMode.motorCollectorLeft.setPower(1.0);
-            masterOpMode.motorCollectorRight.setPower(-1.0);
+            masterOpMode.motorCollectorLeft.setPower(0.5);
+            masterOpMode.motorCollectorRight.setPower(-0.5);
         }
         //---------------------------------------------------------------------
 
         // 2nd driver controls-------------------------------------------------
          // Raise the glyphter to different positions corresponding to the buttons a, b, y, and x
         if (masterOpMode.driver2.isButtonJustPressed(Button.A))
+        {
             masterOpMode.motorGlyphter.setTargetPosition(glyphHeights[0]);
+            masterOpMode.motorGlyphter.setPower(0.5);
+        }
         else if (masterOpMode.driver2.isButtonJustPressed(Button.B))
+        {
             masterOpMode.motorGlyphter.setTargetPosition(glyphHeights[1]);
+            masterOpMode.motorGlyphter.setPower(0.5);
+        }
         else if (masterOpMode.driver2.isButtonJustPressed(Button.Y))
+        {
             masterOpMode.motorGlyphter.setTargetPosition(glyphHeights[2]);
+            masterOpMode.motorGlyphter.setPower(0.5);
+        }
         else if (masterOpMode.driver2.isButtonJustPressed(Button.X))
+        {
             masterOpMode.motorGlyphter.setTargetPosition(glyphHeights[3]);
+            masterOpMode.motorGlyphter.setPower(0.5);
+        }
          // Stow glyph mechanism
         else if (masterOpMode.driver2.isButtonJustPressed(Button.BACK))
+        {
             masterOpMode.motorGlyphter.setTargetPosition(0);
+            masterOpMode.motorGlyphter.setPower(0.7);
+        }
         //----------------------------------------------------------------------
+
+        masterOpMode.telemetry.addData("Glyphter Enc: ", masterOpMode.motorGlyphter.getCurrentPosition());
+        masterOpMode.telemetry.update();
     }
 }
