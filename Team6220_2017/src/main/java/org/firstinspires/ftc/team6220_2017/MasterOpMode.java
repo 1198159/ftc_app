@@ -79,26 +79,29 @@ abstract public class MasterOpMode extends LinearOpMode
     public boolean isDriveTrainAttached = true;
     public boolean isArmAttached = true;
     public boolean isGlyphMechAttached = true;
+    public boolean isJewelJostlerAttached = true;
     //
 
-    //create a list of tasks to accomplish in order
+    // Create a list of tasks to accomplish in order
     List<ConcurrentOperation> callback = new ArrayList<>();
 
 
 
     public void initializeRobot()
     {
-        glyphHeights[0] = Constants.GROUND_HEIGHT;
-        glyphHeights[1] = Constants.GROUND_HEIGHT + Constants.HEIGHT_DIFF1;
-        glyphHeights[2] = Constants.GROUND_HEIGHT + Constants.HEIGHT_DIFF1 + Constants.HEIGHT_DIFF2;
-        glyphHeights[3] = Constants.GROUND_HEIGHT + Constants.HEIGHT_DIFF1 + Constants.HEIGHT_DIFF2 + Constants.HEIGHT_DIFF3;
+        // Initialize encoder values for scoring glyphs at different heights.  These are passed into
+        // glyphMechanism and used for the 2nd driver controls
+        glyphHeights[0] = Constants.HEIGHT_1;
+        glyphHeights[1] = Constants.HEIGHT_2;
+        glyphHeights[2] = Constants.HEIGHT_3;
+        glyphHeights[3] = Constants.HEIGHT_4;
 
         // Initialize robot mechanism classes
         armMechanism = new ArmMechanism(this);
         glyphMechanism = new GlyphMechanism(this, glyphHeights);
         //
 
-        // Instantiated classes that must be updated each loop in callback
+        // Instantiated classes that must be updated each callback
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
@@ -106,36 +109,20 @@ abstract public class MasterOpMode extends LinearOpMode
         callback.add(driver2);
         //
 
-        // Initialize hardware devices--------------------------
 
 
-         //
-
-         // Check to see what parts of the robot are attached.  Some programs (e.g., autonomous and-------------------------
+         // Check to see what parts of the robot are attached.  Some programs (e.g., autonomous and -------------------------
          // tests) may want to ignore parts of the robot that don't need to be used
         if (isDriveTrainAttached)
         {
-             // Drive motors
+            // Drive motors
             motorFL = hardwareMap.dcMotor.get("motorFrontLeft");
             motorFR = hardwareMap.dcMotor.get("motorFrontRight");
             motorBL = hardwareMap.dcMotor.get("motorBackLeft");
             motorBR = hardwareMap.dcMotor.get("motorBackRight");
-             //
-
-            // Jewel servos
-            verticalJewelServo = hardwareMap.servo.get("verticalJewelServo");
-            lateralJewelServo = hardwareMap.servo.get("lateralJewelServo");
             //
 
-            // Servo togglers
-            verticalJewelServoToggler = new ServoToggler(verticalJewelServo, Constants.VERTICAL_JEWEL_SERVO_RETRACTED, Constants.VERTICAL_JEWEL_SERVO_DEPLOYED);
-            //
-
-            // Set initial servo positions
-            verticalJewelServoToggler.setToStartingPosition();
-            lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
-
-             // Set motor attributes and behaviors--------------------------
+            // Set motor attributes and behaviors------------------------------
             motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -155,9 +142,8 @@ abstract public class MasterOpMode extends LinearOpMode
             motorFR.setPower(0.0);
             motorBL.setPower(0.0);
             motorFR.setPower(0.0);
-             //------------------------------------------------------------
+            //-------------------------------------------------------------------
         }
-
         if (isGlyphMechAttached)
         {
             // Initialize glyph mechanism devices--------------------------------
@@ -166,8 +152,7 @@ abstract public class MasterOpMode extends LinearOpMode
             motorCollectorRight = hardwareMap.dcMotor.get("motorRightCollector");
             //-------------------------------------------------------------------
 
-            // Set motor attributes and behaviors--------------
-             // This motor needs encoders to determine the correct position to lift glyphs to
+            // Set motor attributes and behaviors--------------------------------
             motorGlyphter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorGlyphter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorGlyphter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -176,24 +161,38 @@ abstract public class MasterOpMode extends LinearOpMode
             motorCollectorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motorCollectorLeft.setPower(0.0);
             motorCollectorRight.setPower(0.0);
-            //-------------------------------------------------
+            //--------------------------------------------------------------------
         }
-
         if (isArmAttached)
         {
-             // Initialize arm devices-------------------------------------
-             // todo This seems incorrect; look at robot config
+            // Initialize arm devices-------------------------------------
             motorArm = hardwareMap.dcMotor.get("motorArm");
 
             wristServo = hardwareMap.servo.get("wristServo");
             jointServo = hardwareMap.servo.get("jointServo");
-             //-------------------------------------------------
+            //------------------------------------------------------------
 
-             // Set motor attributes and behaviors--------------
+            // Set motor attributes and behaviors-------------------------
             motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-             //-------------------------------------------------
+            //------------------------------------------------------------
+        }
+        if (isJewelJostlerAttached)
+        {
+            // Jewel servos
+            verticalJewelServo = hardwareMap.servo.get("verticalJewelServo");
+            lateralJewelServo = hardwareMap.servo.get("lateralJewelServo");
+            //
+
+            // Servo togglers
+            verticalJewelServoToggler = new ServoToggler(verticalJewelServo, Constants.VERTICAL_JEWEL_SERVO_RETRACTED, Constants.VERTICAL_JEWEL_SERVO_DEPLOYED);
+            //
+
+            // Set initial servo positions
+            verticalJewelServoToggler.setToStartingPosition();
+            lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
+            //
         }
         //--------------------------------------------------------------------------------------------------------------
 

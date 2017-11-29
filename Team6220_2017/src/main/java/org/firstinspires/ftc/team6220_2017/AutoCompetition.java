@@ -12,7 +12,6 @@ public class AutoCompetition extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         initializeAuto();
-        VuforiaHelper.BlueJewel blueJewel = VuforiaHelper.BlueJewel.UNDETERMINED;
 
         runSetup();
 

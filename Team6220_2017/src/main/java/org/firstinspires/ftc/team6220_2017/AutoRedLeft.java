@@ -15,7 +15,6 @@ public class AutoRedLeft extends MasterAutonomous
         //setRobotStartingOrientation(0);
 
         boolean isBlueSide = false;
-        VuforiaHelper.BlueJewel blueJewel = VuforiaHelper.BlueJewel.UNDETERMINED;
 
 
         vuforiaHelper.getVumark();

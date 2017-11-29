@@ -20,7 +20,7 @@ public class GlyphMechanism
     // Takes input used to move all parts of the glyph mechanism
     public void driveGlyphMech()
     {
-        // 1st driver controls
+        // 1st driver controls------------------------------------------------
          // Collect glyphs
         if (masterOpMode.driver1.isButtonJustPressed(Button.DPAD_DOWN))
         {
@@ -33,9 +33,9 @@ public class GlyphMechanism
             masterOpMode.motorCollectorLeft.setPower(1.0);
             masterOpMode.motorCollectorRight.setPower(-1.0);
         }
-        //
+        //---------------------------------------------------------------------
 
-        // 2nd driver controls
+        // 2nd driver controls-------------------------------------------------
          // Raise the glyphter to different positions corresponding to the buttons a, b, y, and x
         if (masterOpMode.driver2.isButtonJustPressed(Button.A))
             masterOpMode.motorGlyphter.setTargetPosition(glyphHeights[0]);
@@ -45,10 +45,9 @@ public class GlyphMechanism
             masterOpMode.motorGlyphter.setTargetPosition(glyphHeights[2]);
         else if (masterOpMode.driver2.isButtonJustPressed(Button.X))
             masterOpMode.motorGlyphter.setTargetPosition(glyphHeights[3]);
-
          // Stow glyph mechanism
-        if (masterOpMode.driver2.isButtonJustPressed(Button.BACK))
-            masterOpMode.motorCollectorLeft.setTargetPosition(0);
-        //
+        else if (masterOpMode.driver2.isButtonJustPressed(Button.BACK))
+            masterOpMode.motorGlyphter.setTargetPosition(0);
+        //----------------------------------------------------------------------
     }
 }

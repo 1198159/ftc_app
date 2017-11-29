@@ -10,7 +10,6 @@ public class AutoBlueLeft extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         boolean isBlueSide = true;
-        VuforiaHelper.BlueJewel blueJewel = VuforiaHelper.BlueJewel.UNDETERMINED;
         //setRobotStartingOrientation(180);
 
         isGlyphMechAttached = false;

@@ -12,6 +12,8 @@ abstract public class MasterAutonomous extends MasterOpMode
     public boolean isBlueSide = true;
     public boolean isLeftBalancingStone = true;
 
+    VuforiaHelper.BlueJewel blueJewel = VuforiaHelper.BlueJewel.UNDETERMINED;
+
     // Stores orientation of robot
     double currentAngle = 0.0;
 
