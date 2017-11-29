@@ -25,8 +25,8 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorBR = null; // port 2
 
     // Declare Glyph manipulator motors
-    DcMotor motorGlyphUp = null; // port 0
-    DcMotor motorGlyphDown = null; // port 1
+    DcMotor motorGlyphLeft = null; // port 0
+    DcMotor motorGlyphRight = null; // port 1
     DcMotor motorGlyphGrab = null; // port 2
 
     // Declare servo, jewel servo
@@ -60,8 +60,8 @@ abstract public class MasterOpMode extends LinearOpMode
     double powerBL;
     double powerBR;
 
-    double powerGlyphUp = 0.2;
-    double powerGlyphDown = 0.2;
+    double powerGlyphUp = 0.5;
+    double powerGlyphDown = -0.5;
     double powerGlyphGrab = 0.2;
 
     double px;
@@ -74,8 +74,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorGlyphUp = hardwareMap.dcMotor.get("motorGlyphUp");
-        motorGlyphDown = hardwareMap.dcMotor.get("motorGlyphDown");
+        motorGlyphLeft = hardwareMap.dcMotor.get("motorGlyphUp");
+        motorGlyphRight = hardwareMap.dcMotor.get("motorGlyphDown");
         motorGlyphGrab = hardwareMap.dcMotor.get("motorGlyphGrab");
 
         // get a reference to the color sensor.
@@ -87,8 +87,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        motorGlyphUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorGlyphDown.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorGlyphLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorGlyphRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorGlyphGrab.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 /*
@@ -103,8 +103,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        motorGlyphUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorGlyphDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorGlyphLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorGlyphRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorGlyphGrab.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // reverse front and back right motors just for TeleOp
@@ -113,8 +113,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
 
-        motorGlyphUp.setDirection(DcMotor.Direction.FORWARD);
-        motorGlyphDown.setDirection(DcMotor.Direction.FORWARD);
+        motorGlyphLeft.setDirection(DcMotor.Direction.FORWARD);
+        motorGlyphRight.setDirection(DcMotor.Direction.REVERSE);
         motorGlyphGrab.setDirection(DcMotor.Direction.FORWARD);
 
         motorFL.setPower(0);
@@ -122,8 +122,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setPower(0);
         motorBR.setPower(0);
 
-        motorGlyphUp.setPower(0);
-        motorGlyphDown.setPower(0);
+        motorGlyphLeft.setPower(0);
+        motorGlyphRight.setPower(0);
         motorGlyphGrab.setPower(0);
 
         // Initialize servos

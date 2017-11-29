@@ -96,32 +96,37 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
 
         // Glyph lift up/down
-        if(-gamepad1.right_stick_y < 0.0)
+        if(-gamepad2.right_stick_y < 0.0) // down
         {
-            motorGlyphUp.setPower(powerGlyphUp);
+            motorGlyphLeft.setPower(powerGlyphDown);
+            motorGlyphRight.setPower(powerGlyphDown);
         }
-        else if(gamepad1.right_stick_y > 0.0)
+        else if(-gamepad2.right_stick_y > 0.0) // up
         {
-            motorGlyphDown.setPower(powerGlyphDown);
+            motorGlyphLeft.setPower(powerGlyphUp);
+            motorGlyphRight.setPower(powerGlyphUp);
         }
-        else
+        else // turn motors off
         {
-            motorGlyphUp.setPower(0.0);
+            motorGlyphLeft.setPower(0.0);
+            motorGlyphRight.setPower(0.0);
         }
 
         // Glyph grabber open/close
-        if(gamepad2.right_bumper)
+        if(gamepad2.right_bumper) // close
         {
             motorGlyphGrab.setPower(powerGlyphGrab);
         }
-        else if(gamepad2.left_bumper)
+        else if(gamepad2.left_bumper) // open
         {
             motorGlyphGrab.setPower(-powerGlyphGrab);
         }
-        else
+        else // turn motor off
         {
             motorGlyphGrab.setPower(0.0);
         }
+
+        // TODO: check the TelOp loop; the driver 2 controls (open/close only) were lagging, everything else was fine
 
 /*
         powerFL = px + 0*py + pivotPower;
