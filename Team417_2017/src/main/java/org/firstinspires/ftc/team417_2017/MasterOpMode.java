@@ -46,7 +46,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     // Servo init and low positions
     static final double JEWEL_INIT = 0.965;
-    static final double JEWEL_LOW = 0.4;
+    static final double JEWEL_LOW = 0.38;
 
     // declare color sensor variables
     // hsvValues is an array that will hold the hue, saturation, and value information.
