@@ -58,13 +58,13 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
             x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
-            pivotPower = Range.clip(gamepad1.left_stick_x, -0.35, 0.35);
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
         }
         else // Staccato Mode
         {
             y = -gamepad1.right_stick_y; // Y axis is negative when up
             x = gamepad1.right_stick_x;
-            pivotPower = Range.clip(gamepad1.left_stick_x, -0.8, 0.8);
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
         }
 
 
@@ -88,7 +88,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         else
         {
-            // calculate the power for each motor
+            // calculate the power for each motor (corner drive)
             powerFL = x + y + pivotPower;
             powerFR = -x + y - pivotPower;
             powerBL = -x + y + pivotPower;
@@ -129,6 +129,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         // TODO: check the TelOp loop; the driver 2 controls (open/close only) were lagging, everything else was fine
 
 /*
+        // calculate the power for each motor (side drive)
         powerFL = px + 0*py + pivotPower;
         powerFR = 0*px + py - pivotPower;
         powerBL = 0*px + py + pivotPower;
