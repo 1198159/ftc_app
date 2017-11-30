@@ -517,9 +517,10 @@ abstract class MasterAutonomous extends MasterOpMode
         motorFR.setPower(powerFR);
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
+
         // let it run for x seconds
         sleep(milliSeconds);
-        // stop the motors after two seconds
+        // stop the motors after x seconds
         motorFL.setPower(0);
         motorFR.setPower(0);
         motorBL.setPower(0);
