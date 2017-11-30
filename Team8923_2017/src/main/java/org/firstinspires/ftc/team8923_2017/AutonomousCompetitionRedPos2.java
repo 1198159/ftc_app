@@ -41,60 +41,28 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
 
         if (isLeftJewelRed == true)
         {
-            IMUPivot(referenceAngle, -20, 0.5, 0.015);//Pivot right
+            IMUPivot(referenceAngle, 10, 0.5, 0.015);//Pivot right
             RetrieveJJ();
             IMUPivot(referenceAngle, 0, 0.5, 0.015);//Pivot left
         }
         else
         {
-            if (isLeftJewelRed == false)
-            {
-                IMUPivot(referenceAngle, 20, 0.5, 0.015);
-                RetrieveJJ();
-                IMUPivot(referenceAngle, 0, 0.5, 0.015);
-            }
-
+            IMUPivot(referenceAngle, -10, 0.5, 0.015);
+            RetrieveJJ();
+            IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
 
-        MoveIMU(referenceAngle, -40.0, 0.0, 0.015, 0.5, 2.5);//Go towards parking spot
-        IMUPivot(referenceAngle, -90, 0.5, 0.015);
+        MoveIMU(referenceAngle, -400.0, 0.0, 0.015, 0.3, 1.7);//Go towards parking spot
+        IMUPivot(referenceAngle, -90, 0.25, 0.015);
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);
 
+        MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.3, 1.2);
+        IMUPivot(referenceAngle, -88, 0.25, 0.015);
+        referenceAngle -= 90.0;
+        referenceAngle = adjustAngles(referenceAngle);
 
         //if loo[ here
-        if (vuMark == RelicRecoveryVuMark.LEFT)
-        {
-
-            MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.3, 1.9);
-            IMUPivot(referenceAngle, -90, 0.5, 0.015);
-            referenceAngle -= 90.0;
-            referenceAngle = adjustAngles(referenceAngle);
-            MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
-        }
-        else
-        {
-            if (vuMark == RelicRecoveryVuMark.CENTER)
-            {
-                //WORKS!
-                MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.5, 0.8);
-                IMUPivot(referenceAngle, -90, 0.5, 0.015);
-                referenceAngle -= 90.0;
-                referenceAngle = adjustAngles(referenceAngle);
-                MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
-            }
-            else
-            {
-                //WORKS!
-                MoveIMU(referenceAngle, 80.0, 0.0, 0.015, 0.5, 0.5);
-                IMUPivot(referenceAngle, -90, 0.5, 0.015);
-                referenceAngle -= 90.0;
-                referenceAngle = adjustAngles(referenceAngle);
-                MoveIMU(referenceAngle, 70.0, 0.0, 0.015, 0.3, 1.0);
-            }
-        }
-        openGG();
-        MoveIMU(referenceAngle, -50.0, 0.0, 0.015, 0.5, 0.3);//Go towards parking spot
 
         while (opModeIsActive())
         {

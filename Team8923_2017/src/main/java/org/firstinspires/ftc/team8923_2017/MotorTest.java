@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.team8923_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous(name="Motor Test", group = "Swerve")
 /**
  * Runable shell for Master Autonomous code
  */
-//@Disabled
+@Disabled
 public class MotorTest extends MasterAutonomous
 {
     //Declare variables here

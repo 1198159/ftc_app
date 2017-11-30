@@ -402,9 +402,13 @@ public abstract class MasterAutonomous extends Master
 
             idle();
         }
+        /*
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
                 (Math.abs(moveErrorBL) > TOL));
+                */
+        while (opModeIsActive() &&
+                (runtime.seconds() < timeout));
 
         //Stop motors
         motorFL.setPower(0);
@@ -535,10 +539,10 @@ public abstract class MasterAutonomous extends Master
             pivot = angleError * kAngle;
 
             //Sets values for motor power
-            motorPowerFL = -speedBR + pivot;
-            motorPowerFR = -speedBR + pivot;
-            motorPowerBL = speedBR + pivot;
-            motorPowerBR = speedBR + pivot;
+            motorPowerFL = maxSpeed;
+            motorPowerFR = maxSpeed;
+            motorPowerBL = -maxSpeed;
+            motorPowerBR = -maxSpeed;
 
             //Sets motor power
             //motorFL.setPower(0.5);
@@ -556,11 +560,10 @@ public abstract class MasterAutonomous extends Master
             //motorBL.setPower(0.0);
             //motorBR.setPower(0.0);
 
-            idle();
+            //idle();
         }
         while (opModeIsActive() &&
-                (runtime.milliseconds() < timeout) &&
-                (Math.abs(moveErrorBL) > TOL));
+                (runtime.seconds() < timeout));
 
         //Stop motors
         motorFL.setPower(0);
@@ -913,7 +916,7 @@ public abstract class MasterAutonomous extends Master
 
     }
 
-    void MoveIMUCont(double referenceAngle, double moveMM, double kAngle, double maxSpeed, double saturationValue)
+    void MoveIMUCont(double referenceAngle, double kAngle, double maxSpeed, double saturationValue)
     {
         do
         {
@@ -936,45 +939,82 @@ public abstract class MasterAutonomous extends Master
             Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopRight);
             Color.RGBToHSV((sensorBottomRight.red() * 255) / 800, (sensorBottomRight.green() * 255) / 800, (sensorBottomRight.blue() * 255) / 800, hsvValuesBottomRight);
 
-
-            telemetry.addData("TopRight_S: ", hsvValuesTopRight[1]);
-            //telemetry.addData("V: ", hsvValuesTopLeft[2]);
-            telemetry.addData("TopLeft_S: ", hsvValuesTopLeft[1]);
-            telemetry.addData("BottomRight_S: ", hsvValuesBottomRight[1]);
-            telemetry.update();
             idle();
         }
         while ((opModeIsActive()) && (hsvValuesTopRight[1] <= saturationValue) && (hsvValuesTopLeft[1] <= saturationValue) && (hsvValuesBottomRight[1] <= saturationValue));
         stopDriving();
     }
 
-    void MoveIMUContLeft(double referenceAngle, double kAngle, double maxSpeed, double saturationValue) {
-        do {
-            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
-            angleError = currentRobotAngle - referenceAngle;
-            angleError = adjustAngles(angleError);
-            pivot = angleError * kAngle;
+    void driveOmni45Cont(double driveAngle, double drivePower, double turnPower, double saturationValue)
+    {
+        // Calculate out x and y directions of drive power, where y is forward (0 degrees) and x is right (-90 degrees)
+        double x = drivePower * -Math.sin(Math.toRadians(driveAngle));
+        double y = drivePower * Math.cos(Math.toRadians(driveAngle));
 
-            motorPowerFL = -maxSpeed + pivot;
-            motorPowerFR = -maxSpeed + pivot;
-            motorPowerBL = maxSpeed + pivot;
-            motorPowerBR = maxSpeed + pivot;
+        /*
+         * to explain:
+         * each wheel omni wheel exerts a force in one direction like tank but differs in the fact that they have rollers mounted perpendicular
+         * to the wheels outer edge so they can passively roll at 90 degrees to the wheel's facing. This means that with the wheels mounted at 45
+         * degrees to the chassis frame and assuming the left hand rule for the motors, each wheel's power needs to be 90 degrees out of phase
+         * from the previous wheel on the unit circle starting with positive y and x for FL and going clockwise around the unit circle and robot
+         * from there
+         */
 
-            motorFL.setPower(motorPowerFL);
-            motorFR.setPower(motorPowerFR);
-            motorBL.setPower(motorPowerBL);
-            motorBR.setPower(motorPowerBR);
+        double powerFL = y + x + (turnPower * 0.9);
+        double powerFR = -y + x + (turnPower * 0.9);
+        double powerBL = y - x + (turnPower * 0.9);
+        double powerBR = -y - x + (turnPower * 0.9);
 
+        double scalar = Math.max(Math.abs(powerFL),  Math.max(Math.abs(powerFR),
+                Math.max(Math.abs(powerBL), Math.abs(powerBR))));
+
+        if(scalar < 1)
+            scalar = 1;
+
+        powerFL /= (scalar * slowModeDivisor);
+        powerFR /= (scalar * slowModeDivisor);
+        powerBL /= (scalar * slowModeDivisor);
+        powerBR /= (scalar * slowModeDivisor);
+
+        motorFL.setPower(powerFL);
+        motorFR.setPower(powerFR);
+        motorBL.setPower(powerBL);
+        motorBR.setPower(powerBR);
+
+        do
+            {
+
+                Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopLeft);
+                Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopRight);
+                Color.RGBToHSV((sensorBottomRight.red() * 255) / 800, (sensorBottomRight.green() * 255) / 800, (sensorBottomRight.blue() * 255) / 800, hsvValuesBottomRight);
+                idle();
+            }
+        while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue));
+        stopDriving();
+    }
+
+    void MoveIMUContLeft(double referenceAngle, double kAngle, double maxSpeed, double saturationValue)
+    {
+        currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
+        angleError = currentRobotAngle - referenceAngle;
+        angleError = adjustAngles(angleError);
+        pivot = angleError * kAngle;
+
+        motorPowerFL = -maxSpeed + pivot;
+        motorPowerFR = -maxSpeed + pivot;
+        motorPowerBL = maxSpeed + pivot;
+        motorPowerBR = maxSpeed + pivot;
+
+        motorFL.setPower(motorPowerFL);
+        motorFR.setPower(motorPowerFR);
+        motorBL.setPower(motorPowerBL);
+        motorBR.setPower(motorPowerBR);
+
+        do
+        {
             Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopLeft);
             Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopRight);
             Color.RGBToHSV((sensorBottomRight.red() * 255) / 800, (sensorBottomRight.green() * 255) / 800, (sensorBottomRight.blue() * 255) / 800, hsvValuesBottomRight);
-
-
-            telemetry.addData("TopRight_S: ", hsvValuesTopRight[1]);
-            //telemetry.addData("V: ", hsvValuesTopLeft[2]);
-            telemetry.addData("TopLeft_S: ", hsvValuesTopLeft[1]);
-            telemetry.addData("BottomRight_S: ", hsvValuesBottomRight[1]);
-            telemetry.update();
             idle();
         }
         while ((opModeIsActive()) && (hsvValuesTopRight[1] <= saturationValue) && (hsvValuesTopLeft[1] <= saturationValue) && (hsvValuesBottomRight[1] <= saturationValue));
@@ -987,15 +1027,111 @@ public abstract class MasterAutonomous extends Master
         //Go forwards until any sensor sees the line
         double referenceAngle = imu.getAngularOrientation().firstAngle;//TODO declare this in init hardware auto
 
+        do {
+
+
+            do
+            {
+                MoveIMUCont(referenceAngle, 0.015, 0.3, saturationValue);
+
+            }
+            while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue)); //TODO Change value to correct Hue value
+            stopDriving();
+
+
+            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
+            //Top right sensor is on the line, but rest aren't
+            {
+                //Drive at 55 degrees until the left sensor is on the line
+
+                do
+                {
+                    driveOmni45Cont(-55, 0.2, 0, saturationValue);
+                }
+                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue);
+                stopDriving();
+            }
+
+            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
+            //Right sensors are on the line, but left isn't
+            {
+                //Drive at 55 degrees until the left sensor is on the line
+
+                do
+                {
+                    driveOmni45Cont(-55, 0.2, 0, saturationValue);
+                }
+                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue);
+                stopDriving();
+
+
+            }
+
+
+            if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
+            //Only top left sensor sees line
+            {
+                //Drive left until the right sensors see the line
+                do {
+                    MoveIMUContLeft(referenceAngle, 0, 0.25, saturationValue);
+                }
+                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue));
+
+
+                //Drive at 55 degrees until the left sensor is on the line
+
+                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue) ;
+                {
+                    driveOmni45Cont(-55, 0.2, 0, saturationValue);
+                }
+                stopDriving();
+            }
+
+            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
+            //Top left and right sensor on line
+            {
+                //Pivots until current angle is 0
+                do {
+                    motorFL.setPower(0);
+                    motorFR.setPower(0.2);
+                    motorBL.setPower(0.2);
+                    motorBR.setPower(0.2);
+                    currentAngle = imu.getAngularOrientation().firstAngle;
+                    colorSensorHSV();
+                }
+                while ((opModeIsActive()) && (currentAngle < referenceAngle + TOL) && (currentAngle > referenceAngle - TOL));
+                stopDriving();
+                runtime.reset();
+
+                do {
+                    MoveIMUContLeft(referenceAngle, 0, 0.25, saturationValue);
+                    colorSensorHSV();
+                }
+                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
+                stopDriving();
+
+                //Drive at 55 degrees until the left sensor is on the line
+                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue)) ;
+                {
+                    driveOmni45Cont(-55, 0.2, 0, saturationValue);
+                }
+                stopDriving();
+            }
+        }
+        while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
+        stopDriving();
+
+
+        /*
         do
         {
 
             do
             {
-                MoveIMU(referenceAngle, 50, 0, 0.015, 0.2, 3);
+                MoveIMUCont(referenceAngle, 0.015, 0.3, saturationValue);
                 colorSensorHSV();
             }
-            while((hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue)); //TODO Change value to correct Hue value
+            while((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue)); //TODO Change value to correct Hue value
             stopDriving();
 
             if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
@@ -1010,15 +1146,15 @@ public abstract class MasterAutonomous extends Master
                     motorBR.setPower(0.2);
                     colorSensorHSV();
                 }
-                while(hsvValuesBottomRight[1] < saturationValue);
+                while((opModeIsActive()) && hsvValuesBottomRight[1] < saturationValue);
                 stopDriving();
 
                 //Drive at 55 degrees until the left sensor is on the line
                 do
                 {
-                    driveOmni45(55, 0.2, 0);
+                    driveOmni45(-55, 0.2, 0);
                 }
-                while (hsvValuesTopLeft[1] < saturationValue);
+                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue);
                 stopDriving();
             }
 
@@ -1029,9 +1165,9 @@ public abstract class MasterAutonomous extends Master
                 //Drive at 55 degrees until the left sensor is on the line
                 do
                 {
-                    driveOmni45(55, 0.2, 0);
+                    driveOmni45(-55, 0.2, 0);
                 }
-                while (hsvValuesTopLeft[1] < saturationValue);
+                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue);
                 stopDriving();
             }
 
@@ -1039,9 +1175,30 @@ public abstract class MasterAutonomous extends Master
             if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
             //Only top left sensor sees line
             {
-                //Pivots until current angle is 0
+
+                runtime.reset();
+
+                //Drive left until the right sensors see the line
                 do
                 {
+                    MoveIMUContLeft(referenceAngle, 0,0.25,saturationValue);
+                    colorSensorHSV();
+                }
+                while((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue));
+                //Drive at 55 degrees until the left sensor is on the line
+                do
+                {
+                    driveOmni45(-55, 0.2, 0);
+                }
+                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue);
+                stopDriving();
+            }
+
+            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
+            //Top left and right sensor on line
+            {
+                //Pivots until current angle is 0
+                do {
                     motorFL.setPower(0);
                     motorFR.setPower(0.2);
                     motorBL.setPower(0.2);
@@ -1049,56 +1206,31 @@ public abstract class MasterAutonomous extends Master
                     currentAngle = imu.getAngularOrientation().firstAngle;
                     colorSensorHSV();
                 }
-                while((currentAngle > referenceAngle + TOL) && (currentAngle < referenceAngle - TOL));
+                while ((opModeIsActive()) && (currentAngle < referenceAngle + TOL) && (currentAngle > referenceAngle - TOL));
                 stopDriving();
                 runtime.reset();
 
-                //Drive left until the right sensors see the line
-                do
-                {
-                    MoveIMUContLeft(referenceAngle, 0,0.25,0.5);
+                do {
+                    MoveIMUContLeft(referenceAngle, 0,0.25,saturationValue);
                     colorSensorHSV();
                 }
-                while((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue));
+                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
+                stopDriving();
 
-
-                if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
-                //Top left and right sensor on line
+                //Drive at 55 degrees until the left sensor is on the line
+                do
                 {
-                    //Pivots until current angle is 0
-                    do {
-                        motorFL.setPower(0);
-                        motorFR.setPower(0.2);
-                        motorBL.setPower(0.2);
-                        motorBR.setPower(0.2);
-                        currentAngle = imu.getAngularOrientation().firstAngle;
-                        colorSensorHSV();
-                    }
-                    while ((currentAngle < referenceAngle + TOL) && (currentAngle > referenceAngle - TOL));
-                    stopDriving();
-                    runtime.reset();
-
-                    do {
-                        MoveIMUContLeft(referenceAngle, 0,0.25,0.5);
-                        colorSensorHSV();
-                    }
-                    while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
-                    stopDriving();
-
-                    //Drive at 55 degrees until the left sensor is on the line
-                    do
-                    {
-                        driveOmni45(55, 0.2, 0);
-                    }
-                    while (hsvValuesTopLeft[1] < saturationValue);
-                    stopDriving();
+                    driveOmni45(-55, 0.2, 0);
                 }
+                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue));
+                stopDriving();
             }
         }
         while((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
         stopDriving();
     }
-
+    */
+    }
 
 
     void alignOnLine(double saturationValue)
@@ -1270,10 +1402,11 @@ public abstract class MasterAutonomous extends Master
         return vuMark;
     }
 
-    public float countPixel(float colorHsvOut[]) {
-        float hue = colorHsvOut[0];
+    //Decides if pixel is red, blue or other
+    public float countPixel(float hue)
+    {
 
-        if (hue >= 333 && hue <= 20)//Range of Red Hue
+        if (hue >= 333 || hue <= 20)//Range of Red Hue
         {
             numRedPixels ++;//Adds to num of red pixels
         }
@@ -1288,10 +1421,12 @@ public abstract class MasterAutonomous extends Master
         return hue;
     }
 
+    //Find avg Hue
     public float GetAvgJewelColor(int x, int y)
     {
-        if (x>=0 && x<1280-32 && y>=0 && y<720-32) {
-            HsvSum[0] = 0;
+        if (x>=0 && x<1280-32 && y>=0 && y<720-32)
+        {
+            HsvSum[0] = 0.0f;
             for (int j = y - 32; j < y + 32; j++) // "Draws" the columns
             {
                 for (int i = x - 32; i < x + 32; i++) // "Draws" the rows
@@ -1315,7 +1450,6 @@ public abstract class MasterAutonomous extends Master
                     }
                 }
             }
-            //countPixel(HsvSum);
             // Averages the HSV by dividing by 4096(64*64)
             HsvOut[0] = HsvSum[0] / 4096;
         }
@@ -1323,9 +1457,15 @@ public abstract class MasterAutonomous extends Master
 
     }
 
-    public float GetJewelColor(int x, int y) {
+    //Count pixels with red, blue, and other hues & returns if left jewel is red
+    public boolean GetJewelColor(int x, int y)
+    {
+        //Zero values since function gets called mult times
+        numRedPixels = 0;
+        numBluePixels = 0;
+        numOtherPixels = 0;
+
         if (x >= 0 && x < 1280 - 32 && y >= 0 && y < 720 - 32) {
-            HsvSum[0] = 0;
             for (int j = y - 32; j < y + 32; j++) // "Draws" the columns
             {
                 for (int i = x - 32; i < x + 32; i++) // "Draws" the rows
@@ -1339,8 +1479,8 @@ public abstract class MasterAutonomous extends Master
                     */
                     Color.colorToHSV(color, HSV);
 
-                    // Adds the HSV color of all pixels
-                    HsvSum[0] += HSV[0];
+                    // Determine and count red, blue, other hue pixels. Counts are in numRedPixels, numBluePixels, numOtherPixels vars
+                    countPixel(HSV[0]);
 
                     // draws a 64 by 64 black border around sample region
                     //(For debugging code only)
@@ -1349,13 +1489,60 @@ public abstract class MasterAutonomous extends Master
                     }
                 }
             }
-            // Averages the HSV by dividing by 4096(64*64)
-            HsvOut[0] = HsvSum[0] / 4096;
-            countPixel(HsvSum);
+            //Compare color counts
+            if (numRedPixels > numBluePixels) isLeftJewelRed = true;
+            else isLeftJewelRed = false;
         }
-        return HsvOut[0]; // returns the now averaged sampled HSV color value
+        return isLeftJewelRed; // returns if left jewel is red
     }
 
+    public boolean GetLeftJewelColorCount() throws InterruptedException
+    {
+        pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
+
+        if (pose!=null)
+        {
+            Matrix34F rawPose = new Matrix34F();
+            //rawPose = new Matrix34F();
+            float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
+            rawPose.setData(poseData);
+            // image size is 254 mm x 184 mm
+            //Projects point at
+            //Right: (390, -180, -102)
+            //Left: (165, -175, -102)
+            Vec2F rightJewel = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(390, -180, -102));
+            Vec2F leftJewel = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
+
+
+            // Takes a frame
+            frame = vuforia.getFrameQueue().take();
+
+            long numberImages = frame.getNumImages();
+
+            for (int j = 0; j < numberImages; j++)
+            {
+                image = frame.getImage(j);
+                imageFormat = image.getFormat();
+                if (imageFormat == PIXEL_FORMAT.RGB565) break;
+            }
+
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
+
+            //Creates bitmap of the image to detect color of jewels
+            bm = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
+            bm.copyPixelsFromBuffer(image.getPixels());
+
+            //Declare int for left jewels
+            int LeftX = (int) leftJewel.getData()[0];
+            int LeftY = (int) leftJewel.getData()[1];
+
+            GetJewelColor(LeftX, LeftY);
+        }
+        return isLeftJewelRed;
+    }
+
+    //OLD
     public boolean GetLeftJewelColor() throws InterruptedException
     {
         pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
@@ -1406,32 +1593,21 @@ public abstract class MasterAutonomous extends Master
             avgRightJewelColor = GetAvgJewelColor(RightX, RightY);//Gets the averaged jewel HSV color value for the right jewel
 
             //adjusts color for red so that red is greater that blue by adding 300 since red is only 45
-            Leftcolor = (avgLeftJewelColor < 80) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
-            Rightcolor = (avgRightJewelColor < 80) ? avgRightJewelColor + 300 : avgRightJewelColor;
+            Leftcolor = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
+            Rightcolor = (avgRightJewelColor < 45) ? avgRightJewelColor + 300 : avgRightJewelColor;
 
-            /*
-            leftJewelColor = GetJewelColor(LeftX, LeftY);
-            */
+
+            //leftJewelColor = GetJewelColor(LeftX, LeftY);
+
             //rightJewelColor = GetJewelColor(RightX, RightY);
 
         }
         //Gets the difference between left HSV and right HSV
-        //deltaHSVColor = Leftcolor - Rightcolor;
+        deltaHSVColor = Leftcolor - Rightcolor;
         // if the left jewel color is positive, the left side is red and the right side is blue
         if (deltaHSVColor > 0) isLeftJewelRed = true;
         else isLeftJewelRed = false;
-        /*
-        if (numRedPixels > numBluePixels)
-        {
-            isLeftJewelRed = true;
-        }
-        else
-        {
-            isLeftJewelRed = false;
-        }
-        */
         return isLeftJewelRed;
-
     }
 
 

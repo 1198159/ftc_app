@@ -25,7 +25,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         GetVumark();
         waitForStart();
         // turn on flash light
-        CameraDevice.getInstance().setFlashTorchMode(true);
+        //CameraDevice.getInstance().setFlashTorchMode(true);
         // set false to turn off light
         closeGG();
         sleep(500);
@@ -33,26 +33,28 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         DropJJ();
         sleep(1000);
         GetLeftJewelColor();
-        CameraDevice.getInstance().setFlashTorchMode(false);
+        //CameraDevice.getInstance().setFlashTorchMode(false);
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
         if (isLeftJewelRed == true)
         {
-            IMUPivot(referenceAngle, 20, 0.5, 0.015);
+            IMUPivot(referenceAngle, 10, 0.5, 0.015);
             RetrieveJJ();
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
         else
         {
-            IMUPivot(referenceAngle, -20, 0.5, 0.015);
+            IMUPivot(referenceAngle, -10, 0.5, 0.015);
             RetrieveJJ();
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
-        MoveIMU(referenceAngle, 50.0, 0.0, 0.015, 0.5, 3.0);//Go towards parking spot
-        IMUPivot(referenceAngle, -90, 0.5, 0.015);
-        referenceAngle -= 90.0;
+        sleep(700);
+        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 2.15);//Go towards parking spot//Was1.65
+        MoveIMURight(referenceAngle, 45.0, 0.0, 0.015, 0.35, 0.4);
+        IMUPivot(referenceAngle, 90, 0.25, 0.015);
+        referenceAngle += 90.0;
         referenceAngle = adjustAngles(referenceAngle);
-        MoveIMU(referenceAngle, -50.0, 0.0, 0.015, 0.5, 0.8);
+        //MoveIMU(referenceAngle, 40.0, 0.0, 0.015, 0.5, 0.8);
         moveGG(-1500);
         while (opModeIsActive())
         {
