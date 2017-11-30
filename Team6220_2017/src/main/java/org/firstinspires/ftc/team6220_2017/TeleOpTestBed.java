@@ -16,14 +16,15 @@ public class TeleOpTestBed extends MasterAutonomous
     @Override public void runOpMode() throws InterruptedException
     {
         double jointPosCount = 0.5;
+        int glyphPosCount = 0;
 
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
         // Don't want to call nonexistent hardware devices in test program
         isArmAttached = false;
-        isDriveTrainAttached = false;
-        isGlyphMechAttached = false;
+        isDriveTrainAttached = true;
+        isGlyphMechAttached = true;
         initializeRobot();
 
         DcMotor motorCollectorLeft;
@@ -36,7 +37,7 @@ public class TeleOpTestBed extends MasterAutonomous
 
         waitForStart();
 
-        jointServo.setPosition(0.5);
+        //jointServo.setPosition(0.5);
 
         // Main loop
         while(opModeIsActive())
@@ -55,7 +56,7 @@ public class TeleOpTestBed extends MasterAutonomous
             else if (driver1.isButtonJustPressed(Button.DPAD_UP))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
-                driveToPosition(0, 1000, 0.5);
+                driveToPosition(0, -1000, 0.9);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_RIGHT))
             {
@@ -71,22 +72,23 @@ public class TeleOpTestBed extends MasterAutonomous
                 turnTo(90);
             }
 
-            /*
+
             // Test glyph collection; servos on either side of glyph pull or push it
             if(driver1.isButtonJustPressed(Button.A))
             {
-                jointPosCount += 0.02;
-                jointServo.setPosition(jointPosCount);
-
+                //jointPosCount += 0.02;
+                //jointServo.setPosition(jointPosCount);
                 //glyphMotorLeft.setPower(1.0);
                 //glyphMotorRight.setPower(-1.0);
-
+                glyphPosCount += 50;
+                motorGlyphter.setTargetPosition(glyphPosCount);
+                motorGlyphter.setPower(0.5);
                 //turnTo(90);
             }
             if(driver1.isButtonJustPressed(Button.B))
             {
-                jointPosCount -= 0.02;
-                jointServo.setPosition(jointPosCount);
+                //jointPosCount -= 0.02;
+                //jointServo.setPosition(jointPosCount);
 
                 //glyphMotorLeft.setPower(-1.0);
                 //glyphMotorRight.setPower(1.0);
@@ -97,7 +99,8 @@ public class TeleOpTestBed extends MasterAutonomous
             {
                 wristServo.setPosition(Constants.WRIST_SERVO_DEPLOYED);
             }
-            */
+            telemetry.addData("EncoderCount", motorGlyphter.getCurrentPosition()); // read encoder counts to update the count displayed
+            //telemetry.update(); // display the encoder count to the driver station phone screen
 
             //telemetry.addData("jointPos: ", jointPosCount);
             updateCallback(eTime);

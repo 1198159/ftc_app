@@ -154,7 +154,8 @@ abstract public class MasterOpMode extends LinearOpMode
 
             // Set motor attributes and behaviors--------------------------------
             motorGlyphter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorGlyphter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorGlyphter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //motorGlyphter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorGlyphter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             motorCollectorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
