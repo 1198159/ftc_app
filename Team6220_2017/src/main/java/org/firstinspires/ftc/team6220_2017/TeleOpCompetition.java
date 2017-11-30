@@ -37,6 +37,7 @@ public class TeleOpCompetition extends MasterTeleOp
             // 2nd driver:  TBD
             glyphMechanism.driveGlyphMech();
 
+
             /*
              updates that need to happen each loop
              note:  eTime is not currently displayed (it interrupts other telemetry), but it may

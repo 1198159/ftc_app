@@ -13,7 +13,7 @@ public class AutoBlueLeft extends MasterAutonomous
         //setRobotStartingOrientation(180);
 
         isGlyphMechAttached = false;
-        isDriveTrainAttached = false;
+        isDriveTrainAttached = true;
         initializeAuto();
 
         waitForStart();
@@ -36,5 +36,11 @@ public class AutoBlueLeft extends MasterAutonomous
 
 
         knockJewel(blueJewel, isBlueSide);
+        driveToPosition(0, -500, 0.5);
+        //turn 90 degrees
+        //may need to move backwards
+        //deploy Glyph mech
+        //score glyph
+
     }
 }

@@ -184,6 +184,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     // todo Add absolute coordinates and code to prevent turning while using driveToPosition
+    //todo sideways translation does not work
     // Uses encoders to make the robot drive to a specified relative position
     void driveToPosition(double deltaX, double deltaY, double maxPower) throws InterruptedException
     {
@@ -218,10 +219,10 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             // Average encoder differences to find translational x and y components.  Motors turn
             // differently when translating, so signs on FR and BL must be flipped
-            //double encDiffX = (-encDiffFL - encDiffFR + encDiffBL + encDiffBR) / 4;
-            //double encDiffY = (-encDiffFL + encDiffFR - encDiffBL + encDiffBR) / 4;
-            double encDiffY = -encDiffFL;
-            double encDiffX = -encDiffFR;
+            double encDiffX = (-encDiffFL - encDiffFR + encDiffBL + encDiffBR) / 4;
+            double encDiffY = (-encDiffFL + encDiffFR - encDiffBL + encDiffBR) / 4;
+            //double encDiffY = -encDiffFL;
+            //double encDiffX = -encDiffFR;
 
             // Translation distance is reduced by a factor of sqrt(2) due to mecanum wheels
             deltaX -= Constants.MM_PER_ANDYMARK_TICK * encDiffX / Math.sqrt(2);

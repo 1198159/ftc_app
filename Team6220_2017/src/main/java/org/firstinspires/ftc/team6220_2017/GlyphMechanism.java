@@ -22,13 +22,13 @@ public class GlyphMechanism
     {
         // 1st driver controls------------------------------------------------
          // Collect glyphs
-        if (masterOpMode.driver1.isButtonJustPressed(Button.DPAD_DOWN))
+        if (masterOpMode.driver2.isButtonJustPressed(Button.DPAD_DOWN))
         {
             masterOpMode.motorCollectorLeft.setPower(-1.0);
             masterOpMode.motorCollectorRight.setPower(1.0);
         }
          // Score glyphs
-        else if (masterOpMode.driver1.isButtonJustPressed(Button.DPAD_UP))
+        else if (masterOpMode.driver2.isButtonJustPressed(Button.DPAD_UP))
         {
             masterOpMode.motorCollectorLeft.setPower(0.5);
             masterOpMode.motorCollectorRight.setPower(-0.5);
