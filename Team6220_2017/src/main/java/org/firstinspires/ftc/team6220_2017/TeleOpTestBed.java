@@ -48,12 +48,8 @@ public class TeleOpTestBed extends MasterAutonomous
             //motorArm.setPower(gamepad1.left_stick_y);
 
             // Test jewel servos and encoders
-            if (driver1.isButtonJustPressed(Button.Y))
-            {
-                verticalJewelServoToggler.toggle();
-                pauseWhileUpdating(0.5);
-            }
-            else if (driver1.isButtonJustPressed(Button.DPAD_UP))
+
+            if (driver1.isButtonJustPressed(Button.DPAD_UP))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
                 driveToPosition(0, -1000, 0.9);
@@ -80,9 +76,12 @@ public class TeleOpTestBed extends MasterAutonomous
                 //jointServo.setPosition(jointPosCount);
                 //glyphMotorLeft.setPower(1.0);
                 //glyphMotorRight.setPower(-1.0);
-                glyphPosCount += 50;
-                motorGlyphter.setTargetPosition(glyphPosCount);
+                motorGlyphter.setTargetPosition(-2000);
+
                 motorGlyphter.setPower(0.5);
+                while (opModeIsActive() && motorGlyphter.isBusy());
+                    idle();
+                motorGlyphter.setPower(0.0);
                 //turnTo(90);
             }
             if(driver1.isButtonJustPressed(Button.B))
@@ -92,13 +91,24 @@ public class TeleOpTestBed extends MasterAutonomous
 
                 //glyphMotorLeft.setPower(-1.0);
                 //glyphMotorRight.setPower(1.0);
-
+                motorGlyphter.setTargetPosition(-2000);
+                motorGlyphter.setPower(-0.5);
                 //turnTo(-90);
             }
             if(driver1.isButtonJustPressed(Button.X))
             {
-                wristServo.setPosition(Constants.WRIST_SERVO_DEPLOYED);
+                motorGlyphter.setTargetPosition(2000);
+                motorGlyphter.setPower(-0.5);
+                //wristServo.setPosition(Constants.WRIST_SERVO_DEPLOYED);
             }
+            if (driver1.isButtonJustPressed(Button.Y))
+            {
+                motorGlyphter.setTargetPosition(2000);
+                motorGlyphter.setPower(0.5);
+                //verticalJewelServoToggler.toggle();
+                //pauseWhileUpdating(0.5);
+            }
+
             telemetry.addData("EncoderCount", motorGlyphter.getCurrentPosition()); // read encoder counts to update the count displayed
             //telemetry.update(); // display the encoder count to the driver station phone screen
 

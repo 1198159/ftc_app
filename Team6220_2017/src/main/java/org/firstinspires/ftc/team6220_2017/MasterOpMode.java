@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team6220_2017;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -153,9 +154,10 @@ abstract public class MasterOpMode extends LinearOpMode
             //-------------------------------------------------------------------
 
             // Set motor attributes and behaviors--------------------------------
+            //motorGlyphter.setDirection(DcMotorSimple.Direction.REVERSE);
             motorGlyphter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorGlyphter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            //motorGlyphter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //motorGlyphter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorGlyphter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorGlyphter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             motorCollectorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
