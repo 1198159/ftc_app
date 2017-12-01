@@ -8,8 +8,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 */
 public class DriverInput implements ConcurrentOperation
 {
+    // todo Clean up
     private Gamepad controller;     // One state for each button; there are 13 buttons available
     private boolean[] buttonStates = {false,false,false,false,false,false,false,false,false,false,false,false,false,false};
+    //Arrays.fill(buttonStates, false);
     private boolean[] lastButtonStates = {false,false,false,false,false,false,false,false,false,false,false,false,false,false};
     private double[] buttonHeldCounts = {0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 

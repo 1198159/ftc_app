@@ -79,9 +79,6 @@ public class TeleOpTestBed extends MasterAutonomous
                 motorGlyphter.setTargetPosition(-2000);
 
                 motorGlyphter.setPower(0.5);
-                while (opModeIsActive() && motorGlyphter.isBusy());
-                    idle();
-                motorGlyphter.setPower(0.0);
                 //turnTo(90);
             }
             if(driver1.isButtonJustPressed(Button.B))

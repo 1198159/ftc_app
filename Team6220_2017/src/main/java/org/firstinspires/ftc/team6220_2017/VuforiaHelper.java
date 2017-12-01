@@ -49,8 +49,6 @@ public class VuforiaHelper
     float[] colorTransfer = new float[]{0,0,0};
      // What we will eventually return
     float[] colorOutput = new float[]{0,0,0};
-     // Sum of all colors from sample pixels
-    float[] colorSum = new float[]{0, 0, 0};
 
      // Integer that will be used to store individual pixel colors each loop of getAverageJewelColor()
     int color = 0;
@@ -72,8 +70,7 @@ public class VuforiaHelper
     }
     //-------------------------------------------------------
 
-    // necessary matrices
-    OpenGLMatrix targetPosition;
+    // Necessary matrices
     OpenGLMatrix lastKnownLocation;
     OpenGLMatrix phoneLocation;
 
@@ -232,17 +229,16 @@ public class VuforiaHelper
     // Returns the average hue determined from a sample pixel area
     public float getAverageJewelColor(int x, int y)
     {
-        // Reset transfer, sum, and output arrays to ensure that we don't accidentally reuse old values
-        colorTransfer[0] = 0;
-        colorTransfer[1] = 0;
-        colorTransfer[2] = 0;
-        colorSum[0] = 0;
-        colorSum[1] = 0;
-        colorSum[2] = 0;
-        colorOutput[0] = 0;
-        colorOutput[1] = 0;
-        colorOutput[2] = 0;
-
+        // todo Test
+        // Reset transfer and output arrays to ensure that we don't accidentally reuse old values
+//        colorTransfer[0] = 0;
+//        colorTransfer[1] = 0;
+//        colorTransfer[2] = 0;
+//        colorOutput[0] = 0;
+//        colorOutput[1] = 0;
+//        colorOutput[2] = 0;
+        Arrays.fill(colorTransfer, 0);
+        Arrays.fill(colorOutput, 0);
         // Ensure that we do not attempt to take pixels from outside the image border
         if (x >= 0 && x < Constants.IMAGE_WIDTH - Constants.JEWEL_SAMPLE_LENGTH / 2 && y >= 0 &&
                 y < Constants.IMAGE_HEIGHT - Constants.JEWEL_SAMPLE_LENGTH / 2)
@@ -260,7 +256,7 @@ public class VuforiaHelper
                     Color.colorToHSV(color, colorTransfer);
 
                     // Sum the HSV values of all pixels in bitmap
-                    colorSum[0] += colorTransfer[0];
+                    colorOutput[0] += colorTransfer[0];
 
                     // Draw white border around sample region for debugging
                     if ((j == y - Constants.JEWEL_SAMPLE_LENGTH / 2 + 1) || (j == y + Constants.JEWEL_SAMPLE_LENGTH / 2 - 1)
@@ -270,8 +266,8 @@ public class VuforiaHelper
                     }
                 }
             }
-            // Normalize output for 32x32 = 4096 pixel square above
-            colorOutput[0] = colorSum[0] / 4096;
+            // Normalize output for 64x64 = 4096 pixel square above
+            colorOutput[0] /= 4096;
         }
         return colorOutput[0]; // Return the average hue
     }

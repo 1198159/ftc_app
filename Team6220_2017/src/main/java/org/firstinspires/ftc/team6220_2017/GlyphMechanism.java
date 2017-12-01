@@ -6,15 +6,14 @@ package org.firstinspires.ftc.team6220_2017;
 
 public class GlyphMechanism
 {
-    MasterOpMode masterOpMode;
+    MasterOpMode op;
 
     int[] glyphHeights;
-    double count = 0.001;
 
     // We pass in MasterOpMode so that this class can access important functionalities such as telemetry
     public GlyphMechanism (MasterOpMode mode, int[] GlyphHeights)
     {
-        this.masterOpMode = mode;
+        this.op = mode;
         this.glyphHeights = GlyphHeights;
     }
 
@@ -23,67 +22,51 @@ public class GlyphMechanism
     {
         // 1st driver controls------------------------------------------------
          // Collect glyphs
-        if (masterOpMode.driver2.isButtonJustPressed(Button.DPAD_DOWN))
+        if (op.driver2.isButtonJustPressed(Button.DPAD_DOWN))
         {
-            masterOpMode.motorCollectorLeft.setPower(-1.0);
-            masterOpMode.motorCollectorRight.setPower(1.0);
+            op.motorCollectorLeft.setPower(-1.0);
+            op.motorCollectorRight.setPower(1.0);
         }
          // Score glyphs
-        else if (masterOpMode.driver2.isButtonJustPressed(Button.DPAD_UP))
+        else if (op.driver2.isButtonJustPressed(Button.DPAD_UP))
         {
-            masterOpMode.motorCollectorLeft.setPower(0.5);
-            masterOpMode.motorCollectorRight.setPower(-0.5);
+            op.motorCollectorLeft.setPower(0.5);
+            op.motorCollectorRight.setPower(-0.5);
         }
         //---------------------------------------------------------------------
 
 
         // 2nd driver controls-------------------------------------------------
          // Raise the glyphter to different positions corresponding to the buttons a, b, y, and x
-        if (masterOpMode.driver2.isButtonJustPressed(Button.A))
+        if (op.driver2.isButtonJustPressed(Button.A))
         {
-            masterOpMode.motorGlyphter.setTargetPosition(glyphHeights[0]);
-            masterOpMode.motorGlyphter.setPower(-0.25);
+            op.motorGlyphter.setTargetPosition(glyphHeights[0]);
+            op.motorGlyphter.setPower(0.25);
         }
-        else if (masterOpMode.driver2.isButtonJustPressed(Button.B))
+        else if (op.driver2.isButtonJustPressed(Button.B))
         {
-            masterOpMode.motorGlyphter.setTargetPosition(glyphHeights[1]);
-            masterOpMode.motorGlyphter.setPower(-0.25);
+            op.motorGlyphter.setTargetPosition(glyphHeights[1]);
+            op.motorGlyphter.setPower(0.25);
         }
-        else if (masterOpMode.driver2.isButtonJustPressed(Button.Y))
+        else if (op.driver2.isButtonJustPressed(Button.Y))
         {
-            masterOpMode.motorGlyphter.setTargetPosition(glyphHeights[2]);
-            masterOpMode.motorGlyphter.setPower(-0.25);
+            op.motorGlyphter.setTargetPosition(glyphHeights[2]);
+            op.motorGlyphter.setPower(0.25);
         }
-        else if (masterOpMode.driver2.isButtonJustPressed(Button.X))
+        else if (op.driver2.isButtonJustPressed(Button.X))
         {
-            masterOpMode.motorGlyphter.setTargetPosition(glyphHeights[3]);
-            masterOpMode.motorGlyphter.setPower(-0.25);
+            op.motorGlyphter.setTargetPosition(glyphHeights[3]);
+            op.motorGlyphter.setPower(0.25);
         }
          // Stow glyph mechanism
-        else if (masterOpMode.driver2.isButtonJustPressed(Button.BACK))
+        else if (op.driver2.isButtonJustPressed(Button.BACK))
         {
-            masterOpMode.motorGlyphter.setTargetPosition(0);
-            masterOpMode.motorGlyphter.setPower(-0.25);
+            op.motorGlyphter.setTargetPosition(0);
+            op.motorGlyphter.setPower(0.25);
         }
         //----------------------------------------------------------------------
 
-
-        masterOpMode.telemetry.addData("Glyphter Enc: ", masterOpMode.motorGlyphter.getCurrentPosition());
-        masterOpMode.telemetry.update();
-    }
-    public void goToPosition(double target)
-    {
-        double difference = 1000;
-
-        while (difference >= 50 && masterOpMode.opModeIsActive())
-        {
-            difference = target - masterOpMode.motorGlyphter.getCurrentPosition();
-            if (count == 0.001)
-            {
-                count = difference;
-            }
-            masterOpMode.motorGlyphter.setPower(difference / count);
-            masterOpMode.idle();
-        }
+        op.telemetry.addData("Glyphter Enc: ", op.motorGlyphter.getCurrentPosition());
+        op.telemetry.update();
     }
 }
