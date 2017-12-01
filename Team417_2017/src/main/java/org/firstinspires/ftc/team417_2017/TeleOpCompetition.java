@@ -13,6 +13,8 @@ public class TeleOpCompetition extends MasterTeleOp
         telemetry.addData("Init:", "Done");
         telemetry.update();
         waitForStart();
+        curGGPos = motorGlyphGrab.getCurrentPosition(); // 0 is open (closing is positive, opening is negative)
+        maxGGPos = 10 * COUNTS_PER_GG_REV; // maxGGPos equals the # rev to open GG times 103 counts per rev
         while (opModeIsActive())
         {
             servoJewel.setPosition(JEWEL_INIT);

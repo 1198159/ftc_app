@@ -39,6 +39,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     // Declare constants
     static final double COUNTS_PER_MOTOR_REV = 1120;
+    static final int COUNTS_PER_GG_REV = 103;
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 6.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
@@ -75,7 +76,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorGlyphLeft = hardwareMap.dcMotor.get("motorGlyphUp");
-        motorGlyphRight = hardwareMap.dcMotor.get("motorGlyphDown");
+        motorGlyphRight = hardwareMap.dcMotor.get("motorGlyphDown"); // TODO: rename to glyph left and right instead of up and down
         motorGlyphGrab = hardwareMap.dcMotor.get("motorGlyphGrab");
 
         // get a reference to the color sensor.
@@ -116,6 +117,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorGlyphLeft.setDirection(DcMotor.Direction.FORWARD);
         motorGlyphRight.setDirection(DcMotor.Direction.REVERSE);
         motorGlyphGrab.setDirection(DcMotor.Direction.FORWARD);
+
+        motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         motorFL.setPower(0);
         motorFR.setPower(0);

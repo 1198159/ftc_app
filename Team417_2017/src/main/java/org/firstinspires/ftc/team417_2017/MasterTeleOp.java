@@ -12,14 +12,6 @@ import org.firstinspires.ftc.robotcore.external.Func;
 
 abstract public class MasterTeleOp extends MasterOpMode
 {
-
-    /*
-    This keeps track of the side or corner of the robot that is considered "forwards" by the driver.
-    0 degrees is the side of the robot with with the phone, and since there are eight possible
-    fronts, we add 45 degrees to 0 as we rotate the robot to the right.
-     */
-    int frontAngle = 0;
-
     double anglePivot;
     double robotAngle;
     double jpivot;
@@ -27,13 +19,9 @@ abstract public class MasterTeleOp extends MasterOpMode
     double pivot;
     double error;
 
-    // angle is the arc tangent of (-jx/jy), considering that 0 degrees is forwards
-    double driveAngle; // used to calculate the drive angle based on the x and y position on the joystick
     double y;
     double x;
-    double power;
     double pivotPower;
-    double angle;
     final double ADAGIO_POWER = 0.45;
 
     boolean isModeReversed = true;
@@ -42,6 +30,12 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isRightBumperPushed = false;
     private ElapsedTime runtime = new ElapsedTime();
     AvgFilter filterJoyStickInput = new AvgFilter();
+
+    // declare variables for the GG (AndyMarkNeverest 3.7 motor is 103 counts per rev)
+    int curGGPos;
+    int maxGGPos;
+    int glyphLiftPos;
+
 
     void omniDriveTeleOp()
     {
@@ -111,13 +105,16 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorGlyphLeft.setPower(0.0);
             motorGlyphRight.setPower(0.0);
         }
+        telemetry.addData("GlyphLeftPos: ", motorGlyphLeft.getCurrentPosition());
+        telemetry.addData("GlyphRightPos: ", motorGlyphRight.getCurrentPosition());
 
         // Glyph grabber open/close
-        if(gamepad2.right_bumper) // close
+        curGGPos = motorGlyphGrab.getCurrentPosition(); // set the current position of the GG
+        if(gamepad2.right_bumper && curGGPos<maxGGPos) // close (counter goes positive)
         {
-            motorGlyphGrab.setPower(powerGlyphGrab);
+            motorGlyphGrab.setPower(powerGlyphGrab); // a bit less than 10.1049667, button that zeros it
         }
-        else if(gamepad2.left_bumper) // open
+        else if(gamepad2.left_bumper && curGGPos>0) // open (counter goes negative)
         {
             motorGlyphGrab.setPower(-powerGlyphGrab);
         }
