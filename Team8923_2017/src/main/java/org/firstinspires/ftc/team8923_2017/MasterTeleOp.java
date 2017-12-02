@@ -123,14 +123,13 @@ public abstract class MasterTeleOp extends Master
             liftMoving = true;
             GGLiftTimer.reset();
 
-            /*
             if(gamepad1.dpad_up && liftStage < 2)
                 liftStage++;
             else if(gamepad1.dpad_down && liftStage > 0)
                 liftStage--;
 
-            motorGG.setTargetPosition(GGZero + (liftStage * 1700));//(liftStage * GGLiftTicks)
-            */
+            motorGG.setTargetPosition(GGZero + (liftStage * GGLiftTicks));//1700
+            /*
             if(gamepad1.dpad_up && motorGG.getCurrentPosition() < 1700)
             {
                 motorGG.setTargetPosition(1700);
@@ -154,12 +153,7 @@ public abstract class MasterTeleOp extends Master
                 {
                     motorGG.setTargetPosition(1700);
                 }
-            }
-
-
-
-
-
+            }*/
         }
 
         if(liftMoving)
@@ -201,8 +195,8 @@ public abstract class MasterTeleOp extends Master
         {
             if(!liftModeStateChange)
             {
+                // 3000 here just to set a target that's far enough out of the way so as not to worry about meeting it
                 motorGG.setTargetPosition(motorGG.getCurrentPosition() + 3000);
-                smallMovementsUp ++;
                 liftModeStateChange = true;
             }
             motorGG.setPower(0.25);
@@ -211,8 +205,8 @@ public abstract class MasterTeleOp extends Master
         {
             if(!liftModeStateChange)
             {
+                // 3000 here just to set a target that's far enough out of the way so as not to worry about meeting it
                 motorGG.setTargetPosition(motorGG.getCurrentPosition() - 3000);
-                smallMovementsDown ++;
                 liftModeStateChange = true;
             }
             motorGG.setPower(-0.25);
