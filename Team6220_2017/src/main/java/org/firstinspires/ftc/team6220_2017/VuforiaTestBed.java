@@ -19,7 +19,8 @@ public class VuforiaTestBed extends MasterAutonomous
 
         vuforiaHelper.getVumark();
 
-        double MM_PER_ANDYMARK_TICK = (Math.PI * Constants.WHEEL_DIAMETER_MM) / (Constants.ANDYMARK_TICKS_PER_ROTATION * Constants.GEAR_RATIO);
+        waitForStart();
+
 
         //if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
@@ -32,7 +33,5 @@ public class VuforiaTestBed extends MasterAutonomous
             telemetry.addData("vuMark ", "not visible");
 
         telemetry.update();
-
-        waitForStart();
     }
 }

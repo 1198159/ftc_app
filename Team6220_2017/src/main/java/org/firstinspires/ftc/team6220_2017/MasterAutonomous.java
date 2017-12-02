@@ -162,7 +162,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
             // Once again, do nothing if undetermined
         }
-        pauseWhileUpdating(0.5);
+        pauseWhileUpdating(0.7);
 
         lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
         verticalJewelServoToggler.toggle();
