@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
 /**
  * A test to confirm that we can compile code in each new team project
  */
-@TeleOp(name="test 417_2017", group = "Swerve")
+//@TeleOp(name="test 417_2017", group = "Swerve")
 // @Disabled
 public class testOpMode extends LinearOpMode
 {

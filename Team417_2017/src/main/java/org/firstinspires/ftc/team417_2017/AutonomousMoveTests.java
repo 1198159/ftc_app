@@ -2,7 +2,7 @@ package org.firstinspires.ftc.team417_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Autonomous Move Tests", group = "Swerve")
+//@Autonomous(name="Autonomous Move Tests", group = "Swerve")
 // @Disabled
 
 public class AutonomousMoveTests extends MasterAutonomous
@@ -23,7 +23,7 @@ public class AutonomousMoveTests extends MasterAutonomous
 
         Kmove = 1.0/1200.0;
         MINSPEED = 0.3;
-        TOL = 60;
+
         TOL_ANGLE = 3;
         Kpivot = 1/140.0;
         PIVOT_MINSPEED = 0.15;

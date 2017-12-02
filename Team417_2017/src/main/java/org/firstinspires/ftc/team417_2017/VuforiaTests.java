@@ -59,7 +59,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
-@TeleOp(name="VuMarkTest", group ="Concept")
+//@TeleOp(name="VuMarkTest", group ="Concept")
 //@Disabled
 public class VuforiaTests extends LinearOpMode
 {

@@ -2,7 +2,7 @@ package org.firstinspires.ftc.team417_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Encoder Test", group = "Swerve")
+//@Autonomous(name="Encoder Test", group = "Swerve")
 // @Disabled
 
 public class EncoderTest extends MasterAutonomous
