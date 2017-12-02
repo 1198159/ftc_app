@@ -331,8 +331,8 @@ public abstract class MasterAutonomous extends Master
     }
     void openGG()
     {
-        servoGGL.setPosition(0.55); //
-        servoGGR.setPosition(0.05); //
+        servoGGL.setPosition(0.1); //
+        servoGGR.setPosition(0.32); //
     }
 
     void MoveIMU(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
@@ -983,7 +983,6 @@ public abstract class MasterAutonomous extends Master
 
         do
             {
-
                 Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopLeft);
                 Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopRight);
                 Color.RGBToHSV((sensorBottomRight.red() * 255) / 800, (sensorBottomRight.green() * 255) / 800, (sensorBottomRight.blue() * 255) / 800, hsvValuesBottomRight);
@@ -1021,50 +1020,37 @@ public abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
-    void alignOnLine55(double saturationValue)
+    void alignOnLine55(double saturationValue, double timeout)
     {
         float currentAngle;
         //Go forwards until any sensor sees the line
         double referenceAngle = imu.getAngularOrientation().firstAngle;//TODO declare this in init hardware auto
 
-        do {
-
-
-            do
+        while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue))
+        {
+            while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue))
             {
-                MoveIMUCont(referenceAngle, 0.015, 0.3, saturationValue);
-
+                MoveIMUCont(referenceAngle, 0.015, 0.28, saturationValue);
             }
-            while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue)); //TODO Change value to correct Hue value
-            stopDriving();
-
 
             if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
             //Top right sensor is on the line, but rest aren't
             {
                 //Drive at 55 degrees until the left sensor is on the line
-
-                do
+                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue)
                 {
                     driveOmni45Cont(-55, 0.2, 0, saturationValue);
                 }
-                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue);
-                stopDriving();
             }
 
             if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
             //Right sensors are on the line, but left isn't
             {
                 //Drive at 55 degrees until the left sensor is on the line
-
-                do
+                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue)
                 {
                     driveOmni45Cont(-55, 0.2, 0, saturationValue);
                 }
-                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue);
-                stopDriving();
-
-
             }
 
 
@@ -1072,15 +1058,13 @@ public abstract class MasterAutonomous extends Master
             //Only top left sensor sees line
             {
                 //Drive left until the right sensors see the line
-                do {
+                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue))
+                {
                     MoveIMUContLeft(referenceAngle, 0, 0.25, saturationValue);
                 }
-                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue));
-
 
                 //Drive at 55 degrees until the left sensor is on the line
-
-                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue) ;
+                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue)
                 {
                     driveOmni45Cont(-55, 0.2, 0, saturationValue);
                 }
@@ -1090,8 +1074,10 @@ public abstract class MasterAutonomous extends Master
             if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
             //Top left and right sensor on line
             {
+                /*
                 //Pivots until current angle is 0
-                do {
+                do
+                {
                     motorFL.setPower(0);
                     motorFR.setPower(0.2);
                     motorBL.setPower(0.2);
@@ -1102,23 +1088,21 @@ public abstract class MasterAutonomous extends Master
                 while ((opModeIsActive()) && (currentAngle < referenceAngle + TOL) && (currentAngle > referenceAngle - TOL));
                 stopDriving();
                 runtime.reset();
+                */
 
-                do {
+                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue))
+                {
                     MoveIMUContLeft(referenceAngle, 0, 0.25, saturationValue);
                     colorSensorHSV();
                 }
-                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
-                stopDriving();
-
                 //Drive at 55 degrees until the left sensor is on the line
-                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue)) ;
+                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue))
                 {
                     driveOmni45Cont(-55, 0.2, 0, saturationValue);
                 }
                 stopDriving();
             }
         }
-        while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
         stopDriving();
 
 
@@ -1499,9 +1483,8 @@ public abstract class MasterAutonomous extends Master
     public boolean GetLeftJewelColorCount() throws InterruptedException
     {
         pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
-
-        if (pose!=null)
-        {
+        Vec2F leftJewel;
+        if (pose!=null) {
             Matrix34F rawPose = new Matrix34F();
             //rawPose = new Matrix34F();
             float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
@@ -1511,8 +1494,12 @@ public abstract class MasterAutonomous extends Master
             //Right: (390, -180, -102)
             //Left: (165, -175, -102)
             Vec2F rightJewel = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(390, -180, -102));
-            Vec2F leftJewel = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
-
+            leftJewel = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
+        }
+        else
+            {
+                leftJewel = new Vec2F(781.0f,509.0f);   // set default pixel location of leftjewel//TODO: Find correct dimensions
+            }
 
             // Takes a frame
             frame = vuforia.getFrameQueue().take();
@@ -1538,10 +1525,10 @@ public abstract class MasterAutonomous extends Master
             int LeftY = (int) leftJewel.getData()[1];
 
             GetJewelColor(LeftX, LeftY);
-        }
+
         return isLeftJewelRed;
     }
-
+/*
     //OLD
     public boolean GetLeftJewelColor() throws InterruptedException
     {
@@ -1609,7 +1596,7 @@ public abstract class MasterAutonomous extends Master
         else isLeftJewelRed = false;
         return isLeftJewelRed;
     }
-
+*/
 
     public void initVuforia()
     {

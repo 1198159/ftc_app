@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous(name="Move Test 2", group = "Swerve")
-//@Disabled
+@Disabled
 /**
  * Runable shell for Master Autonomous code
  */
@@ -23,7 +23,7 @@ public class MoveTest2 extends MasterAutonomous
 
         waitForStart();
 
-        alignOnLine55(0.5);
+        alignOnLine55(0.5, 4.0);
         while (opModeIsActive())
         {
             //Run();

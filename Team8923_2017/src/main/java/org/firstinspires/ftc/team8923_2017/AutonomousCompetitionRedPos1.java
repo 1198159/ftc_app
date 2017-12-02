@@ -59,13 +59,23 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         moveGG(-1500);
         */
         sleep(700);
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 2.15);//Go towards parking spot//Was1.65
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 2.26);//Go towards parking spot//Was 2.15
         MoveIMURight(referenceAngle, 45.0, 0.0, 0.015, 0.35, 0.4);
         IMUPivot(referenceAngle, 90, 0.25, 0.015);
         referenceAngle += 90.0;
         referenceAngle = adjustAngles(referenceAngle);
         //MoveIMU(referenceAngle, 40.0, 0.0, 0.015, 0.5, 0.8);
+        sleep(500);
         moveGG(-1500);
+        sleep(500);
+        alignOnLine55(0.5, 3.0);
+        sleep(1000);
+        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
+        sleep(500);
+        openGG();
+        sleep(500);
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.6);
+
 
 
         while (opModeIsActive())

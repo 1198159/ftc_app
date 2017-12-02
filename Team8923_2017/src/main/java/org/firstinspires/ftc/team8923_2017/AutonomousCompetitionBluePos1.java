@@ -32,7 +32,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         moveGG(1500);
         DropJJ();
         sleep(1000);
-        GetLeftJewelColor();
+        GetLeftJewelColorCount();
         //CameraDevice.getInstance().setFlashTorchMode(false);
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
@@ -49,13 +49,21 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
         sleep(700);
-        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 2.15);//Go towards parking spot//Was1.65
-        MoveIMURight(referenceAngle, 45.0, 0.0, 0.015, 0.35, 0.4);
+        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 2.01);//Go towards parking spot//Was 2.15
+        MoveIMURight(referenceAngle, 45.0, 0.0, 0.015, 0.35, 0.4); // Was 0.4
         IMUPivot(referenceAngle, 90, 0.25, 0.015);
         referenceAngle += 90.0;
         referenceAngle = adjustAngles(referenceAngle);
-        //MoveIMU(referenceAngle, 40.0, 0.0, 0.015, 0.5, 0.8);
+        sleep(500);
         moveGG(-1500);
+        sleep(500);
+        alignOnLine55(0.4, 3.0);
+        sleep(1000);
+        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
+        sleep(500);
+        openGG();
+        sleep(500);
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.6);
         while (opModeIsActive())
         {
             //Run();

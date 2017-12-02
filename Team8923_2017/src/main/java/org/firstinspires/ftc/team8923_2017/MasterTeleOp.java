@@ -24,6 +24,9 @@ public abstract class MasterTeleOp extends Master
     double kAngle;
     double jPivot;//for pivoting
 
+    int smallMovementsUp = 0;
+    int smallMovementsDown = 0;
+
     ElapsedTime GGLiftTimer = new ElapsedTime();
     ElapsedTime SlowModeTimer = new ElapsedTime();
 
@@ -87,7 +90,7 @@ public abstract class MasterTeleOp extends Master
     */
     void RunGG()
     {
-        if(!liftMoving && (gamepad1.dpad_down || gamepad1.dpad_up))
+        /*if(!liftMoving && (gamepad1.dpad_down || gamepad1.dpad_up))
         {
             liftMoving = true;
             GGLiftTimer.reset();
@@ -113,19 +116,49 @@ public abstract class MasterTeleOp extends Master
         {
             motorGG.setPower(0.0);
             liftMoving = false;
-        }
+        }*/
 
         if(!liftModeStateChange && !liftMoving && (gamepad1.dpad_up || gamepad1.dpad_down) && GGLiftTimer.milliseconds() > 500)
         {
             liftMoving = true;
             GGLiftTimer.reset();
 
+            /*
             if(gamepad1.dpad_up && liftStage < 2)
                 liftStage++;
             else if(gamepad1.dpad_down && liftStage > 0)
                 liftStage--;
 
-            motorGG.setTargetPosition(GGZero + (liftStage * 1700)/*(liftStage * GGLiftTicks)*/);
+            motorGG.setTargetPosition(GGZero + (liftStage * 1700));//(liftStage * GGLiftTicks)
+            */
+            if(gamepad1.dpad_up && motorGG.getCurrentPosition() < 1700)
+            {
+                motorGG.setTargetPosition(1700);
+            }
+            else if(gamepad1.dpad_up && motorGG.getCurrentPosition() >= 1700)
+            {
+                motorGG.setTargetPosition(3400);
+            }
+            else if(gamepad1.dpad_down && motorGG.getCurrentPosition() >= 3400)
+            {
+                motorGG.setTargetPosition(1700);
+            }
+            else if(gamepad1.dpad_down && motorGG.getCurrentPosition() <= 3400)
+            {
+                if(gamepad1.dpad_down && motorGG.getCurrentPosition() <= 1700)
+                {
+                    motorGG.setTargetPosition(0);
+                }
+
+                else
+                {
+                    motorGG.setTargetPosition(1700);
+                }
+            }
+
+
+
+
 
         }
 
@@ -169,6 +202,7 @@ public abstract class MasterTeleOp extends Master
             if(!liftModeStateChange)
             {
                 motorGG.setTargetPosition(motorGG.getCurrentPosition() + 3000);
+                smallMovementsUp ++;
                 liftModeStateChange = true;
             }
             motorGG.setPower(0.25);
@@ -178,6 +212,7 @@ public abstract class MasterTeleOp extends Master
             if(!liftModeStateChange)
             {
                 motorGG.setTargetPosition(motorGG.getCurrentPosition() - 3000);
+                smallMovementsDown ++;
                 liftModeStateChange = true;
             }
             motorGG.setPower(-0.25);
