@@ -33,8 +33,8 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     // declare variables for the GG (AndyMarkNeverest 3.7 motor is 103 counts per rev)
     int curGGPos;
-    int maxGGPos;
-    int glyphLiftPos;
+    int minGGPos = -90; // a bit less than the original starting position of zero (where we start it)
+    int maxGGPos = -289; // maxGGPos equals the # rev to close/open GG (6.5 rev) times 44.4 counts per rev
 
 
     void omniDriveTeleOp()
@@ -108,13 +108,22 @@ abstract public class MasterTeleOp extends MasterOpMode
         telemetry.addData("GlyphLeftPos: ", motorGlyphLeft.getCurrentPosition());
         telemetry.addData("GlyphRightPos: ", motorGlyphRight.getCurrentPosition());
 
+        if (gamepad2.a) // if button "A" is pressed, the GG is stuck, thus we increase the power
+        {
+            powerGlyphGrab = 0.35;
+        }
+        if (gamepad2.b) // if button "B" is pressed, return to normal GG power (this is the default if no buttons are pressed)
+        {
+            powerGlyphGrab = 0.1;
+        }
+
         // Glyph grabber open/close
         curGGPos = motorGlyphGrab.getCurrentPosition(); // set the current position of the GG
-        if(gamepad2.right_bumper && curGGPos<maxGGPos) // close (counter goes positive)
+        if(gamepad2.right_bumper && curGGPos > maxGGPos) // CLOSE (counter goes negative when closing)
         {
             motorGlyphGrab.setPower(powerGlyphGrab); // a bit less than 10.1049667, button that zeros it
         }
-        else if(gamepad2.left_bumper && curGGPos>0) // open (counter goes negative)
+        else if(gamepad2.left_bumper && curGGPos < minGGPos) // OPEN (counter goes positive when opening)
         {
             motorGlyphGrab.setPower(-powerGlyphGrab);
         }

@@ -14,12 +14,13 @@ public class TeleOpCompetition extends MasterTeleOp
         telemetry.update();
         waitForStart();
         curGGPos = motorGlyphGrab.getCurrentPosition(); // 0 is open (closing is positive, opening is negative)
-        maxGGPos = 10 * COUNTS_PER_GG_REV; // maxGGPos equals the # rev to open GG times 103 counts per rev
         while (opModeIsActive())
         {
             servoJewel.setPosition(JEWEL_INIT);
             //imuOmniTeleOp();
             omniDriveTeleOp();
+            //telemetry.addData("GGPos: ", motorGlyphGrab.getCurrentPosition());
+            //telemetry.update();
             // TODO: add some telemetry to display the motor power
             idle();
         }
