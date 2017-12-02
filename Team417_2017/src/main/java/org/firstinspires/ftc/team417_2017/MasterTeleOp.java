@@ -33,8 +33,17 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     // declare variables for the GG (AndyMarkNeverest 3.7 motor is 103 counts per rev)
     int curGGPos;
-    int minGGPos = -90; // a bit less than the original starting position of zero (where we start it)
-    int maxGGPos = -289; // maxGGPos equals the # rev to close/open GG (6.5 rev) times 44.4 counts per rev
+    int minGGPos = -180; // a bit less than the original starting position of zero (where we start it)
+    int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev
+
+    // the higher the GM is, the higher the encoder value
+    int curGLLPos;
+    int minGLLPos = 10;
+    int maxGLLPos = 4500;
+
+    int curGLRPos;
+    int minGlRPos = 10;
+    int maxGLRPos = 3800;
 
 
     void omniDriveTeleOp()
