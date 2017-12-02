@@ -75,12 +75,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             else if (driver1.isButtonJustPressed(Button.START))
                 settingUp = false;
 
-            /*
-             Wait for all buttons to be released before continuing. Otherwise, buttons are read
-             continuously in setup and may cause issues (e.g., adding multiples of the same objective)
-            */
-            while(!driverInput.areAllButtonsReleased(gamepad1)) { idle(); }
-
             // Display the current setup
             telemetry.addData("Is robot on blue alliance: ", isBlueSide);
             telemetry.addData("Is robot on left balancing stone: ", isLeftBalancingStone);

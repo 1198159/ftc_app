@@ -86,8 +86,8 @@ public class Constants
     // Glyph mechanism scoring heights.  Numbers signify the number of glyphs stacked on top of
     // each other in a column.  Units are in andymark encoder ticks
      // Note:  2, 3, and 4 are slightly higher than necessary to accommodate uncertainty in glyph size
-    public static final int HEIGHT_1 = -809;
-    public static final int HEIGHT_2 = -673;
-    public static final int HEIGHT_3 = -579;
-    public static final int HEIGHT_4 = -469;
+    public static final int HEIGHT_1 = 1213;
+    public static final int HEIGHT_2 = 1017;
+    public static final int HEIGHT_3 = 876;
+    public static final int HEIGHT_4 = 711;
 }

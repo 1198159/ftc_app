@@ -3,22 +3,30 @@ package org.firstinspires.ftc.team6220_2017;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import java.util.Arrays;
+
 /*
     Encapsulates gamepads for easy interpretation of driver input
 */
 public class DriverInput implements ConcurrentOperation
 {
-    // todo Clean up
-    private Gamepad controller;     // One state for each button; there are 13 buttons available
-    private boolean[] buttonStates = {false,false,false,false,false,false,false,false,false,false,false,false,false,false};
-    //Arrays.fill(buttonStates, false);
-    private boolean[] lastButtonStates = {false,false,false,false,false,false,false,false,false,false,false,false,false,false};
-    private double[] buttonHeldCounts = {0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    private Gamepad controller;
+    private boolean[] buttonStates;     // One state for each button; there are 14 buttons available
+    private boolean[] lastButtonStates;
+    private double[] buttonHeldCounts;
 
 
     public DriverInput(Gamepad cont)
     {
         controller = cont;
+
+        // Initialize button arrays
+        buttonStates = new boolean[14];
+        lastButtonStates = new boolean[14];
+        buttonHeldCounts = new double[14];
+        Arrays.fill(buttonStates, false);
+        Arrays.fill(lastButtonStates, false);
+        Arrays.fill(buttonHeldCounts, 0);
     }
 
     public void initialize(HardwareMap hMap){}
@@ -39,7 +47,7 @@ public class DriverInput implements ConcurrentOperation
     }
 
     // Check to see if any buttons on the gamepad are currently pressed
-    public boolean areAllButtonsReleased(Gamepad cont)
+    public boolean areAllButtonsReleased()
     {
         return !(isButtonPressed(Button.A) || isButtonPressed(Button.Y) || isButtonPressed(Button.X)
                 || isButtonPressed(Button.B) || isButtonPressed(Button.RIGHT_BUMPER)
@@ -89,7 +97,7 @@ public class DriverInput implements ConcurrentOperation
     // Call at end of loop
     public void update(double eTime)
     {
-        for(int i=0; i < 14; i++)
+        for(int i = 0; i < 14; i++)
         {
             lastButtonStates[i] = buttonStates[i];
         }

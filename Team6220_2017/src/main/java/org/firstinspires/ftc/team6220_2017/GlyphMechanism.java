@@ -59,7 +59,7 @@ public class GlyphMechanism
             op.motorGlyphter.setPower(0.25);
         }
          // Stow glyph mechanism
-        else if (op.driver2.isButtonJustPressed(Button.BACK))
+        else if (op.driver2.isButtonJustPressed(Button.START))
         {
             op.motorGlyphter.setTargetPosition(0);
             op.motorGlyphter.setPower(0.25);
