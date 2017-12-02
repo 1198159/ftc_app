@@ -59,14 +59,13 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         referenceAngle += 90.0;
         referenceAngle = adjustAngles(referenceAngle);
         sleep(500);
-        moveGG(-1500);
-        sleep(500);
         alignOnLine55(0.4, 3.0);
         sleep(1000);
         MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
         sleep(500);
         openGG();
         sleep(500);
+        moveGG(-1500);
         MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.6);
 
         while (opModeIsActive())

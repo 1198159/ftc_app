@@ -66,14 +66,13 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         referenceAngle = adjustAngles(referenceAngle);
         //MoveIMU(referenceAngle, 40.0, 0.0, 0.015, 0.5, 0.8);
         sleep(500);
-        moveGG(-1500);
-        sleep(500);
         alignOnLine55(0.5, 3.0);
         sleep(1000);
         MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
         sleep(500);
         openGG();
         sleep(500);
+        moveGG(-1500);
         MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.6);
 
 
