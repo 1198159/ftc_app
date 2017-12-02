@@ -39,7 +39,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     // Declare constants
     static final double COUNTS_PER_MOTOR_REV = 1120;
-    static final int COUNTS_PER_GG_REV = 103;
+    static final int COUNTS_PER_GG_REV = 44;
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 6.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
@@ -63,7 +63,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     double powerGlyphUp = 0.5;
     double powerGlyphDown = -0.5;
-    double powerGlyphGrab = 0.2;
+    double powerGlyphGrab = 0.1;
 
     double px;
     double py;
@@ -118,7 +118,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorGlyphRight.setDirection(DcMotor.Direction.REVERSE);
         motorGlyphGrab.setDirection(DcMotor.Direction.FORWARD);
 
-        motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // in float mode because we're squishing a glyph
 
         motorFL.setPower(0);
         motorFR.setPower(0);
