@@ -84,6 +84,9 @@ public class VuforiaDetection
     int bluePixels = 0;
     int otherPixels = 0;
 
+    Vec2F jewelLeft;
+    Vec2F jewelRight;
+
     OpenGLMatrix pose;
 
     /**
@@ -243,46 +246,51 @@ public class VuforiaDetection
             float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
             rawPose.setData(poseData);
             // image size is 254 mm x 184 mm
-            Vec2F jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(150, -160, -102));
-            Vec2F jewelRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(375, -160, -102));
-
-            // takes the frame at the head of the queue
-            frame = vuforia.getFrameQueue().take();
-
-            long numImages = frame.getNumImages();
-
-            for (int j = 0; j < numImages; j++)
-            {
-                image = frame.getImage(j);
-                imageFormat = image.getFormat();
-
-                if (imageFormat == PIXEL_FORMAT.RGB565) break;
-            }
-
-            int imageWidth = image.getWidth();
-            int imageHeight = image.getHeight();
-
-            // create bitmap of image to detect color
-            bm = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
-            bm.copyPixelsFromBuffer(image.getPixels());
-
-            // coordinates in image
-            // TODO: check to make sure x < 1280; y < 720
-            int lx = (int) jewelLeft.getData()[0];
-            int ly = (int) jewelLeft.getData()[1];
-
-            int rx = (int) jewelRight.getData()[0];
-            int ry = (int) jewelRight.getData()[1];
-
-            //avgLeftJewelColor = GetAvgJewelColor(lx, ly); // get the averaged jewel HSV color value for the left jewel
-            //avgRightJewelColor = GetAvgJewelColor(rx, ry);
-            avgLeftJewelColor = GetAvgRGBColor(lx, ly);
-            avgRightJewelColor = GetAvgRGBColor(rx, ry);
-
-            // adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
-            colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
-            colorRight = (avgRightJewelColor < 45) ? avgRightJewelColor + 300 : avgRightJewelColor;
+            jewelLeft = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(150, -160, -102));
+            jewelRight = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(375, -160, -102));
         }
+        else
+        {
+            // image size is 254 mm x 184 mm
+            jewelLeft = new Vec2F(641, 503); // left jewel
+            jewelRight = new Vec2F(1056, 494); // right jewel
+        }
+        // takes the frame at the head of the queue
+        frame = vuforia.getFrameQueue().take();
+
+        long numImages = frame.getNumImages();
+
+        for (int j = 0; j < numImages; j++)
+        {
+            image = frame.getImage(j);
+            imageFormat = image.getFormat();
+
+            if (imageFormat == PIXEL_FORMAT.RGB565) break;
+        }
+
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+
+        // create bitmap of image to detect color
+        bm = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
+        bm.copyPixelsFromBuffer(image.getPixels());
+
+        // coordinates in image
+        // TODO: check to make sure x < 1280; y < 720
+        int lx = (int) jewelLeft.getData()[0];
+        int ly = (int) jewelLeft.getData()[1];
+
+        int rx = (int) jewelRight.getData()[0];
+        int ry = (int) jewelRight.getData()[1];
+
+        //avgLeftJewelColor = GetAvgJewelColor(lx, ly); // get the averaged jewel HSV color value for the left jewel
+        //avgRightJewelColor = GetAvgJewelColor(rx, ry);
+        avgLeftJewelColor = GetAvgRGBColor(lx, ly);
+        avgRightJewelColor = GetAvgRGBColor(rx, ry);
+
+        // adjust color for red range (if red is between 0 and 45 degrees, shift by adding 300 so that red is greater than blue
+        colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
+        colorRight = (avgRightJewelColor < 45) ? avgRightJewelColor + 300 : avgRightJewelColor;
         deltaColorHSV = colorLeft - colorRight;
         // if left color is negative, then left side is blue
         if (deltaColorHSV < 0) isLeftJewelBlue = true; // BLUE
