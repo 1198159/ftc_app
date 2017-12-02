@@ -53,7 +53,7 @@ public class AutonomousBlue extends MasterAutonomous
         Kpivot = 1/140.0;
         PIVOT_MINSPEED = 0.15;
 
-        if (VuforiaDetect.isVisible()) // if vuMark seen is not unknown,
+        if (VuforiaDetect.isVisible())
         {
             VuforiaDetect.GetVumark(); // move to initialization
                 /* Found an instance of the template. In the actual game, you will probably
@@ -62,47 +62,46 @@ public class AutonomousBlue extends MasterAutonomous
             telemetry.addData("VuMark", "%s visible", VuforiaDetect.vuMark);
                 /* We further illustrate how to decompose the pose into useful rotational and
                  * translational components */
-
-            // lower the servos, putting jewel manipulator into position
-            servoJewel.setPosition(JEWEL_LOW);
-            sleep(200);
-
-            VuforiaDetect.GetLeftJewelColor(); // calculate if the left jewel is blue or not
-
-            // display the color values for each jewel color
-            telemetry.addData("leftHue ", VuforiaDetect.avgLeftJewelColor);
-            telemetry.addData("rightHue ", VuforiaDetect.avgRightJewelColor);
-            telemetry.update();
-
-            if(VuforiaDetect.isLeftJewelBlue) // if the left jewel is blue,
-            {
-                pivotWithReference(-15, refAngle, 0.5); // then pivot right
-                sleep(200);
-                servoJewel.setPosition(JEWEL_INIT); // move servo back
-                sleep(200);
-                pivotWithReference(0, refAngle, 0.5); // then pivot back
-                sleep(200);
-            }
-            else // if the left jewel is red,
-            {
-                pivotWithReference(15, refAngle, 0.5); // then pivot left
-                sleep(200);
-                servoJewel.setPosition(JEWEL_INIT); // move servo back
-                sleep(200);
-                pivotWithReference(0, refAngle, 0.5); // then pivot back
-                sleep(200);
-            }
         }
         else
         {
             telemetry.addData("VuMark", "not visible");
-            // TODO: write software for guessing the points for the two Jewels
+            telemetry.update();
         }
+
+        // lower the servos, putting jewel manipulator into position
+        servoJewel.setPosition(JEWEL_LOW);
+        sleep(200);
+
+        VuforiaDetect.GetLeftJewelColor(); // calculate if the left jewel is blue or not
+
+        // display the color values for each jewel color
+        telemetry.addData("leftHue ", VuforiaDetect.avgLeftJewelColor);
+        telemetry.addData("rightHue ", VuforiaDetect.avgRightJewelColor);
         telemetry.update();
+
+        if(VuforiaDetect.isLeftJewelBlue) // if the left jewel is blue,
+        {
+            pivotWithReference(-15, refAngle, 0.5); // then pivot right
+            sleep(200);
+            servoJewel.setPosition(JEWEL_INIT); // move servo back
+            sleep(200);
+            pivotWithReference(0, refAngle, 0.5); // then pivot back
+            sleep(200);
+        }
+        else // if the left jewel is red,
+        {
+            pivotWithReference(15, refAngle, 0.5); // then pivot left
+            sleep(200);
+            servoJewel.setPosition(JEWEL_INIT); // move servo back
+            sleep(200);
+            pivotWithReference(0, refAngle, 0.5); // then pivot back
+            sleep(200);
+        }
 
         if (isPosLeft) // BLUE LEFT
         {
-            moveTimed(0.6, 0, 1650); // right
+            moveTimed(0.6, 0, 1500); // right
             sleep(200);
             moveTimed(0, -0.3, 550); // back
         }
@@ -115,7 +114,5 @@ public class AutonomousBlue extends MasterAutonomous
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();
-
-        sleep(6000);
     }
 }
