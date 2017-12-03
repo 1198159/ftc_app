@@ -162,6 +162,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
             motorCollectorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motorCollectorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorCollectorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             motorCollectorLeft.setPower(0.0);
             motorCollectorRight.setPower(0.0);
             //--------------------------------------------------------------------
@@ -199,8 +200,8 @@ abstract public class MasterOpMode extends LinearOpMode
         }
         //--------------------------------------------------------------------------------------------------------------
 
-        // todo REV imu is currently taking a long time to initialize or even failing to do so; why is this?
         /*
+        // todo REV imu is currently taking a long time to initialize or even failing to do so; why is this?
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu". Certain parameters must be specified before using the imu.

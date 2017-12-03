@@ -54,9 +54,9 @@ public class Constants
 
     // Drive mode constants
     public static final double SLOW_MODE_T_FACTOR = 0.2;
-    public static final double SLOW_MODE_R_FACTOR = 0.48;
+    public static final double SLOW_MODE_R_FACTOR = 0.3;
     public static final double T_FACTOR = 0.8;
-    public static final double R_FACTOR = 0.68;
+    public static final double R_FACTOR = 0.5;
 
 
     // Servo positions--------------------------------
@@ -64,7 +64,7 @@ public class Constants
     public static final double LATERAL_JEWEL_SERVO_LEFT = 0.15;
     public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.39;
     public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.38;
-    public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.68;
+    public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.69;
 
      // todo Adjust
     public static final double WRIST_SERVO_DEPLOYED = 0.9;
@@ -86,8 +86,8 @@ public class Constants
     // Glyph mechanism scoring heights.  Numbers signify the number of glyphs stacked on top of
     // each other in a column.  Units are in andymark encoder ticks
      // Note:  2, 3, and 4 are slightly higher than necessary to accommodate uncertainty in glyph size
-    public static final int HEIGHT_1 = -9937;         // Subtract 1100 to calculated value
+    public static final int HEIGHT_1 = -9977;         // Subtract 1060 to calculated value
     public static final int HEIGHT_2 = -8173;         // Subtract 1100 to calculated value
     public static final int HEIGHT_3 = -6834;         // Subtract 1170 to calculated value
-    public static final int HEIGHT_4 = -5069;         // Subtract 1450 to calculated value
+    public static final int HEIGHT_4 = -5189;         // Subtract 1330 to calculated value
 }

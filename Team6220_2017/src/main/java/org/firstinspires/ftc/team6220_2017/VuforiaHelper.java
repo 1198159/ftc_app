@@ -33,7 +33,7 @@ import java.util.Arrays;
 
 public class VuforiaHelper
 {
-    // Vuforia variables-----------------------------------
+    // Vuforia variables------------------------------------
     VuforiaLocalizer vuforiaLocalizer;
 
     VuforiaTrackables relicTrackables;
@@ -43,12 +43,14 @@ public class VuforiaHelper
 
     boolean isVuMarkVisible;
     boolean isTracking = false;
-    //------------------------------------------------------
+    //-------------------------------------------------------
 
-    // Variables for jewel color determination--------------
-    float[] colorTransfer = new float[]{0,0,0};
+    // Variables for jewel color determination---------------
+    float[] colorTransfer = new float[]{0, 0, 0};
      // What we will eventually return
-    float[] colorOutput = new float[]{0,0,0};
+    float[] colorOutput = new float[]{0, 0, 0};
+     // Sum of all colors from sample pixels
+    float[] colorSum = new float[]{0, 0, 0};
 
      // Integer that will be used to store individual pixel colors each loop of getAverageJewelColor()
     int color = 0;
@@ -229,16 +231,19 @@ public class VuforiaHelper
     // Returns the average hue determined from a sample pixel area
     public float getAverageJewelColor(int x, int y)
     {
-        // todo Test
-        // Reset transfer and output arrays to ensure that we don't accidentally reuse old values
-//        colorTransfer[0] = 0;
-//        colorTransfer[1] = 0;
-//        colorTransfer[2] = 0;
-//        colorOutput[0] = 0;
-//        colorOutput[1] = 0;
-//        colorOutput[2] = 0;
-        Arrays.fill(colorTransfer, 0);
-        Arrays.fill(colorOutput, 0);
+        // Reset transfer, sum, and output arrays to ensure that we don't accidentally reuse old values
+        colorTransfer[0] = 0;
+        colorTransfer[1] = 0;
+        colorTransfer[2] = 0;
+        colorSum[0] = 0;
+        colorSum[1] = 0;
+        colorSum[2] = 0;
+        colorOutput[0] = 0;
+        colorOutput[1] = 0;
+        colorOutput[2] = 0;
+        //Arrays.fill(colorTransfer, 0);
+        //Arrays.fill(colorOutput, 0);
+
         // Ensure that we do not attempt to take pixels from outside the image border
         if (x >= 0 && x < Constants.IMAGE_WIDTH - Constants.JEWEL_SAMPLE_LENGTH / 2 && y >= 0 &&
                 y < Constants.IMAGE_HEIGHT - Constants.JEWEL_SAMPLE_LENGTH / 2)
@@ -256,7 +261,7 @@ public class VuforiaHelper
                     Color.colorToHSV(color, colorTransfer);
 
                     // Sum the HSV values of all pixels in bitmap
-                    colorOutput[0] += colorTransfer[0];
+                    colorSum[0] += colorTransfer[0];
 
                     // Draw white border around sample region for debugging
                     if ((j == y - Constants.JEWEL_SAMPLE_LENGTH / 2 + 1) || (j == y + Constants.JEWEL_SAMPLE_LENGTH / 2 - 1)
@@ -266,8 +271,8 @@ public class VuforiaHelper
                     }
                 }
             }
-            // Normalize output for 64x64 = 4096 pixel square above
-            colorOutput[0] /= 4096;
+            // Normalize output for 32x32 = 4096 pixel square above
+            colorOutput[0] = colorSum[0] / 4096;
         }
         return colorOutput[0]; // Return the average hue
     }
@@ -284,9 +289,10 @@ public class VuforiaHelper
             rawPose = new Matrix34F();
             float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
             rawPose.setData(poseData);
+            // todo Test jewel locations
             // Place points where we think the centers of the jewels are relative to the vuMark
-            Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(150, -190, -102));
-            Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(370, -190, -102));
+            Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(150, -220, -102));
+            Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(390, -220, -102));
 
             // Get the latest frame from vuforia
             frame = vuforiaLocalizer.getFrameQueue().take();
@@ -318,24 +324,23 @@ public class VuforiaHelper
             avgLeftJewelColor = getAverageJewelColor(lx, ly);
             avgRightJewelColor = getAverageJewelColor(rx, ry);
 
-            // Adjust color for red range.  Red color on the jewel is often between 0 and 45,
-            // so we must add 360 to ensure red is always greater than blue
-            colorLeft = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 360 : avgLeftJewelColor;
-            colorRight = (avgRightJewelColor < 45) ? avgRightJewelColor + 360 : avgRightJewelColor;
+            // todo Make sure new logic for shifting red value is correct
+            // Adjust color for red range.  Red color on the jewel can be on either side of 0, so
+            // we must subtract 360 if red values are left of 0 to ensure blue is greater than red
+            colorLeft = (avgLeftJewelColor > 315) ? avgLeftJewelColor - 360 : avgLeftJewelColor;
+            colorRight = (avgRightJewelColor > 315) ? avgRightJewelColor - 360 : avgRightJewelColor;
         }
 
         //todo Adjust value
         // Check to see if our color samples were actually on the jewel
-        if (Math.abs(colorLeft - colorRight) >= 30)
+        // If value tested is negative, then left jewel is blue.  Otherwise, right is blue
+        if (Math.abs(colorLeft - colorRight) > 5)
         {
-            // If value tested is negative, then left jewel is blue.  Otherwise, right is blue
-            if ((colorLeft - colorRight) < 0)
+            if ((colorLeft - colorRight) > 0)
                 blueJewel = BlueJewel.LEFT;
             else
                 blueJewel = BlueJewel.RIGHT;
         }
-        else {}     // If the values are too close, leave blueJewel undetermined
-
 
         return blueJewel;
     }

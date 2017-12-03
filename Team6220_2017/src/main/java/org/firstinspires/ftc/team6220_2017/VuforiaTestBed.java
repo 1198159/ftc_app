@@ -12,8 +12,6 @@ public class VuforiaTestBed extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
-        VuforiaHelper.BlueJewel blueJewel = VuforiaHelper.BlueJewel.UNDETERMINED;
-
         vuforiaHelper = new VuforiaHelper();
         vuforiaHelper.setupVuforia();
 

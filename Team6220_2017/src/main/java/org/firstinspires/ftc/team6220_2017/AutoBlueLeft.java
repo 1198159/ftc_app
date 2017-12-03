@@ -12,15 +12,14 @@ public class AutoBlueLeft extends MasterAutonomous
         boolean isBlueSide = true;
         //setRobotStartingOrientation(180);
 
-        isGlyphMechAttached = false;
-        isDriveTrainAttached = true;
         initializeAuto();
 
         waitForStart();
 
-        // Get jewel info before the match starts-----------------------------
+
         vuforiaHelper.getVumark();
-        // If the vuMark is not visible, vuforia will tell us
+        // Get jewel info-----------------------------------------------------
+         // If the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
             blueJewel = vuforiaHelper.getLeftJewelColor();
@@ -36,11 +35,11 @@ public class AutoBlueLeft extends MasterAutonomous
 
 
         knockJewel(blueJewel, isBlueSide);
-        driveToPosition(0, -500, 0.5);
+        moveRobot(-90,0.5,1.4);
+        //driveToPosition(0, -500, 0.5);
         //turn 90 degrees
         //may need to move backwards
         //deploy Glyph mech
         //score glyph
-
     }
 }

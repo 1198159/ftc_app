@@ -10,32 +10,38 @@ public class AutoBlueRight extends MasterAutonomous
     @Override
     public void runOpMode() throws InterruptedException
     {
+        boolean isBlueSide = true;
+        //setRobotStartingOrientation(180);
+
         initializeAuto();
 
         waitForStart();
 
-        //setRobotStartingOrientation(180);
-
-        boolean isBlueSide = true;
-
 
         vuforiaHelper.getVumark();
-
-
-        // if the vuMark is not visible, vuforia will tell us
+        // Get jewel info-----------------------------------------------------
+         // if the vuMark is not visible, vuforia will tell us
         if (vuforiaHelper.isVisible())
         {
             blueJewel = vuforiaHelper.getLeftJewelColor();
             telemetry.addData("Left Hue: ", vuforiaHelper.avgLeftJewelColor);
             telemetry.addData("Right Hue: ", vuforiaHelper.avgRightJewelColor);
-
-            knockJewel(blueJewel, isBlueSide);
         }
         else
         {
             telemetry.addData("vuMark: ", "not visible");
         }
-
         telemetry.update();
+        //---------------------------------------------------------------------
+
+
+        knockJewel(blueJewel, isBlueSide);
+        moveRobot(-90,0.5,1.4);
+        moveRobot(0, 0.3, 0.8);
+        //driveToPosition(0, -500, 0.5);
+        //turn 90 degrees
+        //may need to move backwards
+        //deploy Glyph mech
+        //score glyph
     }
 }

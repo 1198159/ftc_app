@@ -166,6 +166,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
         verticalJewelServoToggler.toggle();
+        pauseWhileUpdating(0.5);
     }
 
     // todo Change to be based on encoder input

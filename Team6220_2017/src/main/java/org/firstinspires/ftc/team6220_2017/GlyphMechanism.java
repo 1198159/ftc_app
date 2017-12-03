@@ -72,8 +72,8 @@ public class GlyphMechanism
          // Drive glyphter manually
         else
         {
-            op.motorGlyphter.setPower(op.gamepad2.right_stick_y);
-            op.telemetry.addData("rightStickY: ", op.gamepad2.right_stick_y);
+            op.motorGlyphter.setPower(-op.gamepad2.right_stick_y);
+            op.telemetry.addData("rightStickY: ", -op.gamepad2.right_stick_y);
         }
         //----------------------------------------------------------------------
 
@@ -83,14 +83,14 @@ public class GlyphMechanism
          // Collect glyphs
         if (op.driver2.isButtonJustPressed(Button.DPAD_DOWN))
         {
-            op.motorCollectorLeft.setPower(-0.5);
-            op.motorCollectorRight.setPower(0.5);
+            op.motorCollectorLeft.setPower(0);
+            op.motorCollectorRight.setPower(-0.6);
         }
          // Score glyphs
         else if (op.driver2.isButtonJustPressed(Button.DPAD_UP))
         {
-            op.motorCollectorLeft.setPower(0.5);
-            op.motorCollectorRight.setPower(-0.5);
+            op.motorCollectorLeft.setPower(0);
+            op.motorCollectorRight.setPower(0.6);
         }
          // Stop collector
         else if (op.driver2.isButtonJustPressed(Button.DPAD_LEFT))
