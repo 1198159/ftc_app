@@ -167,21 +167,24 @@ public abstract class MasterTeleOp extends Master
             liftMoving = false;
         }
 
+        //full close
         if(gamepad1.a && !liftMoving)
         {
             servoGGL.setPosition(0.37); //TODO value needs to be changed
-            servoGGR.setPosition(0.10); //TODO value to be changed
+            servoGGR.setPosition(0.15); //TODO value to be changed
 
         }
+        //half open
+        else if(gamepad1.x && !liftMoving)
+        {
+            servoGGL.setPosition(0.25);//TODO value needs to be changed
+            servoGGR.setPosition(0.30);//TODO value needs to be changed
+        }
+        //full open
         else if(gamepad1.b && !liftMoving)
         {
             servoGGL.setPosition(0.1);//TODO value needs to be changed
-            servoGGR.setPosition(0.32);//TODO value needs to be changed
-        }
-        else if(gamepad1.x && !liftMoving)
-        {
-            servoGGL.setPosition(0.27);//TODO value needs to be changed
-            servoGGR.setPosition(0.25);//TODO value needs to be changed
+            servoGGR.setPosition(0.40);//TODO value needs to be changed
         }
 
         if(liftModeStateChange && !(gamepad1.right_trigger > 0.35 || gamepad1.left_trigger > 0.35))
