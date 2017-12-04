@@ -63,10 +63,11 @@ public class Constants
     public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.27;
     public static final double LATERAL_JEWEL_SERVO_LEFT = 0.15;
     public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.39;
-    public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.38;
+    public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.3;
     public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.69;
+    public static final double VERTICAL_JEWEL_SERVO_TELEOP = 0.35;
 
-     // todo Adjust
+    // todo Adjust
     public static final double WRIST_SERVO_DEPLOYED = 0.9;
     public static final double WRIST_SERVO_RETRACTED = 0.4;
     public static final double JOINT_SERVO_DEPLOYED = 1.0;
@@ -86,8 +87,8 @@ public class Constants
     // Glyph mechanism scoring heights.  Numbers signify the number of glyphs stacked on top of
     // each other in a column.  Units are in andymark encoder ticks
      // Note:  2, 3, and 4 are slightly higher than necessary to accommodate uncertainty in glyph size
-    public static final int HEIGHT_1 = -9977;         // Subtract 1060 to calculated value
-    public static final int HEIGHT_2 = -8173;         // Subtract 1100 to calculated value
-    public static final int HEIGHT_3 = -6834;         // Subtract 1170 to calculated value
+    public static final int HEIGHT_1 = -9757;         // Subtract 1280 to calculated value
+    public static final int HEIGHT_2 = -8103;         // Subtract 1170 to calculated value
+    public static final int HEIGHT_3 = -6764;         // Subtract 1240 to calculated value
     public static final int HEIGHT_4 = -5189;         // Subtract 1330 to calculated value
 }

@@ -14,11 +14,11 @@ public class TeleOpCompetition extends MasterTeleOp
     {
         // todo Take this out when the arm is operational again
         isArmAttached = false;
-        isGlyphMechAttached = true;
         initializeRobot();
 
         waitForStart();
-
+        // Move jewel servo so it is out of the way of the glyph mechanism
+        verticalJewelServo.setPosition(Constants.VERTICAL_JEWEL_SERVO_TELEOP);
         // Accounts for delay between initializing the program and starting TeleOp
         lTime = timer.seconds();
 
