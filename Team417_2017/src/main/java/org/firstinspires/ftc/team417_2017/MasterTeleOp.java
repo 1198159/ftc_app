@@ -141,8 +141,6 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorGlyphGrab.setPower(0.0);
         }
 
-        // TODO: check the TelOp loop; the driver 2 controls (open/close only) were lagging, everything else was fine
-
 /*
         // calculate the power for each motor (side drive)
         powerFL = px + 0*py + pivotPower;
