@@ -134,6 +134,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
 
         // Glyph grabber open/close
+        // TODO test this
         curGGPos = motorGlyphGrab.getCurrentPosition(); // set the current position of the GG
         if(gamepad2.right_bumper && curGGPos > maxGGPos) // CLOSE (counter goes negative when closing)
         {
