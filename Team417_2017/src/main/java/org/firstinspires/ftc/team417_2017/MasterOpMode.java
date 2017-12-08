@@ -44,6 +44,8 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double WHEEL_DIAMETER_INCHES = 6.0; // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4; // is 2.34
+    static final double SCALE_OMNI = 1.41;
+    final double ROBOT_DIAMETER_MM = 20.5 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL // TODO move and recalculate this
 
     // Servo init and low positions
     static final double JEWEL_INIT = 0.965;
