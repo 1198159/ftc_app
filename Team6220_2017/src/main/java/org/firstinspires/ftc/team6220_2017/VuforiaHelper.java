@@ -202,6 +202,27 @@ public class VuforiaHelper
         return isVuMarkVisible;
     }
 
+    /*public int positionOfGoal()
+    {
+        if(vuMark == RelicRecoveryVuMark.RIGHT)
+        {
+            //change the distance traveled by to the Right position
+            //this will need to be a constant
+        }
+        if(vuMark == RelicRecoveryVuMark.LEFT)
+        {
+            //change the distance fo Left
+        }
+        if(vuMark == RelicRecoveryVuMark.CENTER)
+        {
+            //change the distance for the center
+        }
+        else
+        {
+            //do nothing
+        }
+    }*/
+
     void startTracking()
     {
         relicTrackables.activate();

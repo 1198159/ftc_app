@@ -102,36 +102,36 @@ abstract class MasterAutonomous extends MasterOpMode
     }
 
     // drive forwards/backwards/horizontal left and right function
-    public void move(double x, double y, double speed, double timeout) throws InterruptedException
+    public void move(double x, double y, double maxSpeed, double timeout) throws InterruptedException
     {
-        newTargetFL = motorFL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) + (int) Math.round(COUNTS_PER_MM * x * 1.15);
-        newTargetFR = motorFR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) - (int) Math.round(COUNTS_PER_MM * x * 1.15);
-        newTargetBL = motorBL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) - (int) Math.round(COUNTS_PER_MM * x * 1.15);
-        newTargetBR = motorBR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) + (int) Math.round(COUNTS_PER_MM * x * 1.15);
+        newTargetFL = motorFL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y * 1.41) + (int) Math.round(COUNTS_PER_MM * x * 1.41);
+        newTargetFR = motorFR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y * 1.41) - (int) Math.round(COUNTS_PER_MM * x * 1.41);
+        newTargetBL = motorBL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y * 1.41) - (int) Math.round(COUNTS_PER_MM * x * 1.41);
+        newTargetBR = motorBR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y * 1.41) + (int) Math.round(COUNTS_PER_MM * x * 1.41);
 
         runtime.reset(); // used for timeout
 
         // wait until the motors reach the position
         do
         {
-            errorFL = newTargetFL + motorFL.getCurrentPosition();
+            errorFL = newTargetFL - motorFL.getCurrentPosition();
             speedFL = Math.abs(errorFL * Kmove);
-            speedFL = Range.clip(speedFL, MINSPEED, speed);
+            speedFL = Range.clip(speedFL, MINSPEED, maxSpeed);
             speedFL = speedFL * Math.signum(errorFL);
 
-            errorFR = newTargetFR + motorFR.getCurrentPosition();
+            errorFR = newTargetFR - motorFR.getCurrentPosition();
             speedFR = Math.abs(errorFR * Kmove);
-            speedFR = Range.clip(speedFR, MINSPEED, speed);
+            speedFR = Range.clip(speedFR, MINSPEED, maxSpeed);
             speedFR = speedFR * Math.signum(errorFR);
 
-            errorBL = newTargetBL + motorBL.getCurrentPosition();
+            errorBL = newTargetBL - motorBL.getCurrentPosition();
             speedBL = Math.abs(errorBL * Kmove);
-            speedBL = Range.clip(speedBL, MINSPEED, speed);
+            speedBL = Range.clip(speedBL, MINSPEED, maxSpeed);
             speedBL = speedBL * Math.signum(errorBL);
 
-            errorBR = newTargetBR + motorBR.getCurrentPosition();
+            errorBR = newTargetBR - motorBR.getCurrentPosition();
             speedBR = Math.abs(errorBR * Kmove);
-            speedBR = Range.clip(speedBR, MINSPEED, speed);
+            speedBR = Range.clip(speedBR, MINSPEED, maxSpeed);
             speedBR = speedBR * Math.signum(errorBR);
 
             motorFL.setPower(speedFL);
@@ -139,6 +139,7 @@ abstract class MasterAutonomous extends MasterOpMode
             motorBL.setPower(speedBL);
             motorBR.setPower(speedBR);
 
+            telemetry.log().add(String.format("errorFL: %d, speedFL: %f" , errorFL, speedFL));
             idle();
         }
         while (opModeIsActive() &&
