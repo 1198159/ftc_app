@@ -15,10 +15,10 @@ abstract public class MasterOpMode extends LinearOpMode
     // Used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
     private double headingOffset = 0.0;
 
-    // Polynomial for adjusting input from joysticks to allow for ease of driving
-    //                                            y = 0.0 + (1/4)x + 0.0 + (3/4)x^3
-    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.25, 0.0, 0.75 });
-
+    // Polynomial for adjusting input from joysticks to allow for ease of driving.  Using an even
+    // function works because driveMecanum has a separate parameter that determines direction
+    //                                                y = 0 + 0.3x + 0 + 0.7x^3
+    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.3, 0.0, 0.7});
     // Note: not currently in use
     // Used to ensure that the robot drives straight when not attempting to turn
     double targetHeading = 0.0 + headingOffset;
@@ -194,7 +194,7 @@ abstract public class MasterOpMode extends LinearOpMode
             //
 
             // Set initial servo positions
-            verticalJewelServoToggler.setToStartingPosition();
+            verticalJewelServo.setPosition(Constants.VERTICAL_JEWEL_SERVO_INIT);
             lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
             //
         }

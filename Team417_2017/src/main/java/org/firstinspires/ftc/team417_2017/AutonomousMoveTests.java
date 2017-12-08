@@ -24,18 +24,27 @@ public class AutonomousMoveTests extends MasterAutonomous
 
         Kmove = 1.0/1200.0;
         MINSPEED = 0.15;
-        TOL = 30;
+        TOL = 60;
         TOL_ANGLE = 3;
-        Kpivot = 1/140.0;
-        PIVOT_MINSPEED = 0.1;
+        Kpivot = 1/100.0;
+        PIVOT_MINSPEED = 0.2;
 
         double refAngle = imu.getAngularOrientation().firstAngle;
         //move(500, 0, 0.6, 5);
         //sleep(400);
-        move(-1000, 0, 0.6, 5);
-        sleep(400);
+        //move(-1000, 0, 0.6, 5);
+        //sleep(400);
         //pivotWithReference(180, refAngle, 0.3);
-
+        moveMaintainHeading(0, 350, 0, refAngle, 0.6, PIVOT_MINSPEED, 5);
+        sleep(5000);
+        refAngle = imu.getAngularOrientation().firstAngle;
+        moveMaintainHeading(350, 0, 0, refAngle, 0.6, PIVOT_MINSPEED, 5);
+        sleep(400);
+        refAngle = imu.getAngularOrientation().firstAngle;
+        moveMaintainHeading(0, -350, 0, refAngle, 0.6, PIVOT_MINSPEED, 5);
+        sleep(400);
+        refAngle = imu.getAngularOrientation().firstAngle;
+        moveMaintainHeading(-350, 0, 0, refAngle, 0.6, PIVOT_MINSPEED, 5);
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();
