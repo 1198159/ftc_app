@@ -104,10 +104,10 @@ abstract class MasterAutonomous extends MasterOpMode
     // drive forwards/backwards/horizontal left and right function
     public void move(double x, double y, double maxSpeed, double timeout) throws InterruptedException
     {
-        newTargetFL = motorFL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) + (int) Math.round(COUNTS_PER_MM * x * 1.41);
-        newTargetFR = motorFR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) - (int) Math.round(COUNTS_PER_MM * x * 1.41);
-        newTargetBL = motorBL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) - (int) Math.round(COUNTS_PER_MM * x * 1.41);
-        newTargetBR = motorBR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) + (int) Math.round(COUNTS_PER_MM * x * 1.41);
+        newTargetFL = motorFL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y * 1.41) + (int) Math.round(COUNTS_PER_MM * x * 1.41);
+        newTargetFR = motorFR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y * 1.41) - (int) Math.round(COUNTS_PER_MM * x * 1.41);
+        newTargetBL = motorBL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y * 1.41) - (int) Math.round(COUNTS_PER_MM * x * 1.41);
+        newTargetBR = motorBR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y * 1.41) + (int) Math.round(COUNTS_PER_MM * x * 1.41);
 
         runtime.reset(); // used for timeout
 
