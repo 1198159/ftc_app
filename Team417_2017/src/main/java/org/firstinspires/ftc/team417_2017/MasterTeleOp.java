@@ -31,7 +31,14 @@ abstract public class MasterTeleOp extends MasterOpMode
     private ElapsedTime runtime = new ElapsedTime();
     AvgFilter filterJoyStickInput = new AvgFilter();
 
-    // declare variables for the GG (AndyMarkNeverest 3.7 motor is 103 counts per rev)
+    // declare variables for the GG (AndyMarkNeverest 3.7 motor is 44.4 counts per rev)
+    double KGlyph = 1.0f/515.0f;
+    double MINSPEED = 0.1;
+    double MAXSPEED;
+    double speedGG;
+    int errorMaxGG;
+    int errorMinGG;
+
     int curGGPos;
     int minGGPos = -180; // a bit less than the original starting position of zero (where we start it)
     int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev
@@ -130,11 +137,19 @@ abstract public class MasterTeleOp extends MasterOpMode
         curGGPos = motorGlyphGrab.getCurrentPosition(); // set the current position of the GG
         if(gamepad2.right_bumper && curGGPos > maxGGPos) // CLOSE (counter goes negative when closing)
         {
-            motorGlyphGrab.setPower(powerGlyphGrab); // a bit less than 10.1049667, button that zeros it
+            errorMaxGG = curGGPos - maxGGPos;
+            speedGG = Math.abs(errorMaxGG * KGlyph);
+            speedGG = Range.clip(speedGG, MINSPEED, MAXSPEED);
+            speedGG = speedGG * Math.signum(errorMaxGG);
+            motorGlyphGrab.setPower(speedGG);
         }
         else if(gamepad2.left_bumper && curGGPos < minGGPos) // OPEN (counter goes positive when opening)
         {
-            motorGlyphGrab.setPower(-powerGlyphGrab);
+            errorMinGG = curGGPos - minGGPos;
+            speedGG = Math.abs(errorMinGG * KGlyph);
+            speedGG = Range.clip(speedGG, MINSPEED, MAXSPEED);
+            speedGG = speedGG * Math.signum(errorMinGG);
+            motorGlyphGrab.setPower(speedGG);
         }
         else // turn motor off
         {
