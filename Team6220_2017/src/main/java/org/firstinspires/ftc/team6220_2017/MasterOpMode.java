@@ -15,10 +15,10 @@ abstract public class MasterOpMode extends LinearOpMode
     // Used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
     private double headingOffset = 0.0;
 
-    // Polynomial for adjusting input from joysticks to allow for ease of driving
-    //                                            y = 0.0 + (1/4)x + 0.0 + (3/4)x^3
-    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.25, 0.0, 0.75 });
-
+    // Polynomial for adjusting input from joysticks to allow for ease of driving.  Using an even
+    // function works because driveMecanum has a separate parameter that determines direction
+    //                                                y = 0 + 0.3x + 0 + 0.7x^3
+    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.3, 0.0, 0.7});
     // Note: not currently in use
     // Used to ensure that the robot drives straight when not attempting to turn
     double targetHeading = 0.0 + headingOffset;
@@ -194,27 +194,27 @@ abstract public class MasterOpMode extends LinearOpMode
             //
 
             // Set initial servo positions
-            verticalJewelServoToggler.setToStartingPosition();
+            verticalJewelServo.setPosition(Constants.VERTICAL_JEWEL_SERVO_INIT);
             lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
             //
         }
         //--------------------------------------------------------------------------------------------------------------
 
-        /*
+
         // todo REV imu is currently taking a long time to initialize or even failing to do so; why is this?
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu". Certain parameters must be specified before using the imu.
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
         //
-        */
+
 
         RotationFilter = new PIDFilter(Constants.ROTATION_P, Constants.ROTATION_I, Constants.ROTATION_D);
         TranslationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);

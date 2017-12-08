@@ -53,19 +53,19 @@ public class Constants
 
 
     // Drive mode constants
-    public static final double SLOW_MODE_T_FACTOR = 0.2;
-    public static final double SLOW_MODE_R_FACTOR = 0.3;
-    public static final double T_FACTOR = 0.8;
-    public static final double R_FACTOR = 0.5;
+    public static final double SLOW_MODE_T_FACTOR = 0.3;
+    public static final double SLOW_MODE_R_FACTOR = 0.35;
+    public static final double T_FACTOR = 0.7;
+    public static final double R_FACTOR = 0.55;
 
 
     // Servo positions--------------------------------
     public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.27;
     public static final double LATERAL_JEWEL_SERVO_LEFT = 0.15;
     public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.39;
-    public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.3;
+    public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.35;
     public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.69;
-    public static final double VERTICAL_JEWEL_SERVO_TELEOP = 0.35;
+    public static final double VERTICAL_JEWEL_SERVO_INIT = 0.3;
 
     // todo Adjust
     public static final double WRIST_SERVO_DEPLOYED = 0.9;

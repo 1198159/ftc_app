@@ -202,26 +202,26 @@ public class VuforiaHelper
         return isVuMarkVisible;
     }
 
-    /*public int positionOfGoal()
+    //double distance = 0;
+    public double positionOfGoal()
     {
         if(vuMark == RelicRecoveryVuMark.RIGHT)
         {
             //change the distance traveled by to the Right position
             //this will need to be a constant
+            return 1.8;
         }
-        if(vuMark == RelicRecoveryVuMark.LEFT)
+        else if(vuMark == RelicRecoveryVuMark.LEFT)
         {
             //change the distance fo Left
-        }
-        if(vuMark == RelicRecoveryVuMark.CENTER)
-        {
-            //change the distance for the center
+            return 1.2;
         }
         else
         {
-            //do nothing
+            //change the distance for the center
+            return 1.5;
         }
-    }*/
+    }
 
     void startTracking()
     {

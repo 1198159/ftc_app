@@ -16,10 +16,10 @@ public class AutoCompetition extends MasterAutonomous
         runSetup();
 
         waitForStart();
+        // Move jewel servo so it is out of the way of the glyph mechanism
+        verticalJewelServoToggler.retract();
 
         vuforiaHelper.getVumark();
-
-
         // Score jewel-------------------------------------------------
          // If the vuMark is not visible, vuforia will tell us and the robot will not score the jewel
         if (vuforiaHelper.isVisible())
