@@ -32,12 +32,12 @@ abstract public class MasterTeleOp extends MasterOpMode
     AvgFilter filterJoyStickInput = new AvgFilter();
 
     // declare variables for the GG (AndyMarkNeverest 3.7 motor is 44.4 counts per rev)
-    double KGlyph = 1.0f/515.0f;
-    double MINSPEED = 0.1;
-    double MAXSPEED;
-    double speedGG;
-    int errorMaxGG;
-    int errorMinGG;
+    double KGlyph = 1.0f/600.0f; // constant for proportional drive
+    double MINSPEED = 0.05;
+    double MAXSPEED = 0.4;
+    double speedGG; // current speed
+    int errorMaxGG; // error for closing grabber
+    int errorMinGG; // error for opening grabber
 
     int curGGPos;
     int minGGPos = -180; // a bit less than the original starting position of zero (where we start it)
@@ -134,7 +134,6 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
 
         // Glyph grabber open/close
-        // TODO test this
         curGGPos = motorGlyphGrab.getCurrentPosition(); // set the current position of the GG
         if(gamepad2.right_bumper && curGGPos > maxGGPos) // CLOSE (counter goes negative when closing)
         {

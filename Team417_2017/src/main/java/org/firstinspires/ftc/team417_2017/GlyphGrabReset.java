@@ -16,14 +16,13 @@ public class GlyphGrabReset extends MasterTeleOp
         while (opModeIsActive())
         {
             servoJewel.setPosition(JEWEL_INIT);
-            // TODO test this
             if(gamepad2.right_bumper) // CLOSE (counter goes negative when closing)
             {
-                motorGlyphGrab.setPower(0.15);
+                motorGlyphGrab.setPower(0.05);
             }
             else if(gamepad2.left_bumper) // OPEN (counter goes positive when opening)
             {
-                motorGlyphGrab.setPower(-0.15);
+                motorGlyphGrab.setPower(-0.05);
             }
             else // turn motor off
             {
