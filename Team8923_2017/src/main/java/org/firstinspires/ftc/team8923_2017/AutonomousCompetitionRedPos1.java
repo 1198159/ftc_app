@@ -4,7 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.vuforia.CameraDevice;
 
-@Autonomous(name="Autonomous Competition Red Pos 1", group = "Swerve")
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
+@Autonomous(name="Autonomous Competition Red 1", group = "Swerve")
 /**
  * Runable shell for Master Autonomous code
  */
@@ -48,35 +50,31 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
             RetrieveJJ();
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
-        //Was -50 mm
-        /*
-        MoveIMU(referenceAngle, -90.0, 0.0, 0.015, 0.5, 1.5);//Go towards parking spot
-        MoveIMURight(referenceAngle, 45.0, 0.0, 0.015, 0.35, 0.4);
-        IMUPivot(referenceAngle, 90, 0.25, 0.015);
-        referenceAngle += 90.0;
-        referenceAngle = adjustAngles(referenceAngle);
-        //MoveIMU(referenceAngle, 40.0, 0.0, 0.015, 0.5, 0.8);
-        moveGG(-1500);
-        */
         sleep(700);
         MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 2.26);//Go towards parking spot//Was 2.15
-        MoveIMURight(referenceAngle, 45.0, 0.0, 0.015, 0.35, 0.4);
-        IMUPivot(referenceAngle, 90, 0.25, 0.015);
-        referenceAngle += 90.0;
+        MoveIMURight(referenceAngle, 45.0, 0.0, 0.015, 0.35, 0.2);//Moves away from the cryptobox and towards the middle//Was0.4
+        IMUPivot(referenceAngle, 90, 0.25, 0.015);//Pivots to face the cryptobox
+        referenceAngle += 90.0;//Sets angle to 0
         referenceAngle = adjustAngles(referenceAngle);
-        //MoveIMU(referenceAngle, 40.0, 0.0, 0.015, 0.5, 0.8);
         sleep(500);
-        alignOnLine55(0.5, 3.0);
-        sleep(1000);
-        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
+        moveGG(-750);
         sleep(500);
-        openGG();
+        alignOnLine55(0.5, 3.0, 0.29);//Aligns on line
+        //MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
         sleep(500);
-        moveGG(-1500);
+        //if (vuMark == RelicRecoveryVuMark.LEFT)
+        //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
+        //MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.7);
+
+        //if (vuMark == RelicRecoveryVuMark.CENTER)
+        MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.1);
+
+
+        /*
+        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.6);
+        sleep(500);
         MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.6);
-
-
-
+        */
         while (opModeIsActive())
         {
             telemetry.addData("EncoderFL", motorFL.getCurrentPosition());

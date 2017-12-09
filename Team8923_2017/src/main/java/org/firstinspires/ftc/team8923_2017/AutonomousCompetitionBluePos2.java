@@ -5,7 +5,7 @@ import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
-@Autonomous(name="Autonomous Competition Blue Pos 2", group = "Swerve")
+@Autonomous(name="Autonomous Competition Blue 2", group = "Swerve")
 /**
  * Runable shell for Master Autonomous code
  */
@@ -49,7 +49,7 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
 
-        MoveIMU(referenceAngle, 400.0, 0.0, 0.015, 0.3, 1.6);//Go towards parking spot
+        MoveIMU(referenceAngle, 400.0, 0.0, 0.015, 0.3, 1.6);//Go towards parking spot was 1.6
         IMUPivot(referenceAngle, -90, 0.25, 0.015);
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);
@@ -59,15 +59,24 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         referenceAngle += 90.0;
         referenceAngle = adjustAngles(referenceAngle);
         sleep(500);
-        alignOnLine55(0.4, 3.0);
+        moveGG(-750);
+        sleep(500);
+        alignOnLine55(0.4, 3.0, 0.2);
         sleep(1000);
         MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
         sleep(500);
         openGG();
         sleep(500);
-        moveGG(-1500);
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.6);
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
+        sleep(500);
+        moveGG(-750);
+        sleep(500);
 
+        /*
+        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.6);
+        sleep(500);
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.6);
+        */
         while (opModeIsActive())
         {
             //Run();

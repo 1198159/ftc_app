@@ -885,20 +885,6 @@ public abstract class MasterAutonomous extends Master
 //Color Sensor/Aligning methods
     void colorSensorHSV()
     {
-            // check the status of the x button on gamepad.
-            //bCurrState = gamepad1.x;
-/*
-            // check for button-press state transitions.
-            if ((bCurrState == true) && (bCurrState != bPrevState))  {
-
-                // button is transitioning to a pressed state. Toggle the LED.
-                bLedOn = !bLedOn;
-                //cdim.setDigitalChannelState(LED_CHANNEL, bLedOn);
-            }
-
-            // update previous state variable.
-            bPrevState = bCurrState;
-*/
             // convert the RGB values to HSV values.
             Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopLeft);
             Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopRight);
@@ -945,11 +931,13 @@ public abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
-    void driveOmni45Cont(double driveAngle, double drivePower, double turnPower, double saturationValue)
+    void driveOmni45Cont(double driveAngle, double drivePower, double turnPower, double saturationValue, double timeout)
     {
-        // Calculate out x and y directions of drive power, where y is forward (0 degrees) and x is right (-90 degrees)
-        double x = drivePower * -Math.sin(Math.toRadians(driveAngle));
-        double y = drivePower * Math.cos(Math.toRadians(driveAngle));
+        do
+            {
+                // Calculate out x and y directions of drive power, where y is forward (0 degrees) and x is right (-90 degrees)
+                double x = drivePower * -Math.sin(Math.toRadians(driveAngle));
+                double y = drivePower * Math.cos(Math.toRadians(driveAngle));
 
         /*
          * to explain:
@@ -960,262 +948,168 @@ public abstract class MasterAutonomous extends Master
          * from there
          */
 
-        double powerFL = y + x + (turnPower * 0.9);
-        double powerFR = -y + x + (turnPower * 0.9);
-        double powerBL = y - x + (turnPower * 0.9);
-        double powerBR = -y - x + (turnPower * 0.9);
+                double powerFL = y + x + (turnPower * 0.9);
+                double powerFR = -y + x + (turnPower * 0.9);
+                double powerBL = y - x + (turnPower * 0.9);
+                double powerBR = -y - x + (turnPower * 0.9);
 
-        double scalar = Math.max(Math.abs(powerFL),  Math.max(Math.abs(powerFR),
-                Math.max(Math.abs(powerBL), Math.abs(powerBR))));
+                double scalar = Math.max(Math.abs(powerFL),  Math.max(Math.abs(powerFR),
+                        Math.max(Math.abs(powerBL), Math.abs(powerBR))));
 
-        if(scalar < 1)
-            scalar = 1;
+                if(scalar < 1)
+                    scalar = 1;
 
-        powerFL /= (scalar * slowModeDivisor);
-        powerFR /= (scalar * slowModeDivisor);
-        powerBL /= (scalar * slowModeDivisor);
-        powerBR /= (scalar * slowModeDivisor);
+                powerFL /= (scalar * slowModeDivisor);
+                powerFR /= (scalar * slowModeDivisor);
+                powerBL /= (scalar * slowModeDivisor);
+                powerBR /= (scalar * slowModeDivisor);
 
-        motorFL.setPower(powerFL);
-        motorFR.setPower(powerFR);
-        motorBL.setPower(powerBL);
-        motorBR.setPower(powerBR);
+                motorFL.setPower(powerFL);
+                motorFR.setPower(powerFR);
+                motorBL.setPower(powerBL);
+                motorBR.setPower(powerBR);
 
-        do
-            {
                 Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopLeft);
                 Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopRight);
                 Color.RGBToHSV((sensorBottomRight.red() * 255) / 800, (sensorBottomRight.green() * 255) / 800, (sensorBottomRight.blue() * 255) / 800, hsvValuesBottomRight);
                 idle();
             }
-        while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue));
+        while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue) && (runtime.seconds() < timeout));
         stopDriving();
     }
 
-    void MoveIMUContLeft(double referenceAngle, double kAngle, double maxSpeed, double saturationValue)
+    void MoveIMUContLeft(double referenceAngle, double kAngle, double maxSpeed, double saturationValue, double timeout
+    )
     {
-        currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
-        angleError = currentRobotAngle - referenceAngle;
-        angleError = adjustAngles(angleError);
-        pivot = angleError * kAngle;
-
-        motorPowerFL = -maxSpeed + pivot;
-        motorPowerFR = -maxSpeed + pivot;
-        motorPowerBL = maxSpeed + pivot;
-        motorPowerBR = maxSpeed + pivot;
-
-        motorFL.setPower(motorPowerFL);
-        motorFR.setPower(motorPowerFR);
-        motorBL.setPower(motorPowerBL);
-        motorBR.setPower(motorPowerBR);
-
         do
         {
+            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
+            angleError = currentRobotAngle - referenceAngle;
+            angleError = adjustAngles(angleError);
+            pivot = angleError * kAngle;
+
+            motorPowerFL = -maxSpeed + pivot;
+            motorPowerFR = -maxSpeed + pivot;
+            motorPowerBL = maxSpeed + pivot;
+            motorPowerBR = maxSpeed + pivot;
+
+            motorFL.setPower(motorPowerFL);
+            motorFR.setPower(motorPowerFR);
+            motorBL.setPower(motorPowerBL);
+            motorBR.setPower(motorPowerBR);
+
             Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopLeft);
             Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopRight);
             Color.RGBToHSV((sensorBottomRight.red() * 255) / 800, (sensorBottomRight.green() * 255) / 800, (sensorBottomRight.blue() * 255) / 800, hsvValuesBottomRight);
             idle();
         }
-        while ((opModeIsActive()) && (hsvValuesTopRight[1] <= saturationValue) && (hsvValuesTopLeft[1] <= saturationValue) && (hsvValuesBottomRight[1] <= saturationValue));
+        while ((opModeIsActive()) && (hsvValuesTopRight[1] <= saturationValue) && (hsvValuesTopLeft[1] <= saturationValue) && (hsvValuesBottomRight[1] <= saturationValue) && (runtime.seconds() < timeout));
         stopDriving();
     }
 
-    void alignOnLine55(double saturationValue, double timeout)
+    void alignOnLine55(double saturationValue, double timeout, double speed)
     {
         float currentAngle;
         //Go forwards until any sensor sees the line
         double referenceAngle = imu.getAngularOrientation().firstAngle;//TODO declare this in init hardware auto
+        runtime.reset();
 
-        while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue))
+        do
         {
+            telemetry.addData("Stage", "Zero");
+            telemetry.update();
+            colorSensorHSV();
+
+            //If no sensors are on the line, go forward
             while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue))
             {
-                MoveIMUCont(referenceAngle, 0.015, 0.28, saturationValue);
+                //MoveIMUCont(referenceAngle, 0.015, speed, saturationValue);
+                MoveIMU(referenceAngle, 190.0, 0.0, 0.015, speed, 0.2);
+                colorSensorHSV();
             }
+            stopDriving();
+            colorSensorHSV();
 
-            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
             //Top right sensor is on the line, but rest aren't
+            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
             {
+                telemetry.addData("Stage", "One");
+                telemetry.update();
                 //Drive at 55 degrees until the left sensor is on the line
                 while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue)
                 {
-                    driveOmni45Cont(-55, 0.2, 0, saturationValue);
+                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.15);
                 }
+                stopDriving();
             }
 
-            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
             //Right sensors are on the line, but left isn't
+            else if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
             {
+                telemetry.addData("Stage", "Two");
+                telemetry.update();
                 //Drive at 55 degrees until the left sensor is on the line
                 while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue)
                 {
-                    driveOmni45Cont(-55, 0.2, 0, saturationValue);
+                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.15);
                 }
+                stopDriving();
+                colorSensorHSV();
             }
 
-
-            if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
             //Only top left sensor sees line
+            else if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
             {
+                telemetry.addData("Stage", "Three");
+                telemetry.update();
                 //Drive left until the right sensors see the line
                 while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue))
                 {
-                    MoveIMUContLeft(referenceAngle, 0, 0.25, saturationValue);
+                    MoveIMUContLeft(referenceAngle, 0, speed, saturationValue, 0.15);
                 }
+                stopDriving();
 
                 //Drive at 55 degrees until the left sensor is on the line
                 while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue)
                 {
-                    driveOmni45Cont(-55, 0.2, 0, saturationValue);
+                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.15);
                 }
                 stopDriving();
             }
 
-            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
             //Top left and right sensor on line
+            else if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
             {
-                /*
-                //Pivots until current angle is 0
-                do
-                {
-                    motorFL.setPower(0);
-                    motorFR.setPower(0.2);
-                    motorBL.setPower(0.2);
-                    motorBR.setPower(0.2);
-                    currentAngle = imu.getAngularOrientation().firstAngle;
-                    colorSensorHSV();
-                }
-                while ((opModeIsActive()) && (currentAngle < referenceAngle + TOL) && (currentAngle > referenceAngle - TOL));
-                stopDriving();
-                runtime.reset();
-                */
-
+                telemetry.addData("Stage", "Four");
+                telemetry.update();
                 while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue))
                 {
-                    MoveIMUContLeft(referenceAngle, 0, 0.25, saturationValue);
+                    MoveIMUContLeft(referenceAngle, 0, speed, saturationValue, 0.15);
                     colorSensorHSV();
                 }
+                stopDriving();
                 //Drive at 55 degrees until the left sensor is on the line
                 while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue))
                 {
-                    driveOmni45Cont(-55, 0.2, 0, saturationValue);
+                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.15);
                 }
                 stopDriving();
             }
+            else
+            {
+                telemetry.addData("Stage", "4.5");
+                telemetry.update();
+                stopDriving();
+            }
+                telemetry.addData("Stage", "Five");
+                telemetry.update();
         }
+        while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
+        telemetry.addData("Stage", "Six");
+        telemetry.update();
         stopDriving();
-
-
-        /*
-        do
-        {
-
-            do
-            {
-                MoveIMUCont(referenceAngle, 0.015, 0.3, saturationValue);
-                colorSensorHSV();
-            }
-            while((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue)); //TODO Change value to correct Hue value
-            stopDriving();
-
-            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
-            //Top right sensor is on the line, but rest aren't
-            {
-                do
-                {
-                    //Pivot about front right wheel until bottom right sensor sees the line
-                    motorFL.setPower(0.2);
-                    motorFR.setPower(0);
-                    motorBL.setPower(0.2);
-                    motorBR.setPower(0.2);
-                    colorSensorHSV();
-                }
-                while((opModeIsActive()) && hsvValuesBottomRight[1] < saturationValue);
-                stopDriving();
-
-                //Drive at 55 degrees until the left sensor is on the line
-                do
-                {
-                    driveOmni45(-55, 0.2, 0);
-                }
-                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue);
-                stopDriving();
-            }
-
-
-            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
-            //Right sensors are on the line, but left isn't
-            {
-                //Drive at 55 degrees until the left sensor is on the line
-                do
-                {
-                    driveOmni45(-55, 0.2, 0);
-                }
-                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue);
-                stopDriving();
-            }
-
-
-            if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
-            //Only top left sensor sees line
-            {
-
-                runtime.reset();
-
-                //Drive left until the right sensors see the line
-                do
-                {
-                    MoveIMUContLeft(referenceAngle, 0,0.25,saturationValue);
-                    colorSensorHSV();
-                }
-                while((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue));
-                //Drive at 55 degrees until the left sensor is on the line
-                do
-                {
-                    driveOmni45(-55, 0.2, 0);
-                }
-                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue);
-                stopDriving();
-            }
-
-            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
-            //Top left and right sensor on line
-            {
-                //Pivots until current angle is 0
-                do {
-                    motorFL.setPower(0);
-                    motorFR.setPower(0.2);
-                    motorBL.setPower(0.2);
-                    motorBR.setPower(0.2);
-                    currentAngle = imu.getAngularOrientation().firstAngle;
-                    colorSensorHSV();
-                }
-                while ((opModeIsActive()) && (currentAngle < referenceAngle + TOL) && (currentAngle > referenceAngle - TOL));
-                stopDriving();
-                runtime.reset();
-
-                do {
-                    MoveIMUContLeft(referenceAngle, 0,0.25,saturationValue);
-                    colorSensorHSV();
-                }
-                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
-                stopDriving();
-
-                //Drive at 55 degrees until the left sensor is on the line
-                do
-                {
-                    driveOmni45(-55, 0.2, 0);
-                }
-                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue));
-                stopDriving();
-            }
-        }
-        while((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
-        stopDriving();
+        //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
     }
-    */
-    }
-
 
     void alignOnLine(double saturationValue)
     {
