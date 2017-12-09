@@ -23,28 +23,27 @@ public class AutonomousMoveTests extends MasterAutonomous
 // START OF AUTONOMOUS
 
         Kmove = 1.0/1200.0;
-        MINSPEED = 0.15;
-        TOL = 60;
-        TOL_ANGLE = 3;
+        TOL = 100.0;
+        TOL_ANGLE = 2.5;
         Kpivot = 1/100.0;
-        PIVOT_MINSPEED = 0.2;
 
         double refAngle = imu.getAngularOrientation().firstAngle;
-        //move(500, 0, 0.6, 5);
-        //sleep(400);
-        //move(-1000, 0, 0.6, 5);
-        //sleep(400);
-        //pivotWithReference(180, refAngle, 0.3);
-        moveMaintainHeading(0, 350, 0, refAngle, 0.6, PIVOT_MINSPEED, 5);
-        sleep(5000);
-        refAngle = imu.getAngularOrientation().firstAngle;
-        moveMaintainHeading(350, 0, 0, refAngle, 0.6, PIVOT_MINSPEED, 5);
-        sleep(400);
-        refAngle = imu.getAngularOrientation().firstAngle;
-        moveMaintainHeading(0, -350, 0, refAngle, 0.6, PIVOT_MINSPEED, 5);
-        sleep(400);
-        refAngle = imu.getAngularOrientation().firstAngle;
-        moveMaintainHeading(-350, 0, 0, refAngle, 0.6, PIVOT_MINSPEED, 5);
+
+        // grab the glyph TODO: write methods to open the GG
+        closeGG();
+        /*
+        moveTimed(0.4, 0, 1000);
+        //move(300, 0, 0.1, 0.5, 5);
+        sleep(200);
+        pivotWithReference(0, refAngle, 0.1, 0.4);
+        sleep(200);
+        moveMaintainHeading(205, 0, 0, refAngle, 0.15, 0.6, 5);
+        sleep(200);
+        pivotWithReference(181, refAngle, 0.1, 0.55);
+        move(0, -120, 0.1, 0.3, 3);
+        */
+        // TODO: write method to close the GG
+
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();
