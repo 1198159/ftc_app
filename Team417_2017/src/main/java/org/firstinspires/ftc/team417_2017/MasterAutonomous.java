@@ -29,12 +29,19 @@ abstract class MasterAutonomous extends MasterOpMode
     double Kmove = 1.0f/1200.0f;
     double Kpivot = 1.0f/150.0f;
 
-    double TOL = 100.0;
+    double TOL = 100.0; // this is in encoder counts, and for our robot with 4 inch wheels, it's 0.285 mm in one encoder count
     double TOL_ANGLE = 5;
 
     double MINSPEED = 0.25;
     double PIVOT_MINSPEED = 0.2;
 
+    // VARIABLES FOR AUTONOMOUS GG
+    int curGGPos;
+    int errorMaxGG;
+    int minGGPos = -180; // a bit less than the original starting position of zero (where we start it)
+    int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev
+    double speedGG;
+    double KGlyph;
 
     // VARIABLES FOR MOVE/ALIGN METHODS
     int pivotDst;
@@ -59,7 +66,6 @@ abstract class MasterAutonomous extends MasterOpMode
     double speedAbsBL;
     double speedAbsBR;
 
-    double startAngle;
     double curTurnAngle;
     double pivotSpeed;
     double errorAngle;
@@ -67,9 +73,6 @@ abstract class MasterAutonomous extends MasterOpMode
     double avgDistError;
     double avgSpeed;
     double speedAbsAvg;
-
-    double refAngle;
-
 
     public void initializeRobot()
     {
@@ -97,7 +100,7 @@ abstract class MasterAutonomous extends MasterOpMode
     }
 
     // drive forwards/backwards/horizontal left and right function
-    public void move(double x, double y, double maxSpeed, double timeout) throws InterruptedException
+    public void move(double x, double y, double minSpeed, double maxSpeed, double timeout) throws InterruptedException
     {
         newTargetFL = motorFL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y * SCALE_OMNI) + (int) Math.round(COUNTS_PER_MM * x * SCALE_OMNI);
         newTargetFR = motorFR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y * SCALE_OMNI) - (int) Math.round(COUNTS_PER_MM * x * SCALE_OMNI);
@@ -111,22 +114,22 @@ abstract class MasterAutonomous extends MasterOpMode
         {
             errorFL = newTargetFL - motorFL.getCurrentPosition();
             speedFL = Math.abs(errorFL * Kmove);
-            speedFL = Range.clip(speedFL, MINSPEED, maxSpeed);
+            speedFL = Range.clip(speedFL, minSpeed, maxSpeed);
             speedFL = speedFL * Math.signum(errorFL);
 
             errorFR = newTargetFR - motorFR.getCurrentPosition();
             speedFR = Math.abs(errorFR * Kmove);
-            speedFR = Range.clip(speedFR, MINSPEED, maxSpeed);
+            speedFR = Range.clip(speedFR, minSpeed, maxSpeed);
             speedFR = speedFR * Math.signum(errorFR);
 
             errorBL = newTargetBL - motorBL.getCurrentPosition();
             speedBL = Math.abs(errorBL * Kmove);
-            speedBL = Range.clip(speedBL, MINSPEED, maxSpeed);
+            speedBL = Range.clip(speedBL, minSpeed, maxSpeed);
             speedBL = speedBL * Math.signum(errorBL);
 
             errorBR = newTargetBR - motorBR.getCurrentPosition();
             speedBR = Math.abs(errorBR * Kmove);
-            speedBR = Range.clip(speedBR, MINSPEED, maxSpeed);
+            speedBR = Range.clip(speedBR, minSpeed, maxSpeed);
             speedBR = speedBR * Math.signum(errorBR);
 
             motorFL.setPower(speedFL);
@@ -140,6 +143,7 @@ abstract class MasterAutonomous extends MasterOpMode
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
                 (Math.abs(errorFL) > TOL || Math.abs(errorFR) > TOL || Math.abs(errorBL) > TOL || Math.abs(errorBR) > TOL));
+        // all of the motors must reach their tolerance before the robot exits the loop
 
         // stop the motors
         motorFL.setPower(0);
@@ -149,9 +153,9 @@ abstract class MasterAutonomous extends MasterOpMode
     }
 
 
-    // a combination of both the align and pivot function (WITHOUT VUFORIA)
-    // angle has to be small otherwise won't work, this function moves and pivots robot
-    public void moveMaintainHeading(double x, double y, double pivotAngle, double refAngle, double maxSpeed, double minSpeed, double timeout)
+    // a combination of both the align and pivot function
+    // angle has to be small otherwise won't work, this function translates and while maintaining a certain angle
+    public void moveMaintainHeading(double x, double y, double pivotAngle, double refAngle, double minSpeed, double maxSpeed, double timeout)
     {
         // run with encoder mode
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -213,7 +217,7 @@ abstract class MasterAutonomous extends MasterOpMode
             speedAbsBR = Math.abs(speedBR);
             speedAbsBR = Range.clip(speedAbsBR, minSpeed, maxSpeed);
             speedBR = speedAbsBR * Math.signum(speedBR);
-            speedBR -= pivotSpeed;  // combine movement and pivot speeds
+            speedBR -= pivotSpeed; // combine movement and pivot speeds
 
             motorFL.setPower(speedFL);
             motorFR.setPower(speedFR);
@@ -240,6 +244,9 @@ abstract class MasterAutonomous extends MasterOpMode
     }
 
 
+    /*
+
+     */
     public void moveKeepHeading(double x, double y, double pivotAngle, double refAngle, double speed, double timeout)
     {
         // run with encoder mode
@@ -254,7 +261,6 @@ abstract class MasterAutonomous extends MasterOpMode
         curTurnAngle = adjustAngles(curTurnAngle);
         errorAngle =  pivotAngle - curTurnAngle;
 
-        final double ROBOT_DIAMETER_MM = 22.6 * 25.4;   // diagonal 17.6 inch FL to BR and FR to BL
         pivotDst = (int) ((errorAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
 
         final double XSCALE = 1.1;
@@ -346,7 +352,7 @@ abstract class MasterAutonomous extends MasterOpMode
     }
 
     // pivot using IMU, but with a reference start angle, but this angle has to be determined (read) before this method is called
-    public void pivotWithReference(double targetAngle, double refAngle, double maxSpeed)
+    public void pivotWithReference(double targetAngle, double refAngle, double minSpeed, double maxSpeed)
     {
         double pivotSpeed;
         double currentAngle;
@@ -368,7 +374,7 @@ abstract class MasterAutonomous extends MasterOpMode
             currentAngle = adjustAngles(imu.getAngularOrientation().firstAngle - refAngle);
             errorAngle = adjustAngles(currentAngle - targetAngle);
             pivotSpeed = Math.abs(errorAngle) * Kpivot;
-            pivotSpeed = Range.clip(pivotSpeed, PIVOT_MINSPEED, maxSpeed); // limit abs speed
+            pivotSpeed = Range.clip(pivotSpeed, minSpeed, maxSpeed); // limit abs speed
             pivotSpeed = pivotSpeed * Math.signum(errorAngle); // set the sign of speed
 
             // positive angle means CCW rotation
@@ -405,6 +411,21 @@ abstract class MasterAutonomous extends MasterOpMode
         motorFR.setPower(0);
         motorBL.setPower(0);
         motorBR.setPower(0);
+    }
+
+
+    public void closeGG()
+    {
+        curGGPos = motorGlyphGrab.getCurrentPosition();
+        while (curGGPos > maxGGPos) // CLOSE (counter goes negative when closing)
+        {
+            curGGPos = motorGlyphGrab.getCurrentPosition();
+            errorMaxGG = curGGPos - maxGGPos;
+            speedGG = Math.abs(errorMaxGG * KGlyph);
+            speedGG = Range.clip(speedGG, 0.05, 0.4);
+            speedGG = speedGG * Math.signum(errorMaxGG);
+            motorGlyphGrab.setPower(speedGG);
+        }
     }
 
 
