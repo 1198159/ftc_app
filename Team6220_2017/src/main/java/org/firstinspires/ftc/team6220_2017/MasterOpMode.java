@@ -227,20 +227,20 @@ abstract public class MasterOpMode extends LinearOpMode
     }
 
     /*
-     General method for driving robot
-     Input is given as a vector in polar form with (r,theta)=(drivePower,driveAngle)
+     General method for driving robot.  Input is given as a vector in polar form with
+     (r, theta) = (drivePower, driveAngle)
 
-     Table for mecanum drive motor directions (counterclockwise = positive):
+     Table for mecanum drive motor directions (clockwise = positive):
 
-                  FL      FR      BL      BR
-     rotate -w    +        -      +        -
-     rotate +w    -        +      -        +
-     forward      +        +      +        +
-     backward     -        -      -        -
-     left         -        +      +        -
-     right        +        -      -        +
-     diag. left   0        +      +        0
-     diag. right  +        0      0        +
+                  FL      FR      BL       BR
+     rotate -w    -        -      -        -
+     rotate +w    +        +      +        +
+     forward      -        +      -        +
+     backward     +        -      +        -
+     right        -        -      +        +
+     left         +        +      -        -
+     diag. left   +        0      0        -
+     diag. right  -        0      0        +
     */
     void driveMecanum(double driveAngle, double drivePower, double w)
     {
