@@ -68,7 +68,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
             x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
-            pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.2, 0.2);
         }
         else // Staccato Mode
         {
