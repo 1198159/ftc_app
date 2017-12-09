@@ -82,20 +82,20 @@ public class AutonomousBlue extends MasterAutonomous
 
         if(VuforiaDetect.isLeftJewelBlue) // if the left jewel is blue,
         {
-            pivotWithReference(-15, refAngle, 0.5); // then pivot right
+            pivotWithReference(-15, refAngle, 0.15, 0.5); // then pivot right
             sleep(200);
             servoJewel.setPosition(JEWEL_INIT); // move servo back
             sleep(200);
-            pivotWithReference(0, refAngle, 0.5); // then pivot back
+            pivotWithReference(0, refAngle, 0.15, 0.5); // then pivot back
             sleep(200);
         }
         else // if the left jewel is red,
         {
-            pivotWithReference(15, refAngle, 0.5); // then pivot left
+            pivotWithReference(15, refAngle, 0.15, 0.5); // then pivot left
             sleep(200);
             servoJewel.setPosition(JEWEL_INIT); // move servo back
             sleep(200);
-            pivotWithReference(0, refAngle, 0.5); // then pivot back
+            pivotWithReference(0, refAngle, 0.15, 0.5); // then pivot back
             sleep(200);
         }
 
