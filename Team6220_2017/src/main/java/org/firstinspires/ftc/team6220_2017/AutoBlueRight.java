@@ -36,8 +36,8 @@ public class AutoBlueRight extends MasterAutonomous
 
 
         knockJewel(blueJewel, isBlueSide);
-        moveRobot(-90,0.5,1.4);
-        moveRobot(0, 0.3, 1.4);
+        moveRobot(-90,0.5,vuforiaHelper.positionOfGoal());
+        turnTo(-90);
         //driveToPosition(0, -500, 0.5);
         //turn 90 degrees
         //may need to move backwards
