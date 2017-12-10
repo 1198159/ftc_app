@@ -31,6 +31,8 @@ public class AutonomousMoveTests extends MasterAutonomous
 
         // grab the glyph TODO: write methods to open the GG
         closeGG();
+        sleep(200);
+        openGG();
         /*
         moveTimed(0.4, 0, 1000);
         //move(300, 0, 0.1, 0.5, 5);
@@ -42,7 +44,7 @@ public class AutonomousMoveTests extends MasterAutonomous
         pivotWithReference(181, refAngle, 0.1, 0.55);
         move(0, -120, 0.1, 0.3, 3);
         */
-        // TODO: write method to close the GG
+        // closeGG();
 
 
         telemetry.addData("Autonomous", "Complete");

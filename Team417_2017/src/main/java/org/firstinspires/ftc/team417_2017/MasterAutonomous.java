@@ -37,6 +37,7 @@ abstract class MasterAutonomous extends MasterOpMode
 
     // VARIABLES FOR AUTONOMOUS GG
     int curGGPos;
+    int errorMinGG;
     int errorMaxGG;
     int minGGPos = -180; // a bit less than the original starting position of zero (where we start it)
     int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev
@@ -422,8 +423,21 @@ abstract class MasterAutonomous extends MasterOpMode
             curGGPos = motorGlyphGrab.getCurrentPosition();
             errorMaxGG = curGGPos - maxGGPos;
             speedGG = Math.abs(errorMaxGG * KGlyph);
-            speedGG = Range.clip(speedGG, 0.05, 0.4);
+            speedGG = Range.clip(speedGG, 0.09, 0.35);
             speedGG = speedGG * Math.signum(errorMaxGG);
+            motorGlyphGrab.setPower(speedGG);
+        }
+    }
+
+    public void openGG()
+    {
+        while (curGGPos < minGGPos)
+        {
+            curGGPos = motorGlyphGrab.getCurrentPosition();
+            errorMinGG = curGGPos - minGGPos;
+            speedGG = Math.abs(errorMinGG * KGlyph);
+            speedGG = Range.clip(speedGG, 0.09, 0.35);
+            speedGG = speedGG * Math.signum(errorMinGG);
             motorGlyphGrab.setPower(speedGG);
         }
     }
