@@ -2,8 +2,13 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+/**
+ *  This is our main autonomous program.  It uses gamepad input before initialization to offer
+ *  four different routine options
+ */
+
 // todo Test setupRoutine
-// todo Move jewel identification to before start of match
+// todo Reimplement encoder navigation when it is ready
 @Autonomous(name = "AutoCompetition", group = "Autonomous")
 
 public class AutoCompetition extends MasterAutonomous
@@ -41,20 +46,29 @@ public class AutoCompetition extends MasterAutonomous
         {
             if (isLeftBalancingStone)
             {
-                driveToPosition(0, -610, 0.7);
-                driveToPosition(-305, 0, 0.5);
+                moveRobot(-90,0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
+                //driveToPosition(0, -610, 0.7);
+                //driveToPosition(-305, 0, 0.5);
             }
             else
-                driveToPosition(0, -914, 0.7);
+            {
+                moveRobot(-90, 0.5, 1.4);
+                //driveToPosition(0, -914, 0.7);
+            }
         }
         else
         {
             if (isLeftBalancingStone)
-                driveToPosition(0, 914, 0.7);
+            {
+                moveRobot(90,0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
+                moveRobot(0, 0.3, 1.4);
+                //driveToPosition(0, 914, 0.7);
+            }
             else
             {
-                driveToPosition(0, 610, 0.7);
-                driveToPosition(-305, 0, 0.5);
+                moveRobot(90,0.5,1.4);
+                //driveToPosition(0, 610, 0.7);
+                //driveToPosition(-305, 0, 0.5);
             }
         }
         //--------------------------------------------------------------

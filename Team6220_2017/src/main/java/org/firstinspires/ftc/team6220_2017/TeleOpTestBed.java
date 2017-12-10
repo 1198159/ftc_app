@@ -61,12 +61,12 @@ public class TeleOpTestBed extends MasterAutonomous
             }
             else if (driver1.isButtonJustPressed(Button.LEFT_STICK_PRESS))
             {
-                turnTo(-90);
+                turnTo(90);
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
             }
             else  if (driver1.isButtonJustPressed(Button.RIGHT_STICK_PRESS))
             {
-                turnTo(90);
+                turnTo(-90);
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
             }
             else if (driver1.isButtonJustPressed(Button.LEFT_BUMPER))

@@ -10,6 +10,7 @@ public class AutoBlueLeft extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         boolean isBlueSide = true;
+        boolean isLeftBalancingStone = true;
         //setRobotStartingOrientation(180);
 
         initializeAuto();
@@ -35,9 +36,9 @@ public class AutoBlueLeft extends MasterAutonomous
 
 
         knockJewel(blueJewel, isBlueSide);
-        moveRobot(-90,0.5, vuforiaHelper.positionOfGoal());
-        //moveRobot(-90,0.5,1.4);
-
+        moveRobot(-90,0.5, 1.4);
+        turnTo(-90);
+        moveRobot(-90,0.3, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
         //driveToPosition(0, -500, 0.5);
         //turn 90 degrees
         //may need to move backwards

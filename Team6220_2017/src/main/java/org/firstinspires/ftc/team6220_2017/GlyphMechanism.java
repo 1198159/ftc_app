@@ -83,19 +83,16 @@ public class GlyphMechanism
          // Collect glyphs
         if (op.driver1.isButtonJustPressed(Button.DPAD_DOWN))
         {
-            op.motorCollectorLeft.setPower(0);
             op.motorCollectorRight.setPower(-0.6);
         }
          // Score glyphs
         else if (op.driver1.isButtonJustPressed(Button.DPAD_UP))
         {
-            op.motorCollectorLeft.setPower(0);
             op.motorCollectorRight.setPower(0.6);
         }
          // Stop collector
         else if (op.driver1.isButtonJustPressed(Button.DPAD_LEFT))
         {
-            op.motorCollectorLeft.setPower(0);
             op.motorCollectorRight.setPower(0);
         }
         //---------------------------------------------------------------------

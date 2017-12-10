@@ -26,16 +26,16 @@ public class Constants
     public static final double ANGLE_TOLERANCE_DEG = 2.5;
     public static final double POSITION_TOLERANCE_MM = 40.0;   // todo Adjust
     // Constants for adjusting powers that are proportional to angle and position differences
-    public static final double TURNING_POWER_FACTOR = 1.0 / 120;    // todo Adjust
+    public static final double TURNING_POWER_FACTOR = 1.0 / 70;    // todo Adjust
     public static final double DRIVE_POWER_FACTOR = 1.0 / 580;    // todo Adjust
     //------------------------------------------------
 
 
-    // todo Adjust these experimentally
+    // todo Adjust
     // PID loop constants-------------------------------
     public static final double ROTATION_P = TURNING_POWER_FACTOR;
     public static final double ROTATION_I = 0.0;
-    public static final double ROTATION_D = 0.2;
+    public static final double ROTATION_D = 0.01;
     public static final double TRANSLATION_P = DRIVE_POWER_FACTOR;
     public static final double TRANSLATION_I = 0.0;    // todo Adjust
     public static final double TRANSLATION_D = 0.008;    // todo Adjust
@@ -50,6 +50,13 @@ public class Constants
     public static final int JEWEL_SAMPLE_LENGTH = 64;
     public static final int IMAGE_WIDTH = 1280;
     public static final int IMAGE_HEIGHT = 720;
+
+
+    // todo Adjust
+    // Times the robot takes to drive to respective centers of cryptoboxes in autonomous
+    public static final double STRAIGHT_BOX_TIME = 1.7;
+    public static final double ANGLED_BOX_TIME = 0.6;
+    public static final double COLUMN_DIFF = 0.3;
 
 
     // Drive mode constants

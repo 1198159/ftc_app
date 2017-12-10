@@ -20,14 +20,14 @@ public class PIDFilter implements Filter
     //           (they may not know how to type those chars, and/or may not understand what they mean).
     //           You would be better off making these less obscure by using descriptive names.
 
-    //Proportional coefficient
+    // Proportional coefficient
     private double εP;
-    //Integral coefficient
+    // Integral coefficient
     private double εI;
-    //Derivative coefficient
+    // Derivative coefficient
     private double εD;
 
-    //construct with the coefficients
+    // Construct filter with the coefficients
     public PIDFilter(double P, double I, double D)
     {
         εP = P;
@@ -40,14 +40,14 @@ public class PIDFilter implements Filter
     public double dV  = 0;
 
 
-    //update with new value
+    // Update with new value
     public void roll(double newValue)
     {
-        //update calculated values
+        // Update calculated values
         sum += values[0];
         dV = values[0] - values[1];
 
-        //introduce new value
+        // Introduce new value
         values[1] = values[0];
         values[0] = newValue;
     }
