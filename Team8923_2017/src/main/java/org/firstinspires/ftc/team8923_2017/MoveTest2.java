@@ -25,9 +25,11 @@ public class MoveTest2 extends MasterAutonomous
 
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
-        alignOnLine55(0.5, 3.0, 0.29);
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-        MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.5);
+        alignOnLine55(0.45, 3.0, 0.29);
+        //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
+        //MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.6);
+        //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
+        //MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.5);
         while (opModeIsActive())
         {
             //Run();

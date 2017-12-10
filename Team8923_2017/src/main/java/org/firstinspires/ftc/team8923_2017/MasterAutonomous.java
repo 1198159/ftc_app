@@ -75,7 +75,7 @@ public abstract class MasterAutonomous extends Master
     double SERVO_JJ_MIDDLE2 = 0.4;
     double SERVO_JJ_MIDDLE3 = 0.35;
     double SERVO_JJ_MIDDLE4 = 0.3;
-    double SERVO_JJ_MIDDLE5 = 0.25;
+    double SERVO_JJ_MIDDLE5 = 0.23;
     double SERVO_JJ_MIDDLE6 = 0.2;
 
     ElapsedTime GGLiftTimer = new ElapsedTime();
@@ -800,7 +800,8 @@ public abstract class MasterAutonomous extends Master
         liftMoving = true;
         GGLiftTimer.reset();
         motorGG.setTargetPosition(motorGG.getCurrentPosition() + ticks);
-
+        motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 1000.0));
+/*
         if(liftMoving)
         {
             motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 1000.0));
@@ -811,6 +812,8 @@ public abstract class MasterAutonomous extends Master
             motorGG.setPower(0.0);
             liftMoving = false;
         }
+        */
+        idle();
     }
 
     void DropJJ()
@@ -1038,7 +1041,9 @@ public abstract class MasterAutonomous extends Master
                 //Drive at 55 degrees until the left sensor is on the line
                 while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue)
                 {
-                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.15);
+                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
+                    sleep(300);
+                    colorSensorHSV();
                 }
                 stopDriving();
             }
@@ -1051,7 +1056,9 @@ public abstract class MasterAutonomous extends Master
                 //Drive at 55 degrees until the left sensor is on the line
                 while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue)
                 {
-                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.15);
+                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
+                    sleep(300);
+                    colorSensorHSV();
                 }
                 stopDriving();
                 colorSensorHSV();
@@ -1065,14 +1072,18 @@ public abstract class MasterAutonomous extends Master
                 //Drive left until the right sensors see the line
                 while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue))
                 {
-                    MoveIMUContLeft(referenceAngle, 0, speed, saturationValue, 0.15);
+                    MoveIMUContLeft(referenceAngle, 0, speed, saturationValue, 0.1);
+                    sleep(300);
+                    colorSensorHSV();
                 }
                 stopDriving();
 
                 //Drive at 55 degrees until the left sensor is on the line
                 while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue)
                 {
-                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.15);
+                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
+                    sleep(300);
+                    colorSensorHSV();
                 }
                 stopDriving();
             }
@@ -1084,14 +1095,17 @@ public abstract class MasterAutonomous extends Master
                 telemetry.update();
                 while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue))
                 {
-                    MoveIMUContLeft(referenceAngle, 0, speed, saturationValue, 0.15);
+                    MoveIMUContLeft(referenceAngle, 0, speed, saturationValue, 0.1);
+                    sleep(300);
                     colorSensorHSV();
                 }
                 stopDriving();
                 //Drive at 55 degrees until the left sensor is on the line
                 while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue))
                 {
-                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.15);
+                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
+                    sleep(300);
+                    colorSensorHSV();
                 }
                 stopDriving();
             }
@@ -1100,9 +1114,11 @@ public abstract class MasterAutonomous extends Master
                 telemetry.addData("Stage", "4.5");
                 telemetry.update();
                 stopDriving();
+                sleep(300);
             }
                 telemetry.addData("Stage", "Five");
                 telemetry.update();
+            sleep(300);
         }
         while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
         telemetry.addData("Stage", "Six");
