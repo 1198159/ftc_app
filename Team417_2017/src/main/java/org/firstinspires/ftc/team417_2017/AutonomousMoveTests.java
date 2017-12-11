@@ -24,7 +24,7 @@ public class AutonomousMoveTests extends MasterAutonomous
 
         Kmove = 1.0/1200.0;
         TOL = 100.0;
-        TOL_ANGLE = 2.5;
+        TOL_ANGLE = 2;
         Kpivot = 1/100.0;
 
         double refAngle = imu.getAngularOrientation().firstAngle;
@@ -32,8 +32,9 @@ public class AutonomousMoveTests extends MasterAutonomous
         // grab the glyph TODO: write methods to open the GG
         closeGG();
         sleep(200);
-        openGG();
-        /*
+        raiseGM();
+        sleep(200);
+
         moveTimed(0.4, 0, 1000);
         //move(300, 0, 0.1, 0.5, 5);
         sleep(200);
@@ -42,10 +43,13 @@ public class AutonomousMoveTests extends MasterAutonomous
         moveMaintainHeading(205, 0, 0, refAngle, 0.15, 0.6, 5);
         sleep(200);
         pivotWithReference(181, refAngle, 0.1, 0.55);
-        move(0, -120, 0.1, 0.3, 3);
-        */
-        // closeGG();
+        move(0, -200, 0.1, 0.3, 2.5);
+        sleep(200);
 
+        openGG();
+        sleep(200);
+
+        move(0, 75, 0.1, 0.3, 0.7);
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();

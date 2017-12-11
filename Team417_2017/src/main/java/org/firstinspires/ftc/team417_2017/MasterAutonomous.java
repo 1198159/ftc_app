@@ -39,10 +39,12 @@ abstract class MasterAutonomous extends MasterOpMode
     int curGGPos;
     int errorMinGG;
     int errorMaxGG;
-    int minGGPos = -180; // a bit less than the original starting position of zero (where we start it)
-    int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev
+    int minGGPos = -200; // a bit less than the original starting position of zero (where we start it)
+    int maxGGPos = -550; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev
     double speedGG;
-    double KGlyph;
+    double KGlyph = 1/1000.0;
+    int maxGMPos = 550;
+    int curGMPos;
 
     // VARIABLES FOR MOVE/ALIGN METHODS
     int pivotDst;
@@ -421,25 +423,49 @@ abstract class MasterAutonomous extends MasterOpMode
         while (curGGPos > maxGGPos) // CLOSE (counter goes negative when closing)
         {
             curGGPos = motorGlyphGrab.getCurrentPosition();
+            telemetry.addData("motorGGCounts:", curGGPos);
+            telemetry.update();
             errorMaxGG = curGGPos - maxGGPos;
             speedGG = Math.abs(errorMaxGG * KGlyph);
-            speedGG = Range.clip(speedGG, 0.09, 0.35);
+            speedGG = Range.clip(speedGG, 0.05, 0.3);
             speedGG = speedGG * Math.signum(errorMaxGG);
             motorGlyphGrab.setPower(speedGG);
+            idle();
         }
+        motorGlyphGrab.setPower(0.0);
     }
 
     public void openGG()
     {
-        while (curGGPos < minGGPos)
+        while (curGGPos < minGGPos) // OPEN (counter goes positive when opening)
         {
             curGGPos = motorGlyphGrab.getCurrentPosition();
+            telemetry.addData("motorGGCounts:", curGGPos);
+            telemetry.update();
             errorMinGG = curGGPos - minGGPos;
             speedGG = Math.abs(errorMinGG * KGlyph);
-            speedGG = Range.clip(speedGG, 0.09, 0.35);
+            speedGG = Range.clip(speedGG, 0.05, 0.3);
             speedGG = speedGG * Math.signum(errorMinGG);
             motorGlyphGrab.setPower(speedGG);
+            idle();
         }
+        motorGlyphGrab.setPower(0.0);
+    }
+
+    public void raiseGM()
+    {
+        curGMPos = motorGlyphLeft.getCurrentPosition();
+        while (curGMPos < maxGMPos)
+        {
+            curGMPos = motorGlyphLeft.getCurrentPosition();
+            telemetry.addData("motorGM:", curGMPos);
+            telemetry.update();
+            motorGlyphLeft.setPower(powerGlyphUp);
+            motorGlyphRight.setPower(powerGlyphUp);
+            idle();
+        }
+        motorGlyphLeft.setPower(0.0);
+        motorGlyphRight.setPower(0.0);
     }
 
 
