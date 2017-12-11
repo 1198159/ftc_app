@@ -123,15 +123,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         telemetry.addData("GlyphLeftPos: ", motorGlyphLeft.getCurrentPosition());
         telemetry.addData("GlyphRightPos: ", motorGlyphRight.getCurrentPosition());
-
-        if (gamepad2.a) // if button "A" is pressed, the GG is stuck, thus we increase the power
-        {
-            powerGlyphGrab = 0.35;
-        }
-        if (gamepad2.b) // if button "B" is pressed, return to normal GG power (this is the default if no buttons are pressed)
-        {
-            powerGlyphGrab = 0.1;
-        }
+        telemetry.update();
 
         // Glyph grabber open/close
         curGGPos = motorGlyphGrab.getCurrentPosition(); // set the current position of the GG
