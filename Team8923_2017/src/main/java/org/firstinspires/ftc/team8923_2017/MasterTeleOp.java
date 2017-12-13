@@ -92,86 +92,18 @@ public abstract class MasterTeleOp extends Master
     */
     void RunGG()
     {
-        /*if(!liftMoving && (gamepad1.dpad_down || gamepad1.dpad_up))
+        if(!liftModeStateChange && !liftMoving && (gamepad1.right_trigger > 0.35 || gamepad1.left_trigger > 0.35) && GGLiftTimer.milliseconds() > 500)
         {
             liftMoving = true;
             GGLiftTimer.reset();
 
-            if (gamepad1.dpad_up && liftStage < 2)
+            if(gamepad1.right_trigger > 0.35 && liftStage < 2)
                 liftStage++;
-
-            else if (gamepad1.dpad_down && liftStage > 0)
+            else if(gamepad1.left_trigger > 0.35 && liftStage > 0)
                 liftStage--;
 
-            if((motorGG.getCurrentPosition() - GGLiftTicks < GGZero) && gamepad1.dpad_down)
-                motorGG.setTargetPosition(GGZero);
-            else if((motorGG.getCurrentPosition() + GGLiftTicks > GGZero + (GGLiftTicks * 2)) && gamepad1.dpad_up)
-                motorGG.setTargetPosition(GGZero + (GGLiftTicks * 2));
-        }
 
-        if(liftMoving)
-        {
-            motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 125.0), 1.0));
-        }
-
-        if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) <= 5)
-        {
-            motorGG.setPower(0.0);
-            liftMoving = false;
-        }*/
-
-        if(!liftModeStateChange && !liftMoving && (gamepad1.dpad_up || gamepad1.dpad_down) && GGLiftTimer.milliseconds() > 500)
-        {
-            liftMoving = true;
-            GGLiftTimer.reset();
-
-            if(gamepad1.dpad_up && liftStage < 2)
-            {
-
-                // 3000 here just to set a target that's far enough out of the way so as not to worry about meeting it
-                //motorGG.setTargetPosition(motorGG.getCurrentPosition() + 3000);
-                //liftModeStateChange = true;
-                //motorGG.setPower(0.25);
-                liftStage++;
-            }
-
-            else if(gamepad1.dpad_down && liftStage > 0)
-            {
-
-                // 3000 here just to set a target that's far enough out of the way so as not to worry about meeting it
-                //motorGG.setTargetPosition(motorGG.getCurrentPosition() - 3000);
-                //liftModeStateChange = true;
-                //motorGG.setPower(-0.25);
-                liftStage--;
-            }
-
-
-            motorGG.setTargetPosition(GGZero + (liftStage * GGLiftTicks));//1700
-            /*
-            if(gamepad1.dpad_up && motorGG.getCurrentPosition() < 1700)
-            {
-                motorGG.setTargetPosition(1700);
-            }
-            else if(gamepad1.dpad_up && motorGG.getCurrentPosition() >= 1700)
-            {
-                motorGG.setTargetPosition(3400);
-            }
-            else if(gamepad1.dpad_down && motorGG.getCurrentPosition() >= 3400)
-            {
-                motorGG.setTargetPosition(1700);
-            }
-            else if(gamepad1.dpad_down && motorGG.getCurrentPosition() <= 3400)
-            {
-                if(gamepad1.dpad_down && motorGG.getCurrentPosition() <= 1700)
-                {
-                    motorGG.setTargetPosition(0);
-                }
-
-                else
-                {
-                    motorGG.setTargetPosition(1700);
-                }
-            }*/
+            motorGG.setTargetPosition(GGZero + (liftStage * GGLiftTicks));
         }
 
         if(liftMoving)
@@ -204,16 +136,15 @@ public abstract class MasterTeleOp extends Master
             servoGGR.setPosition(0.28);//TODO value needs to be changed
         }
 
-        if(liftModeStateChange && !(gamepad1.right_trigger > 0.35 || gamepad1.left_trigger > 0.35))
+        if(liftModeStateChange && !(gamepad1.dpad_up || gamepad1.dpad_down))
         {
             liftModeStateChange = false;
             motorGG.setTargetPosition(motorGG.getCurrentPosition());
             motorGG.setPower(0.0);
         }
 
-        if(gamepad1.right_trigger > 0.35 && !liftMoving)
+        if(gamepad1.dpad_up && !liftMoving)
         {
-            //liftStage++;
 
             if(!liftModeStateChange)
             {
@@ -224,9 +155,8 @@ public abstract class MasterTeleOp extends Master
             motorGG.setPower(0.25);
 
         }
-        else if(gamepad1.left_trigger > 0.35 && !liftMoving)
+        else if(gamepad1.dpad_down && !liftMoving)
         {
-            //liftStage--;
 
             if(!liftModeStateChange)
             {
