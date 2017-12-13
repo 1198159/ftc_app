@@ -50,6 +50,7 @@ public abstract class MasterTeleOp extends Master
         double angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
 
         driveOmni45(angle, power, turnPower);
+        idle();
     }
 
     void SendTelemetry()
@@ -60,6 +61,7 @@ public abstract class MasterTeleOp extends Master
         telemetry.addData("SlowMode", slowModeDivisor);
         telemetry.addData("lift stage", liftStage);
         telemetry.update();
+        idle();
     }
 
     /*void IMUDrive()//Drive for straighter movement. However, pivot is very slow For now, maybe don't use this method in TeleOp until faster pivot is made
@@ -124,9 +126,25 @@ public abstract class MasterTeleOp extends Master
             GGLiftTimer.reset();
 
             if(gamepad1.dpad_up && liftStage < 2)
+            {
+
+                // 3000 here just to set a target that's far enough out of the way so as not to worry about meeting it
+                //motorGG.setTargetPosition(motorGG.getCurrentPosition() + 3000);
+                //liftModeStateChange = true;
+                //motorGG.setPower(0.25);
                 liftStage++;
+            }
+
             else if(gamepad1.dpad_down && liftStage > 0)
+            {
+
+                // 3000 here just to set a target that's far enough out of the way so as not to worry about meeting it
+                //motorGG.setTargetPosition(motorGG.getCurrentPosition() - 3000);
+                //liftModeStateChange = true;
+                //motorGG.setPower(-0.25);
                 liftStage--;
+            }
+
 
             motorGG.setTargetPosition(GGZero + (liftStage * GGLiftTicks));//1700
             /*
@@ -170,21 +188,20 @@ public abstract class MasterTeleOp extends Master
         //full close
         if(gamepad1.a && !liftMoving)
         {
-            servoGGL.setPosition(0.37); //TODO value needs to be changed
-            servoGGR.setPosition(0.15); //TODO value to be changed
-
+            servoGGL.setPosition(0.34); //Was 0.37 TODO value needs to be changed
+            servoGGR.setPosition(0.175); // Was 0.15 TODO value to be changed
         }
         //half open
         else if(gamepad1.x && !liftMoving)
         {
             servoGGL.setPosition(0.25);//TODO value needs to be changed
-            servoGGR.setPosition(0.30);//TODO value needs to be changed
+            servoGGR.setPosition(0.25);//TODO value needs to be changed
         }
         //full open
         else if(gamepad1.b && !liftMoving)
         {
-            servoGGL.setPosition(0.1);//TODO value needs to be changed
-            servoGGR.setPosition(0.40);//TODO value needs to be changed
+            servoGGL.setPosition(0.15);//TODO value needs to be changed
+            servoGGR.setPosition(0.28);//TODO value needs to be changed
         }
 
         if(liftModeStateChange && !(gamepad1.right_trigger > 0.35 || gamepad1.left_trigger > 0.35))
@@ -196,6 +213,8 @@ public abstract class MasterTeleOp extends Master
 
         if(gamepad1.right_trigger > 0.35 && !liftMoving)
         {
+            //liftStage++;
+
             if(!liftModeStateChange)
             {
                 // 3000 here just to set a target that's far enough out of the way so as not to worry about meeting it
@@ -203,9 +222,12 @@ public abstract class MasterTeleOp extends Master
                 liftModeStateChange = true;
             }
             motorGG.setPower(0.25);
+
         }
         else if(gamepad1.left_trigger > 0.35 && !liftMoving)
         {
+            //liftStage--;
+
             if(!liftModeStateChange)
             {
                 // 3000 here just to set a target that's far enough out of the way so as not to worry about meeting it
@@ -213,11 +235,13 @@ public abstract class MasterTeleOp extends Master
                 liftModeStateChange = true;
             }
             motorGG.setPower(-0.25);
+
         }
 
         if(gamepad1.left_stick_button && gamepad1.right_stick_button && gamepad1.left_bumper)
         {
             GGZero = motorGG.getCurrentPosition();
         }
+        idle();
     }
 }
