@@ -11,7 +11,7 @@ public class AutoBlueLeft extends MasterAutonomous
     {
         boolean isBlueSide = true;
         boolean isLeftBalancingStone = true;
-        //setRobotStartingOrientation(180);
+        setRobotStartingOrientation(180);
 
         initializeAuto();
 
@@ -36,13 +36,49 @@ public class AutoBlueLeft extends MasterAutonomous
 
 
         knockJewel(blueJewel, isBlueSide);
+
+
+        // Drive to safe zone--------------------------------
         moveRobot(-90,0.5, 1.4);
-        turnTo(-90);
-        moveRobot(-90,0.3, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
+        //---------------------------------------------------
+
+
+        // Align with and face key column--------------------
+        moveRobot(180,0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
         //driveToPosition(0, -500, 0.5);
-        //turn 90 degrees
-        //may need to move backwards
-        //deploy Glyph mech
-        //score glyph
+        turnTo(0);
+        //
+
+
+        // Deploy glyph mechanism----------------------------
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+        motorGlyphter.setPower(1.0);
+        pauseWhileUpdating(4.0);
+        //---------------------------------------------------
+
+
+        // Score glyph---------------------------------------
+        motorCollectorRight.setPower(0.6);
+        pauseWhileUpdating(1.0);
+        motorCollectorRight.setPower(0);
+        //---------------------------------------------------
+
+
+        // Push glyph in-------------------------------------
+        moveRobot(90, 0.2, 0.6);
+        //---------------------------------------------------
+
+
+        // Move robot away from cryptobox----------------
+        moveRobot(-90, 0.3, 0.4);
+        //-----------------------------------------------
+
+
+        // Retract glyph mechanism---------------------------
+        motorGlyphter.setTargetPosition(0);
+        motorGlyphter.setPower(1.0);
+        pauseWhileUpdating(4.0);
+        //---------------------------------------------------
+
     }
 }

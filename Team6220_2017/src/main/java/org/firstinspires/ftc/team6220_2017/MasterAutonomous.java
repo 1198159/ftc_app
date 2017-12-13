@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.team6220_2017;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 /*
     Contains important methods for use in our autonomous programs
 */
@@ -47,6 +51,8 @@ abstract public class MasterAutonomous extends MasterOpMode
         // Accounts for delay between initializing the program and starting TeleOp
         lTime = timer.seconds();
 
+        // Ensure log can't overflow
+        telemetry.log().setCapacity(3);
         telemetry.log().add("Alliance Blue/Red = X/B");
         telemetry.log().add("Balancing stone Left/Right = Left/Right bumper");
 
@@ -169,7 +175,6 @@ abstract public class MasterAutonomous extends MasterOpMode
         pauseWhileUpdating(0.5);
     }
 
-    // todo Change to be based on encoder input
     // Specialized method for driving the robot in autonomous
     void moveRobot(double driveAngle, double drivePower, double pause) throws InterruptedException
     {
@@ -178,6 +183,92 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopDriveMotors();
     }
 
+    // todo Add absolute coordinates and code to prevent turning while using driveToPosition
+    //todo sideways translation does not work
+    // Uses encoders to make the robot drive to a specified relative position
+    void driveToPosition(double deltaX, double deltaY, double maxPower) throws InterruptedException
+    {
+        // Find distance between robot and its destination
+        double distanceToTarget = calculateDistance(deltaX, deltaY);
+        // Variables set every loop-------------------
+        double posFL;
+        double posFR;
+        double posBL;
+        double posBR;
+        double encX;
+        double encY;
+        double xDiff;
+        double yDiff;
+        double driveAngle;
+        //---------------------------------------------
+
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        // Check to see if robot has arrived at destination within tolerances
+        while (distanceToTarget > Constants.POSITION_TOLERANCE_MM && opModeIsActive())
+        {
+            // Store current encoder values as temporary variables
+            posFL = motorFL.getCurrentPosition();
+            posFR = motorFR.getCurrentPosition();
+            posBL = motorBL.getCurrentPosition();
+            posBR = motorBR.getCurrentPosition();
+
+            // Average encoder differences to find translational x and y components (averaging values
+            // gives more reliable results than using a single motor).  Motors turn differently
+            // when translating, so signs on FR and BL must be flipped
+            encX = (-posFL - posFR + posBL + posBR) / 4;
+            encY = (-posFL + posFR - posBL + posBR) / 4;
+
+            xDiff = deltaX - encX;
+            yDiff = deltaY - encY;
+
+            // Recalculate remaining distance each loop
+            distanceToTarget = calculateDistance(xDiff, yDiff);
+
+            // Power is proportional to distance from target
+            double drivePower = maxPower * distanceToTarget;
+            // Send drivePower through PID filter to adjust range and minimize oscillation
+            TranslationFilter.roll(drivePower);
+            double adjustedDrivePower = TranslationFilter.getFilteredValue();
+
+            // Ensure robot doesn't approach target position too slowly
+            if (Math.abs(adjustedDrivePower) < Constants.MINIMUM_DRIVE_POWER)
+            {
+                adjustedDrivePower = Math.signum(adjustedDrivePower) * Constants.MINIMUM_DRIVE_POWER;
+            }
+
+            // Deals with the fact that inverse tangent only returns an angle between -90 and 90
+            // degrees.  We want to be able to drive at angles greater than 90 degrees, so the
+            // range of atan2 must be modified
+            if (deltaX >= 0)
+                driveAngle = Math.toDegrees(Math.atan2(yDiff, xDiff));
+            else
+                driveAngle = Math.toDegrees(Math.atan2(yDiff, xDiff)) + 180;
+
+            driveMecanum(driveAngle, adjustedDrivePower, 0.0);
+
+            telemetry.addData("X remaining: ", xDiff);
+            telemetry.addData("Y remaining: ", yDiff);
+            telemetry.addData("Drive Angle: ", driveAngle);
+            telemetry.addData("Power: ", adjustedDrivePower);
+            telemetry.update();
+            idle();
+        }
+
+        stopDriveMotors();
+    }
+
+    // todo Decide whether to keep or remove old method
+    /*
     // todo Add absolute coordinates and code to prevent turning while using driveToPosition
     //todo sideways translation does not work
     // Uses encoders to make the robot drive to a specified relative position
@@ -260,6 +351,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         stopDriveMotors();
     }
+    */
 
     // todo Implement global coordinates (not a priority)
     // Updates robot's coordinates and angle

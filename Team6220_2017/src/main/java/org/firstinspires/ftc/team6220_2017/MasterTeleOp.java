@@ -35,7 +35,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
 
         // Allows the driver to raise the vertical jewel servo if it fails during the match
-        if(driver1.isButtonPressed(Button.LEFT_BUMPER))
+        if(driver2.isButtonPressed(Button.LEFT_BUMPER))
         {
             verticalJewelServoToggler.retract();
         }

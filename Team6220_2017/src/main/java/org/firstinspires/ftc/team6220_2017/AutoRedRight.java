@@ -13,7 +13,8 @@ public class AutoRedRight extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         boolean isBlueSide = false;
-        //setRobotStartingOrientation(0);
+        boolean isLeftBalancingStone = false;
+        setRobotStartingOrientation(0);
 
         initializeAuto();
 

@@ -17,8 +17,8 @@ abstract public class MasterOpMode extends LinearOpMode
 
     // Polynomial for adjusting input from joysticks to allow for ease of driving.  Using an even
     // function works because driveMecanum has a separate parameter that determines direction
-    //                                                y = 0 + 0.3x + 0 + 0.7x^3
-    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.3, 0.0, 0.7});
+    //                                                y = 0 + 0.25x + 0 + 0.75x^3
+    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.25, 0.0, 0.75});
     // Note: not currently in use
     // Used to ensure that the robot drives straight when not attempting to turn
     double targetHeading = 0.0 + headingOffset;

@@ -54,9 +54,11 @@ public class Constants
 
     // todo Adjust
     // Times the robot takes to drive to respective centers of cryptoboxes in autonomous
-    public static final double STRAIGHT_BOX_TIME = 1.7;
-    public static final double ANGLED_BOX_TIME = 0.6;
-    public static final double COLUMN_DIFF = 0.3;
+    public static final double STRAIGHT_BOX_TIME_RED = 1.57;    // todo Adjust
+    public static final double STRAIGHT_BOX_TIME_BLUE = 1.8;    // todo Adjust
+    public static final double ANGLED_BOX_TIME_BLUE = 0.3;  // todo Adjust
+    public static final double ANGLED_BOX_TIME_RED = 0.3;   // todo Adjust
+    public static final double COLUMN_DIFF = 0.35;
 
 
     // Drive mode constants
@@ -83,7 +85,7 @@ public class Constants
 
 
     // Ensure that input isn't used when no commands are given
-    public static final double MINIMUM_JOYSTICK_POWER = 0.05;
+    public static final double MINIMUM_JOYSTICK_POWER = 0.08;
     public static final double MINIMUM_TRIGGER_VALUE = 0.1;
 
 
@@ -94,8 +96,8 @@ public class Constants
     // Glyph mechanism scoring heights.  Numbers signify the number of glyphs stacked on top of
     // each other in a column.  Units are in andymark encoder ticks
      // Note:  2, 3, and 4 are slightly higher than necessary to accommodate uncertainty in glyph size
-    public static final int HEIGHT_1 = -9757;         // Subtract 1280 to calculated value
-    public static final int HEIGHT_2 = -8103;         // Subtract 1170 to calculated value
-    public static final int HEIGHT_3 = -6764;         // Subtract 1240 to calculated value
+    public static final int HEIGHT_1 = -9737;         // Subtract 1300 to calculated value
+    public static final int HEIGHT_2 = -8073;         // Subtract 1200 to calculated value
+    public static final int HEIGHT_3 = -6734;         // Subtract 1270 to calculated value
     public static final int HEIGHT_4 = -5189;         // Subtract 1330 to calculated value
 }

@@ -202,7 +202,6 @@ public class VuforiaHelper
         return isVuMarkVisible;
     }
 
-    // todo Adjust movement times
     // This returns the time the robot should drive for to get to the key column.  Since the orientation
     // of the columns is reverse for the red and blue alliances and different for each balancing
     // stone, we must tell this method the robot's starting position.  E.g., if we are on blue right,
@@ -215,30 +214,30 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.ANGLED_BOX_TIME + Constants.COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_TIME_BLUE + Constants.COLUMN_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.ANGLED_BOX_TIME - Constants.COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_TIME_BLUE - Constants.COLUMN_DIFF;
                 }
                 else
                 {
-                    return Constants.ANGLED_BOX_TIME;
+                    return Constants.ANGLED_BOX_TIME_BLUE;
                 }
             }
             else
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.STRAIGHT_BOX_TIME + Constants.COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_TIME_BLUE + Constants.COLUMN_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.STRAIGHT_BOX_TIME - Constants.COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_TIME_BLUE - Constants.COLUMN_DIFF;
                 }
                 else
                 {
-                    return Constants.STRAIGHT_BOX_TIME;
+                    return Constants.STRAIGHT_BOX_TIME_BLUE;
                 }
             }
         }
@@ -248,30 +247,30 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.STRAIGHT_BOX_TIME - Constants.COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_TIME_RED - Constants.COLUMN_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.STRAIGHT_BOX_TIME + Constants.COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_TIME_RED + Constants.COLUMN_DIFF;
                 }
                 else
                 {
-                    return Constants.STRAIGHT_BOX_TIME;
+                    return Constants.STRAIGHT_BOX_TIME_RED;
                 }
             }
             else
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.ANGLED_BOX_TIME - Constants.COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_TIME_RED - Constants.COLUMN_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.ANGLED_BOX_TIME + Constants.COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_TIME_RED + Constants.COLUMN_DIFF;
                 }
                 else
                 {
-                    return Constants.ANGLED_BOX_TIME;
+                    return Constants.ANGLED_BOX_TIME_RED;
                 }
             }
         }
@@ -306,18 +305,9 @@ public class VuforiaHelper
     // Returns the average hue determined from a sample pixel area
     public float getAverageJewelColor(int x, int y)
     {
-        // Reset transfer, sum, and output arrays to ensure that we don't accidentally reuse old values
-        colorTransfer[0] = 0;
-        colorTransfer[1] = 0;
-        colorTransfer[2] = 0;
-        colorSum[0] = 0;
-        colorSum[1] = 0;
-        colorSum[2] = 0;
-        colorOutput[0] = 0;
-        colorOutput[1] = 0;
-        colorOutput[2] = 0;
-        //Arrays.fill(colorTransfer, 0);
-        //Arrays.fill(colorOutput, 0);
+        // Reset transfer and output arrays to ensure that we don't accidentally reuse old values
+        Arrays.fill(colorTransfer, 0);
+        Arrays.fill(colorOutput, 0);
 
         // Ensure that we do not attempt to take pixels from outside the image border
         if (x >= 0 && x < Constants.IMAGE_WIDTH - Constants.JEWEL_SAMPLE_LENGTH / 2 && y >= 0 &&
@@ -327,8 +317,8 @@ public class VuforiaHelper
             {
                 for (int i = x - Constants.JEWEL_SAMPLE_LENGTH / 2; i < x + Constants.JEWEL_SAMPLE_LENGTH / 2; i++) // Rows
                 {
-                    // Get color of pixel.  This is actually a single integer that stores
-                    // ARGB values in 4 bytes
+                    // Get color of pixel.  This is actually a single integer that stores ARGB
+                    // values in 4 bytes
                     color = bitMap.getPixel(i, j);
 
                     // Convert color integer to HSV (hue, sat, val)
@@ -336,7 +326,7 @@ public class VuforiaHelper
                     Color.colorToHSV(color, colorTransfer);
 
                     // Sum the HSV values of all pixels in bitmap
-                    colorSum[0] += colorTransfer[0];
+                    colorOutput[0] += colorTransfer[0];
 
                     // Draw white border around sample region for debugging
                     if ((j == y - Constants.JEWEL_SAMPLE_LENGTH / 2 + 1) || (j == y + Constants.JEWEL_SAMPLE_LENGTH / 2 - 1)
@@ -347,13 +337,14 @@ public class VuforiaHelper
                 }
             }
             // Normalize output for 32x32 = 4096 pixel square above
-            colorOutput[0] = colorSum[0] / 4096;
+            colorOutput[0] /= 4096;
         }
+
         return colorOutput[0]; // Return the average hue
     }
 
-    // Uses a bitmap created by vuforia to determine the saturations of the jewels and compare them,
-    // then returns information that tells you whether the left jewel is red or blue
+    // Uses a bitmap created by vuforia to determine the average hues of the jewels and compare them,
+    // then returns information that tells you whether the left jewel is blue or red
     public BlueJewel getLeftJewelColor() throws InterruptedException
     {
         // Vuforia code that uses the vuMark to determine relative positions of objects
@@ -399,7 +390,6 @@ public class VuforiaHelper
             avgLeftJewelColor = getAverageJewelColor(lx, ly);
             avgRightJewelColor = getAverageJewelColor(rx, ry);
 
-            // todo Make sure new logic for shifting red value is correct
             // Adjust color for red range.  Red color on the jewel can be on either side of 0, so
             // we must subtract 360 if red values are left of 0 to ensure blue is greater than red
             colorLeft = (avgLeftJewelColor > 315) ? avgLeftJewelColor - 360 : avgLeftJewelColor;

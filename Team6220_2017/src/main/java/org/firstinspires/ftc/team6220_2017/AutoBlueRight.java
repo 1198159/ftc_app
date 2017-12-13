@@ -22,15 +22,12 @@ public class AutoBlueRight extends MasterAutonomous
 
         vuforiaHelper.getVumark();
         // Get jewel info-----------------------------------------------------
-         // if the vuMark is not visible, vuforia will tell us
-        if (vuforiaHelper.isVisible())
-        {
+        // if the vuMark is not visible, vuforia will tell us
+        if (vuforiaHelper.isVisible()) {
             blueJewel = vuforiaHelper.getLeftJewelColor();
             telemetry.addData("Left Hue: ", vuforiaHelper.avgLeftJewelColor);
             telemetry.addData("Right Hue: ", vuforiaHelper.avgRightJewelColor);
-        }
-        else
-        {
+        } else {
             telemetry.addData("vuMark: ", "not visible");
         }
         telemetry.update();
@@ -38,6 +35,7 @@ public class AutoBlueRight extends MasterAutonomous
 
 
         knockJewel(blueJewel, isBlueSide);
+
 
         // Align with and face key column--------------------
         moveRobot(-90, 0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
@@ -49,19 +47,38 @@ public class AutoBlueRight extends MasterAutonomous
         // Deploy glyph mechanism----------------------------
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(3.0);
-        //---------------------------------------------------
-
-
-        // Move robot closer to cryptobox----------------
-        moveRobot(0, 0.3, 0.5);
+        pauseWhileUpdating(4.0);
         //---------------------------------------------------
 
 
         // Score glyph---------------------------------------
+        motorCollectorLeft.setPower(-0.6);
         motorCollectorRight.setPower(0.6);
         pauseWhileUpdating(1.0);
+        motorCollectorLeft.setPower(0);
         motorCollectorRight.setPower(0);
         //---------------------------------------------------
+
+
+        // Push glyph in-------------------------------------
+        moveRobot(90, 0.3, 0.7);
+        //---------------------------------------------------
+
+
+        // Move robot away from cryptobox----------------
+        moveRobot(-90, 0.3, 0.8);
+        //-----------------------------------------------
+
+
+        // Retract glyph mechanism---------------------------
+        motorGlyphter.setTargetPosition(0);
+        motorGlyphter.setPower(1.0);
+        pauseWhileUpdating(4.0);
+        //---------------------------------------------------
+
+
+        // Move robot toward cryptobox----------------
+        moveRobot(90, 0.3, 0.8);
+        //-----------------------------------------------
     }
 }

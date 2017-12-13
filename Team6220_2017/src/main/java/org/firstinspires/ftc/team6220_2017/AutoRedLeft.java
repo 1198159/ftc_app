@@ -36,7 +36,6 @@ public class AutoRedLeft extends MasterAutonomous
 
 
         knockJewel(blueJewel, isBlueSide);
-        //driveToPosition(0, -500, 0.5);
 
 
         // Align with and face key column--------------------
@@ -49,19 +48,38 @@ public class AutoRedLeft extends MasterAutonomous
         // Deploy glyph mechanism----------------------------
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(3.0);
-        //---------------------------------------------------
-
-
-        // Move robot closer to cryptobox----------------
-        moveRobot(0, 0.3, 1.4);
+        pauseWhileUpdating(4.0);
         //---------------------------------------------------
 
 
         // Score glyph---------------------------------------
+        motorCollectorLeft.setPower(-0.6);
         motorCollectorRight.setPower(0.6);
         pauseWhileUpdating(1.0);
+        motorCollectorLeft.setPower(0);
         motorCollectorRight.setPower(0);
         //---------------------------------------------------
+
+
+        // Push glyph in-------------------------------------
+        moveRobot(90, 0.3, 0.7);
+        //---------------------------------------------------
+
+
+        // Move robot away from cryptobox----------------
+        moveRobot(-90, 0.3, 0.8);
+        //-----------------------------------------------
+
+
+        // Retract glyph mechanism---------------------------
+        motorGlyphter.setTargetPosition(0);
+        motorGlyphter.setPower(1.0);
+        pauseWhileUpdating(4.0);
+        //---------------------------------------------------
+
+
+        // Move robot toward cryptobox----------------
+        moveRobot(90, 0.3, 0.8);
+        //-----------------------------------------------
     }
 }
