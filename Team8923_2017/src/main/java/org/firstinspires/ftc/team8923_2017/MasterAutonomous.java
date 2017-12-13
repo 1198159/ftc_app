@@ -331,8 +331,8 @@ public abstract class MasterAutonomous extends Master
     }
     void openGG()
     {
-        servoGGL.setPosition(0.1); //
-        servoGGR.setPosition(0.32); //
+        servoGGL.setPosition(0.15); //Was0.1
+        servoGGR.setPosition(0.28); //Was0.32
     }
 
     void MoveIMU(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
@@ -795,12 +795,19 @@ public abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
+    void stopGG()
+    {
+        motorGG.setPower(0.0);
+        idle();
+    }
+
     void moveGG(int ticks)
     {
         liftMoving = true;
         GGLiftTimer.reset();
         motorGG.setTargetPosition(motorGG.getCurrentPosition() + ticks);
         motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 1000.0));
+        idle();
 /*
         if(liftMoving)
         {
@@ -813,7 +820,7 @@ public abstract class MasterAutonomous extends Master
             liftMoving = false;
         }
         */
-        idle();
+
     }
 
     void DropJJ()
@@ -900,13 +907,12 @@ public abstract class MasterAutonomous extends Master
             //telemetry.addData("V: ", hsvValuesTopLeft[2]);
             telemetry.addData("TopLeft_S: ", hsvValuesTopLeft[1]);
             telemetry.addData("BottomRight_S: ", hsvValuesBottomRight[1]);
-
             telemetry.update();
-
     }
 
     void MoveIMUCont(double referenceAngle, double kAngle, double maxSpeed, double saturationValue)
     {
+        runtime.reset();
         do
         {
             currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
@@ -936,6 +942,7 @@ public abstract class MasterAutonomous extends Master
 
     void driveOmni45Cont(double driveAngle, double drivePower, double turnPower, double saturationValue, double timeout)
     {
+        runtime.reset();
         do
             {
                 // Calculate out x and y directions of drive power, where y is forward (0 degrees) and x is right (-90 degrees)
@@ -984,6 +991,7 @@ public abstract class MasterAutonomous extends Master
     void MoveIMUContLeft(double referenceAngle, double kAngle, double maxSpeed, double saturationValue, double timeout
     )
     {
+        runtime.reset();
         do
         {
             currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
@@ -1015,16 +1023,19 @@ public abstract class MasterAutonomous extends Master
         float currentAngle;
         //Go forwards until any sensor sees the line
         double referenceAngle = imu.getAngularOrientation().firstAngle;//TODO declare this in init hardware auto
+        double runTimes = 0.0;
         runtime.reset();
 
-        do
+
+        while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue) && (runTimes < 4.0))
         {
             telemetry.addData("Stage", "Zero");
             telemetry.update();
+            runTimes ++;
             colorSensorHSV();
 
             //If no sensors are on the line, go forward
-            while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue))
+            while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (runTimes < 4.0))
             {
                 //MoveIMUCont(referenceAngle, 0.015, speed, saturationValue);
                 MoveIMU(referenceAngle, 190.0, 0.0, 0.015, speed, 0.2);
@@ -1034,7 +1045,7 @@ public abstract class MasterAutonomous extends Master
             colorSensorHSV();
 
             //Top right sensor is on the line, but rest aren't
-            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
+            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (runTimes < 4.0))
             {
                 telemetry.addData("Stage", "One");
                 telemetry.update();
@@ -1049,7 +1060,7 @@ public abstract class MasterAutonomous extends Master
             }
 
             //Right sensors are on the line, but left isn't
-            else if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
+            else if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (runTimes < 4.0))
             {
                 telemetry.addData("Stage", "Two");
                 telemetry.update();
@@ -1065,12 +1076,12 @@ public abstract class MasterAutonomous extends Master
             }
 
             //Only top left sensor sees line
-            else if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
+            else if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue) && (runTimes < 4.0))
             {
                 telemetry.addData("Stage", "Three");
                 telemetry.update();
                 //Drive left until the right sensors see the line
-                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue))
+                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (runTimes < 4.0))
                 {
                     MoveIMUContLeft(referenceAngle, 0, speed, saturationValue, 0.1);
                     sleep(300);
@@ -1089,11 +1100,11 @@ public abstract class MasterAutonomous extends Master
             }
 
             //Top left and right sensor on line
-            else if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
+            else if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue) && (runTimes < 4.0))
             {
                 telemetry.addData("Stage", "Four");
                 telemetry.update();
-                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue))
+                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue) && (runTimes < 4.0))
                 {
                     MoveIMUContLeft(referenceAngle, 0, speed, saturationValue, 0.1);
                     sleep(300);
@@ -1101,7 +1112,7 @@ public abstract class MasterAutonomous extends Master
                 }
                 stopDriving();
                 //Drive at 55 degrees until the left sensor is on the line
-                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue))
+                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue) && (runTimes < 4.0))
                 {
                     driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
                     sleep(300);
@@ -1116,175 +1127,12 @@ public abstract class MasterAutonomous extends Master
                 stopDriving();
                 sleep(300);
             }
-                telemetry.addData("Stage", "Five");
-                telemetry.update();
-            sleep(300);
+            telemetry.addData("Stage", "Five");
+            telemetry.update();
         }
-        while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
+        stopDriving();
         telemetry.addData("Stage", "Six");
-        telemetry.update();
-        stopDriving();
         //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-    }
-
-    void alignOnLine(double saturationValue)
-    {
-        float currentAngle;
-        //Go forwards until any sensor sees the line
-        double referenceAngle =  imu.getAngularOrientation().firstAngle;//TODO declare this in init hardware auto
-
-        do
-        {
-            do
-            {
-                MoveIMU(referenceAngle, 50, 0, 0.015, 0.2, 3);
-                colorSensorHSV();
-            }
-            while((hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue)); //TODO Change value to correct Hue value
-            stopDriving();
-
-
-            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
-            //Top right sensor is on the line, but rest aren't
-            {
-                do
-                {
-                    //Pivot about front right wheel until bottom right sensor sees the line
-                    motorFL.setPower(0.2);
-                    motorFR.setPower(0);
-                    motorBL.setPower(0.2);
-                    motorBR.setPower(0.2);
-                    colorSensorHSV();
-                }
-                while(hsvValuesBottomRight[1] < saturationValue);
-                stopDriving();
-                //Move right until the left sensor sees the line, then move half that distance left
-                runtime.reset();
-                do
-                {
-                    MoveIMURight(referenceAngle, 30, 0, 0.015, 0.2, 3);
-                    colorSensorHSV();
-                }
-                while(hsvValuesTopLeft[1] < saturationValue);
-                MoveIMULeft(referenceAngle, 30, 0, 0.015, 0.2, runtime.milliseconds() / 2);
-            }
-
-
-            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
-            //Top and bottom right sensors are on the line, but left isn't
-            {
-                runtime.reset();
-                do
-                {
-                    MoveIMURight(referenceAngle, 30, 0, 0.015, 0.2, 3);
-                    colorSensorHSV();
-                }
-                while(hsvValuesTopLeft[1] < saturationValue);
-                MoveIMULeft(referenceAngle, 30, 0, 0.015, 0.2, runtime.milliseconds() / 2);
-            }
-
-
-            if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
-            //Only top left sensor sees line
-            {
-                do
-                {
-                    //Pivot about front left wheel until front right sensor sees the line
-                    motorFL.setPower(0);
-                    motorFR.setPower(-0.2);
-                    motorBL.setPower(-0.2);
-                    motorBR.setPower(-0.2);
-                    colorSensorHSV();
-                }
-                while(hsvValuesTopRight[1] < saturationValue);
-                stopDriving();
-
-                //Pivots until current angle is 0
-                do
-                {
-                    motorFL.setPower(0);
-                    motorFR.setPower(0.2);
-                    motorBL.setPower(0.2);
-                    motorBR.setPower(0.2);
-                    currentAngle = imu.getAngularOrientation().firstAngle;
-                    colorSensorHSV();
-                }
-                while((currentAngle > referenceAngle + TOL) && (currentAngle < referenceAngle - TOL));
-                stopDriving();
-                runtime.reset();
-
-                do
-                {
-                    MoveIMULeft(referenceAngle, 30, 0, 0.015, 0.2, 3);
-                    colorSensorHSV();
-                }
-                while((hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
-                MoveIMURight(referenceAngle, 30, 0, 0.015, 0.2, runtime.milliseconds() / 2);
-            }
-
-
-            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
-            //Top left and right sensor on line
-            {
-                //Pivots until current angle is 0
-                do {
-                    motorFL.setPower(0);
-                    motorFR.setPower(0.2);
-                    motorBL.setPower(0.2);
-                    motorBR.setPower(0.2);
-                    currentAngle = imu.getAngularOrientation().firstAngle;
-                    colorSensorHSV();
-                }
-                while((currentAngle < referenceAngle + TOL) && (currentAngle > referenceAngle - TOL));
-                stopDriving();
-                runtime.reset();
-
-                do
-                {
-                    MoveIMULeft(referenceAngle, 30, 0, 0.015, 0.2, 3);
-                    colorSensorHSV();
-                }
-                while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue));
-                stopDriving();
-                MoveIMURight(referenceAngle, 30, 0, 0.015, 0.2, runtime.milliseconds() / 2);
-
-
-                if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] > saturationValue)) {
-                    do {
-                        //Pivot about front left wheel until front right sensor sees the line
-                        motorFL.setPower(0);
-                        motorFR.setPower(-0.2);
-                        motorBL.setPower(-0.2);
-                        motorBR.setPower(-0.2);
-                        colorSensorHSV();
-                    }
-                    while (hsvValuesTopRight[1] < saturationValue);
-                    stopDriving();
-
-                    //Pivots until current angle is 0
-                    do {
-                        motorFL.setPower(0);
-                        motorFR.setPower(0.2);
-                        motorBL.setPower(0.2);
-                        motorBR.setPower(0.2);
-                        currentAngle = imu.getAngularOrientation().firstAngle;
-                    }
-                    while ((currentAngle < referenceAngle) && (currentAngle < referenceAngle));
-                    stopDriving();
-                    runtime.reset();
-
-                    do {
-                        MoveIMULeft(referenceAngle, 30, 0, 0.015, 0.2, 3);
-                        colorSensorHSV();
-                    }
-                    while ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue));
-                    stopDriving();
-                    MoveIMURight(referenceAngle, 30, 0, 0.015, 0.2, runtime.milliseconds() / 2);
-                }
-            }
-        }
-        while((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] > saturationValue));
-        stopDriving();
     }
 
 //-------------------------------------------------------------------------------------------------------------------------------------

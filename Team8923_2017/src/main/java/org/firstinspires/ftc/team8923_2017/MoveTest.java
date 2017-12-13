@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 /**
  * Runable shell for Master Autonomous code
  */
-//@Disabled
+@Disabled
 public class MoveTest extends MasterAutonomous
 {
     private ElapsedTime runtime = new ElapsedTime();

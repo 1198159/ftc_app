@@ -6,7 +6,7 @@ import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
-@Autonomous(name="Autonomous Competition Red 1", group = "Swerve")
+@Autonomous(name="Autonomous Red 1", group = "Swerve")
 /**
  * Runable shell for Master Autonomous code
  */
@@ -23,15 +23,17 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         InitAuto();//Initializes Hardware and sets position based on alliance
         initVuforia();//Initializes Vuforia
 
+
         waitForStart();
         GetVumark();
         // turn on flash light
         //CameraDevice.getInstance().setFlashTorchMode(true);
         // set false to turn off light
         closeGG();
-        sleep(1000);
-        moveGG(1500);
         sleep(500);
+        closeGG();
+        sleep(700);
+        moveGG(1500);
         DropJJ();
         sleep(1000);
         GetLeftJewelColorCount();
@@ -60,7 +62,9 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         referenceAngle = adjustAngles(referenceAngle);
         sleep(1000);
         moveGG(-750);
-        sleep(1000);
+        sleep(700);
+        stopGG();
+        sleep(5000);
         alignOnLine55(0.5, 5.0, 0.29);//Aligns on line
         //MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
         sleep(500);
@@ -96,14 +100,16 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.1);
         sleep(700);
         moveGG(-750);
+        sleep(700);
+        stopGG();
         sleep(500);
         openGG();
         sleep(500);
         MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.6);
         sleep(500);
-        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.7);
+        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.25, 1.3);
         sleep(500);
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.6);
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.25, 0.8);
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
             MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.68);
@@ -127,6 +133,8 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
             telemetry.update();
             //MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.1);
         }
+        IMUPivot(referenceAngle,  180, 0.25, 0.015);
+        stopDriving();
 
         while (opModeIsActive())
         {
