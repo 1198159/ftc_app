@@ -1027,15 +1027,15 @@ public abstract class MasterAutonomous extends Master
         runtime.reset();
 
 
-        while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue) && (runTimes < 4.0))
-        {
+        //while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue) && (runTimes < 4.0))
+        //{
             telemetry.addData("Stage", "Zero");
             telemetry.update();
             runTimes ++;
             colorSensorHSV();
 
             //If no sensors are on the line, go forward
-            while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (runTimes < 4.0))
+            while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue))
             {
                 //MoveIMUCont(referenceAngle, 0.015, speed, saturationValue);
                 MoveIMU(referenceAngle, 190.0, 0.0, 0.015, speed, 0.2);
@@ -1045,7 +1045,7 @@ public abstract class MasterAutonomous extends Master
             colorSensorHSV();
 
             //Top right sensor is on the line, but rest aren't
-            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (runTimes < 4.0))
+            if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
             {
                 telemetry.addData("Stage", "One");
                 telemetry.update();
@@ -1060,12 +1060,12 @@ public abstract class MasterAutonomous extends Master
             }
 
             //Right sensors are on the line, but left isn't
-            else if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (runTimes < 4.0))
+            else if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] > saturationValue) && (hsvValuesTopLeft[1] < saturationValue))
             {
                 telemetry.addData("Stage", "Two");
                 telemetry.update();
                 //Drive at 55 degrees until the left sensor is on the line
-                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue)
+                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue))
                 {
                     driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
                     sleep(300);
@@ -1076,12 +1076,12 @@ public abstract class MasterAutonomous extends Master
             }
 
             //Only top left sensor sees line
-            else if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue) && (runTimes < 4.0))
+            else if ((hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
             {
                 telemetry.addData("Stage", "Three");
                 telemetry.update();
                 //Drive left until the right sensors see the line
-                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (runTimes < 4.0))
+                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue))
                 {
                     MoveIMUContLeft(referenceAngle, 0, speed, saturationValue, 0.1);
                     sleep(300);
@@ -1090,7 +1090,7 @@ public abstract class MasterAutonomous extends Master
                 stopDriving();
 
                 //Drive at 55 degrees until the left sensor is on the line
-                while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue)
+                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue))
                 {
                     driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
                     sleep(300);
@@ -1100,11 +1100,11 @@ public abstract class MasterAutonomous extends Master
             }
 
             //Top left and right sensor on line
-            else if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue) && (runTimes < 4.0))
+            else if ((hsvValuesTopRight[1] > saturationValue) && (hsvValuesBottomRight[1] < saturationValue) && (hsvValuesTopLeft[1] > saturationValue))
             {
                 telemetry.addData("Stage", "Four");
                 telemetry.update();
-                while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue) && (runTimes < 4.0))
+                while ((opModeIsActive()) && (hsvValuesBottomRight[1] < saturationValue))
                 {
                     MoveIMUContLeft(referenceAngle, 0, speed, saturationValue, 0.1);
                     sleep(300);
@@ -1112,7 +1112,7 @@ public abstract class MasterAutonomous extends Master
                 }
                 stopDriving();
                 //Drive at 55 degrees until the left sensor is on the line
-                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue) && (runTimes < 4.0))
+                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue))
                 {
                     driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
                     sleep(300);
@@ -1129,7 +1129,7 @@ public abstract class MasterAutonomous extends Master
             }
             telemetry.addData("Stage", "Five");
             telemetry.update();
-        }
+        //}
         stopDriving();
         telemetry.addData("Stage", "Six");
         //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);

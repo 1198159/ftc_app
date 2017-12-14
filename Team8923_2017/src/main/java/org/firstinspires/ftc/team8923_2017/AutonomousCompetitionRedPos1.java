@@ -30,12 +30,11 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         //CameraDevice.getInstance().setFlashTorchMode(true);
         // set false to turn off light
         closeGG();
-        sleep(500);
-        closeGG();
         sleep(700);
         moveGG(1500);
         DropJJ();
-        sleep(1000);
+        sleep(500);
+        stopGG();
         GetLeftJewelColorCount();
         //CameraDevice.getInstance().setFlashTorchMode(false);
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
@@ -52,19 +51,19 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
             RetrieveJJ();
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
-        sleep(500);
+        sleep(700);
         MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 2.2);//Go towards parking spot//Was 2.15
         sleep(500);
-        MoveIMURight(referenceAngle, 45.0, 0.0, 0.015, 0.35, 0.2);//Moves away from the cryptobox and towards the middle//Was0.4
+        MoveIMURight(referenceAngle, 45.0, 0.0, 0.015, 0.35, 0.15);//Moves away from the cryptobox and towards the middle//Was0.4
         sleep(500);
         IMUPivot(referenceAngle, 90, 0.25, 0.015);//Pivots to face the cryptobox
         referenceAngle += 90.0;//Sets angle to 0
         referenceAngle = adjustAngles(referenceAngle);
-        sleep(1000);
+        sleep(500);
         moveGG(-750);
         sleep(700);
         stopGG();
-        sleep(5000);
+        sleep(500);
         alignOnLine55(0.5, 5.0, 0.29);//Aligns on line
         //MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
         sleep(500);
@@ -78,7 +77,7 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         else if (vuMark == RelicRecoveryVuMark.CENTER)
         {
             MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.05);
-            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.1);
+            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.12);
             telemetry.addData("Stage", "Center");
             telemetry.update();
         }
@@ -105,15 +104,15 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         sleep(500);
         openGG();
         sleep(500);
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.6);
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.55, 0.22);
         sleep(500);
-        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.25, 1.3);
+        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 1.5);
         sleep(500);
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.25, 0.8);
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.45, 0.5);
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
-            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.68);
-            MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.3);
+            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.43);
+            MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.12);
         }
         else if (vuMark == RelicRecoveryVuMark.CENTER)
         {
@@ -122,8 +121,8 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         }
         else if (vuMark == RelicRecoveryVuMark.RIGHT)
         {
-            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.55);
-            MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.3);
+            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.35);
+            MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.2);
         }
         else
         {
@@ -133,7 +132,7 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
             telemetry.update();
             //MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.1);
         }
-        IMUPivot(referenceAngle,  180, 0.25, 0.015);
+        IMUPivot(referenceAngle,  180, 0.45, 0.015);
         stopDriving();
 
         while (opModeIsActive())

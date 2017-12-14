@@ -29,12 +29,11 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         //CameraDevice.getInstance().setFlashTorchMode(true);
         // set false to turn off light
         closeGG();
-        sleep(500);
-        closeGG();
         sleep(700);
         moveGG(1500);
         DropJJ();
-        sleep(1000);
+        sleep(500);
+        stopGG();
         GetLeftJewelColorCount();
         //CameraDevice.getInstance().setFlashTorchMode(true);
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
@@ -51,7 +50,7 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
             RetrieveJJ();
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
-
+        sleep(700);
         MoveIMU(referenceAngle, 400.0, 0.0, 0.015, 0.3, 1.73);//Go towards parking spot was 1.6
         IMUPivot(referenceAngle, -90, 0.25, 0.015);
         referenceAngle -= 90.0;
@@ -68,6 +67,7 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         sleep(500);
         alignOnLine55(0.4, 3.0, 0.2);
         sleep(500);
+
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
             MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
@@ -105,15 +105,15 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         sleep(500);
         openGG();
         sleep(500);
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.6);
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.55, 0.22);
         sleep(500);
-        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.25, 1.3);
+        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 1.5);
         sleep(500);
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.25, 0.8);
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.45, 0.5);
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
-            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.68);
-            MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.3);
+            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.43);
+            MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.12);
         }
         else if (vuMark == RelicRecoveryVuMark.CENTER)
         {
@@ -122,8 +122,8 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         }
         else if (vuMark == RelicRecoveryVuMark.RIGHT)
         {
-            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.55);
-            MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.3);
+            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.35);
+            MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.2);
         }
         else
         {
@@ -133,7 +133,7 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
             telemetry.update();
             //MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.1);
         }
-        IMUPivot(referenceAngle,  -180, 0.25, 0.015);
+        IMUPivot(referenceAngle,  -125, 0.45, 0.015);
         stopDriving();
 
         /*
