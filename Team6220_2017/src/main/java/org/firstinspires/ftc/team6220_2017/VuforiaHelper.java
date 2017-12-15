@@ -336,10 +336,9 @@ public class VuforiaHelper
                     }
                 }
             }
-            // Normalize output for 32x32 = 4096 pixel square above
+            // Normalize output for 64 x 64 = 4096 pixel square above
             colorOutput[0] /= 4096;
         }
-
         return colorOutput[0]; // Return the average hue
     }
 
