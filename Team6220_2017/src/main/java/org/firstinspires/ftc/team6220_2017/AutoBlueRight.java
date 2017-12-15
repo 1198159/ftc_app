@@ -12,7 +12,6 @@ public class AutoBlueRight extends MasterAutonomous
     {
         boolean isBlueSide = true;
         boolean isLeftBalancingStone = false;
-        // todo Test this method
         setRobotStartingOrientation(180);
 
         initializeAuto();
@@ -41,6 +40,7 @@ public class AutoBlueRight extends MasterAutonomous
         moveRobot(-90, 0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
         //driveToPosition(0, -500, 0.5);
         turnTo(90);
+        moveRobot(-90, 0.3, 0.5);
         //---------------------------------------------------
 
 
@@ -78,7 +78,7 @@ public class AutoBlueRight extends MasterAutonomous
 
 
         // Move robot toward cryptobox----------------
-        moveRobot(90, 0.3, 0.8);
+        moveRobot(90, 0.3, 0.9);
         //-----------------------------------------------
     }
 }
