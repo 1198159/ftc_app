@@ -3,7 +3,7 @@ package org.firstinspires.ftc.team417_2017;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name="Autonomous Move Tests", group = "Swerve")
+//@Autonomous(name="Autonomous Move Tests", group = "Swerve")
 // @Disabled
 
 public class AutonomousMoveTests extends MasterAutonomous
