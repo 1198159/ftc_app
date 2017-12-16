@@ -51,7 +51,7 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
         sleep(700);
-        MoveIMU(referenceAngle, 400.0, 0.0, 0.015, 0.3, 1.73);//Go towards parking spot was 1.6
+        MoveIMU(referenceAngle, 400.0, 0.0, 0.015, 0.3, 1.8);//Was 1.73 //Go towards parking spot was 1.6
         IMUPivot(referenceAngle, -90, 0.25, 0.015);
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);
@@ -65,7 +65,7 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         sleep(700);
         stopGG();
         sleep(500);
-        alignOnLine55(0.4, 3.0, 0.2);
+        alignOnLine55(0.5, 3.0, 0.2);
         sleep(500);
 
         if (vuMark == RelicRecoveryVuMark.LEFT)

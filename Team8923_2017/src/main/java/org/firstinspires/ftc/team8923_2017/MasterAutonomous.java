@@ -979,12 +979,8 @@ public abstract class MasterAutonomous extends Master
                 motorBL.setPower(powerBL);
                 motorBR.setPower(powerBR);
 
-                Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopLeft);
-                Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopRight);
-                Color.RGBToHSV((sensorBottomRight.red() * 255) / 800, (sensorBottomRight.green() * 255) / 800, (sensorBottomRight.blue() * 255) / 800, hsvValuesBottomRight);
-                idle();
             }
-        while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue) && (runtime.seconds() < timeout));
+        while ((opModeIsActive()) && (runtime.seconds() < timeout));
         stopDriving();
     }
 
@@ -1122,16 +1118,21 @@ public abstract class MasterAutonomous extends Master
             }
             else
             {
+                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue))
+                {
+                    driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
+                    sleep(300);
+                    colorSensorHSV();
+                }
                 telemetry.addData("Stage", "4.5");
                 telemetry.update();
                 stopDriving();
                 sleep(300);
             }
-            telemetry.addData("Stage", "Five");
-            telemetry.update();
         //}
         stopDriving();
-        telemetry.addData("Stage", "Six");
+        telemetry.addData("Stage", "Five");
+        telemetry.update();
         //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
     }
 

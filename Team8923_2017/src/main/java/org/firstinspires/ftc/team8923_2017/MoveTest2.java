@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 /**
  * Runable shell for Master Autonomous code
  */
-@Disabled
+//@Disabled
 public class MoveTest2 extends MasterAutonomous
 {
     //Declare variables here
@@ -25,7 +25,7 @@ public class MoveTest2 extends MasterAutonomous
 
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
 
-        alignOnLine55(0.45, 2.0, 0.29);
+        alignOnLine55(0.4, 2.0, 0.29);
         //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
         //MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.6);
         //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
