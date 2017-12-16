@@ -214,11 +214,11 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.ANGLED_BOX_TIME_BLUE + Constants.COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_TIME_BLUE + Constants.ANGLED_COLUMN_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.ANGLED_BOX_TIME_BLUE - Constants.COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_TIME_BLUE - Constants.ANGLED_COLUMN_DIFF;
                 }
                 else
                 {
@@ -229,11 +229,11 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.STRAIGHT_BOX_TIME_BLUE + Constants.COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_TIME_BLUE + Constants.STRAIGHT_COLUMN_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.STRAIGHT_BOX_TIME_BLUE - Constants.COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_TIME_BLUE - Constants.STRAIGHT_COLUMN_DIFF;
                 }
                 else
                 {
@@ -247,11 +247,11 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.STRAIGHT_BOX_TIME_RED - Constants.COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_TIME_RED - Constants.STRAIGHT_COLUMN_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.STRAIGHT_BOX_TIME_RED + Constants.COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_TIME_RED + Constants.STRAIGHT_COLUMN_DIFF;
                 }
                 else
                 {
@@ -262,11 +262,11 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.ANGLED_BOX_TIME_RED - Constants.COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_TIME_RED - Constants.ANGLED_COLUMN_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.ANGLED_BOX_TIME_RED + Constants.COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_TIME_RED + Constants.ANGLED_COLUMN_DIFF;
                 }
                 else
                 {

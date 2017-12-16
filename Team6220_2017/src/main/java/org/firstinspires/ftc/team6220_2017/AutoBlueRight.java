@@ -40,7 +40,9 @@ public class AutoBlueRight extends MasterAutonomous
         moveRobot(-90, 0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
         //driveToPosition(0, -500, 0.5);
         turnTo(90);
-        moveRobot(-90, 0.3, 0.5);
+        moveRobot(-90, 0.3, 0.7);
+        // Ensure the robot is at the correct angle to score
+        turnTo(90);
         //---------------------------------------------------
 
 
@@ -61,7 +63,7 @@ public class AutoBlueRight extends MasterAutonomous
 
 
         // Push glyph in-------------------------------------
-        moveRobot(90, 0.3, 0.7);
+        moveRobot(90, 0.2, 0.8);
         //---------------------------------------------------
 
 
@@ -80,5 +82,7 @@ public class AutoBlueRight extends MasterAutonomous
         // Move robot toward cryptobox----------------
         moveRobot(90, 0.3, 0.9);
         //-----------------------------------------------
+
+        turnTo(-90);
     }
 }

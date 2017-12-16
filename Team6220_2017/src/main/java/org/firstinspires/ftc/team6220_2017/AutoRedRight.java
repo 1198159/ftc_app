@@ -39,11 +39,40 @@ public class AutoRedRight extends MasterAutonomous
 
 
         knockJewel(blueJewel, isBlueSide);
-        moveRobot(90,0.5,1.4);        //driveToPosition(0, -500, 0.5);
-        //turn 90 degrees
-        //may need to move backwards
-        //deploy Glyph mech
-        //score glyph
+
+        moveRobot(90, 0.3, 1.2);
+        turnTo(0);
+        moveRobot(180, 0.6, vuforiaHelper.keyColumnDriveTime(isBlueSide,isLeftBalancingStone));
+        turnTo(0);
+        //moveRobot(180, 0.6, 0.5);
+
+
+        // Deploy glyph mechanism----------------------------
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+        motorGlyphter.setPower(1.0);
+        pauseWhileUpdating(4.0);
+        //---------------------------------------------------
+
+        // Score glyph---------------------------------------
+        motorCollectorLeft.setPower(-0.7);
+        motorCollectorRight.setPower(0.4);
+        pauseWhileUpdating(1.0);
+        motorCollectorLeft.setPower(0);
+        motorCollectorRight.setPower(0);
+        //---------------------------------------------------
+
+        moveRobot(-90, 0.3, 0.5);
+        // Retract glyph mechanism---------------------------
+        motorGlyphter.setTargetPosition(0);
+        motorGlyphter.setPower(1.0);
+        pauseWhileUpdating(4.0);
+        //---------------------------------------------------
+
+        // Move robot toward cryptobox----------------
+        moveRobot(90, 0.3, 1.3);
+        //-----------------------------------------------
+
+
     }
 }
 

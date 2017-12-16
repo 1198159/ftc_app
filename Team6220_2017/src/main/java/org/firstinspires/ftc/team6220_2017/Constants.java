@@ -55,10 +55,11 @@ public class Constants
     // todo Adjust
     // Times the robot takes to drive to respective centers of cryptoboxes in autonomous
     public static final double STRAIGHT_BOX_TIME_RED = 1.27;    // todo Adjust
-    public static final double STRAIGHT_BOX_TIME_BLUE = 1.8;    // todo Adjust
-    public static final double ANGLED_BOX_TIME_BLUE = 0.3;  // todo Adjust
-    public static final double ANGLED_BOX_TIME_RED = 0.3;   // todo Adjust
-    public static final double COLUMN_DIFF = 0.3;
+    public static final double STRAIGHT_BOX_TIME_BLUE = 1.55;    // todo Adjust
+    public static final double ANGLED_BOX_TIME_BLUE = 0.62;  // todo Adjust
+    public static final double ANGLED_BOX_TIME_RED = 0.62;   // todo Adjust
+    public static final double STRAIGHT_COLUMN_DIFF = 0.3;
+    public static final double ANGLED_COLUMN_DIFF = 0.4;
 
 
     // Drive mode constants

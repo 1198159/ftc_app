@@ -71,8 +71,14 @@ public class TeleOpTestBed extends MasterAutonomous
             }
             else if (driver1.isButtonJustPressed(Button.LEFT_BUMPER))
             {
-                verticalJewelServo.setPosition(Constants.VERTICAL_JEWEL_SERVO_DEPLOYED);
+                moveRobot(90, 0.3, 1.2);
+                //verticalJewelServo.setPosition(Constants.VERTICAL_JEWEL_SERVO_DEPLOYED);
             }
+            else if (driver1.isButtonJustPressed(Button.RIGHT_BUMPER))
+            {
+                moveRobot(-90, 0.3, 1.2);
+            }
+
 
 
             // Test glyph collection; servos on either side of glyph pull or push it
@@ -80,8 +86,8 @@ public class TeleOpTestBed extends MasterAutonomous
             {
                 //jointPosCount += 0.02;
                 //jointServo.setPosition(jointPosCount);
-                //glyphMotorLeft.setPower(1.0);
-                //glyphMotorRight.setPower(-1.0);
+                //motorCollectorLeft.setPower(1.0);
+                //motorCollectorRight.setPower(-1.0);
                 motorGlyphter.setTargetPosition(-2000);
 
                 motorGlyphter.setPower(0.5);

@@ -12,6 +12,8 @@ public class GlyphMechanism
 
     int[] glyphHeights;
 
+    double motorCollectorCount = 0.5;
+
     private boolean wasStickPressed = false;
 
     // We pass in MasterOpMode so that this class can access important functionalities such as telemetry
@@ -103,10 +105,24 @@ public class GlyphMechanism
             op.motorCollectorRight.setPower(0);
             op.motorCollectorLeft.setPower(0);
         }
-        //---------------------------------------------------------------------
+        /*else if (op.driver1.isButtonJustPressed(Button.LEFT_STICK_PRESS))
+        {
+            motorCollectorCount += 0.05;
+            op.motorCollectorLeft.setPower(-0.7);
+            op.motorCollectorRight.setPower(motorCollectorCount);
+        }
+        else if (op.driver1.isButtonJustPressed(Button.RIGHT_STICK_PRESS))
+        {
+            motorCollectorCount -= 0.05;
+            op.motorCollectorLeft.setPower(-0.7);
+            op.motorCollectorRight.setPower(motorCollectorCount);
+        }*/
+
+            //---------------------------------------------------------------------
 
 
         op.telemetry.addData("Glyphter Enc: ", op.motorGlyphter.getCurrentPosition());
+        op.telemetry.addData("MotorCollectorCount: ", motorCollectorCount);
         op.telemetry.update();
     }
 }
