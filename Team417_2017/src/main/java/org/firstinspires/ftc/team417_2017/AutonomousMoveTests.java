@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team417_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="Autonomous Move Tests", group = "Swerve")
 // @Disabled
@@ -30,6 +31,7 @@ public class AutonomousMoveTests extends MasterAutonomous
         double refAngle = imu.getAngularOrientation().firstAngle;
 
         // grab the glyph
+        motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         closeGG();
         sleep(200);
         raiseGM();
@@ -37,23 +39,24 @@ public class AutonomousMoveTests extends MasterAutonomous
 
         moveTimed(0.4, 0, 1000);
         sleep(200);
-        pivotWithReference(0, refAngle, 0.1, 0.4);
+        pivotWithReference(0, refAngle, 0.15, 0.4);
         sleep(200);
         Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-        moveMaintainHeading(250, 0, 0, refAngle, 0.15, 0.6, 6);
+        moveMaintainHeading(240, 0, 0, refAngle, 0.15, 0.6, 6);
         sleep(200);
         Kpivot = 1/100.0;
-        pivotWithReference(181, refAngle, 0.1, 0.55);
+        pivotWithReference(181, refAngle, 0.15, 0.55);
         sleep(200);
-        move(0, -200, 0.1, 0.3, 2.5); // push the glyph in // TODO: test for the right values
+        move(0, -200, 0.1, 0.3, 2.5); // push the glyph in
         sleep(200);
-        // TODO: write something to open the glyph only a little bit
-        move(0, 10, 0.1, 0.3, 0.7); // back up from the cryptobox
-
-        openGG();
+        motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        openGG(-500); // open the GG a little bit
         sleep(200);
 
-        move(0, 75, 0.1, 0.3, 0.7); // back up from the cryptobox
+        sleep(200);
+        move(0, 150, 0.1, 0.3, 0.7); // back up from the cryptobox
+        motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        openGG(minGGPos);
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();

@@ -94,6 +94,8 @@ abstract class MasterAutonomous extends MasterOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         //Set up telemetry data
         // We show the log in oldest-to-newest order, as that's better for poetry
         telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.OLDEST_FIRST);
@@ -448,14 +450,14 @@ abstract class MasterAutonomous extends MasterOpMode
         motorGlyphGrab.setPower(0.0);
     }
 
-    public void openGG()
+    public void openGG(int openPos)
     {
-        while (curGGPos < minGGPos) // OPEN (counter goes positive when opening)
+        while (curGGPos < openPos) // OPEN (counter goes positive when opening)
         {
             curGGPos = motorGlyphGrab.getCurrentPosition();
             telemetry.addData("motorGGCounts:", curGGPos);
             telemetry.update();
-            errorMinGG = curGGPos - minGGPos;
+            errorMinGG = curGGPos - openPos;
             speedGG = Math.abs(errorMinGG * KGlyph);
             speedGG = Range.clip(speedGG, 0.05, 0.25);
             speedGG = speedGG * Math.signum(errorMinGG);
