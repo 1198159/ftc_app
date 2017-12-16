@@ -107,25 +107,34 @@ public class AutonomousRedGlyph extends MasterAutonomous
 
         if (isPosLeft) // RED LEFT
         {
-            move(-280, 0, 0.2, 0.4, 2.5); // move off the ramp
+            moveTimed(-0.5, 0, 1100); // move left off the balancing stone
             sleep(200);
             pivotWithReference(0, refAngle, 0.15, 0.5);
             sleep(200);
             Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-            moveMaintainHeading(-230, 0, 0, refAngle, 0.15, 0.6, 6);
+            moveMaintainHeading(-100, 0, 0, refAngle, 0.15, 0.6, 3); // move left towards the cryptobox
             sleep(200);
             Kpivot = 1/100.0;
-            pivotWithReference(181, refAngle, 0.15, 0.55);
+            pivotWithReference(-140, refAngle, 0.15, 0.55);
             sleep(200);
-            move(0, -200, 0.1, 0.3, 2.5); // push the glyph in
+            move(-115, 0, 0.15, 0.5, 1); // move right
             sleep(200);
         }
         else // RED RIGHT
         {
-            moveTimed(-0.6, 0, 1500); // left
+            moveTimed(-0.5, 0, 1100); // move left off the balancing stone
             sleep(200);
-            moveTimed(0, -0.3, 550); // back
+            pivotWithReference(0, refAngle, 0.15, 0.5); // correct robot heading
+            sleep(200);
+            move(-60, 0, 0.15, 0.5, 1); // move left
+            sleep(200);
+            pivotWithReference(-45, refAngle, 0.15, 0.5);
+            sleep(200);
+            move(-75, 0, 0.15, 0.5, 1); // move right
         }
+
+        move(0, -220, 0.1, 0.3, 2.5); // push the glyph in
+        sleep(200);
 
         motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         openGG(-500); // open the GG a little bit
