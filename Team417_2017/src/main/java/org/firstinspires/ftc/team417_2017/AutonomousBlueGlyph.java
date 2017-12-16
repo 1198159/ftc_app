@@ -88,7 +88,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
 
         if(VuforiaDetect.isLeftJewelBlue) // if the left jewel is blue,
         {
-            pivotWithReference(-15, refAngle, 0.15, 0.5); // then pivot right
+            pivotWithReference(-17, refAngle, 0.15, 0.5); // then pivot right
             sleep(200);
             servoJewel.setPosition(JEWEL_INIT); // move servo back
             sleep(200);
@@ -97,7 +97,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
         }
         else // if the left jewel is red,
         {
-            pivotWithReference(15, refAngle, 0.15, 0.5); // then pivot left
+            pivotWithReference(17, refAngle, 0.15, 0.5); // then pivot left
             sleep(200);
             servoJewel.setPosition(JEWEL_INIT); // move servo back
             sleep(200);
@@ -107,9 +107,19 @@ public class AutonomousBlueGlyph extends MasterAutonomous
 
         if (isPosLeft) // BLUE LEFT
         {
-            moveTimed(0.6, 0, 1500); // right
+            // TODO: test this option, then add to red
+            move(280, 0, 0.2, 0.4, 2.5); // move off the ramp
             sleep(200);
-            moveTimed(0, -0.3, 550); // back
+            pivotWithReference(0, refAngle, 0.15, 0.5);
+            sleep(200);
+            Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
+            moveMaintainHeading(0, -230, 0, refAngle, 0.15, 0.6, 6);
+            sleep(200);
+            Kpivot = 1/100.0;
+            pivotWithReference(90, refAngle, 0.15, 0.55); // pivot to face the cryptobox
+            sleep(200);
+            move(0, -200, 0.1, 0.3, 2.5); // push the glyph in
+            sleep(200);
         }
         else // BLUE RIGHT
         {
