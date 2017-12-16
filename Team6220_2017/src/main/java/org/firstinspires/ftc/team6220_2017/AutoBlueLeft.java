@@ -39,7 +39,7 @@ public class AutoBlueLeft extends MasterAutonomous
 
 
         // Drive to safe zone--------------------------------
-        moveRobot(-90,0.5, 1.4);
+        moveRobot(-90,0.3,0.5);
         //---------------------------------------------------
 
 
@@ -79,6 +79,5 @@ public class AutoBlueLeft extends MasterAutonomous
         motorGlyphter.setPower(1.0);
         pauseWhileUpdating(4.0);
         //---------------------------------------------------
-
     }
 }

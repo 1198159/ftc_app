@@ -29,29 +29,34 @@ public class AutonomousMoveTests extends MasterAutonomous
 
         double refAngle = imu.getAngularOrientation().firstAngle;
 
-        // grab the glyph TODO: write methods to open the GG
+        // grab the glyph
         closeGG();
         sleep(200);
         raiseGM();
         sleep(200);
 
         moveTimed(0.4, 0, 1000);
-        //move(300, 0, 0.1, 0.5, 5);
         sleep(200);
         pivotWithReference(0, refAngle, 0.1, 0.4);
         sleep(200);
-        moveMaintainHeading(205, 0, 0, refAngle, 0.15, 0.6, 5);
+        Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
+        moveMaintainHeading(250, 0, 0, refAngle, 0.15, 0.6, 6);
         sleep(200);
+        Kpivot = 1/100.0;
         pivotWithReference(181, refAngle, 0.1, 0.55);
-        move(0, -200, 0.1, 0.3, 2.5);
         sleep(200);
+        move(0, -200, 0.1, 0.3, 2.5); // push the glyph in // TODO: test for the right values
+        sleep(200);
+        // TODO: write something to open the glyph only a little bit
+        move(0, 10, 0.1, 0.3, 0.7); // back up from the cryptobox
 
         openGG();
         sleep(200);
 
-        move(0, 75, 0.1, 0.3, 0.7);
+        move(0, 75, 0.1, 0.3, 0.7); // back up from the cryptobox
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();
+
     }
 }

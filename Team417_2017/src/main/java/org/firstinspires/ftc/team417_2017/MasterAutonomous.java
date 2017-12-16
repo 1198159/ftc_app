@@ -190,7 +190,7 @@ abstract class MasterAutonomous extends MasterOpMode
             curTurnAngle = adjustAngles(curTurnAngle);
             errorAngle =  pivotAngle - curTurnAngle;
             pivotSpeed = errorAngle * Kpivot;
-            pivotSpeed = Range.clip(pivotSpeed, -0.3, 0.3); // limit max pivot speed
+            pivotSpeed = Range.clip(pivotSpeed, -0.4, 0.4); // limit max pivot speed
             // pivotSpeed is added to each motor's movement speed
 
             errorFL = newTargetFL - motorFL.getCurrentPosition();
@@ -228,14 +228,27 @@ abstract class MasterAutonomous extends MasterOpMode
             motorBR.setPower(speedBR);
 
             avgDistError = (Math.abs(errorFL) + Math.abs(errorFR) + Math.abs(errorBL) + Math.abs(errorBR)) / 4.0;
+
+            if (Math.abs(avgDistError) < 120.0)
+            {
+                sleep(50);
+                // stop motors
+                motorFL.setPower(0);
+                motorFR.setPower(0);
+                motorBL.setPower(0);
+                motorBR.setPower(0);
+                sleep(50);
+            }
+
             idle();
         }
         while ( (opModeIsActive()) &&
                 (runtime.seconds() < timeout) &&
                 (
-                     //   ( (Math.abs(errorFL) > TOL) && (Math.abs(errorFR) > TOL) && (Math.abs(errorBL) > TOL) && (Math.abs(errorBR) > TOL) )
-                        avgDistError > TOL
-                                || (Math.abs(errorAngle) > TOL_ANGLE)
+                     // exit the loop when one of the motors achieve their tolerance
+                     //( (Math.abs(errorFL) > TOL) && (Math.abs(errorFR) > TOL) && (Math.abs(errorBL) > TOL) && (Math.abs(errorBR) > TOL) )
+                     avgDistError > TOL
+                     || (Math.abs(errorAngle) > TOL_ANGLE)
                 )
                 );
 
@@ -444,7 +457,7 @@ abstract class MasterAutonomous extends MasterOpMode
             telemetry.update();
             errorMinGG = curGGPos - minGGPos;
             speedGG = Math.abs(errorMinGG * KGlyph);
-            speedGG = Range.clip(speedGG, 0.05, 0.3);
+            speedGG = Range.clip(speedGG, 0.05, 0.25);
             speedGG = speedGG * Math.signum(errorMinGG);
             motorGlyphGrab.setPower(speedGG);
             idle();

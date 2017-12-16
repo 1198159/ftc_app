@@ -42,6 +42,7 @@ public class AutoRedLeft extends MasterAutonomous
         moveRobot(90, 0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
         //driveToPosition(0, -500, 0.5);
         turnTo(-90);
+        moveRobot(-90, 0.3, 0.5);
         //---------------------------------------------------
 
 
@@ -79,7 +80,7 @@ public class AutoRedLeft extends MasterAutonomous
 
 
         // Move robot toward cryptobox----------------
-        moveRobot(90, 0.3, 0.8);
+        moveRobot(90, 0.3, 0.9);
         //-----------------------------------------------
     }
 }

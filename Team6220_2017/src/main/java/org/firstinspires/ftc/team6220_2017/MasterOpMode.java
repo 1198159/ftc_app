@@ -252,8 +252,8 @@ abstract public class MasterOpMode extends LinearOpMode
         }
 
         // Convert drive angle and power to x and y components
-        double y = drivePower * Math.sin(driveAngle);
-        double x = drivePower * Math.cos(driveAngle);
+        double y = drivePower * Math.sin(Math.toRadians(driveAngle));
+        double x = drivePower * Math.cos(Math.toRadians(driveAngle));
 
         // Signs for x, y, and w are based on the motor configuration and inherent properties of mecanum drive
         double powerFL = -x - y - w;
