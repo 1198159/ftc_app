@@ -92,7 +92,7 @@ public abstract class MasterTeleOp extends Master
     */
     void RunGG()
     {
-        if(!liftModeStateChange && !liftMoving && (gamepad1.right_trigger > 0.35 || gamepad1.left_trigger > 0.35) && GGLiftTimer.milliseconds() > 500)
+        if(!liftModeStateChange && !liftMoving && (gamepad1.right_trigger > 0.15 || gamepad1.left_trigger > 0.15) && GGLiftTimer.milliseconds() > 500)
         {
             liftMoving = true;
             GGLiftTimer.reset();
