@@ -147,7 +147,7 @@ abstract class MasterAutonomous extends MasterOpMode
         }
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
-                (Math.abs(errorFL) > TOL || Math.abs(errorFR) > TOL || Math.abs(errorBL) > TOL || Math.abs(errorBR) > TOL));
+                (Math.abs(errorFL) > TOL && Math.abs(errorFR) > TOL && Math.abs(errorBL) > TOL && Math.abs(errorBR) > TOL));
         // all of the motors must reach their tolerance before the robot exits the loop
 
         // stop the motors
