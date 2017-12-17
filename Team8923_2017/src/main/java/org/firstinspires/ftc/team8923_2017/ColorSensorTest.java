@@ -33,6 +33,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -65,7 +66,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @TeleOp(name = "ColorSensorTest", group = "Sensor")
-//@Disabled                            // Comment this out to add to the opmode list
+@Disabled
+                            // Comment this out to add to the opmode list
 public class ColorSensorTest extends LinearOpMode {
 
   ColorSensor sensorTopLeft;
@@ -77,7 +79,9 @@ public class ColorSensorTest extends LinearOpMode {
   // digital port 5 (zero indexed).
   static final int LED_CHANNEL = 5;
 
+
   @Override
+
   public void runOpMode() {
 
     // hsvValues is an array that will hold the hue, saturation, and value information.

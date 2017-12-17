@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team8923_2017;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.util.SerialNumber;
  * Testing platform for GeeGee servos in prototype 1
  */
 
+@Disabled
 @TeleOp(name = "Servo Tester", group = "Test")
 public class TestServo extends LinearOpMode
 {

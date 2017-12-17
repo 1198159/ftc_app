@@ -31,6 +31,7 @@ package org.firstinspires.ftc.team8923_2017;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.vuforia.Image;
@@ -57,6 +58,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.util.Arrays;
 
 @TeleOp(name="VuMarkTest", group ="Concept")
+@Disabled
 //@Disabled
 public class VuMarkTests extends LinearOpMode
 {

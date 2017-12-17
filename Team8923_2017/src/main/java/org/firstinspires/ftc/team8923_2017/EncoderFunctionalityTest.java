@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team8923_2017;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
@@ -7,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 @TeleOp(name = "Encoder Test", group = "Test")
+@Disabled
 public class EncoderFunctionalityTest extends MasterTeleOp
 {
     @Override
