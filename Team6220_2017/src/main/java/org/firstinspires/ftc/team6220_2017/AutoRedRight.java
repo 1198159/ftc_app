@@ -40,6 +40,7 @@ public class AutoRedRight extends MasterAutonomous
 
         knockJewel(blueJewel, isBlueSide);
 
+
         moveRobot(90, 0.3, 1.2);
         turnTo(0);
         moveRobot(180, 0.6, vuforiaHelper.keyColumnDriveTime(isBlueSide,isLeftBalancingStone));
@@ -71,8 +72,6 @@ public class AutoRedRight extends MasterAutonomous
         // Move robot toward cryptobox----------------
         moveRobot(90, 0.3, 1.3);
         //-----------------------------------------------
-
-
     }
 }
 

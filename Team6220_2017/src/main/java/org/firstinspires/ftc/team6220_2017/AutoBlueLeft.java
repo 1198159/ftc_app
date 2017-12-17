@@ -38,16 +38,24 @@ public class AutoBlueLeft extends MasterAutonomous
         knockJewel(blueJewel, isBlueSide);
 
 
-        // Drive to safe zone--------------------------------
-        moveRobot(-90,0.3,0.5);
-        //---------------------------------------------------
-
-
-        // Align with and face key column--------------------
-        moveRobot(180,0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
-        //driveToPosition(0, -500, 0.5);
+        // Move off balancing stone and turn around--------
+        moveRobot(-90, 0.3, 1.55);
+        pause(300);
         turnTo(0);
-        //
+        //-------------------------------------------------
+
+
+        // Back up to edge of balancing stone--------------
+        moveRobot(-90, 0.3, 0.55);
+        turnTo(0);
+        //-------------------------------------------------
+
+
+        // Line up with key column-------------------------
+        moveRobot(0, 0.6, vuforiaHelper.keyColumnDriveTime(isBlueSide,isLeftBalancingStone));
+        turnTo(0);
+        //moveRobot(180, 0.6, 0.5);
+        //-------------------------------------------------
 
 
         // Deploy glyph mechanism----------------------------
@@ -56,22 +64,19 @@ public class AutoBlueLeft extends MasterAutonomous
         pauseWhileUpdating(4.0);
         //---------------------------------------------------
 
-
         // Score glyph---------------------------------------
-        motorCollectorRight.setPower(0.6);
+        motorCollectorLeft.setPower(-0.7);
+        motorCollectorRight.setPower(0.4);
         pauseWhileUpdating(1.0);
+        motorCollectorLeft.setPower(0);
         motorCollectorRight.setPower(0);
         //---------------------------------------------------
 
 
-        // Push glyph in-------------------------------------
-        moveRobot(90, 0.2, 0.6);
+        // Back away from cryptobox--------------------------
+        moveRobot(-90, 0.3, 0.6);
+        turnTo(0);
         //---------------------------------------------------
-
-
-        // Move robot away from cryptobox----------------
-        moveRobot(-90, 0.3, 0.4);
-        //-----------------------------------------------
 
 
         // Retract glyph mechanism---------------------------
@@ -79,5 +84,9 @@ public class AutoBlueLeft extends MasterAutonomous
         motorGlyphter.setPower(1.0);
         pauseWhileUpdating(4.0);
         //---------------------------------------------------
+
+        // Move robot toward cryptobox----------------
+        moveRobot(90, 0.3, 1.3);
+        //-----------------------------------------------
     }
 }
