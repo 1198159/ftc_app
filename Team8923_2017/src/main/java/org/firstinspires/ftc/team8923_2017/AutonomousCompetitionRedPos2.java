@@ -109,10 +109,11 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
         openGG();
         sleep(500);
         MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.55, 0.22);
-        sleep(500);
+        //sleep(500);
         MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 1.5);
-        sleep(500);
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.45, 0.5);
+        //sleep(500);
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.45, 0.2);
+
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
             MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.43);
