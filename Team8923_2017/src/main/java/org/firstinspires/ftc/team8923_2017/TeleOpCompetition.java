@@ -10,6 +10,7 @@ import java.lang.reflect.GenericSignatureFormatError;
  */
 
 @TeleOp(name = "CapBot Teleop")
+
 public class TeleOpCompetition extends MasterTeleOp
 {
     @Override

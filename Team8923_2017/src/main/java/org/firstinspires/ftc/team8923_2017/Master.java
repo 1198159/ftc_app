@@ -49,7 +49,7 @@ public abstract class Master extends LinearOpMode
     double SERVO_JJ_MIDDLE1 = 0.4;
     double SERVO_JJ_MIDDLE2 = 0.5;
 
-    int GGLiftTicks = 1700;
+    int GGLiftTicks = 1700; // was 1700
 
     //declare IMU
     double currentRobotAngle;
