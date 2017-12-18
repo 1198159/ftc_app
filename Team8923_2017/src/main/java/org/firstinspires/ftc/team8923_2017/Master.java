@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -84,7 +85,7 @@ public abstract class Master extends LinearOpMode
     double motorPowerBR;
 
 
-    void InitHardware()
+    public void InitHardware()
     {
         // Motors here
         motorFL = hardwareMap.get(DcMotor.class, "motorFL");
@@ -97,6 +98,8 @@ public abstract class Master extends LinearOpMode
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
         servoGGL = hardwareMap.get(Servo.class, "servoGGL");
         servoGGR = hardwareMap.get(Servo.class, "servoGGR");
+
+        VoltageSensor voltSensor = hardwareMap.voltageSensor.get("Motor Controller 1");
 
         servoJJ.setPosition(SERVO_JJ_UP);
         servoGGL.setPosition(0.3);
