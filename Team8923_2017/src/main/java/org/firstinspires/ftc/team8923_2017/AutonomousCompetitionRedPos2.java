@@ -112,7 +112,7 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
         //sleep(500);
         MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 1.5);
         //sleep(500);
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.45, 0.2);
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.45, 0.5);
 
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
