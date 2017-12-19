@@ -28,26 +28,29 @@ public class GlyphMechanism
     {
         // Note:  REMEMBER to restart robot if program is stopped, then adjust position manually
         // Glyphter controls---------------------------------------------------
+         // Drive glyphter manually
         if (Math.abs(op.gamepad2.right_stick_y) >= Constants.MINIMUM_JOYSTICK_POWER)
         {
             wasStickPressed = true;
             op.motorGlyphter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            // Drive glyphter manually
             op.motorGlyphter.setPower(-op.gamepad2.right_stick_y);
             op.telemetry.addData("rightStickY: ", -op.gamepad2.right_stick_y);
             op.telemetry.update();
         }
+        // Check to see if the joystick was just released.  If so, transition into automatic control
         else if (Math.abs(op.gamepad2.right_stick_y) < Constants.MINIMUM_JOYSTICK_POWER && wasStickPressed)
         {
             wasStickPressed = false;
             op.motorGlyphter.setPower(0);
             op.motorGlyphter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
+         // Drive glyphter automatically
         else if (Math.abs(op.gamepad2.right_stick_y) < Constants.MINIMUM_JOYSTICK_POWER && !wasStickPressed)
         {
-            if (op.driver2.isButtonJustPressed(Button.A) && !op.driver2.isButtonPressed(Button.START))  // Protect against Start + A running
-            {                                                                                           // gylph mechanism into ground
+            // Protect against Start + A / B running gylph mechanism into ground
+            if (op.driver2.isButtonJustPressed(Button.A) && !op.driver2.isButtonPressed(Button.START))
+            {
                 op.motorGlyphter.setTargetPosition(glyphHeights[0]);
                 op.motorGlyphter.setPower(1.0);
             }
@@ -56,12 +59,12 @@ public class GlyphMechanism
                 op.motorGlyphter.setTargetPosition(glyphHeights[1]);
                 op.motorGlyphter.setPower(1.0);
             }
-            else if (op.driver2.isButtonJustPressed(Button.Y) && !op.driver2.isButtonPressed(Button.START))
+            else if (op.driver2.isButtonJustPressed(Button.Y))
             {
                 op.motorGlyphter.setTargetPosition(glyphHeights[2]);
                 op.motorGlyphter.setPower(1.0);
             }
-            else if (op.driver2.isButtonJustPressed(Button.X) && !op.driver2.isButtonPressed(Button.START))
+            else if (op.driver2.isButtonJustPressed(Button.X))
             {
                 op.motorGlyphter.setTargetPosition(glyphHeights[3]);
                 op.motorGlyphter.setPower(1.0);
@@ -72,9 +75,7 @@ public class GlyphMechanism
                 op.motorGlyphter.setTargetPosition(0);
                 op.motorGlyphter.setPower(1.0);
             }
-
         }
-
         //----------------------------------------------------------------------
 
 
