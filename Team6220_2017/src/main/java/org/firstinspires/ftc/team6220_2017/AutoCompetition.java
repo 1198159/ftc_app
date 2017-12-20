@@ -25,78 +25,196 @@ public class AutoCompetition extends MasterAutonomous
         verticalJewelServoToggler.retract();
 
         vuforiaHelper.getVumark();
-        // Score jewel-------------------------------------------------
-         // If the vuMark is not visible, vuforia will tell us and the robot will not score the jewel
+        // Score jewel------------------------------------------
         if (vuforiaHelper.isVisible())
         {
             blueJewel = vuforiaHelper.getLeftJewelColor();
             telemetry.addData("Blue Jewel: ", blueJewel);
-
-            knockJewel(blueJewel, isBlueSide);
         }
         else
+        {
             telemetry.addData("vuMark: ", "not visible");
-
+        }
         telemetry.update();
-        //--------------------------------------------------------------
 
 
-        // Drive to safe zone-------------------------------------------
+// Score jewel based on alliance and jewel colors.  If the vuMark is not visible, knockJewel
+// will do nothing rather than score the jewel blindly
+        knockJewel(blueJewel, isBlueSide);
+//--------------------------------------------------------------
+
+
+// Drive to safe zone-------------------------------------------
         if (isBlueSide)
         {
             if (isLeftBalancingStone)
             {
-                moveRobot(-90,0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
-                //driveToPosition(0, -610, 0.7);
-                //driveToPosition(-305, 0, 0.5);
+                // Move off balancing stone and turn around--------
+                moveRobot(-90, 0.3, 1.55);
+                pause(300);
+                turnTo(0);
+                //-------------------------------------------------
+
+
+                // Back up to edge of balancing stone--------------
+                moveRobot(-90, 0.3, 0.55);
+                turnTo(0);
+                //-------------------------------------------------
+
+
+                // Line up with key column-------------------------
+                moveRobot(0, 0.6, vuforiaHelper.keyColumnDriveTime(isBlueSide,isLeftBalancingStone));
+                turnTo(0);
+                //moveRobot(180, 0.6, 0.5);
+                //-------------------------------------------------
             }
             else
             {
-                moveRobot(-90, 0.5, 1.4);
-                //driveToPosition(0, -914, 0.7);
+                // Align with and face key column--------------------
+                moveRobot(-90, 0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
+                //driveToPosition(0, -500, 0.5);
+                turnTo(90);
+                moveRobot(-90, 0.3, 0.7);
+                // Ensure the robot is at the correct angle to score
+                turnTo(90);
+                //---------------------------------------------------
             }
         }
         else
         {
             if (isLeftBalancingStone)
             {
-                moveRobot(90,0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
-                moveRobot(0, 0.3, 1.4);
-                //driveToPosition(0, 914, 0.7);
+                // Align with and face key column--------------------
+                moveRobot(90, 0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
+                //driveToPosition(0, -500, 0.5);
+                turnTo(-90);
+                moveRobot(-90, 0.3, 0.7);
+                // Ensure the robot is at the correct angle to score
+                turnTo(-90);
+                //---------------------------------------------------
             }
             else
             {
-                moveRobot(90,0.5,1.4);
-                //driveToPosition(0, 610, 0.7);
-                //driveToPosition(-305, 0, 0.5);
+                moveRobot(90, 0.3, 1.2);
+                turnTo(0);
+                moveRobot(180, 0.6, vuforiaHelper.keyColumnDriveTime(isBlueSide,isLeftBalancingStone));
+                turnTo(0);
+                //moveRobot(180, 0.6, 0.5);
             }
         }
-        //--------------------------------------------------------------
+//--------------------------------------------------------------
 
 
-        // Score glyph in key column------------------------------------
+// Score glyph in key column------------------------------------
         if (isBlueSide)
         {
             if (isLeftBalancingStone)
             {
+                // Deploy glyph mechanism----------------------------
+                motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+                motorGlyphter.setPower(1.0);
+                pauseWhileUpdating(4.0);
+                //---------------------------------------------------
 
+
+                // Score glyph---------------------------------------
+                motorCollectorLeft.setPower(-0.7);
+                motorCollectorRight.setPower(0.4);
+                pauseWhileUpdating(1.0);
+                motorCollectorLeft.setPower(0);
+                motorCollectorRight.setPower(0);
+                //---------------------------------------------------
+
+
+                // Back away from cryptobox--------------------------
+                moveRobot(-90, 0.3, 0.6);
+                turnTo(0);
+                //---------------------------------------------------
             }
             else
             {
+                // Deploy glyph mechanism----------------------------
+                motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+                motorGlyphter.setPower(1.0);
+                pauseWhileUpdating(4.0);
+                //---------------------------------------------------
 
+
+                // Score glyph---------------------------------------
+                motorCollectorLeft.setPower(-0.6);
+                motorCollectorRight.setPower(0.6);
+                pauseWhileUpdating(1.0);
+                motorCollectorLeft.setPower(0);
+                motorCollectorRight.setPower(0);
+                //---------------------------------------------------
+
+
+                // Push glyph in-------------------------------------
+                moveRobot(90, 0.2, 0.8);
+                //---------------------------------------------------
+
+
+                // Move robot away from cryptobox----------------
+                moveRobot(-90, 0.3, 0.8);
+                //-----------------------------------------------
             }
         }
         else
         {
             if (isLeftBalancingStone)
             {
+                // Deploy glyph mechanism----------------------------
+                motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+                motorGlyphter.setPower(1.0);
+                pauseWhileUpdating(4.0);
+                //---------------------------------------------------
 
+
+                // Score glyph---------------------------------------
+                motorCollectorLeft.setPower(-0.7);
+                motorCollectorRight.setPower(0.4);
+                pauseWhileUpdating(1.0);
+                motorCollectorLeft.setPower(0);
+                motorCollectorRight.setPower(0);
+                //---------------------------------------------------
+
+
+                // Push glyph in-------------------------------------
+                moveRobot(90, 0.2, 0.8);
+                //---------------------------------------------------
+
+
+                // Move robot away from cryptobox----------------
+                moveRobot(-90, 0.3, 0.8);
+                //-----------------------------------------------
             }
             else
             {
+                // Deploy glyph mechanism----------------------------
+                motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+                motorGlyphter.setPower(1.0);
+                pauseWhileUpdating(4.0);
+                //---------------------------------------------------
 
+
+                // Score glyph---------------------------------------
+                motorCollectorLeft.setPower(-0.7);
+                motorCollectorRight.setPower(0.4);
+                pauseWhileUpdating(1.0);
+                motorCollectorLeft.setPower(0);
+                motorCollectorRight.setPower(0);
+                //---------------------------------------------------
+
+
+                // Back away from cryptobox--------------------------
+                moveRobot(-90, 0.3, 0.6);
+                turnTo(0);
+                //---------------------------------------------------
             }
         }
-        //---------------------------------------------------------------
+//---------------------------------------------------------------
+
+
+        
     }
 }
