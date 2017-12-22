@@ -70,7 +70,7 @@ public class AutoRedRight extends MasterAutonomous
         //---------------------------------------------------
 
         // Move robot toward cryptobox----------------
-        moveRobot(90, 0.3, 1.3);
+        moveRobot(90, 0.3, 0.75);
         //-----------------------------------------------
     }
 }
