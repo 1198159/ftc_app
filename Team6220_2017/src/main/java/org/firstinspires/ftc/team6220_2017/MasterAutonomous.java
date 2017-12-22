@@ -200,6 +200,8 @@ abstract public class MasterAutonomous extends MasterOpMode
         double xDiff;
         double yDiff;
         double driveAngle;
+        double encoderDiff;
+        double drivePower;
         //---------------------------------------------
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -214,61 +216,33 @@ abstract public class MasterAutonomous extends MasterOpMode
 
 
         // Check to see if robot has arrived at destination within tolerances
-        while (distanceToTarget > Constants.POSITION_TOLERANCE_MM && opModeIsActive())
+        while ((distanceToTarget > Constants.POSITION_TOLERANCE_MM) && opModeIsActive())
         {
-            // Store current encoder values as temporary variables
-            posFL = motorFL.getCurrentPosition();
-            posFR = motorFR.getCurrentPosition();
-            posBL = motorBL.getCurrentPosition();
-            posBR = motorBR.getCurrentPosition();
+            // todo Note:  + sign is based on robot's drive layout.  More of these expressions will be needed for each motor for later improvements
+            encoderDiff = Constants.MM_PER_ANDYMARK_TICK * (deltaY + motorFL.getCurrentPosition());
 
-            // Average encoder differences to find translational x and y components (averaging values
-            // gives more reliable results than using a single motor).  Motors turn differently
-            // when translating, so signs on FR and BL must be flipped
-            encX = (-posFL - posFR + posBL + posBR) / 4;
-            encY = (-posFL + posFR - posBL + posBR) / 4;
+            TranslationFilter.roll(encoderDiff);
 
-            xDiff = deltaX - encX;
-            yDiff = deltaY - encY;
+            drivePower = TranslationFilter.getFilteredValue();
 
-            // Recalculate remaining distance each loop
-            distanceToTarget = calculateDistance(xDiff, yDiff);
+            motorFL.setPower(-drivePower);
+            motorFR.setPower(drivePower);
+            motorBL.setPower(-drivePower);
+            motorBR.setPower(drivePower);
 
-            // Power is proportional to distance from target
-            double drivePower = maxPower * distanceToTarget;
-            // Send drivePower through PID filter to adjust range and minimize oscillation
-            TranslationFilter.roll(drivePower);
-            double adjustedDrivePower = TranslationFilter.getFilteredValue();
+            // Recalculate distance between robot and its destination every loop
+            distanceToTarget = calculateDistance(deltaX, deltaY);
 
-            // Ensure robot doesn't approach target position too slowly
-            if (Math.abs(adjustedDrivePower) < Constants.MINIMUM_DRIVE_POWER)
-            {
-                adjustedDrivePower = Math.signum(adjustedDrivePower) * Constants.MINIMUM_DRIVE_POWER;
-            }
-
-            // Deals with the fact that inverse tangent only returns an angle between -90 and 90
-            // degrees.  We want to be able to drive at angles greater than 90 degrees, so the
-            // range of atan2 must be modified
-            if (deltaX >= 0)
-                driveAngle = Math.toDegrees(Math.atan2(yDiff, xDiff));
-            else
-                driveAngle = Math.toDegrees(Math.atan2(yDiff, xDiff)) + 180;
-
-            driveMecanum(driveAngle, adjustedDrivePower, 0.0);
-
-            telemetry.addData("X remaining: ", xDiff);
-            telemetry.addData("Y remaining: ", yDiff);
-            telemetry.addData("Drive Angle: ", driveAngle);
-            telemetry.addData("Power: ", adjustedDrivePower);
+            telemetry.addData("Driver Power: ", drivePower);
+            telemetry.addData("Encoder Diff: ", encoderDiff);
             telemetry.update();
             idle();
         }
-
         stopDriveMotors();
     }
 
-    // todo Decide whether to keep or remove old method
     /*
+    // todo Decide whether to keep or remove old method
     // todo Add absolute coordinates and code to prevent turning while using driveToPosition
     //todo sideways translation does not work
     // Uses encoders to make the robot drive to a specified relative position

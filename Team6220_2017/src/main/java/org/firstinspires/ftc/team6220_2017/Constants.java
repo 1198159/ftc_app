@@ -6,7 +6,7 @@ package org.firstinspires.ftc.team6220_2017;
 
 public class Constants
 {
-    // Standard conversions
+    // Standard conversions (for AndyMark 40's)
     public static final int  ANDYMARK_TICKS_PER_ROTATION = 1120;
     public static final int TETRIX_TICKS_PER_ROTATION = 1440;
     public static final float MM_PER_INCH = 25.4f;
@@ -17,7 +17,7 @@ public class Constants
     public static final double GEAR_RATIO = 48.0 / 84.0;            // Driven to driving gear
     // todo Factor in front is empirical; it shouldn't be theoretically correct
     // Note:  larger factor = shorter distance, smaller factor = longer distance
-    public static final double MM_PER_ANDYMARK_TICK = 1.58 * (Math.PI * WHEEL_DIAMETER_MM) / (ANDYMARK_TICKS_PER_ROTATION * GEAR_RATIO);
+    public static final double MM_PER_ANDYMARK_TICK = (Math.PI * WHEEL_DIAMETER_MM) / (ANDYMARK_TICKS_PER_ROTATION * GEAR_RATIO);
 
 
     // Drive control constants-----------------------
@@ -27,7 +27,7 @@ public class Constants
     public static final double POSITION_TOLERANCE_MM = 40.0;   // todo Adjust
     // Constants for adjusting powers that are proportional to angle and position differences
     public static final double TURNING_POWER_FACTOR = 1.0 / 70;    // todo Adjust
-    public static final double DRIVE_POWER_FACTOR = 1.0 / 580;    // todo Adjust
+    public static final double DRIVE_POWER_FACTOR = 1.0 / 700;    // todo Adjust
     //------------------------------------------------
 
 
@@ -36,9 +36,9 @@ public class Constants
     public static final double ROTATION_P = TURNING_POWER_FACTOR;
     public static final double ROTATION_I = 0.0;
     public static final double ROTATION_D = 0.01;
-    public static final double TRANSLATION_P = 1.0 / 580;
-    public static final double TRANSLATION_I = 0.0005;    // todo Adjust
-    public static final double TRANSLATION_D = 0.008;    // todo Adjust
+    public static final double TRANSLATION_P = DRIVE_POWER_FACTOR;
+    public static final double TRANSLATION_I = 0;    // 0.0005  todo Adjust
+    public static final double TRANSLATION_D = 0;    // 0.008  todo Adjust
     //---------------------------------------------------
 
 
@@ -97,8 +97,8 @@ public class Constants
     // Glyph mechanism scoring heights.  Numbers signify the number of glyphs stacked on top of
     // each other in a column.  Units are in andymark encoder ticks
      // Note:  2, 3, and 4 are slightly higher than necessary to accommodate uncertainty in glyph size
-    public static final int HEIGHT_1 = -9757;         // Subtract 1280 to calculated value
-    public static final int HEIGHT_2 = -8073;         // Subtract 1200 to calculated value
-    public static final int HEIGHT_3 = -6734;         // Subtract 1270 to calculated value
-    public static final int HEIGHT_4 = -5189;         // Subtract 1330 to calculated value
+    public static final int HEIGHT_1 = -6500;         // Subtract 1280 to calculated value
+    public static final int HEIGHT_2 = -5377;         // Subtract 1200 to calculated value
+    public static final int HEIGHT_3 = -4513;         // Subtract 1270 to calculated value
+    public static final int HEIGHT_4 = -3484;         // Subtract 1330 to calculated value
 }
