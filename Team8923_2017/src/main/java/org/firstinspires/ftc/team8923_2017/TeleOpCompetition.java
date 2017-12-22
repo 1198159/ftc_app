@@ -17,15 +17,21 @@ public class TeleOpCompetition extends MasterTeleOp
     @Override
     public void runOpMode() throws InterruptedException
     {
+        VoltageSensor voltSensor = hardwareMap.voltageSensor.get("Expansion Hub 1");
         InitHardware();
+
 
         waitForStart();
 
         while (opModeIsActive())
         {
+
             DriveOmni45TeleOp();
             RunGGLift();
             RunGGClaws();
+            //double voltage = voltSensor.getVoltage();
+            //telemetry.addData("Voltage", voltage);
+            //telemetry.update();
             //RunGG();
             SendTelemetry();
             idle();

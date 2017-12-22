@@ -75,7 +75,7 @@ public abstract class Master extends LinearOpMode
     double speedBL;
     double speedBR;
     double kMove = 1/600.0;
-    double TOL = 110.0;
+    double TOL = 150.0;
     double AngleTOL = 3.0;
     double angleError;
     double pivot;
@@ -99,7 +99,7 @@ public abstract class Master extends LinearOpMode
         servoGGL = hardwareMap.get(Servo.class, "servoGGL");
         servoGGR = hardwareMap.get(Servo.class, "servoGGR");
 
-        VoltageSensor voltSensor = hardwareMap.voltageSensor.get("Motor Controller 1");
+
 
         servoJJ.setPosition(SERVO_JJ_UP);
         servoGGL.setPosition(0.3);
@@ -137,6 +137,7 @@ public abstract class Master extends LinearOpMode
         imu.initialize(parameters);
 
         GGZero = motorGG.getCurrentPosition();
+        motorGG.setTargetPosition(GGZero);
 
 
     }
