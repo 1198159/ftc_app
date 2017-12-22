@@ -221,7 +221,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             // todo Note:  + sign is based on robot's drive layout.  More of these expressions will be needed for each motor for later improvements
             encoderDiff = Constants.MM_PER_ANDYMARK_TICK * (deltaY + motorFL.getCurrentPosition());
 
-            //PID Filter(encoderDiff)
             TranslationFilter.roll(encoderDiff);
 
             drivePower = TranslationFilter.getFilteredValue();
