@@ -34,8 +34,11 @@ public class GlyphMechanism
             wasStickPressed = true;
             op.motorGlyphter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            op.motorGlyphter.setPower(-op.gamepad2.right_stick_y);
-            op.telemetry.addData("rightStickY: ", -op.gamepad2.right_stick_y);
+            // Filter driver input to glyphter to increase ease of use
+            double glyphterPower = op.stickCurve.getOuput(-op.gamepad2.right_stick_y);
+
+            op.motorGlyphter.setPower(glyphterPower);
+            op.telemetry.addData("rightStickY: ", glyphterPower);
             op.telemetry.update();
         }
         // Check to see if the joystick was just released.  If so, transition into automatic control
@@ -48,7 +51,7 @@ public class GlyphMechanism
          // Drive glyphter automatically
         else if (Math.abs(op.gamepad2.right_stick_y) < Constants.MINIMUM_JOYSTICK_POWER && !wasStickPressed)
         {
-            // Protect against Start + A / B running gylph mechanism into ground
+            // Protect against Start + A / B running glyph mechanism into ground
             if (op.driver2.isButtonJustPressed(Button.A) && !op.driver2.isButtonPressed(Button.START))
             {
                 op.motorGlyphter.setTargetPosition(glyphHeights[0]);
@@ -89,8 +92,8 @@ public class GlyphMechanism
          // Score glyphs
         else if (op.driver1.isButtonJustPressed(Button.DPAD_UP))
         {
-            op.motorCollectorRight.setPower(0.7);
-            op.motorCollectorLeft.setPower(-0.7);
+            op.motorCollectorRight.setPower(0.45);
+            op.motorCollectorLeft.setPower(-0.45);
 
         }
          // Stack glyphs (need a slower speed for this)
