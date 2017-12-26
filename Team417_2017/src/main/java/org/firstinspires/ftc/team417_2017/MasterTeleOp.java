@@ -22,10 +22,13 @@ abstract public class MasterTeleOp extends MasterOpMode
     double y;
     double x;
     double pivotPower;
-    final double ADAGIO_POWER = 0.45;
+    final double ADAGIO_POWER = 0.3;
 
     boolean isModeReversed = true;
     boolean isLegatoMode = false;
+    boolean isCornerDrive = false;
+    boolean driveClose = false;
+    boolean driveOpen = false;
     boolean isLeftBumperPushed = true;
     boolean isRightBumperPushed = false;
     private ElapsedTime runtime = new ElapsedTime();
@@ -55,20 +58,31 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     void omniDriveTeleOp()
     {
-        // press button right bumper to toggle adagio legato mode
-        if (gamepad1.right_bumper && !isRightBumperPushed)
-        {
-            isRightBumperPushed = true;
-            isLegatoMode = !isLegatoMode;
-        }
-        isRightBumperPushed = gamepad1.right_bumper;
+        // hold right trigger for adagio legato mode
+        if (gamepad1.right_trigger > 0.0 && !isCornerDrive)
+            isLegatoMode = true;
+        else
+            isLegatoMode = false;
         telemetry.addData("legato: ", isLegatoMode);
+
+        // hold left trigger for corner drive
+        if (gamepad1.left_trigger > 0.0 && !isLegatoMode)
+            isCornerDrive = true;
+        else
+            isCornerDrive = false;
+        telemetry.addData("corner: ", isCornerDrive);
 
         if (isLegatoMode) // Legato Mode
         {
             y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
             x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
-            pivotPower = Range.clip(gamepad1.left_stick_x, -0.2, 0.2);
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
+        }
+        else if (isCornerDrive) // Corner drive
+        {
+            y = -Range.clip(gamepad1.right_stick_y, -0.5, 0.5); // Y axis is negative when up
+            x = Range.clip(gamepad1.right_stick_x, -0.5, 0.5);
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.5, 0.5);
         }
         else // Staccato Mode
         {
@@ -77,7 +91,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
         }
 
-
+/*
         // Reverse mode, activated by GamePad1's left bumper
         if (gamepad1.left_bumper && !isLeftBumperPushed)
         {
@@ -87,10 +101,19 @@ abstract public class MasterTeleOp extends MasterOpMode
         isLeftBumperPushed = gamepad1.left_bumper;
         telemetry.addData("Reverse: ", isModeReversed);
         telemetry.update();
+*/
 
-        if (isModeReversed)
+        if (isCornerDrive)
         {
-            // calculate the power for each motor
+            // corner drive
+            powerFL = -y + pivotPower;
+            powerFR = x - pivotPower;
+            powerBL = x + pivotPower;
+            powerBR = -y - pivotPower;
+        }
+        else if (isModeReversed)
+        {
+            // calculate the power for each motor (this is the default 'forward' in TeleOp)
             powerFL = -x - y + pivotPower;
             powerFR = x - y - pivotPower;
             powerBL = x - y + pivotPower;
@@ -98,7 +121,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         else
         {
-            // calculate the power for each motor (corner drive)
+            // reverse mode
             powerFL = x + y + pivotPower;
             powerFR = -x + y - pivotPower;
             powerBL = -x + y + pivotPower;
@@ -148,6 +171,42 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorGlyphGrab.setPower(0.0);
         }
 
+        // Glyph Grabber drive to position open/close
+        curGGPos = motorGlyphGrab.getCurrentPosition(); // reset the current position for grabber
+        if(gamepad2.a)
+        {
+            driveClose = true;
+            driveOpen = false;
+        }
+        else if(gamepad2.b)
+        {
+            driveOpen = true;
+            driveClose = false;
+        }
+
+        if(driveClose) // drive grabber to position CLOSE
+        {
+            errorMaxGG = curGGPos - maxGGPos;
+            speedGG = Math.abs(errorMaxGG * KGlyph);
+            speedGG = Range.clip(speedGG, MINSPEED, MAXSPEED);
+            speedGG = speedGG * Math.signum(errorMaxGG);
+            motorGlyphGrab.setPower(speedGG);
+            motorGlyphGrab.setTargetPosition(maxGGPos);
+            if(curGGPos <= maxGGPos)
+                driveClose = false;
+        }
+        else if(driveOpen) // drive grabber to position OPEN
+        {
+            errorMinGG = curGGPos - minGGPos;
+            speedGG = Math.abs(errorMinGG * KGlyph);
+            speedGG = Range.clip(speedGG, MINSPEED, MAXSPEED);
+            speedGG = speedGG * Math.signum(errorMinGG);
+            motorGlyphGrab.setPower(speedGG);
+            motorGlyphGrab.setTargetPosition(minGGPos);
+            if(curGGPos >= minGGPos)
+                driveOpen = false;
+        }
+
 /*
         // calculate the power for each motor (side drive)
         powerFL = px + 0*py + pivotPower;
@@ -162,7 +221,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
     }
-
+/*
     void imuOmniTeleOp()
     {
         y = -gamepad1.right_stick_y; // Y axis is negative when up
@@ -192,7 +251,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
     }
-
+*/
     public double modJoyStickInput(double i) // i is the raw joystick input
     {
         return Math.pow(i,2) * Math.signum(i);
