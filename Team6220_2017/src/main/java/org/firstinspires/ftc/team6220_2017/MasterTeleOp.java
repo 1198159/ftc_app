@@ -17,10 +17,16 @@ abstract public class MasterTeleOp extends MasterOpMode
     // Takes driver 1 stick input and uses it to give power and direction inputs to the drive
     void driveMecanumWithJoysticks()
     {
-        /*
-         Note: factors are different for translation and rotation
-         Slow mode functionality.  ist driver presses right bumper to toggle slow mode
-        */
+        // Allows the 2nd driver to raise the vertical jewel servo if it fails during the match
+        if(driver2.isButtonPressed(Button.LEFT_BUMPER))
+        {
+            verticalJewelServoToggler.retract();
+        }
+
+
+
+        // Note: factors are different for translation and rotation
+        // Slow mode functionality.  1st driver presses right bumper to toggle slow mode
         if (driver1.isButtonJustPressed(Button.RIGHT_BUMPER) && !slowMode)
         {
             tFactor = Constants.SLOW_MODE_T_FACTOR;
@@ -34,25 +40,18 @@ abstract public class MasterTeleOp extends MasterOpMode
             slowMode = false;
         }
 
-        // Allows the driver to raise the vertical jewel servo if it fails during the match
-        if(driver2.isButtonPressed(Button.LEFT_BUMPER))
-        {
-            verticalJewelServoToggler.retract();
-        }
+        double power = driver1.getRightStickMagnitude();
 
-        double adjustedDriveMagnitude = driver1.getRightStickMagnitude();
-        /*
-         Scale right stick magnitude, since magnitudes are not uniform for all stick positions
-         (they have been observed to be as large as 1.1)
-        */
-        if (adjustedDriveMagnitude > 1.0)
-            adjustedDriveMagnitude = 1.0;
+        // Ensure stick magnitude is within the range {0,1}, since magnitudes are not uniform for
+        // all stick positions (they have been observed to be as large as 1.1)
+        if (power > 1.0)
+            power = 1.0;
 
         // Stick inputs must be changed from x and y to angle and drive power
         double angle = Math.toDegrees(driver1.getRightStickAngle());
-        double power = tFactor * stickCurve.getOuput(adjustedDriveMagnitude);
+        double adjustedDrivePower = tFactor * stickCurve.getOuput(power);
         double rotationPower = rFactor * stickCurve.getOuput(gamepad1.left_stick_x);
 
-        driveMecanum(angle, power, rotationPower);
+        driveMecanum(angle, adjustedDrivePower, rotationPower);
     }
 }
