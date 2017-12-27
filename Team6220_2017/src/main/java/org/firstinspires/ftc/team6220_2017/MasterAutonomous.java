@@ -186,10 +186,9 @@ abstract public class MasterAutonomous extends MasterOpMode
     // todo Add absolute coordinates and code to prevent turning while using driveToPosition
     //todo sideways translation does not work
     // Uses encoders to make the robot drive to a specified relative position
-    void driveToPosition(double deltaX, double deltaY, double maxPower) throws InterruptedException
+    void driveToPosition(double initDeltaX, double initDeltaY, double maxPower) throws InterruptedException
     {
-        // Find distance between robot and its destination
-        double distanceToTarget = calculateDistance(deltaX, deltaY);
+
         // Variables set every loop-------------------
         double posFL;
         double posFR;
@@ -197,11 +196,12 @@ abstract public class MasterAutonomous extends MasterOpMode
         double posBR;
         double encX;
         double encY;
-        double xDiff;
-        double yDiff;
+        double deltaX = initDeltaX;
+        double deltaY = initDeltaY;
         double driveAngle;
-        double encoderDiff;
         double drivePower;
+         // Find distance between robot and its destination
+        double distanceToTarget = calculateDistance(deltaX, deltaY);
         //---------------------------------------------
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -219,9 +219,9 @@ abstract public class MasterAutonomous extends MasterOpMode
         while ((distanceToTarget > Constants.POSITION_TOLERANCE_MM) && opModeIsActive())
         {
             // todo Note:  + sign is based on robot's drive layout.  More of these expressions will be needed for each motor for later improvements
-            encoderDiff = Constants.MM_PER_ANDYMARK_TICK * (deltaY + motorFL.getCurrentPosition());
+            deltaY = initDeltaY + Constants.MM_PER_ANDYMARK_TICK * motorFL.getCurrentPosition();
 
-            TranslationFilter.roll(encoderDiff);
+            TranslationFilter.roll(deltaY);
 
             drivePower = TranslationFilter.getFilteredValue();
 
@@ -233,8 +233,8 @@ abstract public class MasterAutonomous extends MasterOpMode
             // Recalculate distance between robot and its destination every loop
             distanceToTarget = calculateDistance(deltaX, deltaY);
 
+            telemetry.addData("Encoder Diff: ", deltaY);
             telemetry.addData("Driver Power: ", drivePower);
-            telemetry.addData("Encoder Diff: ", encoderDiff);
             telemetry.update();
             idle();
         }

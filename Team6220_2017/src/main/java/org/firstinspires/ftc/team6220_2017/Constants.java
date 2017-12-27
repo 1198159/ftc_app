@@ -15,7 +15,7 @@ public class Constants
     // Robot specifications
     public static final float WHEEL_DIAMETER_MM = 4 * MM_PER_INCH;    // 4 inch diameter wheel
     public static final double GEAR_RATIO = 48.0 / 84.0;            // Driven to driving gear
-    // todo Factor in front is empirical; it shouldn't be theoretically correct
+    // todo Factor in front is empirical; it isn't necessarily theoretically correct
     // Note:  larger factor = shorter distance, smaller factor = longer distance
     public static final double MM_PER_ANDYMARK_TICK = (Math.PI * WHEEL_DIAMETER_MM) / (ANDYMARK_TICKS_PER_ROTATION * GEAR_RATIO);
 
@@ -24,7 +24,7 @@ public class Constants
     public static final double MINIMUM_DRIVE_POWER = 0.07;
     public static final double MINIMUM_TURNING_POWER = 0.1;
     public static final double ANGLE_TOLERANCE_DEG = 2.5;
-    public static final double POSITION_TOLERANCE_MM = 40.0;   // todo Adjust
+    public static final double POSITION_TOLERANCE_MM = 10.0;   // todo Adjust
     // Constants for adjusting powers that are proportional to angle and position differences
     public static final double TURNING_POWER_FACTOR = 1.0 / 70;    // todo Adjust
     public static final double DRIVE_POWER_FACTOR = 1.0 / 700;    // todo Adjust

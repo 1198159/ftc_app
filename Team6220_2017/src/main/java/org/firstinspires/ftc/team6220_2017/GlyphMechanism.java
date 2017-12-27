@@ -92,8 +92,8 @@ public class GlyphMechanism
          // Score glyphs
         else if (op.driver1.isButtonJustPressed(Button.DPAD_UP))
         {
-            op.motorCollectorRight.setPower(0.45);
-            op.motorCollectorLeft.setPower(-0.45);
+            op.motorCollectorRight.setPower(0.55);
+            op.motorCollectorLeft.setPower(-0.55);
 
         }
          // Stack glyphs (need a slower speed for this)
