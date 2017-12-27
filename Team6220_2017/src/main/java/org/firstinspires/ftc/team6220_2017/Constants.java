@@ -6,7 +6,8 @@ package org.firstinspires.ftc.team6220_2017;
 
 public class Constants
 {
-    // Standard conversions (for AndyMark 40's)
+    // Standard conversions
+     // This is for an Andymark 40; 20's and 60's are different
     public static final int  ANDYMARK_TICKS_PER_ROTATION = 1120;
     public static final int TETRIX_TICKS_PER_ROTATION = 1440;
     public static final float MM_PER_INCH = 25.4f;
@@ -26,8 +27,8 @@ public class Constants
     public static final double ANGLE_TOLERANCE_DEG = 2.5;
     public static final double POSITION_TOLERANCE_MM = 10.0;   // todo Adjust
     // Constants for adjusting powers that are proportional to angle and position differences
-    public static final double TURNING_POWER_FACTOR = 1.0 / 70;    // todo Adjust
-    public static final double DRIVE_POWER_FACTOR = 1.0 / 700;    // todo Adjust
+    public static final double TURNING_POWER_FACTOR = 1.0 / 70;
+    public static final double DRIVE_POWER_FACTOR = 1.0 / 650;    // todo Adjust
     //------------------------------------------------
 
 
@@ -38,7 +39,7 @@ public class Constants
     public static final double ROTATION_D = 0.01;
     public static final double TRANSLATION_P = DRIVE_POWER_FACTOR;
     public static final double TRANSLATION_I = 0;    // 0.0005  todo Adjust
-    public static final double TRANSLATION_D = 0;    // 0.008  todo Adjust
+    public static final double TRANSLATION_D = 0.008;    // todo Adjust
     //---------------------------------------------------
 
 

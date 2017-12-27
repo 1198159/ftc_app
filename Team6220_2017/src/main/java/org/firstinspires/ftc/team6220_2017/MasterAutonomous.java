@@ -52,7 +52,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         lTime = timer.seconds();
 
         // Ensure log can't overflow
-        telemetry.log().setCapacity(3);
+        telemetry.log().setCapacity(2);
         telemetry.log().add("Alliance Blue/Red = X/B");
         telemetry.log().add("Balancing stone Left/Right = Left/Right bumper");
 
@@ -91,6 +91,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             idle();
         }
 
+        telemetry.log().clear();
         telemetry.log().add("Setup finished.");
     }
 
