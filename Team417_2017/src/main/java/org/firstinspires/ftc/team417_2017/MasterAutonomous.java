@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 //@Autonomous(name="Master Autonomous", group = "Swerve")
 // @Disabled
@@ -262,89 +263,6 @@ abstract class MasterAutonomous extends MasterOpMode
     }
 
 
-    /*
-
-     */
-    public void moveKeepHeading(double x, double y, double pivotAngle, double refAngle, double speed, double timeout)
-    {
-        // run with encoder mode
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        double avgDistError;
-
-        curTurnAngle = imu.getAngularOrientation().firstAngle - refAngle;
-        curTurnAngle = adjustAngles(curTurnAngle);
-        errorAngle =  pivotAngle - curTurnAngle;
-
-        pivotDst = (int) ((errorAngle / 360.0) * ROBOT_DIAMETER_MM * 3.1415 * COUNTS_PER_MM);
-
-        final double XSCALE = 1.1;
-
-        int xTarget = (int) Math.round(COUNTS_PER_MM * (x * XSCALE));
-        int yTarget = (int) Math.round(COUNTS_PER_MM * (y));
-        newTargetFL = motorFL.getCurrentPosition() + xTarget + yTarget + pivotDst;
-        newTargetFR = motorFR.getCurrentPosition() - xTarget + yTarget - pivotDst;
-        newTargetBL = motorBL.getCurrentPosition() - xTarget + yTarget + pivotDst;
-        newTargetBR = motorBR.getCurrentPosition() + xTarget + yTarget - pivotDst;
-
-        runtime.reset(); // reset timer, which is used for loop timeout below
-
-        // wait until the motors reach the position
-        // adjust robot angle during movement by adjusting speed of motors
-        do
-        {
-            // read the real current angle and compute error compared to ref angle
-            curTurnAngle = imu.getAngularOrientation().firstAngle - refAngle;
-            curTurnAngle = adjustAngles(curTurnAngle);
-            errorAngle =  pivotAngle - curTurnAngle;
-            pivotSpeed = errorAngle * Kpivot;
-            pivotSpeed = Range.clip(pivotSpeed, -0.3, 0.3); // limit max pivot speed
-            // pivotSpeed is added to each motor's movement speed
-
-            errorFL = newTargetFL - motorFL.getCurrentPosition();
-            errorFR = newTargetFR - motorFR.getCurrentPosition();
-            errorBL = newTargetBL - motorBL.getCurrentPosition();
-            errorBR = newTargetBR - motorBR.getCurrentPosition();
-            avgDistError = (errorFL + errorFR + errorBL + errorBR) / 4.0;
-            avgSpeed = Kmove * avgDistError;
-            speedAbsAvg = Range.clip(Math.abs(avgSpeed), MINSPEED, speed - 0.3);
-            avgSpeed = speedAbsAvg * Math.signum(avgSpeed);  // set sign of speed
-
-            speedFL = avgSpeed + pivotSpeed; // combine movement and pivot speeds
-            speedFR = avgSpeed - pivotSpeed;
-            speedBL = avgSpeed + pivotSpeed;
-            speedBR = avgSpeed - pivotSpeed;
-
-            motorFL.setPower(speedFL);
-            motorFR.setPower(speedFR);
-            motorBL.setPower(speedBL);
-            motorBR.setPower(speedBR);
-
-            if (isLogging) telemetry.log().add(String.format("avgDistError: %f , EA: %f", avgDistError, errorAngle));
-
-            idle();
-        }
-        while ( (opModeIsActive()) &&
-                (runtime.seconds() < timeout) &&
-                (
-                        //   ( (Math.abs(errorFL) > TOL) && (Math.abs(errorFR) > TOL) && (Math.abs(errorBL) > TOL) && (Math.abs(errorBR) > TOL) )
-                        Math.abs(avgDistError) > TOL
-                                || (Math.abs(errorAngle) > TOL_ANGLE)
-                )
-                );
-
-        if (isLogging)
-
-        // stop the motorstelemetry.log().add(String.format("avgDistError: %f , EA: %f", avgDistError, errorAngle));
-        telemetry.update();
-        motorFL.setPower(0);
-        motorFR.setPower(0);
-        motorBL.setPower(0);
-        motorBR.setPower(0);
-    }
 
     // this method drives for seconds, and it can only pivot
     public void moveTimed(double xPower, double yPower, int milliSeconds) throws InterruptedException
@@ -481,25 +399,6 @@ abstract class MasterAutonomous extends MasterOpMode
         }
         motorGlyphLeft.setPower(0.0);
         motorGlyphRight.setPower(0.0);
-    }
-
-
-    public void moveUntilColor(double x, double y, float hue, float saturation)
-    {
-        // move straight in one direction
-        // calculate the power for each motor
-        powerFL = x + y;
-        powerFR = -x + y;
-        powerBL = -x + y;
-        powerBR = x + y;
-
-        // while the current hue and saturation is not what the passed in parameters are, keep driving in that direction
-        //while (sensorColorRight.red())
-        // set power to the motors
-        motorFL.setPower(powerFL);
-        motorFR.setPower(powerFR);
-        motorBL.setPower(powerBL);
-        motorBR.setPower(powerBR);
     }
 
 
