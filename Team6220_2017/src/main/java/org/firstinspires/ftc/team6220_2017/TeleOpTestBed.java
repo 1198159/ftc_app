@@ -40,6 +40,7 @@ public class TeleOpTestBed extends MasterAutonomous
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
+            // Test navigation
             if (driver1.isButtonJustPressed(Button.DPAD_UP))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
@@ -55,6 +56,7 @@ public class TeleOpTestBed extends MasterAutonomous
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
                 driveToPosition(1000, 0, 0.6);
             }
+            // Test turning and movement
             else if (driver1.isButtonJustPressed(Button.LEFT_STICK_PRESS))
             {
                 turnTo(90);
@@ -76,18 +78,14 @@ public class TeleOpTestBed extends MasterAutonomous
             }
 
 
-
-            // Test glyph collection; servos on either side of glyph pull or push it
+            // Test glyphter
             if(driver1.isButtonJustPressed(Button.A))
             {
                 //jointPosCount += 0.02;
                 //jointServo.setPosition(jointPosCount);
                 //motorCollectorLeft.setPower(1.0);
                 //motorCollectorRight.setPower(-1.0);
-                motorGlyphter.setTargetPosition(-2000);
-
-                motorGlyphter.setPower(0.5);
-                //turnTo(90);
+                glyphMechanism.driveGlyphterToPosition(Constants.HEIGHT_1, 1.0);
             }
             if(driver1.isButtonJustPressed(Button.B))
             {
@@ -96,25 +94,18 @@ public class TeleOpTestBed extends MasterAutonomous
 
                 //glyphMotorLeft.setPower(-1.0);
                 //glyphMotorRight.setPower(1.0);
-                motorGlyphter.setTargetPosition(-2000);
-                motorGlyphter.setPower(-0.5);
-                //turnTo(-90);
+                glyphMechanism.driveGlyphterToPosition(Constants.HEIGHT_2, 1.0);
             }
-            if(driver1.isButtonJustPressed(Button.X))
+            if(driver1.isButtonJustPressed(Button.Y))
             {
-                motorGlyphter.setTargetPosition(2000);
-                motorGlyphter.setPower(-0.5);
                 //wristServo.setPosition(Constants.WRIST_SERVO_DEPLOYED);
+                glyphMechanism.driveGlyphterToPosition(Constants.HEIGHT_3, 1.0);
             }
-            if (driver1.isButtonJustPressed(Button.Y))
+            if (driver1.isButtonJustPressed(Button.X))
             {
-                motorGlyphter.setTargetPosition(2000);
-                motorGlyphter.setPower(0.5);
-                //verticalJewelServoToggler.toggle();
-                //pauseWhileUpdating(0.5);
+                glyphMechanism.driveGlyphterToPosition(Constants.HEIGHT_4, 1.0);
             }
 
-            telemetry.addData("EncoderCount", motorGlyphter.getCurrentPosition()); // read encoder counts to update the count displayed
             //telemetry.addData("jointPos: ", jointPosCount);
             updateCallback(eTime);
             telemetry.update();

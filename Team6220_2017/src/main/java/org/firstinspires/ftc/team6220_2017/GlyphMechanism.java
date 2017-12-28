@@ -23,6 +23,39 @@ public class GlyphMechanism
         this.glyphHeights = GlyphHeights;
     }
 
+    // Similar to runToPosition, but uses a specialized PID loop for the glyphter.  Using runToPosition
+    // can cause the glyphter motor to stall before reaching its target position
+    public void driveGlyphterToPosition(int targetPosition, double maxPower)
+    {
+        double glyphterDiff = targetPosition - op.motorGlyphter.getCurrentPosition();
+        double glyphterPower;
+
+        // Check to see whether the glyphter is close enough to its target to stop moving
+        while ((Math.abs(glyphterDiff) > Constants.GLYPHTER_TOLERANCE_TICKS) && op.opModeIsActive())
+        {
+            glyphterDiff = targetPosition - op.motorGlyphter.getCurrentPosition();
+
+            // Transform glyphterDiff to motor power using PID
+            op.GlyphterFilter.roll(glyphterDiff);
+            glyphterPower = op.GlyphterFilter.getFilteredValue();
+
+            // Ensure robot doesn't ever drive faster than we want it to
+            if (Math.abs(glyphterPower) > maxPower)
+            {
+                glyphterPower = Math.signum(glyphterPower) * maxPower;
+            }
+
+            op.motorGlyphter.setPower(glyphterPower);
+
+            op.telemetry.addData("Glyphter Encoder Value: ", op.motorGlyphter.getCurrentPosition());
+            // Note:  This gives the ABSOLUTE VALUE of the motor power
+            op.telemetry.addData("Glyphter Power: ", op.motorGlyphter.getPower());
+            op.telemetry.update();
+        }
+
+        op.motorGlyphter.setPower(0);
+    }
+
     // Takes input used to move all parts of the glyph mechanism
     public void driveGlyphMech()
     {
@@ -121,8 +154,7 @@ public class GlyphMechanism
             op.motorCollectorLeft.setPower(-0.7);
             op.motorCollectorRight.setPower(motorCollectorCount);
         }*/
-
-            //---------------------------------------------------------------------
+        //---------------------------------------------------------------------
 
 
         op.telemetry.addData("Glyphter Enc: ", op.motorGlyphter.getCurrentPosition());

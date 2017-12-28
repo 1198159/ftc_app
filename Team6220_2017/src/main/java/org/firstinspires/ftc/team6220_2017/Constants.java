@@ -16,20 +16,23 @@ public class Constants
     // Robot specifications
     public static final float WHEEL_DIAMETER_MM = 4 * MM_PER_INCH;    // 4 inch diameter wheel
     public static final double GEAR_RATIO = 48.0 / 84.0;            // Driven to driving gear
-    // todo Factor in front is empirical; it isn't necessarily theoretically correct
-    // Note:  larger factor = shorter distance, smaller factor = longer distance
     public static final double MM_PER_ANDYMARK_TICK = (Math.PI * WHEEL_DIAMETER_MM) / (ANDYMARK_TICKS_PER_ROTATION * GEAR_RATIO);
 
 
     // Drive control constants-----------------------
     public static final double MINIMUM_DRIVE_POWER = 0.15;   // todo Adjust
     public static final double MINIMUM_TURNING_POWER = 0.1;
-    public static final double ANGLE_TOLERANCE_DEG = 2.5;
-    public static final double POSITION_TOLERANCE_MM = 10.0;   // todo Adjust
-    // Constants for adjusting powers that are proportional to angle and position differences
+     // Constants for adjusting powers that are proportional to angle and position differences
     public static final double TURNING_POWER_FACTOR = 0.014;
     public static final double DRIVE_POWER_FACTOR = 0.0018;
     //------------------------------------------------
+
+
+    // Tolerances
+    public static final double ANGLE_TOLERANCE_DEG = 2.5;
+    public static final double POSITION_TOLERANCE_MM = 10.0;
+    public static final double GLYPHTER_TOLERANCE_TICKS = 5;    // todo Adjust
+    //
 
 
     // todo Adjust
@@ -40,6 +43,9 @@ public class Constants
     public static final double TRANSLATION_P = DRIVE_POWER_FACTOR;
     public static final double TRANSLATION_I = 0.00000002;    // todo Adjust
     public static final double TRANSLATION_D = 0.0015;    // todo Adjust
+    public static final double GLYPHTER_P = 0.0005;    // todo Adjust
+    public static final double GLYPHTER_I = 0;    // todo Adjust
+    public static final double GLYPHTER_D = 0;    // todo Adjust
     //---------------------------------------------------
 
 

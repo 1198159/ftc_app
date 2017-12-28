@@ -40,9 +40,11 @@ abstract public class MasterOpMode extends LinearOpMode
     // Stores the encoder values for each of the 4 heights that glyphs can be scored at
     int[] glyphHeights = new int[4];
 
-    // PID filters.  We have one for turning and one for encoder navigation
+    // PID filters.  We have one for turning, one for encoder navigation, and one for moving the
+    // glyphter
     PIDFilter RotationFilter;
     PIDFilter TranslationFilter;
+    PIDFilter GlyphterFilter;
     //
 
     // Declare hardware devices-------------------------
@@ -109,7 +111,6 @@ abstract public class MasterOpMode extends LinearOpMode
         callback.add(driver1);
         callback.add(driver2);
         //
-
 
 
          // Check to see what parts of the robot are attached.  Some programs (e.g., autonomous and -------------------------
@@ -201,7 +202,7 @@ abstract public class MasterOpMode extends LinearOpMode
         //--------------------------------------------------------------------------------------------------------------
 
 
-        // todo REV imu is currently taking a long time to initialize or even failing to do so; why is this?
+        // todo REV imu can occasionally taking a long time to initialize or even fail to do so; why is this?
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu". Certain parameters must be specified before using the imu.
@@ -218,6 +219,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         RotationFilter = new PIDFilter(Constants.ROTATION_P, Constants.ROTATION_I, Constants.ROTATION_D);
         TranslationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);
+        GlyphterFilter = new PIDFilter(Constants.GLYPHTER_P, Constants.GLYPHTER_I, Constants.GLYPHTER_D);
 
         //todo Initialize all separate hardware systems here
         for (ConcurrentOperation item : callback)
@@ -356,6 +358,8 @@ abstract public class MasterOpMode extends LinearOpMode
     }
 
     // Waits a number of milliseconds
+     // Note:  Most of the time, we use pauseWhileUpdating() in case the robot needs to do something
+     // during the wait time
     void pause(int t) throws InterruptedException
     {
         //we don't use System.currentTimeMillis() because it can be inconsistent

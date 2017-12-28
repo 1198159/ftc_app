@@ -213,7 +213,6 @@ abstract public class MasterAutonomous extends MasterOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
         // Check to see if robot has arrived at destination within tolerances
         while (((distanceToTarget > Constants.POSITION_TOLERANCE_MM) || (headingDiff > Constants.ANGLE_TOLERANCE_DEG))&& opModeIsActive())
         {
