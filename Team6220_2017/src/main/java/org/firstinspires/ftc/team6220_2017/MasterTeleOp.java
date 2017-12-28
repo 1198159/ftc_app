@@ -24,7 +24,6 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
 
 
-
         // Note: factors are different for translation and rotation
         // Slow mode functionality.  1st driver presses right bumper to toggle slow mode
         if (driver1.isButtonJustPressed(Button.RIGHT_BUMPER) && !slowMode)

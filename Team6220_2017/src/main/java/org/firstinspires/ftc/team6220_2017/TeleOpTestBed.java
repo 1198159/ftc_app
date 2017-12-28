@@ -43,17 +43,17 @@ public class TeleOpTestBed extends MasterAutonomous
             if (driver1.isButtonJustPressed(Button.DPAD_UP))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
-                driveToPosition(508, 0, 0.8);
+                driveToPosition(0, 304.8, 0.5);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_DOWN))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
-                driveToPosition(0, 508, 0.8);
+                driveToPosition(-508, 0, 1.0);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_RIGHT))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
-                driveToPosition(0, 1000, 1.0);
+                driveToPosition(1000, 0, 0.6);
             }
             else if (driver1.isButtonJustPressed(Button.LEFT_STICK_PRESS))
             {
@@ -115,8 +115,6 @@ public class TeleOpTestBed extends MasterAutonomous
             }
 
             telemetry.addData("EncoderCount", motorGlyphter.getCurrentPosition()); // read encoder counts to update the count displayed
-            //telemetry.update(); // display the encoder count to the driver station phone screen
-
             //telemetry.addData("jointPos: ", jointPosCount);
             updateCallback(eTime);
             telemetry.update();

@@ -184,19 +184,24 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopDriveMotors();
     }
 
-    // todo Add absolute coordinates and code to prevent turning while using driveToPosition
-    // Uses encoders to make the robot drive to a specified relative position
+    // todo Add absolute coordinates
+    // Uses encoders to make the robot drive to a specified relative position.  Also makes use of the
+    // imu to keep the robot at a constant heading during navigation
     void driveToPosition(double initDeltaX, double initDeltaY, double maxPower) throws InterruptedException
     {
-
         // Variables set every loop-------------------
         double deltaX = initDeltaX;
         double deltaY = initDeltaY;
+        double headingDiff = 0;
+
         double driveAngle;
         double drivePower;
+        double rotationPower;
+
          // Find distance between robot and its destination
         double distanceToTarget = calculateDistance(deltaX, deltaY);
-        //---------------------------------------------
+        //--------------------------------------------
+        double initHeading = getAngularOrientationWithOffset();
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -210,20 +215,28 @@ abstract public class MasterAutonomous extends MasterOpMode
 
 
         // Check to see if robot has arrived at destination within tolerances
-        while ((distanceToTarget > Constants.POSITION_TOLERANCE_MM) && opModeIsActive())
+        while (((distanceToTarget > Constants.POSITION_TOLERANCE_MM) || (headingDiff > Constants.ANGLE_TOLERANCE_DEG))&& opModeIsActive())
         {
-            // todo Test horizontal navigation capability
             deltaX = initDeltaX - Constants.MM_PER_ANDYMARK_TICK * (-motorFL.getCurrentPosition() +
                     motorBL.getCurrentPosition() - motorFR.getCurrentPosition() + motorBR.getCurrentPosition()) / (4 * Math.sqrt(2));
             deltaY = initDeltaY - Constants.MM_PER_ANDYMARK_TICK * (-motorFL.getCurrentPosition() -
                     motorBL.getCurrentPosition() + motorFR.getCurrentPosition() + motorBR.getCurrentPosition()) / 4;
 
+            // Calculate how far off robot is from its initial heading
+            headingDiff = getAngularOrientationWithOffset() - initHeading;
+
             // Recalculate drive angle and distance remaining every loop
             distanceToTarget = calculateDistance(deltaX, deltaY);
             driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
 
+            // Transform position and heading diffs to linear and rotation powers using PID------
             TranslationFilter.roll(distanceToTarget);
             drivePower = TranslationFilter.getFilteredValue();
+
+             // Additional factor is necessary to ensure turning power is large enough
+            RotationFilter.roll(1.5 * headingDiff);
+            rotationPower = RotationFilter.getFilteredValue();
+            //------------------------------------------------------------------------------------
 
             // Ensure robot doesn't approach target position too slowly
             if (Math.abs(drivePower) < Constants.MINIMUM_DRIVE_POWER)
@@ -236,7 +249,7 @@ abstract public class MasterAutonomous extends MasterOpMode
                 drivePower = Math.signum(drivePower) * maxPower;
             }
 
-            driveMecanum(driveAngle, drivePower, 0);
+            driveMecanum(driveAngle, drivePower, rotationPower);
 
             telemetry.addData("Encoder Diff x: ", deltaX);
             telemetry.addData("Encoder Diff y: ", deltaY);
