@@ -190,12 +190,6 @@ abstract public class MasterAutonomous extends MasterOpMode
     {
 
         // Variables set every loop-------------------
-        double posFL;
-        double posFR;
-        double posBL;
-        double posBR;
-        double encX;
-        double encY;
         double deltaX = initDeltaX;
         double deltaY = initDeltaY;
         double driveAngle;
@@ -243,10 +237,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
 
             driveMecanum(driveAngle, drivePower, 0);
-//            motorFL.setPower(-drivePower);
-//            motorFR.setPower(drivePower);
-//            motorBL.setPower(-drivePower);
-//            motorBR.setPower(drivePower);
 
             telemetry.addData("Encoder Diff x: ", deltaX);
             telemetry.addData("Encoder Diff y: ", deltaY);
