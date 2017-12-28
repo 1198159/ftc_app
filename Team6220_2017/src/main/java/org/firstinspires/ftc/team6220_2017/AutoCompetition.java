@@ -51,7 +51,7 @@ public class AutoCompetition extends MasterAutonomous
             {
                 // Move off balancing stone and turn around--------
                 moveRobot(-90, 0.3, 1.55);
-                pause(300);
+                pauseWhileUpdating(0.3);
                 turnTo(0);
                 //-------------------------------------------------
 
