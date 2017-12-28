@@ -131,13 +131,13 @@ abstract public class MasterTeleOp extends MasterOpMode
         // Glyph lift up/down
         if(-gamepad2.right_stick_y < 0.0) // down
         {
-            motorGlyphLeft.setPower(powerGlyphDown);
-            motorGlyphRight.setPower(powerGlyphDown);
+            motorGlyphLeft.setPower(Range.clip(-gamepad2.right_stick_y, -0.65, -0.2));
+            motorGlyphRight.setPower(Range.clip(-gamepad2.right_stick_y, -0.65, -0.2));
         }
         else if(-gamepad2.right_stick_y > 0.0) // up
         {
-            motorGlyphLeft.setPower(powerGlyphUp);
-            motorGlyphRight.setPower(powerGlyphUp);
+            motorGlyphLeft.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 0.65));
+            motorGlyphRight.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 0.65));
         }
         else // turn motors off
         {
@@ -170,6 +170,8 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             motorGlyphGrab.setPower(0.0);
         }
+        telemetry.addData("GlyphGrabPos: ", motorGlyphGrab.getCurrentPosition());
+        telemetry.update();
 
         /*
         // Glyph Grabber drive to position open/close
@@ -210,7 +212,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         */
 
 /*
-        // calculate the power for each motor (side drive)
+        // calculate the power for each motor (corner drive)
         powerFL = px + 0*py + pivotPower;
         powerFR = 0*px + py - pivotPower;
         powerBL = 0*px + py + pivotPower;

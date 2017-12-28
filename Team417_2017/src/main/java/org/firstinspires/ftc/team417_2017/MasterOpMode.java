@@ -63,7 +63,6 @@ abstract public class MasterOpMode extends LinearOpMode
     double powerBR;
 
     double powerGlyphUp = 0.6;
-    double powerGlyphDown = -0.6;
 
     public void initializeHardware()
     {
