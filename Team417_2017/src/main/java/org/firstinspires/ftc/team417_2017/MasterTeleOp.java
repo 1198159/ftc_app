@@ -171,6 +171,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorGlyphGrab.setPower(0.0);
         }
 
+        /*
         // Glyph Grabber drive to position open/close
         curGGPos = motorGlyphGrab.getCurrentPosition(); // reset the current position for grabber
         if(gamepad2.a)
@@ -206,6 +207,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             if(curGGPos >= minGGPos)
                 driveOpen = false;
         }
+        */
 
 /*
         // calculate the power for each motor (side drive)
