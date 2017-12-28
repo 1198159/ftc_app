@@ -185,7 +185,6 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     // todo Add absolute coordinates and code to prevent turning while using driveToPosition
-    //todo sideways translation does not work
     // Uses encoders to make the robot drive to a specified relative position
     void driveToPosition(double initDeltaX, double initDeltaY, double maxPower) throws InterruptedException
     {
@@ -219,23 +218,39 @@ abstract public class MasterAutonomous extends MasterOpMode
         // Check to see if robot has arrived at destination within tolerances
         while ((distanceToTarget > Constants.POSITION_TOLERANCE_MM) && opModeIsActive())
         {
-            // todo Note:  + sign is based on robot's drive layout.  More of these expressions will be needed for each motor for later improvements
-            deltaY = initDeltaY + Constants.MM_PER_ANDYMARK_TICK * motorFL.getCurrentPosition();
+            // todo Test horizontal navigation capability
+            deltaX = initDeltaX - Constants.MM_PER_ANDYMARK_TICK * (-motorFL.getCurrentPosition() +
+                    motorBL.getCurrentPosition() - motorFR.getCurrentPosition() + motorBR.getCurrentPosition()) / (4 * Math.sqrt(2));
+            deltaY = initDeltaY - Constants.MM_PER_ANDYMARK_TICK * (-motorFL.getCurrentPosition() -
+                    motorBL.getCurrentPosition() + motorFR.getCurrentPosition() + motorBR.getCurrentPosition()) / 4;
 
-            TranslationFilter.roll(deltaY);
+            // Recalculate drive angle and distance remaining every loop
+            distanceToTarget = calculateDistance(deltaX, deltaY);
+            driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
 
+            TranslationFilter.roll(distanceToTarget);
             drivePower = TranslationFilter.getFilteredValue();
 
-            motorFL.setPower(-drivePower);
-            motorFR.setPower(drivePower);
-            motorBL.setPower(-drivePower);
-            motorBR.setPower(drivePower);
+            // Ensure robot doesn't approach target position too slowly
+            if (Math.abs(drivePower) < Constants.MINIMUM_DRIVE_POWER)
+            {
+                drivePower = Math.signum(drivePower) * Constants.MINIMUM_DRIVE_POWER;
+            }
+            // Ensure robot doesn't ever drive faster than we want it to
+            else if (Math.abs(drivePower) > maxPower)
+            {
+                drivePower = Math.signum(drivePower) * maxPower;
+            }
 
-            // Recalculate distance between robot and its destination every loop
-            distanceToTarget = calculateDistance(deltaX, deltaY);
+            driveMecanum(driveAngle, drivePower, 0);
+//            motorFL.setPower(-drivePower);
+//            motorFR.setPower(drivePower);
+//            motorBL.setPower(-drivePower);
+//            motorBR.setPower(drivePower);
 
-            telemetry.addData("Encoder Diff: ", deltaY);
-            telemetry.addData("Driver Power: ", drivePower);
+            telemetry.addData("Encoder Diff x: ", deltaX);
+            telemetry.addData("Encoder Diff y: ", deltaY);
+            telemetry.addData("Drive Power: ", drivePower);
             telemetry.update();
             idle();
         }

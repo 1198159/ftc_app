@@ -27,37 +27,33 @@ public class TeleOpTestBed extends MasterAutonomous
         isGlyphMechAttached = true;
         initializeRobot();
 
-        DcMotor motorCollectorLeft;
-        DcMotor motorCollectorRight;
-
-        //motorCollectorLeft = hardwareMap.dcMotor.get("motorCollectorLeft");
-        //motorCollectorRight = hardwareMap.dcMotor.get("motorCollectorRight");
-        //wristServo = hardwareMap.servo.get("wristServo");
-        //jointServo = hardwareMap.servo.get("jointServo");
-
         waitForStart();
+        // Move jewel servo so it is out of the way of the glyph mechanism
+        verticalJewelServoToggler.retract();
+        // Accounts for delay between initializing the program and starting TeleOp
+        lTime = timer.seconds();
 
-        //jointServo.setPosition(0.5);
 
         // Main loop
         while(opModeIsActive())
         {
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
-            // for motor that actuates arm
-            //motorArm.setPower(gamepad1.left_stick_y);
-
-            // Test jewel servos and encoders
 
             if (driver1.isButtonJustPressed(Button.DPAD_UP))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
-                driveToPosition(0, 1000, 0.3);
+                driveToPosition(508, 0, 0.8);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_DOWN))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
-                driveToPosition(0, -1000, 0.3);
+                driveToPosition(0, 508, 0.8);
+            }
+            else if (driver1.isButtonJustPressed(Button.DPAD_RIGHT))
+            {
+                //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
+                driveToPosition(0, 1000, 1.0);
             }
             else if (driver1.isButtonJustPressed(Button.LEFT_STICK_PRESS))
             {

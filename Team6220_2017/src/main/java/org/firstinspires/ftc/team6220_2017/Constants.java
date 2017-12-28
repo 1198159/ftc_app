@@ -22,13 +22,13 @@ public class Constants
 
 
     // Drive control constants-----------------------
-    public static final double MINIMUM_DRIVE_POWER = 0.07;
+    public static final double MINIMUM_DRIVE_POWER = 0.15;   // todo Adjust
     public static final double MINIMUM_TURNING_POWER = 0.1;
     public static final double ANGLE_TOLERANCE_DEG = 2.5;
     public static final double POSITION_TOLERANCE_MM = 10.0;   // todo Adjust
     // Constants for adjusting powers that are proportional to angle and position differences
-    public static final double TURNING_POWER_FACTOR = 1.0 / 70;
-    public static final double DRIVE_POWER_FACTOR = 1.0 / 650;    // todo Adjust
+    public static final double TURNING_POWER_FACTOR = 0.014;
+    public static final double DRIVE_POWER_FACTOR = 0.0018;
     //------------------------------------------------
 
 
@@ -38,8 +38,8 @@ public class Constants
     public static final double ROTATION_I = 0.0;
     public static final double ROTATION_D = 0.01;
     public static final double TRANSLATION_P = DRIVE_POWER_FACTOR;
-    public static final double TRANSLATION_I = 0;    // 0.0005  todo Adjust
-    public static final double TRANSLATION_D = 0.008;    // todo Adjust
+    public static final double TRANSLATION_I = 0.00000002;    // todo Adjust
+    public static final double TRANSLATION_D = 0.0015;    // todo Adjust
     //---------------------------------------------------
 
 

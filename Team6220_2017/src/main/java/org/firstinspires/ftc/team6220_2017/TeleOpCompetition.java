@@ -22,6 +22,8 @@ public class TeleOpCompetition extends MasterTeleOp
         // Accounts for delay between initializing the program and starting TeleOp
         lTime = timer.seconds();
 
+
+        // Main loop
         while (opModeIsActive())
         {
             // Finds the time elapsed each loop
@@ -29,11 +31,12 @@ public class TeleOpCompetition extends MasterTeleOp
             lTime = timer.seconds();
 
             // 1st driver:  left stick rotates robot, right stick translates robot
+            // 2nd driver:  right bumper retracts jewel jostler if it falls
             driveMecanumWithJoysticks();
             // 2nd driver:  right stick moves arm
             //armMechanism.driveArm();
-            // 2nd driver:  dpad up collects, dpad up scores; a, b, x, and y raise the glyphter to
-            // 4 glyph heights
+            // 1st driver:  dpad down collects, dpad up scores
+            // 2nd driver:  a, b, x, and y raise the glyphter to 4 glyph heights
             glyphMechanism.driveGlyphMech();
 
 
