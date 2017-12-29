@@ -52,7 +52,7 @@ public class AutoBlueLeft extends MasterAutonomous
 
 
         // Line up with key column-------------------------
-        moveRobot(0, 0.6, vuforiaHelper.keyColumnDriveTime(isBlueSide,isLeftBalancingStone));
+        moveRobot(0, 0.6, vuforiaHelper.keyColumnDistance(isBlueSide,isLeftBalancingStone));
         turnTo(0);
         //moveRobot(180, 0.6, 0.5);
         //-------------------------------------------------

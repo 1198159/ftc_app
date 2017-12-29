@@ -19,20 +19,19 @@ public class Constants
     public static final double MM_PER_ANDYMARK_TICK = (Math.PI * WHEEL_DIAMETER_MM) / (ANDYMARK_TICKS_PER_ROTATION * GEAR_RATIO);
 
 
-    // Drive control constants-----------------------
-    public static final double MINIMUM_DRIVE_POWER = 0.15;   // todo Adjust
-    public static final double MINIMUM_TURNING_POWER = 0.1;
-     // Constants for adjusting powers that are proportional to angle and position differences
-    public static final double TURNING_POWER_FACTOR = 0.014;
-    public static final double DRIVE_POWER_FACTOR = 0.0018;
-    //------------------------------------------------
-
-
     // Tolerances
     public static final double ANGLE_TOLERANCE_DEG = 2.5;
     public static final double POSITION_TOLERANCE_MM = 10.0;
-    public static final double GLYPHTER_TOLERANCE_TICKS = 5;    // todo Adjust
-    //
+    public static final double GLYPHTER_TOLERANCE_TICKS = 15;    // todo Adjust
+
+
+    // Drive control constants-----------------------
+    public static final double MINIMUM_DRIVE_POWER = 0.15;   // todo Adjust
+    public static final double MINIMUM_TURNING_POWER = 0.1;
+    // Constants for adjusting powers that are proportional to angle and position differences
+    public static final double TURNING_POWER_FACTOR = 0.014;
+    public static final double DRIVE_POWER_FACTOR = 0.0018;
+    //------------------------------------------------
 
 
     // todo Adjust
@@ -42,9 +41,9 @@ public class Constants
     public static final double ROTATION_D = 0.015;
     public static final double TRANSLATION_P = DRIVE_POWER_FACTOR;
     public static final double TRANSLATION_I = 0.00000002;    // todo Adjust
-    public static final double TRANSLATION_D = 0.0015;    // todo Adjust
-    public static final double GLYPHTER_P = 0.0005;    // todo Adjust
-    public static final double GLYPHTER_I = 0;    // todo Adjust
+    public static final double TRANSLATION_D = 0.0015;
+    public static final double GLYPHTER_P = 0.0012;    // todo Adjust
+    public static final double GLYPHTER_I = 0.0000001;    // todo Adjust
     public static final double GLYPHTER_D = 0;    // todo Adjust
     //---------------------------------------------------
 
@@ -58,15 +57,23 @@ public class Constants
     public static final int IMAGE_WIDTH = 1280;
     public static final int IMAGE_HEIGHT = 720;
 
-
-    // todo Adjust
+    // todo Phase out for encoder values
     // Times the robot takes to drive to respective centers of cryptoboxes in autonomous
     public static final double STRAIGHT_BOX_TIME_RED = 1.27;    // todo Adjust
     public static final double STRAIGHT_BOX_TIME_BLUE = 1.55;    // todo Adjust
     public static final double ANGLED_BOX_TIME_BLUE = 0.85;  // todo Adjust
     public static final double ANGLED_BOX_TIME_RED = 0.62;   // todo Adjust
-    public static final double STRAIGHT_COLUMN_DIFF = 0.3;
-    public static final double ANGLED_COLUMN_DIFF = 0.34;
+    public static final double STRAIGHT_COLUMN_TIME_DIFF = 0.3;
+    public static final double ANGLED_COLUMN_TIME_DIFF = 0.34;
+
+
+    // Distances in encoder ticks the robot must drive to respective centers of cryptoboxes in autonomous
+    public static final double STRAIGHT_BOX_DISTANCE_RED = 700;    // todo Adjust
+    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 1092;    // todo Adjust
+    public static final double ANGLED_BOX_DISTANCE_BLUE = 0;  // todo Add
+    public static final double ANGLED_BOX_DISTANCE_RED = 0;   // todo Add
+    public static final double STRAIGHT_COLUMN_DIFF = 180;   // todo Adjust
+    public static final double ANGLED_COLUMN_DIFF = 0;   // todo Add
 
 
     // Drive mode constants

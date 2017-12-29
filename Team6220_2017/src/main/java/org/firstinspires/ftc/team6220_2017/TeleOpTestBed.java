@@ -49,7 +49,7 @@ public class TeleOpTestBed extends MasterAutonomous
             else if (driver1.isButtonJustPressed(Button.DPAD_DOWN))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
-                driveToPosition(-508, 0, 1.0);
+                driveToPosition(0, -508, 1.0);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_RIGHT))
             {

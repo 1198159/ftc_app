@@ -202,11 +202,12 @@ public class VuforiaHelper
         return isVuMarkVisible;
     }
 
+    // todo Change angled box times to distances
     // This returns the time the robot should drive for to get to the key column.  Since the orientation
     // of the columns is reverse for the red and blue alliances and different for each balancing
     // stone, we must tell this method the robot's starting position.  E.g., if we are on blue right,
     // the key is the right column, so the robot will drive slightly farther than if the key were the center column
-    public double keyColumnDriveTime(boolean isBlueSide, boolean isLeftBalancingStone)
+    public double keyColumnDistance(boolean isBlueSide, boolean isLeftBalancingStone)
     {
         if (isBlueSide)
         {
@@ -214,11 +215,11 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.ANGLED_BOX_TIME_BLUE + Constants.ANGLED_COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_TIME_BLUE + Constants.ANGLED_COLUMN_TIME_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.ANGLED_BOX_TIME_BLUE - Constants.ANGLED_COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_TIME_BLUE - Constants.ANGLED_COLUMN_TIME_DIFF;
                 }
                 else
                 {
@@ -229,15 +230,15 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.STRAIGHT_BOX_TIME_BLUE + Constants.STRAIGHT_COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_DISTANCE_BLUE + Constants.STRAIGHT_COLUMN_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.STRAIGHT_BOX_TIME_BLUE - Constants.STRAIGHT_COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_DISTANCE_BLUE - Constants.STRAIGHT_COLUMN_DIFF;
                 }
                 else
                 {
-                    return Constants.STRAIGHT_BOX_TIME_BLUE;
+                    return Constants.STRAIGHT_BOX_DISTANCE_BLUE;
                 }
             }
         }
@@ -247,26 +248,26 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.STRAIGHT_BOX_TIME_RED - Constants.STRAIGHT_COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_DISTANCE_RED - Constants.STRAIGHT_COLUMN_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.STRAIGHT_BOX_TIME_RED + Constants.STRAIGHT_COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_DISTANCE_RED + Constants.STRAIGHT_COLUMN_DIFF;
                 }
                 else
                 {
-                    return Constants.STRAIGHT_BOX_TIME_RED;
+                    return Constants.STRAIGHT_BOX_DISTANCE_RED;
                 }
             }
             else
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.ANGLED_BOX_TIME_RED - Constants.ANGLED_COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_TIME_RED - Constants.ANGLED_COLUMN_TIME_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.ANGLED_BOX_TIME_RED + Constants.ANGLED_COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_TIME_RED + Constants.ANGLED_COLUMN_TIME_DIFF;
                 }
                 else
                 {

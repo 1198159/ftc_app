@@ -37,12 +37,12 @@ public class AutoBlueRight extends MasterAutonomous
 
 
         // Align with and face key column--------------------
-        moveRobot(-90, 0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
-        //driveToPosition(0, -500, 0.5);
+        driveToPosition(0, -508, 1.0);
+        //driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 1.0);
+
+        /*
         turnTo(90);
-        moveRobot(-90, 0.3, 0.7);
-        // Ensure the robot is at the correct angle to score
-        turnTo(90);
+        driveToPosition(0, -130, 0.4);
         //---------------------------------------------------
 
 
@@ -84,5 +84,6 @@ public class AutoBlueRight extends MasterAutonomous
         //-----------------------------------------------
 
         turnTo(-90);
+        */
     }
 }

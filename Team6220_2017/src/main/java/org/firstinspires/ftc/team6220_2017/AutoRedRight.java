@@ -43,7 +43,7 @@ public class AutoRedRight extends MasterAutonomous
 
         moveRobot(90, 0.3, 1.2);
         turnTo(0);
-        moveRobot(180, 0.6, vuforiaHelper.keyColumnDriveTime(isBlueSide,isLeftBalancingStone));
+        moveRobot(180, 0.6, vuforiaHelper.keyColumnDistance(isBlueSide,isLeftBalancingStone));
         turnTo(0);
         //moveRobot(180, 0.6, 0.5);
 

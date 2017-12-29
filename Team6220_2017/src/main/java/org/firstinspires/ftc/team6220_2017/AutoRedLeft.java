@@ -39,19 +39,14 @@ public class AutoRedLeft extends MasterAutonomous
 
 
         // Align with and face key column--------------------
-        moveRobot(90, 0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
-        //driveToPosition(0, -500, 0.5);
+        driveToPosition(0, vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 1.0);
         turnTo(-90);
-        moveRobot(-90, 0.3, 0.7);
-        // Ensure the robot is at the correct angle to score
-        turnTo(-90);
+        driveToPosition(0, -130, 0.4);
         //---------------------------------------------------
 
 
         // Deploy glyph mechanism----------------------------
-        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
-        motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(4.0);
+        glyphMechanism.driveGlyphterToPosition(Constants.HEIGHT_1, 1.0);
         //---------------------------------------------------
 
 
@@ -75,9 +70,7 @@ public class AutoRedLeft extends MasterAutonomous
 
 
         // Retract glyph mechanism---------------------------
-        motorGlyphter.setTargetPosition(0);
-        motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(4.0);
+        glyphMechanism.driveGlyphterToPosition(0, 1.0);
         //---------------------------------------------------
 
 

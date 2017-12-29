@@ -63,7 +63,7 @@ public class AutoCompetition extends MasterAutonomous
 
 
                 // Line up with key column-------------------------
-                moveRobot(0, 0.6, vuforiaHelper.keyColumnDriveTime(isBlueSide,isLeftBalancingStone));
+                moveRobot(0, 0.6, vuforiaHelper.keyColumnDistance(isBlueSide,isLeftBalancingStone));
                 turnTo(0);
                 //moveRobot(180, 0.6, 0.5);
                 //-------------------------------------------------
@@ -71,7 +71,7 @@ public class AutoCompetition extends MasterAutonomous
             else
             {
                 // Align with and face key column--------------------
-                moveRobot(-90, 0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
+                moveRobot(-90, 0.5, vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone));
                 //driveToPosition(0, -500, 0.5);
                 turnTo(90);
                 moveRobot(-90, 0.3, 0.7);
@@ -85,7 +85,7 @@ public class AutoCompetition extends MasterAutonomous
             if (isLeftBalancingStone)
             {
                 // Align with and face key column--------------------
-                moveRobot(90, 0.5, vuforiaHelper.keyColumnDriveTime(isBlueSide, isLeftBalancingStone));
+                moveRobot(90, 0.5, vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone));
                 //driveToPosition(0, -500, 0.5);
                 turnTo(-90);
                 moveRobot(-90, 0.3, 0.7);
@@ -97,7 +97,7 @@ public class AutoCompetition extends MasterAutonomous
             {
                 moveRobot(90, 0.3, 1.2);
                 turnTo(0);
-                moveRobot(180, 0.6, vuforiaHelper.keyColumnDriveTime(isBlueSide,isLeftBalancingStone));
+                moveRobot(180, 0.6, vuforiaHelper.keyColumnDistance(isBlueSide,isLeftBalancingStone));
                 turnTo(0);
                 //moveRobot(180, 0.6, 0.5);
             }
