@@ -34,7 +34,7 @@ public abstract class MasterTeleOp extends Master
 
     void DriveOmni45TeleOp()
     {
-        if(gamepad1.right_stick_button && SlowModeTimer.milliseconds() > 250)
+        if(gamepad1.y && SlowModeTimer.milliseconds() > 250)
         {
             SlowModeTimer.reset();
             if (slowModeDivisor == 1.0)
@@ -262,14 +262,14 @@ public abstract class MasterTeleOp extends Master
                     motorGG.setTargetPosition(GGZero + 1650);
                 }
             }
-            motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 95.0), 1.0));
+            motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 125.0), 1.0));
         }
 
-        if (motorGG.getCurrentPosition() > GGZero + 3700)
+        if (motorGG.getCurrentPosition() > GGZero + 3750)
         {
             motorGG.setPower(0.0);
-            motorGG.setTargetPosition(GGZero + 3670);
-            motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 125.0), 1.0));
+            //motorGG.setTargetPosition(GGZero + 3670);
+            //motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 125.0), 1.0));
         }
 
 
@@ -311,7 +311,7 @@ public abstract class MasterTeleOp extends Master
     {
         if(gamepad1.a)
         {
-            servoGGL.setPosition(0.4); //TODO value needs to be changed
+            servoGGL.setPosition(0.5); //TODO value needs to be changed
             servoGGR.setPosition(0.15); //TODO value to be changed
         }
         //half open
@@ -325,7 +325,7 @@ public abstract class MasterTeleOp extends Master
         //else if(gamepad1.b && !liftMoving)
         else if(gamepad1.b)
         {
-            servoGGL.setPosition(0.15);//TODO value needs to be changed
+            servoGGL.setPosition(0.2);//TODO value needs to be changed
             servoGGR.setPosition(0.28);//TODO value needs to be changed
         }
         if(gamepad1.left_stick_button && gamepad1.right_stick_button && gamepad1.left_bumper)
