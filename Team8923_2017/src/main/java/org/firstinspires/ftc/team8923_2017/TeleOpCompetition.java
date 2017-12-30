@@ -10,14 +10,13 @@ import java.lang.reflect.GenericSignatureFormatError;
  * Runable shell for Master TeleOp code
  */
 
-@TeleOp(name = "CapBot Teleop")
+@TeleOp(name = "CapBot TeleOp")
 
 public class TeleOpCompetition extends MasterTeleOp
 {
     @Override
     public void runOpMode() throws InterruptedException
     {
-        VoltageSensor voltSensor = hardwareMap.voltageSensor.get("Expansion Hub 1");
         InitHardware();
 
 
@@ -29,9 +28,6 @@ public class TeleOpCompetition extends MasterTeleOp
             DriveOmni45TeleOp();
             RunGGLift();
             RunGGClaws();
-            //double voltage = voltSensor.getVoltage();
-            //telemetry.addData("Voltage", voltage);
-            //telemetry.update();
             //RunGG();
             SendTelemetry();
             idle();
