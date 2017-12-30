@@ -3,12 +3,15 @@ package org.firstinspires.ftc.team417_2017;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
 @Autonomous(name="Autonomous Blue Glyph", group = "Swerve")
 // @Disabled
 
 public class AutonomousBlueGlyph extends MasterAutonomous
 {
     VuforiaDetection VuforiaDetect = new VuforiaDetection();
+    public RelicRecoveryVuMark VuMark;
 
     public void runOpMode() throws InterruptedException
     {
@@ -27,11 +30,11 @@ public class AutonomousBlueGlyph extends MasterAutonomous
             if (isPosLeft) telemetry.addData("Alliance: ", "Blue Left");
             else telemetry.addData("Alliance: ", "Blue Right");
 
-            VuforiaDetect.GetVumark();
+            VuMark = VuforiaDetect.GetVumark();
                 /* Found an instance of the template. In the actual game, you will probably
                  * loop until this condition occurs, then move on to act accordingly depending
                  * on which VuMark was visible. */
-            telemetry.addData("VuMark", "%s visible", VuforiaDetect.vuMark);
+            telemetry.addData("VuMark", "%s visible", VuMark);
 
             telemetry.update();
             idle();
