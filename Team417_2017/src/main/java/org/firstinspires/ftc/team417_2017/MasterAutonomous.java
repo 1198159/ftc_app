@@ -41,10 +41,10 @@ abstract class MasterAutonomous extends MasterOpMode
     int errorMinGG;
     int errorMaxGG;
     int minGGPos = -200; // a bit less than the original starting position of zero (where we start it)
-    int maxGGPos = -550; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev
+    int maxGGPos = -565; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev
     double speedGG;
     double KGlyph = 1/1000.0;
-    int maxGMPos = 550;
+    int maxGMPos = 500;
     int curGMPos;
 
     // VARIABLES FOR MOVE/ALIGN METHODS
@@ -75,8 +75,6 @@ abstract class MasterAutonomous extends MasterOpMode
     double errorAngle;
 
     double avgDistError;
-    double avgSpeed;
-    double speedAbsAvg;
 
     public void initializeRobot()
     {
@@ -401,7 +399,7 @@ abstract class MasterAutonomous extends MasterOpMode
         motorGlyphRight.setPower(0.0);
     }
 
-
+    
 
     public void configureDashboard()
     {
@@ -434,9 +432,9 @@ abstract class MasterAutonomous extends MasterOpMode
         return String.format("%.2f", d);
     }
 
-    String format(OpenGLMatrix transformationMatrix) {
+    String format(OpenGLMatrix transformationMatrix)
+    {
         return transformationMatrix.formatAsTransform();
-
     }
 }
 
