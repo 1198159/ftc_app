@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 /**
  * Runable shell for Master Autonomous code
  */
-@Disabled
+//@Disabled
 public class MoveTest extends MasterAutonomous
 {
     private ElapsedTime runtime = new ElapsedTime();
@@ -29,15 +29,12 @@ public class MoveTest extends MasterAutonomous
         //ChooseOptions();
 
         InitAuto();//Initializes Hardware and sets position based on alliance
-        initVuforia();//Initializes Vuforia
+        //initVuforia();//Initializes Vuforia
         waitForStart();
 
+        double referenceAngle =  imu.getAngularOrientation().firstAngle;
+        MoveIMU(referenceAngle, 50, 0.0, 0.015, 0.35, 3.0);//Go towards parking spot//Was 2.15
 
-        moveGG(1500);
-        sleep(500);
-        moveGG(-750);
-        sleep(500);
-        moveGG(-750);
         while (opModeIsActive())
         {
             //Run();

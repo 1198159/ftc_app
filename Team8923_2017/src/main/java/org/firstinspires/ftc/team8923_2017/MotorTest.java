@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 /**
  * Runable shell for Master Autonomous code
  */
-@Disabled
+//@Disabled
 public class MotorTest extends MasterAutonomous
 {
     //Declare variables here
