@@ -80,9 +80,9 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         else if (isCornerDrive) // Corner drive
         {
-            y = -Range.clip(gamepad1.right_stick_y, -0.5, 0.5); // Y axis is negative when up
-            x = Range.clip(gamepad1.right_stick_x, -0.5, 0.5);
-            pivotPower = Range.clip(gamepad1.left_stick_x, -0.5, 0.5);
+            y = -Range.clip(gamepad1.right_stick_y, -0.6, 0.6); // Y axis is negative when up
+            x = Range.clip(gamepad1.right_stick_x, -0.6, 0.6);
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.6, 0.6);
         }
         else // Staccato Mode
         {
