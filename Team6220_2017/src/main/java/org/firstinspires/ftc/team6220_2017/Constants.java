@@ -39,7 +39,7 @@ public class Constants
     // PID loop constants-------------------------------
     public static final double ROTATION_P = TURNING_POWER_FACTOR;
     public static final double ROTATION_I = 0.0;
-    public static final double ROTATION_D = 0.015;
+    public static final double ROTATION_D = 0.01;
     public static final double TRANSLATION_P = DRIVE_POWER_FACTOR;
     public static final double TRANSLATION_I = 0.00000002;    // todo Adjust
     public static final double TRANSLATION_D = 0.0015;
@@ -70,10 +70,10 @@ public class Constants
 
     // Distances in encoder ticks the robot must drive to respective centers of cryptoboxes in autonomous
     public static final double STRAIGHT_BOX_DISTANCE_RED = 700;    // todo Adjust
-    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 1092;    // todo Adjust
+    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 980;    // todo Adjust
     public static final double ANGLED_BOX_DISTANCE_BLUE = 0;  // todo Add
     public static final double ANGLED_BOX_DISTANCE_RED = 0;   // todo Add
-    public static final double STRAIGHT_COLUMN_DIFF = 180;   // todo Adjust
+    public static final double STRAIGHT_COLUMN_DIFF = 230;   // todo Adjust
     public static final double ANGLED_COLUMN_DIFF = 0;   // todo Add
 
 

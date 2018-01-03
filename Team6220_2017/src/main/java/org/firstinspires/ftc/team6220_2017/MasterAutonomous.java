@@ -222,7 +222,7 @@ abstract public class MasterAutonomous extends MasterOpMode
                     motorBL.getCurrentPosition() + motorFR.getCurrentPosition() + motorBR.getCurrentPosition()) / 4;
 
             // Calculate how far off robot is from its initial heading
-            headingDiff = getAngularOrientationWithOffset() - initHeading;
+            headingDiff = normalizeRotationTarget(getAngularOrientationWithOffset(), initHeading);
 
             // Recalculate drive angle and distance remaining every loop
             distanceToTarget = calculateDistance(deltaX, deltaY);

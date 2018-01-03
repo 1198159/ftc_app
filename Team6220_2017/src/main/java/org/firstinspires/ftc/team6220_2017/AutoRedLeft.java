@@ -39,7 +39,7 @@ public class AutoRedLeft extends MasterAutonomous
 
 
         // Align with and face key column--------------------
-        driveToPosition(0, vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 1.0);
+        driveToPosition(0, vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.7);
         turnTo(-90);
         driveToPosition(0, -130, 0.4);
         //---------------------------------------------------
