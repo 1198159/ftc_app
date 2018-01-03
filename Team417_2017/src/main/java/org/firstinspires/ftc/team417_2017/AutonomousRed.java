@@ -2,7 +2,7 @@ package org.firstinspires.ftc.team417_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Autonomous Red", group = "Swerve")
+//@Autonomous(name="Autonomous Red", group = "Swerve")
 // @Disabled
 
 public class AutonomousRed extends MasterAutonomous
