@@ -25,10 +25,11 @@ public class Constants
     public static final double GLYPHTER_TOLERANCE_TICKS = 15;    // todo Adjust
 
 
-    // Drive control constants-----------------------
+    // Movement control constants-----------------------
     public static final double MINIMUM_DRIVE_POWER = 0.15;   // todo Adjust
     public static final double MINIMUM_TURNING_POWER = 0.1;
-    // Constants for adjusting powers that are proportional to angle and position differences
+    public static final double MINIMUM_GLYPHTER_POWER = 0.1;   // todo Adjust
+     // Constants for adjusting powers that are proportional to angle and position differences
     public static final double TURNING_POWER_FACTOR = 0.014;
     public static final double DRIVE_POWER_FACTOR = 0.0018;
     //------------------------------------------------

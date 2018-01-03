@@ -258,10 +258,10 @@ abstract public class MasterOpMode extends LinearOpMode
         double x = drivePower * Math.cos(Math.toRadians(driveAngle));
 
         // Signs for x, y, and w are based on the motor configuration and inherent properties of mecanum drive
-        double powerFL = -x - y - w;
-        double powerFR = -x + y - w;
-        double powerBL = x - y - w;
-        double powerBR = x + y - w;
+        double powerFL = -x - y + w;
+        double powerFR = -x + y + w;
+        double powerBL = x - y + w;
+        double powerBR = x + y + w;
 
         // Scale powers-------------------------
         /*
@@ -301,7 +301,8 @@ abstract public class MasterOpMode extends LinearOpMode
     }
 
     // Other opmodes must go through this method to prevent others from unnecessarily changing headingOffset
-    void setRobotStartingOrientation(double newValue) {
+    void setRobotStartingOrientation(double newValue)
+    {
         headingOffset = newValue;
     }
 

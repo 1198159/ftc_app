@@ -49,7 +49,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         // Stick inputs must be changed from x and y to angle and drive power
         double angle = Math.toDegrees(driver1.getRightStickAngle());
         double adjustedDrivePower = tFactor * stickCurve.getOuput(power);
-        double rotationPower = rFactor * stickCurve.getOuput(gamepad1.left_stick_x);
+        double rotationPower = -rFactor * stickCurve.getOuput(gamepad1.left_stick_x);
 
         driveMecanum(angle, adjustedDrivePower, rotationPower);
     }

@@ -39,7 +39,13 @@ public class GlyphMechanism
             op.GlyphterFilter.roll(glyphterDiff);
             glyphterPower = op.GlyphterFilter.getFilteredValue();
 
-            // Ensure robot doesn't ever drive faster than we want it to
+            // Ensure glyphter doesn't approach target position too slowly
+            if (Math.abs(glyphterPower) < Constants.MINIMUM_GLYPHTER_POWER)
+            {
+                glyphterPower = Math.signum(glyphterPower) * Constants.MINIMUM_GLYPHTER_POWER;
+            }
+
+            // Ensure glyphter doesn't ever move faster than we want it to
             if (Math.abs(glyphterPower) > maxPower)
             {
                 glyphterPower = Math.signum(glyphterPower) * maxPower;
