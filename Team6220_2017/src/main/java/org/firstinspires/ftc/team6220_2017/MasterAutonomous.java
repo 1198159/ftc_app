@@ -12,7 +12,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Necessary for runSetup()
     DriverInput driverInput;
 
-    // Initialize booleans/variables used in runSetup()
+    // Initialize booleans and variables used in runSetup()
     public boolean isBlueSide = true;
     public boolean isLeftBalancingStone = true;
 
@@ -127,7 +127,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
 
             // Turns robot
-            driveMecanum(0.0, 0.0, -turningPower);
+            driveMecanum(0.0, 0.0, turningPower);
 
             telemetry.addData("angleDiff: ", angleDiff);
             telemetry.addData("Turning Power: ", turningPower);
@@ -184,7 +184,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopDriveMotors();
     }
 
-    // todo Add absolute coordinates
+    // todo Add global coordinates (not a priority)
     // Uses encoders to make the robot drive to a specified relative position.  Also makes use of the
     // imu to keep the robot at a constant heading during navigation
     void driveToPosition(double initDeltaX, double initDeltaY, double maxPower) throws InterruptedException
@@ -233,7 +233,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             drivePower = TranslationFilter.getFilteredValue();
 
              // Additional factor is necessary to ensure turning power is large enough
-            RotationFilter.roll(1.5 * headingDiff);
+            RotationFilter.roll(-1.5 * headingDiff);
             rotationPower = RotationFilter.getFilteredValue();
             //------------------------------------------------------------------------------------
 
@@ -253,97 +253,12 @@ abstract public class MasterAutonomous extends MasterOpMode
             telemetry.addData("Encoder Diff x: ", deltaX);
             telemetry.addData("Encoder Diff y: ", deltaY);
             telemetry.addData("Drive Power: ", drivePower);
+            telemetry.addData("Rotation Power: ", rotationPower);
             telemetry.update();
             idle();
         }
         stopDriveMotors();
     }
-
-    /*
-    // todo Decide whether to keep or remove old method
-    // todo Add absolute coordinates and code to prevent turning while using driveToPosition
-    //todo sideways translation does not work
-    // Uses encoders to make the robot drive to a specified relative position
-    void driveToPosition(double deltaX, double deltaY, double maxPower) throws InterruptedException
-    {
-        // Find distance between robot and its destination
-        double distanceToTarget = calculateDistance(deltaX, deltaY);
-
-        // Store old values for drive encoders
-        double lastEncoderFL = motorFL.getCurrentPosition();
-        double lastEncoderFR = motorFR.getCurrentPosition();
-        double lastEncoderBL = motorBL.getCurrentPosition();
-        double lastEncoderBR = motorBR.getCurrentPosition();
-
-        // Check to see if robot has arrived at destination within tolerances
-        while (distanceToTarget > Constants.POSITION_TOLERANCE_MM && opModeIsActive())
-        {
-            // Store current encoder values as temporary variables
-            double posFL = motorFL.getCurrentPosition();
-            double posFR = motorFR.getCurrentPosition();
-            double posBL = motorBL.getCurrentPosition();
-            double posBR = motorBR.getCurrentPosition();
-            // Changes in encoder values between loops
-            double encDiffFL = posFL - lastEncoderFL;
-            double encDiffFR = posFR - lastEncoderFR;
-            double encDiffBL = posBL - lastEncoderBL;
-            double encDiffBR = posBR - lastEncoderBR;
-
-            // Save old encoder values for next loop
-            lastEncoderFL = posFL;
-            lastEncoderFR = posFR;
-            lastEncoderBL = posBL;
-            lastEncoderBR = posBR;
-
-            // Average encoder differences to find translational x and y components.  Motors turn
-            // differently when translating, so signs on FR and BL must be flipped
-            double encDiffX = (-encDiffFL - encDiffFR + encDiffBL + encDiffBR) / 4;
-            double encDiffY = (-encDiffFL + encDiffFR - encDiffBL + encDiffBR) / 4;
-            //double encDiffY = -encDiffFL;
-            //double encDiffX = -encDiffFR;
-
-            // Translation distance is reduced by a factor of sqrt(2) due to mecanum wheels
-            deltaX -= Constants.MM_PER_ANDYMARK_TICK * encDiffX / Math.sqrt(2);
-            deltaY -= Constants.MM_PER_ANDYMARK_TICK * encDiffY;
-
-            // Recalculate value each loop
-            distanceToTarget = calculateDistance(deltaX, deltaY);
-
-            double driveAngle;
-            // Deals with the fact that inverse tangent only returns an angle between -90 and 90
-            // degrees.  We want to be able to drive at angles greater than 90 degrees, so the
-            // range of atan2 must be modified
-            if (deltaX >= 0)
-                driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
-            else
-                driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX)) + 180;
-
-            // Power is proportional to distance from target
-            double drivePower = maxPower * distanceToTarget;
-            // Send drivePower through PID filter to adjust range and minimize oscillation
-            TranslationFilter.roll(drivePower);
-            double adjustedDrivePower = TranslationFilter.getFilteredValue();
-
-            // Ensure robot doesn't approach target position too slowly
-            if (Math.abs(adjustedDrivePower) < Constants.MINIMUM_DRIVE_POWER)
-            {
-                adjustedDrivePower = Math.signum(adjustedDrivePower) * Constants.MINIMUM_DRIVE_POWER;
-            }
-
-            // todo DRIVE ANGLE HELD CONSTANT FOR TESTING
-            driveMecanum(driveAngle, adjustedDrivePower, 0.0);
-
-            telemetry.addData("X remaining: ", deltaX);
-            telemetry.addData("Y remaining: ", deltaY);
-            telemetry.addData("Drive Angle: ", driveAngle);
-            telemetry.addData("Adjusted Drive Power: ", adjustedDrivePower);
-            telemetry.update();
-            idle();
-        }
-
-        stopDriveMotors();
-    }
-    */
 
     // todo Implement global coordinates (not a priority)
     // Updates robot's coordinates and angle
