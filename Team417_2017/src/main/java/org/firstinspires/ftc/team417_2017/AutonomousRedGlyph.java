@@ -16,7 +16,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         // Initialize hardware and other important things
-        super.initializeHardware();
+        autoInitializeRobot();
         VuforiaDetect.initVuforia(); // initialize Vuforia
         telemetry.addData("Done: ", "initializing");
         telemetry.update();
@@ -221,7 +221,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
 
                 // ALIGN TO CORRECT COLUMN
                 Kpivot = 1/100.0; // reset Kpivot
-                move(-70, 0, 0.15, 0.5, 1); // move right
+                //move(-70, 0, 0.15, 0.5, 1); // move right
                 move(0, -220, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
             }
@@ -265,8 +265,6 @@ public class AutonomousRedGlyph extends MasterAutonomous
             }
             else // if the VuMark is not visible, just go for the center column
             {
-                telemetry.addData("Vumark", "not visible, going for center");
-                /*
                 // MOVE TOWARDS THE CRYPTOBOX
                 moveTimed(-0.5, 0, 1100); // move left off the balancing stone
                 sleep(200);
@@ -280,10 +278,9 @@ public class AutonomousRedGlyph extends MasterAutonomous
 
                 // ALIGN TO CORRECT COLUMN
                 Kpivot = 1/100.0; // reset Kpivot
-                move(-70, 0, 0.15, 0.5, 1); // move right
+                //move(-70, 0, 0.15, 0.5, 1); // move right
                 move(0, -220, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
-                */
             }
 
             // BACK UP FROM THE CRYPTOBOX

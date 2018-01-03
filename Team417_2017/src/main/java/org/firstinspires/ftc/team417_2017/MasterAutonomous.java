@@ -76,10 +76,9 @@ abstract class MasterAutonomous extends MasterOpMode
 
     double avgDistError;
 
-    public void initializeRobot()
+    public void autoInitializeRobot()
     {
         super.initializeHardware(); // call master op mode's init method
-        VuforiaDetect.initVuforia();
 
         // zero the motor controllers before running, don't know if motors start out at zero
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -93,7 +92,7 @@ abstract class MasterAutonomous extends MasterOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         //Set up telemetry data
         // We show the log in oldest-to-newest order, as that's better for poetry

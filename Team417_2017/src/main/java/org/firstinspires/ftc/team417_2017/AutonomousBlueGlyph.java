@@ -16,7 +16,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         // Initialize hardware and other important things
-        super.initializeHardware();
+        autoInitializeRobot();
         VuforiaDetect.initVuforia(); // initialize Vuforia
         telemetry.addData("Done: ", "initializing");
         telemetry.update();
