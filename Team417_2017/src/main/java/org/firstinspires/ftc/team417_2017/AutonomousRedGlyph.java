@@ -164,6 +164,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
                 pivotWithReference(-140, refAngle, 0.15, 0.55); // turn to face the cryptobox
                 sleep(200);
 
+                // ALIGN TO CORRECT COLUMN
                 move(-40, 0, 0.15, 0.5, 1); // move right
                 sleep(200);
                 move(0, -255, 0.1, 0.3, 2.5); // push the glyph in more, since we didn't shift right
@@ -203,6 +204,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
             pivotWithReference(0, refAngle, 0.15, 0.55);
             // back up a bit more, to make sure that the robot is not touching the deposited glyph
             move(0, -50, 0.1, 0.3, 0.7);
+            sleep(100);
         }
         else // RED RIGHT
         {
