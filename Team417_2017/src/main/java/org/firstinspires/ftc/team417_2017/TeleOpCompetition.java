@@ -10,6 +10,12 @@ public class TeleOpCompetition extends MasterTeleOp
     public void runOpMode() throws InterruptedException
     {
         super.initializeHardware();
+
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
         telemetry.addData("Init:", "Done");
         telemetry.update();
         waitForStart();
