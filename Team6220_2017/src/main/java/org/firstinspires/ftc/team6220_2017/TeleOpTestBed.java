@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 
 /**
@@ -21,22 +22,38 @@ public class TeleOpTestBed extends MasterAutonomous
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
+
+        Servo glyphterServo;
+        glyphterServo = hardwareMap.servo.get("glyphterServo");
+        glyphterServo.setPosition(0.5);
+
         // Don't want to call nonexistent hardware devices in test program
         isArmAttached = false;
         isDriveTrainAttached = true;
         isGlyphMechAttached = true;
-        initializeRobot();
+        //initializeRobot();
 
         waitForStart();
         // Move jewel servo so it is out of the way of the glyph mechanism
-        verticalJewelServoToggler.retract();
+        //verticalJewelServoToggler.retract();
         // Accounts for delay between initializing the program and starting TeleOp
         lTime = timer.seconds();
-
 
         // Main loop
         while(opModeIsActive())
         {
+            if (gamepad2.left_bumper)
+            {
+                glyphterServo.setPosition(0.4);
+            }
+            else if (gamepad2.right_bumper)
+            {
+                glyphterServo.setPosition(0.5);
+            }
+
+
+
+
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
