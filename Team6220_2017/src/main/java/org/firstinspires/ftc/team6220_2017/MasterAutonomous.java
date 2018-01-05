@@ -196,6 +196,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         double driveAngle;
         double drivePower;
+        double adjustedDrivePower;
         double rotationPower;
 
          // Find distance between robot and its destination
@@ -228,14 +229,16 @@ abstract public class MasterAutonomous extends MasterOpMode
             distanceToTarget = calculateDistance(deltaX, deltaY);
             driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
 
-            // Transform position and heading diffs to linear and rotation powers using PID------
+            // Transform position and heading diffs to linear and rotation powers using filters----
             TranslationFilter.roll(distanceToTarget);
             drivePower = TranslationFilter.getFilteredValue();
+            navigationAccelFilter.roll(drivePower);
+            adjustedDrivePower = navigationAccelFilter.getFilteredValue();
 
              // Additional factor is necessary to ensure turning power is large enough
             RotationFilter.roll(-1.5 * headingDiff);
             rotationPower = RotationFilter.getFilteredValue();
-            //------------------------------------------------------------------------------------
+            //-------------------------------------------------------------------------------------
 
             // Ensure robot doesn't approach target position too slowly
             if (Math.abs(drivePower) < Constants.MINIMUM_DRIVE_POWER)
@@ -248,7 +251,7 @@ abstract public class MasterAutonomous extends MasterOpMode
                 drivePower = Math.signum(drivePower) * maxPower;
             }
 
-            driveMecanum(driveAngle, drivePower, rotationPower);
+            driveMecanum(driveAngle, adjustedDrivePower, rotationPower);
 
             telemetry.addData("Encoder Diff x: ", deltaX);
             telemetry.addData("Encoder Diff y: ", deltaY);

@@ -3,7 +3,6 @@ package org.firstinspires.ftc.team6220_2017;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -40,11 +39,15 @@ abstract public class MasterOpMode extends LinearOpMode
     // Stores the encoder values for each of the 4 heights that glyphs can be scored at
     int[] glyphHeights = new int[4];
 
-    // PID filters.  We have one for turning, one for encoder navigation, and one for moving the
-    // glyphter
+    // Declare filters.  We have one for turning, one for encoder navigation, one for moving the
+    // glyphter, and 3 for limiting robot acceleration (in autonomous and teleOp)
     PIDFilter RotationFilter;
     PIDFilter TranslationFilter;
     PIDFilter GlyphterFilter;
+
+    AccelerationFilter navigationAccelFilter;
+    AccelerationFilter driveAccelFilter;
+    AccelerationFilter turnAccelFilter;
     //
 
     // Declare hardware devices-------------------------
@@ -220,6 +223,10 @@ abstract public class MasterOpMode extends LinearOpMode
         RotationFilter = new PIDFilter(Constants.ROTATION_P, Constants.ROTATION_I, Constants.ROTATION_D);
         TranslationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);
         GlyphterFilter = new PIDFilter(Constants.GLYPHTER_P, Constants.GLYPHTER_I, Constants.GLYPHTER_D);
+
+        navigationAccelFilter = new AccelerationFilter(this, 0.001, 0.001);   // todo Adjust
+        driveAccelFilter = new AccelerationFilter(this, 0.000000001, 0.000000001);   // todo Adjust
+        turnAccelFilter = new AccelerationFilter(this, 0.001, 0.001);   // todo Adjust
 
         //todo Initialize all separate hardware systems here
         for (ConcurrentOperation item : callback)

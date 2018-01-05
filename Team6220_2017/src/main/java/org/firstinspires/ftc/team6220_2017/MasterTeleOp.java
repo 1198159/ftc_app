@@ -39,18 +39,19 @@ abstract public class MasterTeleOp extends MasterOpMode
             slowMode = false;
         }
 
-        double power = driver1.getRightStickMagnitude();
 
-        // Ensure stick magnitude is within the range {0,1}, since magnitudes are not uniform for
-        // all stick positions (they have been observed to be as large as 1.1)
-        if (power > 1.0)
-            power = 1.0;
-
-        // Stick inputs must be changed from x and y to angle and drive power
+        // Stick inputs must be changed from x and y to angle, drive power, and rotation power---
         double angle = Math.toDegrees(driver1.getRightStickAngle());
-        double adjustedDrivePower = tFactor * stickCurve.getOuput(power);
-        double rotationPower = -rFactor * stickCurve.getOuput(gamepad1.left_stick_x);
 
-        driveMecanum(angle, adjustedDrivePower, rotationPower);
+        double power = tFactor * stickCurve.getOuput(driver1.getRightStickMagnitude());
+        driveAccelFilter.roll(power);
+        double adjustedDrivePower = driveAccelFilter.getFilteredValue();
+
+        double rotationPower = -rFactor * stickCurve.getOuput(gamepad1.left_stick_x);
+        turnAccelFilter.roll(rotationPower);
+        double adjustedRotationPower = turnAccelFilter.getFilteredValue();
+        //----------------------------------------------------------------------------------------
+
+        driveMecanum(angle, adjustedDrivePower, adjustedRotationPower);
     }
 }
