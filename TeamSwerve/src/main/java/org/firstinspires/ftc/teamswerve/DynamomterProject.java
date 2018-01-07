@@ -238,7 +238,7 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
      */
     public void EncoderCountTest()
     {
-        relay.setState(false); // turn the relay off, even though we know we won;t run the motor
+        relay.setState(false); // turn the relay off, even though we know we won't run the motor
         while (opModeIsActive())
         {
             telemetry.addData("EncoderCount", motor.getCurrentPosition()); // read encoder counts to update the count displayed
