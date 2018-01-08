@@ -118,18 +118,59 @@ public class AutonomousBlueGlyph extends MasterAutonomous
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
                 sleep(200);
                 Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-                moveMaintainHeading(-100, 0, 0, refAngle, 0.15, 0.6, 2.5); // move right towards the cryptobox
+                moveMaintainHeading(100, 0, 0, refAngle, 0.15, 0.6, 2.5); // move right towards the cryptobox
                 Kpivot = 1/50; // more aggressive pivot because we're turning a smaller angle
                 pivotWithReference(45, refAngle, 0.15, 0.5); // turn to face the cryptobox
                 sleep(200);
 
                 // ALIGN TO CORRECT COLUMN
                 Kpivot = 1/100.0; // reset Kpivot
-                //move(-70, 0, 0.15, 0.5, 1); // move right
-                move(0, -220, 0.1, 0.3, 2.5); // push the glyph in
+                move(-50, 0, 0.15, 0.5, 1); // move right
+                sleep(200);
+                move(0, -205, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
             }
             else if (VuMark == RelicRecoveryVuMark.RIGHT)
+            {
+                // MOVE TOWARDS THE CRYPTOBOX
+                moveTimed(0.5, 0, 1100); // move right off the balancing stone
+                sleep(200);
+                pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
+                sleep(200);
+                Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
+                moveMaintainHeading(145, 0, 0, refAngle, 0.15, 0.6, 2.5); // move right towards the cryptobox
+                Kpivot = 1/50; // more aggressive pivot because we're turning a smaller angle
+                pivotWithReference(45, refAngle, 0.15, 0.5); // turn to face the cryptobox
+                sleep(200);
+
+                // ALIGN TO CORRECT COLUMN
+                Kpivot = 1/100.0; // reset Kpivot
+                move(-155, 0, 0.15, 0.5, 1); // move right
+                sleep(200);
+                move(0, -220, 0.1, 0.3, 2.5); // push the glyph in
+                sleep(200);
+            }
+            else if (VuMark == RelicRecoveryVuMark.LEFT)
+            {
+                // MOVE TOWARDS THE CRYPTOBOX
+                moveTimed(0.5, 0, 1100); // move right off the balancing stone
+                sleep(200);
+                pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
+                sleep(200);
+                Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
+                moveMaintainHeading(100, 0, 0, refAngle, 0.15, 0.6, 2.5); // move right towards the cryptobox
+                Kpivot = 1/50; // more aggressive pivot because we're turning a smaller angle
+                pivotWithReference(45, refAngle, 0.15, 0.5); // turn to face the cryptobox
+                sleep(200);
+
+                // ALIGN TO CORRECT COLUMN
+                Kpivot = 1/100.0; // reset Kpivot
+                move(50, 0, 0.15, 0.5, 1); // move left
+                sleep(200);
+                move(0, -170, 0.1, 0.3, 2.5); // push the glyph in
+                sleep(200);
+            }
+            else
             {
 
             }
@@ -147,10 +188,11 @@ public class AutonomousBlueGlyph extends MasterAutonomous
             pivotWithReference(0, refAngle, 0.15, 0.55);
             sleep(200);
             // back up a bit more, to make sure that the robot is not touching the deposited glyph
-            move(85, 0, 0.1, 0.3, 0.7);
             sleep(200);
-            if (VuMark == RelicRecoveryVuMark.LEFT) move(0, -450, 0.1, 0.3, 2.0);
-            else telemetry.addData("Autonomous", "Done");
+            move(-85, 0, 0.1, 0.3, 0.7);
+            if (VuMark == RelicRecoveryVuMark.RIGHT) move(0, -150, 0.1, 0.3, 2.0);
+            else if (VuMark == RelicRecoveryVuMark.LEFT) move(0, -150, 0.1, 0.3, 2.0);
+            else move(0, -85, 0.1, 0.3, 0.7);
             sleep(100);
         }
         else // BLUE RIGHT
