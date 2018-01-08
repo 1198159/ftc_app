@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Const;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -224,9 +226,9 @@ abstract public class MasterOpMode extends LinearOpMode
         TranslationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);
         GlyphterFilter = new PIDFilter(Constants.GLYPHTER_P, Constants.GLYPHTER_I, Constants.GLYPHTER_D);
 
-        navigationAccelFilter = new AccelerationFilter(this, 0.001, 0.001);   // todo Adjust
-        driveAccelFilter = new AccelerationFilter(this, 0.000000001, 0.000000001);   // todo Adjust
-        turnAccelFilter = new AccelerationFilter(this, 0.001, 0.001);   // todo Adjust
+        navigationAccelFilter = new AccelerationFilter(this, Constants.NAV_ACCEL, Constants.NAV_DECEL);
+        driveAccelFilter = new AccelerationFilter(this, Constants.DRIVE_ACCEL, Constants.DRIVE_DECEL);
+        turnAccelFilter = new AccelerationFilter(this, Constants.TURN_ACCEL, Constants.TURN_DECEL);
 
         //todo Initialize all separate hardware systems here
         for (ConcurrentOperation item : callback)

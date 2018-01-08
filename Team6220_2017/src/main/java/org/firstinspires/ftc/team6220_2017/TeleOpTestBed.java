@@ -17,21 +17,22 @@ public class TeleOpTestBed extends MasterAutonomous
     @Override public void runOpMode() throws InterruptedException
     {
         double jointPosCount = 0.5;
-        int glyphPosCount = 0;
+        double jewelJostlerCount = Constants.LATERAL_JEWEL_SERVO_NEUTRAL;
 
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
-
+        /*
         Servo glyphterServo;
         glyphterServo = hardwareMap.servo.get("glyphterServo");
         glyphterServo.setPosition(0.5);
+        */
 
         // Don't want to call nonexistent hardware devices in test program
         isArmAttached = false;
         isDriveTrainAttached = true;
         isGlyphMechAttached = true;
-        //initializeRobot();
+        initializeRobot();
 
         waitForStart();
         // Move jewel servo so it is out of the way of the glyph mechanism
@@ -42,6 +43,7 @@ public class TeleOpTestBed extends MasterAutonomous
         // Main loop
         while(opModeIsActive())
         {
+            /*
             if (gamepad2.left_bumper)
             {
                 glyphterServo.setPosition(0.4);
@@ -50,9 +52,7 @@ public class TeleOpTestBed extends MasterAutonomous
             {
                 glyphterServo.setPosition(0.5);
             }
-
-
-
+            */
 
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
@@ -61,12 +61,12 @@ public class TeleOpTestBed extends MasterAutonomous
             if (driver1.isButtonJustPressed(Button.DPAD_UP))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
-                driveToPosition(0, 1210, 0.7);
+                driveToPosition(0, 1210, 1.0);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_DOWN))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);
-                driveToPosition(0, -508, 1.0);
+                driveToPosition(0, -508, 0.6);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_RIGHT))
             {
@@ -79,7 +79,7 @@ public class TeleOpTestBed extends MasterAutonomous
                 turnTo(90);
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
             }
-            else  if (driver1.isButtonJustPressed(Button.RIGHT_STICK_PRESS))
+            else if (driver1.isButtonJustPressed(Button.RIGHT_STICK_PRESS))
             {
                 turnTo(-90);
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_RIGHT);

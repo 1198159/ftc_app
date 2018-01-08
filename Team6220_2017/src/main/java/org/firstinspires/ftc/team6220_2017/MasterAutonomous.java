@@ -232,13 +232,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             // Transform position and heading diffs to linear and rotation powers using filters----
             TranslationFilter.roll(distanceToTarget);
             drivePower = TranslationFilter.getFilteredValue();
-            navigationAccelFilter.roll(drivePower);
-            adjustedDrivePower = navigationAccelFilter.getFilteredValue();
-
-             // Additional factor is necessary to ensure turning power is large enough
-            RotationFilter.roll(-1.5 * headingDiff);
-            rotationPower = RotationFilter.getFilteredValue();
-            //-------------------------------------------------------------------------------------
 
             // Ensure robot doesn't approach target position too slowly
             if (Math.abs(drivePower) < Constants.MINIMUM_DRIVE_POWER)
@@ -251,13 +244,21 @@ abstract public class MasterAutonomous extends MasterOpMode
                 drivePower = Math.signum(drivePower) * maxPower;
             }
 
+            navigationAccelFilter.roll(drivePower);
+            adjustedDrivePower = navigationAccelFilter.getFilteredValue();
+
+             // Additional factor is necessary to ensure turning power is large enough
+            RotationFilter.roll(-1.5 * headingDiff);
+            rotationPower = RotationFilter.getFilteredValue();
+            //-------------------------------------------------------------------------------------
+
             driveMecanum(driveAngle, adjustedDrivePower, rotationPower);
 
-            telemetry.addData("Encoder Diff x: ", deltaX);
-            telemetry.addData("Encoder Diff y: ", deltaY);
-            telemetry.addData("Drive Power: ", drivePower);
-            telemetry.addData("Rotation Power: ", rotationPower);
-            telemetry.update();
+//            telemetry.addData("Encoder Diff x: ", deltaX);
+//            telemetry.addData("Encoder Diff y: ", deltaY);
+//            telemetry.addData("Drive Power: ", drivePower);
+//            telemetry.addData("Rotation Power: ", rotationPower);
+//            telemetry.update();
             idle();
         }
         stopDriveMotors();

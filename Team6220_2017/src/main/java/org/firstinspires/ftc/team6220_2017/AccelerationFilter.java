@@ -31,7 +31,7 @@ public class AccelerationFilter implements Filter
     //so the robot doesn't think it can accelerate far more than it should.
     //This value can be tuned, since larger values will allow the first iteration to accelerate/decelerate more.
     //If this value is too small, however, it will always be used instead of the actual elapsed time.
-    final private int MAX_LOOP_TIME_MS = 60;
+    final private int MAX_LOOP_TIME_MS = 120;
 
     // We pass in MasterOpMode so that this class can access important functionalities such as telemetry
     public AccelerationFilter(MasterOpMode mode, double maxAccel, double maxDecel)
@@ -41,6 +41,8 @@ public class AccelerationFilter implements Filter
         this.maxPowPerMilliDecrease = maxDecel;
         timer = new ElapsedTime();
         millisecondsWhenLastCalled = 0.0;
+        values[1] = 0;
+        values[0] = 0;
     }
 
 
@@ -100,11 +102,16 @@ public class AccelerationFilter implements Filter
             op.telemetry.addData("case: ", "decel");
         }
 
-        final double filteredPower = values[1] + allowableChange;
+        // Replace the recently rolled value with the filtered power
+        values[0] = values[1] + allowableChange;
 
-        // Store timer value for comparison next loop
+        // Store old values for comparison next loop
         millisecondsWhenLastCalled = millisecondsNow;
 
-        return filteredPower;
+        op.telemetry.addData("Loop Time: ", elapsedMilliseconds);
+        op.telemetry.addData("Power: ", values[0]);
+        op.telemetry.update();
+
+        return values[0];
     }
 }
