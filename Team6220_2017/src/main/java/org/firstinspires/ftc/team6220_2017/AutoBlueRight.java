@@ -37,10 +37,7 @@ public class AutoBlueRight extends MasterAutonomous
 
 
         // Align with and face key column--------------------
-        driveToPosition(0, -508, 1.0);
-        //driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 1.0);
-
-        /*
+        driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.7);
         turnTo(90);
         driveToPosition(0, -130, 0.4);
         //---------------------------------------------------
@@ -61,7 +58,7 @@ public class AutoBlueRight extends MasterAutonomous
         motorCollectorRight.setPower(0);
         //---------------------------------------------------
 
-
+        /*
         // Push glyph in-------------------------------------
         moveRobot(90, 0.2, 0.8);
         //---------------------------------------------------

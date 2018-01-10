@@ -88,18 +88,17 @@ abstract public class MasterOpMode extends LinearOpMode
         motorGlyphRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorGlyphGrab.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-/*
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-*/
 
+/*
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+*/
         motorGlyphLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorGlyphRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorGlyphGrab.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

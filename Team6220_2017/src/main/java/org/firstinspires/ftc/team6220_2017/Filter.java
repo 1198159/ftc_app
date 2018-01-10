@@ -9,5 +9,4 @@ public interface Filter
     void roll(double newValue);
 
     double getFilteredValue();
-
 }

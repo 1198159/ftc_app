@@ -16,24 +16,21 @@ package org.firstinspires.ftc.team6220_2017;
 //TODO decide if this should handle the PID enforcement mode
 public class PIDFilter implements Filter
 {
-    //CodeReview: while cute, and legal, using greek characters in your code makes it harder for others to work with this code
-    //           (they may not know how to type those chars, and/or may not understand what they mean).
-    //           You would be better off making these less obscure by using descriptive names.
-
     // Proportional coefficient
-    private double εP;
+    private double P;
     // Integral coefficient
-    private double εI;
+    private double I;
     // Derivative coefficient
-    private double εD;
+    private double D;
 
     // Construct filter with the coefficients
     public PIDFilter(double P, double I, double D)
     {
-        εP = P;
-        εI = I;
-        εD = D;
+        this.P = P;
+        this.I = I;
+        this.D = D;
     }
+
 
     public double[] values = new double[2];
     public double sum = 0;
@@ -52,9 +49,9 @@ public class PIDFilter implements Filter
         values[0] = newValue;
     }
 
+
     public double getFilteredValue()
     {
-        return (εP*values[0] ) + ( εI* sum) + ( εD*dV );
+        return (P * values[0] ) + ( I * sum) + ( D * dV );
     }
-
 }

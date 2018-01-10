@@ -3,9 +3,10 @@ package org.firstinspires.ftc.team6220_2017;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +41,15 @@ abstract public class MasterOpMode extends LinearOpMode
     // Stores the encoder values for each of the 4 heights that glyphs can be scored at
     int[] glyphHeights = new int[4];
 
-    // PID filters.  We have one for turning, one for encoder navigation, and one for moving the
-    // glyphter
+    // Declare filters.  We have one for turning, one for encoder navigation, one for moving the
+    // glyphter, and 3 for limiting robot acceleration (in autonomous and teleOp)
     PIDFilter RotationFilter;
     PIDFilter TranslationFilter;
     PIDFilter GlyphterFilter;
+
+    AccelerationFilter navigationAccelFilter;
+    AccelerationFilter driveAccelFilter;
+    AccelerationFilter turnAccelFilter;
     //
 
     // Declare hardware devices-------------------------
@@ -221,6 +226,10 @@ abstract public class MasterOpMode extends LinearOpMode
         TranslationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);
         GlyphterFilter = new PIDFilter(Constants.GLYPHTER_P, Constants.GLYPHTER_I, Constants.GLYPHTER_D);
 
+        navigationAccelFilter = new AccelerationFilter(this, Constants.NAV_ACCEL, Constants.NAV_DECEL);
+        driveAccelFilter = new AccelerationFilter(this, Constants.DRIVE_ACCEL, Constants.DRIVE_DECEL);
+        turnAccelFilter = new AccelerationFilter(this, Constants.TURN_ACCEL, Constants.TURN_DECEL);
+
         //todo Initialize all separate hardware systems here
         for (ConcurrentOperation item : callback)
         {
@@ -258,10 +267,10 @@ abstract public class MasterOpMode extends LinearOpMode
         double x = drivePower * Math.cos(Math.toRadians(driveAngle));
 
         // Signs for x, y, and w are based on the motor configuration and inherent properties of mecanum drive
-        double powerFL = -x - y - w;
-        double powerFR = -x + y - w;
-        double powerBL = x - y - w;
-        double powerBR = x + y - w;
+        double powerFL = -x - y + w;
+        double powerFR = -x + y + w;
+        double powerBL = x - y + w;
+        double powerBR = x + y + w;
 
         // Scale powers-------------------------
         /*
@@ -301,7 +310,8 @@ abstract public class MasterOpMode extends LinearOpMode
     }
 
     // Other opmodes must go through this method to prevent others from unnecessarily changing headingOffset
-    void setRobotStartingOrientation(double newValue) {
+    void setRobotStartingOrientation(double newValue)
+    {
         headingOffset = newValue;
     }
 
