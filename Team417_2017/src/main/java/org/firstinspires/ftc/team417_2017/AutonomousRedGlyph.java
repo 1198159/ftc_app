@@ -125,7 +125,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
                 sleep(200);
 
                 // ALIGN TO CORRECT COLUMN
-                move(-115, 0, 0.15, 0.5, 1); // move right
+                move(-100, 0, 0.15, 0.5, 1); // move right
                 sleep(200);
                 move(0, -220, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
@@ -216,7 +216,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
                 sleep(200);
                 Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-                moveMaintainHeading(-100, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
+                moveMaintainHeading(-120, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
                 Kpivot = 1/50; // more aggressive pivot because we're turning a smaller angle
                 pivotWithReference(-45, refAngle, 0.15, 0.5); // turn to face the cryptobox
                 sleep(200);
@@ -300,7 +300,12 @@ public class AutonomousRedGlyph extends MasterAutonomous
             // back up a bit more, to make sure that the robot is not touching the deposited glyph
             move(85, 0, 0.1, 0.3, 0.7);
             sleep(200);
-            if (VuMark == RelicRecoveryVuMark.RIGHT) move(0, -450, 0.1, 0.3, 2.0);
+            if (VuMark == RelicRecoveryVuMark.RIGHT)
+                move(0, -200, 0.1, 0.3, 2.0);
+            else if (VuMark == RelicRecoveryVuMark.CENTER)
+                move(0, -150, 0.1, 0.3, 2.0);
+            else if (VuMark == RelicRecoveryVuMark.LEFT)
+                move(0, -150, 0.1, 0.3, 2.0);
             else telemetry.addData("Autonomous", "Done");
             sleep(100);
         }
