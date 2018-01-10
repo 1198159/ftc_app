@@ -238,28 +238,28 @@ public abstract class MasterTeleOp extends Master
         liftModeStateChange = false;
         if(!liftModeStateChange && (gamepad1.right_bumper || gamepad1.left_bumper))
         {
-            if(gamepad1.right_bumper && motorGG.getCurrentPosition() < GGZero +1700 - TOL)
+            if(gamepad1.right_bumper && motorGG.getCurrentPosition() < GGZero + 1850 - TOL)//Was 1700
             {
-                motorGG.setTargetPosition(GGZero + 1700);
+                motorGG.setTargetPosition(GGZero + 1850);//Was 1700
             }
-            else if(gamepad1.right_bumper && motorGG.getCurrentPosition() >= GGZero +1700 - TOL)
+            else if(gamepad1.right_bumper && motorGG.getCurrentPosition() >= GGZero + 1850 - TOL)//Was 1700
             {
-                motorGG.setTargetPosition(GGZero + 3400);
+                motorGG.setTargetPosition(GGZero + 3550);//Was 3400
             }
-            else if(gamepad1.left_bumper && motorGG.getCurrentPosition() >= GGZero +3400 - TOL)
+            else if(gamepad1.left_bumper && motorGG.getCurrentPosition() >= GGZero + 3550 - TOL)//Was 3400
             {
-                motorGG.setTargetPosition(GGZero + 1700);
+                motorGG.setTargetPosition(GGZero + 1850);//Was 1700
             }
-            else if(gamepad1.left_bumper && motorGG.getCurrentPosition() <= GGZero +3400 + TOL)
+            else if(gamepad1.left_bumper && motorGG.getCurrentPosition() <= GGZero + 3550 + TOL)//Was 3400
             {
-                if(gamepad1.left_bumper && motorGG.getCurrentPosition() <= GGZero +1700 + TOL)
+                if(gamepad1.left_bumper && motorGG.getCurrentPosition() <= GGZero + 1850 + TOL)//Was 1700
                 {
                     motorGG.setTargetPosition(GGZero + 40);
                 }
 
                 else
                 {
-                    motorGG.setTargetPosition(GGZero + 1650);
+                    motorGG.setTargetPosition(GGZero + 1800);//Was 1650
                 }
             }
             motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 125.0), 1.0));
@@ -309,6 +309,7 @@ public abstract class MasterTeleOp extends Master
 
     public void RunGGClaws()
     {
+        //Full close
         if(gamepad1.a)
         {
             servoGGL.setPosition(0.5); //TODO value needs to be changed
@@ -318,8 +319,8 @@ public abstract class MasterTeleOp extends Master
         //else if(gamepad1.x && !liftMoving)
         else if(gamepad1.x)
         {
-            servoGGL.setPosition(0.25);//TODO value needs to be changed
-            servoGGR.setPosition(0.25);//TODO value needs to be changed
+            servoGGL.setPosition(0.34);//TODO value needs to be changed
+            servoGGR.setPosition(0.23);//TODO value needs to be changed
         }
         //full open
         //else if(gamepad1.b && !liftMoving)
