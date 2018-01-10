@@ -75,7 +75,6 @@ abstract public class MasterOpMode extends LinearOpMode
     Servo verticalJewelServo;
 
     Servo wristServo;
-    Servo jointServo;
     //
     //----------------------------------------------------
 
@@ -179,7 +178,6 @@ abstract public class MasterOpMode extends LinearOpMode
             motorArm = hardwareMap.dcMotor.get("motorArm");
 
             wristServo = hardwareMap.servo.get("wristServo");
-            jointServo = hardwareMap.servo.get("jointServo");
             //------------------------------------------------------------
 
             // Set motor attributes and behaviors-------------------------

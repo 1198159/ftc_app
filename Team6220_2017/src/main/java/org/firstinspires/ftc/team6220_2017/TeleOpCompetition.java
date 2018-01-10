@@ -33,7 +33,7 @@ public class TeleOpCompetition extends MasterTeleOp
             // 1st driver:  left stick rotates robot, right stick translates robot
             // 2nd driver:  right bumper retracts jewel jostler if it falls
             driveMecanumWithJoysticks();
-            // 2nd driver:  right stick moves arm
+            // 2nd driver:  left stick moves arm, triggers move wrist
             //armMechanism.driveArm();
             // 1st driver:  dpad down collects, dpad up scores
             // 2nd driver:  a, b, x, and y raise the glyphter to 4 glyph heights
