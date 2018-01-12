@@ -18,6 +18,7 @@ public class TeleOpTestBed extends MasterAutonomous
     {
         double jointPosCount = 0.5;
         double jewelJostlerCount = Constants.LATERAL_JEWEL_SERVO_NEUTRAL;
+        double jewelJostlerCount2 = Constants.VERTICAL_JEWEL_SERVO_RETRACTED;
 
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
@@ -43,6 +44,9 @@ public class TeleOpTestBed extends MasterAutonomous
         // Main loop
         while(opModeIsActive())
         {
+            double eTime = timer.seconds() - lTime;
+            lTime = timer.seconds();
+
             /*
             if (gamepad2.left_bumper)
             {
@@ -54,8 +58,29 @@ public class TeleOpTestBed extends MasterAutonomous
             }
             */
 
-            double eTime = timer.seconds() - lTime;
-            lTime = timer.seconds();
+            // Test jewel jostler positions
+            if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER))
+            {
+                jewelJostlerCount += 0.01;
+                lateralJewelServo.setPosition(jewelJostlerCount);
+            }
+            else if (driver2.isButtonJustPressed(Button.LEFT_BUMPER))
+            {
+                jewelJostlerCount -= 0.01;
+                lateralJewelServo.setPosition(jewelJostlerCount);
+            }
+            else if (driver2.isButtonJustPressed(Button.DPAD_UP))
+            {
+                jewelJostlerCount2 += 0.01;
+                verticalJewelServo.setPosition(jewelJostlerCount2);
+            }
+            else if (driver2.isButtonJustPressed(Button.DPAD_DOWN))
+            {
+                jewelJostlerCount2 -= 0.01;
+                verticalJewelServo.setPosition(jewelJostlerCount2);
+            }
+            telemetry.addData("VertCount: ", jewelJostlerCount2);
+            telemetry.addData("HorizCount: ", jewelJostlerCount);
 
             // Test navigation
             if (driver1.isButtonJustPressed(Button.DPAD_UP))
