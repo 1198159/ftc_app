@@ -212,7 +212,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
                 sleep(200);
 
                 // ALIGN TO CORRECT COLUMN
-                move(60, 0, 0.15, 0.5, 1); // move left
+                move(50, 0, 0.15, 0.5, 1); // move left
                 sleep(200);
                 move(0, -220, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
