@@ -33,7 +33,7 @@ public class MoveTest extends MasterAutonomous
         waitForStart();
 
         double referenceAngle =  imu.getAngularOrientation().firstAngle;
-        MoveIMU(referenceAngle, 50, 0.0, 0.015, 0.35, 3.0);//Go towards parking spot//Was 2.15
+        move(referenceAngle, 3000, 0.0, 0.015, 0.35, 1.1);//Go towards parking spot//Was 2.15
 
         while (opModeIsActive())
         {

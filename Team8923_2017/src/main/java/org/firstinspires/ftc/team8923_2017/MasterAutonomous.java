@@ -71,6 +71,13 @@ public abstract class MasterAutonomous extends Master
             val = i;
         }
     }
+
+    static final double COUNTS_PER_MOTOR_REV = 1120;
+    static final double DRIVE_GEAR_REDUCTION = 1.0; // This is < 1.0 if geared UP
+    static final double WHEEL_DIAMETER_INCHES = 4.0; // For figuring circumference
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4;
+
     double SERVO_JJ_MIDDLE1 = 0.45;
     double SERVO_JJ_MIDDLE2 = 0.4;
     double SERVO_JJ_MIDDLE3 = 0.35;
@@ -254,11 +261,17 @@ public abstract class MasterAutonomous extends Master
     void InitHardwareAutonomous()
     {
         // Motors here
-        motorFL = hardwareMap.get(DcMotor.class, "motorFL");
-        motorFR = hardwareMap.get(DcMotor.class, "motorFR");
-        motorBL = hardwareMap.get(DcMotor.class, "motorBL");
-        motorBR = hardwareMap.get(DcMotor.class, "motorBR");
-        motorGG = hardwareMap.get(DcMotor.class, "motorGG");
+        //motorFL = hardwareMap.get(DcMotor.class, "motorFL");
+        //motorFR = hardwareMap.get(DcMotor.class, "motorFR");
+        //motorBL = hardwareMap.get(DcMotor.class, "motorBL");
+        //motorBR = hardwareMap.get(DcMotor.class, "motorBR");
+        //motorGG = hardwareMap.get(DcMotor.class, "motorGG");
+
+        motorFL = hardwareMap.dcMotor.get("motorFL");
+        motorFR = hardwareMap.dcMotor.get("motorFR");
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorGG = hardwareMap.dcMotor.get("motorGG");
 
         // Servos here
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
@@ -275,15 +288,15 @@ public abstract class MasterAutonomous extends Master
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-//        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -326,7 +339,7 @@ public abstract class MasterAutonomous extends Master
     void closeGG()
     {
         servoGGL.setPosition(0.5); //
-        servoGGR.setPosition(0.1); //
+        servoGGR.setPosition(0.15); //
 
     }
     void openGG()
@@ -337,13 +350,11 @@ public abstract class MasterAutonomous extends Master
 
     void MoveIMU(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
     {
-
-        double moveError = newTargetFR - motorFR.getCurrentPosition();
         //Sets motor encoder values
-        newTargetFL = motorFL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
-        newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
-        newTargetBL = motorBL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
-        newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetFL = motorFL.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetFR = motorFR.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetBL = motorBL.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetBR = motorBR.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
 
         runtime.reset(); // used for timeout
         targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
@@ -386,27 +397,77 @@ public abstract class MasterAutonomous extends Master
             motorPowerBL = -speedFR + pivot;
             motorPowerBR = speedFR + pivot;
 
-            //Sets motor power
-            //motorFL.setPower(0.5);
-            //motorFR.setPower(-0.5);
-            //motorBL.setPower(0.5);
-            //motorBR.setPower(-0.5);
+            motorFL.setPower(motorPowerFL);
+            motorFR.setPower(motorPowerFR);
+            motorBL.setPower(motorPowerBL);
+            motorBR.setPower(motorPowerBR);
+            idle();
+        }
+
+        while (opModeIsActive() && (runtime.seconds() < timeout) && Math.abs(moveErrorFR) > TOL);
+        stopDriving();
+        /*
+        while (opModeIsActive() &&
+                (runtime.seconds() < timeout));
+        */
+        //Stop motors
+
+    }
+
+    void move(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
+    {
+
+
+        //Sets motor encoder values
+        newTargetFL = motorFL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetBL = motorBL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+
+        runtime.reset(); // used for timeout
+        targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
+        targetAngle = adjustAngles(targetAngle);
+        do {
+            currentFL = motorFL.getCurrentPosition();
+            currentFR = motorFR.getCurrentPosition();
+            currentBL = motorBL.getCurrentPosition();
+            currentBR = motorBR.getCurrentPosition();
+
+            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
+            moveErrorFL = newTargetFL + currentFL;
+            speedFL = Math.abs(kMove * moveErrorFL);
+            speedFL = Range.clip(speedFL, 0.15, maxSpeed);
+            speedFL = speedFL * Math.signum(moveErrorFL);
+
+            moveErrorFR = newTargetFR + motorFR.getCurrentPosition();
+            speedFR = Math.abs(kMove * moveErrorFR);
+            speedFR = Range.clip(speedFR, 0.15, maxSpeed);
+            speedFR = speedFR * Math.signum(moveErrorFR);
+
+            moveErrorBL = newTargetBL + currentBL;
+            speedBL = Math.abs(kMove * moveErrorBL);
+            speedBL = Range.clip(speedBL, 0.15, maxSpeed);
+            speedBL = speedBL * Math.signum(moveErrorBL);
+
+            moveErrorBR = newTargetBR + currentBR;
+            speedBR = Math.abs(kMove * moveErrorBR);
+            speedBR = Range.clip(speedBR, 0.15, maxSpeed);
+            speedBR = speedBR * Math.signum(moveErrorBR);
+
+            //Sets values for motor power
+            motorPowerFL = -speedFR + pivot;
+            motorPowerFR = speedFR + pivot;
+            motorPowerBL = -speedFR + pivot;
+            motorPowerBR = speedFR + pivot;
 
             motorFL.setPower(motorPowerFL);
             motorFR.setPower(motorPowerFR);
             motorBL.setPower(motorPowerBL);
             motorBR.setPower(motorPowerBR);
-            //sleep(100);
-
-            //motorFL.setPower(0.0);
-            //motorFR.setPower(0.0);
-            //motorBL.setPower(0.0);
-            //motorBR.setPower(0.0);
-
             idle();
         }
 
-        while (opModeIsActive() && (runtime.seconds() < timeout) && (Math.abs(moveErrorFR) > TOL));
+        while (opModeIsActive() && (runtime.seconds() < timeout) && Math.abs(moveErrorFR) > TOL);
         stopDriving();
         /*
         while (opModeIsActive() &&
@@ -544,10 +605,6 @@ public abstract class MasterAutonomous extends Master
             motorPowerBR = -maxSpeed;
 
             //Sets motor power
-            //motorFL.setPower(0.5);
-            //motorFR.setPower(-0.5);
-            //motorBL.setPower(0.5);
-            //motorBR.setPower(-0.5);
             motorFL.setPower(motorPowerFL);
             motorFR.setPower(motorPowerFR);
             motorBL.setPower(motorPowerBL);
