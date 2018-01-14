@@ -12,16 +12,9 @@ import org.firstinspires.ftc.robotcore.external.Func;
 
 abstract public class MasterTeleOp extends MasterOpMode
 {
-    double anglePivot;
-    double robotAngle;
-    double jpivot;
-    double kAngle;
-    double pivot;
-    double error;
-
-    double y;
-    double x;
-    double pivotPower;
+    double y = 0;
+    double x = 0;
+    double pivotPower = 0;
     final double ADAGIO_POWER = 0.3;
 
     boolean isModeReversed = true;
@@ -29,12 +22,13 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isCornerDrive = false;
     boolean driveClose = false;
     boolean driveOpen = false;
-    boolean isLeftBumperPushed = true;
-    boolean isRightBumperPushed = false;
-    private ElapsedTime runtime = new ElapsedTime();
+
+    int ggOpenState;
+    int ggCloseState;
+
     AvgFilter filterJoyStickInput = new AvgFilter();
 
-    // declare variables for the GG (AndyMarkNeverest 3.7 motor is 44.4 counts per rev)
+    // declare variables for the GG (AndyMarkNeveRest 3.7 motor is 44.4 counts per rev)
     double KGlyph = 1.0f/600.0f; // constant for proportional drive
     double MINSPEED = 0.05;
     double MAXSPEED = 0.4;
@@ -43,18 +37,8 @@ abstract public class MasterTeleOp extends MasterOpMode
     int errorMinGG; // error for opening grabber
 
     int curGGPos;
-    int minGGPos = -180; // a bit less than the original starting position of zero (where we start it)
-    int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev
-
-    // the higher the GM is, the higher the encoder value
-    int curGLLPos;
-    int minGLLPos = 10;
-    int maxGLLPos = 4500;
-
-    int curGLRPos;
-    int minGlRPos = 10;
-    int maxGLRPos = 3800;
-
+    int minGGPos = -180; // a bit less than the original starting position of zero (where we start it) (OPEN is more positive)
+    int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev (CLOSED is more negative)
 
     void omniDriveTeleOp()
     {
@@ -76,20 +60,28 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
             x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
-            pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
+            pivotPower = (gamepad1.left_stick_x) * 0.35;
+            //pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
         }
         else if (isCornerDrive) // Corner drive
         {
             y = -Range.clip(gamepad1.right_stick_y, -0.6, 0.6); // Y axis is negative when up
             x = Range.clip(gamepad1.right_stick_x, -0.6, 0.6);
-            pivotPower = Range.clip(gamepad1.left_stick_x, -0.6, 0.6);
+            //pivotPower = Range.clip(gamepad1.left_stick_x, -0.6, 0.6);
+            pivotPower = (gamepad1.left_stick_x) * 0.6;
         }
         else // Staccato Mode
         {
             y = -gamepad1.right_stick_y; // Y axis is negative when up
             x = gamepad1.right_stick_x;
-            pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
+            //pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
+            pivotPower = (gamepad1.left_stick_x) * 0.85;
         }
+
+        filterJoyStickInput.appendInput(x, y, pivotPower);
+        x = filterJoyStickInput.getFilteredX();
+        y = filterJoyStickInput.getFilteredY();
+        pivotPower = filterJoyStickInput.getFilteredP();
 
 /*
         // Reverse mode, activated by GamePad1's left bumper
@@ -148,10 +140,14 @@ abstract public class MasterTeleOp extends MasterOpMode
         telemetry.addData("GlyphRightPos: ", motorGlyphRight.getCurrentPosition());
         telemetry.update();
 
+
+
         // Glyph grabber open/close
-        curGGPos = motorGlyphGrab.getCurrentPosition(); // set the current position of the GG
+        if (!driveOpen && !driveClose)
+            curGGPos = motorGlyphGrab.getCurrentPosition(); // set the current position of the GG
         if(gamepad2.right_bumper && curGGPos > maxGGPos) // CLOSE (counter goes negative when closing)
         {
+            motorGlyphGrab.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             errorMaxGG = curGGPos - maxGGPos;
             speedGG = Math.abs(errorMaxGG * KGlyph);
             speedGG = Range.clip(speedGG, MINSPEED, MAXSPEED);
@@ -160,35 +156,65 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         else if(gamepad2.left_bumper && curGGPos < minGGPos) // OPEN (counter goes positive when opening)
         {
+            motorGlyphGrab.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             errorMinGG = curGGPos - minGGPos;
             speedGG = Math.abs(errorMinGG * KGlyph);
             speedGG = Range.clip(speedGG, MINSPEED, MAXSPEED);
             speedGG = speedGG * Math.signum(errorMinGG);
             motorGlyphGrab.setPower(speedGG);
         }
-        else // turn motor off
+        else if (!gamepad2.left_bumper && !gamepad2.right_bumper && !driveOpen && !driveClose) // turn motor off
         {
             motorGlyphGrab.setPower(0.0);
         }
         telemetry.addData("GlyphGrabPos: ", motorGlyphGrab.getCurrentPosition());
         telemetry.update();
 
-        /*
-        // Glyph Grabber drive to position open/close
-        curGGPos = motorGlyphGrab.getCurrentPosition(); // reset the current position for grabber
-        if(gamepad2.a)
+
+
+        // Glyph Grabber drive to position open
+        if(gamepad2.dpad_left)
         {
             driveClose = true;
+            ggCloseState = 0;
             driveOpen = false;
         }
-        else if(gamepad2.b)
+        if (driveClose && ggCloseState == 0)
+        {
+            motorGlyphGrab.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorGlyphGrab.setTargetPosition(maxGGPos);
+            ggCloseState++;
+        }
+        if (driveClose && ggCloseState == 1)
+        {
+            curGGPos = motorGlyphGrab.getCurrentPosition(); // get the current position for grabber
+            errorMaxGG = curGGPos - maxGGPos;
+            speedGG = Math.abs(errorMaxGG * KGlyph);
+            speedGG = Range.clip(speedGG, MINSPEED, MAXSPEED);
+            speedGG = speedGG * Math.signum(errorMaxGG);
+            motorGlyphGrab.setPower(speedGG);
+            if (curGGPos <= maxGGPos) // only done with this step if we have reached the target position (maxGGPos)
+            {
+                ggCloseState++;
+                driveClose = false; // we're done closing the GG
+                motorGlyphGrab.setPower(0.0);
+            }
+        }
+
+
+
+        /*
+        if(gamepad2.dpad_right)
         {
             driveOpen = true;
+            ggOpenState = 0;
             driveClose = false;
         }
 
+
         if(driveClose) // drive grabber to position CLOSE
         {
+            motorGlyphGrab.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             errorMaxGG = curGGPos - maxGGPos;
             speedGG = Math.abs(errorMaxGG * KGlyph);
             speedGG = Range.clip(speedGG, MINSPEED, MAXSPEED);
@@ -200,6 +226,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         else if(driveOpen) // drive grabber to position OPEN
         {
+            motorGlyphGrab.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             errorMinGG = curGGPos - minGGPos;
             speedGG = Math.abs(errorMinGG * KGlyph);
             speedGG = Range.clip(speedGG, MINSPEED, MAXSPEED);
@@ -209,7 +236,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             if(curGGPos >= minGGPos)
                 driveOpen = false;
         }
-        */
+*/
 
 /*
         // calculate the power for each motor (corner drive)
