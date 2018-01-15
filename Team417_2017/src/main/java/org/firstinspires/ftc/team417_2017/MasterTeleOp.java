@@ -60,7 +60,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
             x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
-            pivotPower = (gamepad1.left_stick_x) * 0.35;
+            pivotPower = (gamepad1.left_stick_x) * 0.3;
             //pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
         }
         else if (isCornerDrive) // Corner drive
@@ -142,7 +142,7 @@ abstract public class MasterTeleOp extends MasterOpMode
 
 
 
-        // Glyph grabber open/close
+        // Manual Glyph grabber open/close
         if (!driveOpen && !driveClose)
             curGGPos = motorGlyphGrab.getCurrentPosition(); // set the current position of the GG
         if(gamepad2.right_bumper && curGGPos > maxGGPos) // CLOSE (counter goes negative when closing)
@@ -172,7 +172,7 @@ abstract public class MasterTeleOp extends MasterOpMode
 
 
 
-        // Glyph Grabber drive to position open
+        // Glyph Grabber drive to position close
         if(gamepad2.dpad_left)
         {
             driveClose = true;
@@ -187,13 +187,8 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         if (driveClose && ggCloseState == 1)
         {
-            curGGPos = motorGlyphGrab.getCurrentPosition(); // get the current position for grabber
-            errorMaxGG = curGGPos - maxGGPos;
-            speedGG = Math.abs(errorMaxGG * KGlyph);
-            speedGG = Range.clip(speedGG, MINSPEED, MAXSPEED);
-            speedGG = speedGG * Math.signum(errorMaxGG);
-            motorGlyphGrab.setPower(speedGG);
-            if (curGGPos <= maxGGPos) // only done with this step if we have reached the target position (maxGGPos)
+            motorGlyphGrab.setPower(0.1);
+            if (motorGlyphGrab.isBusy()) // only done with this step if we have reached the target position (maxGGPos)
             {
                 ggCloseState++;
                 driveClose = false; // we're done closing the GG
