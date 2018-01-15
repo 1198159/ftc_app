@@ -171,67 +171,75 @@ abstract public class MasterTeleOp extends MasterOpMode
         telemetry.update();
 
 
-
+        // Button GG Open and Close!
         // Glyph Grabber drive to position close
-        if(gamepad2.dpad_left)
+        if(gamepad2.dpad_right)
         {
             driveClose = true;
             ggCloseState = 0;
             driveOpen = false;
+            idle();
         }
-        if (driveClose && ggCloseState == 0)
+        else if (driveClose && ggCloseState == 0)
         {
-            motorGlyphGrab.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorGlyphGrab.setTargetPosition(maxGGPos);
-            ggCloseState++;
-        }
-        if (driveClose && ggCloseState == 1)
-        {
-            motorGlyphGrab.setPower(0.1);
-            if (motorGlyphGrab.isBusy()) // only done with this step if we have reached the target position (maxGGPos)
+            motorGlyphGrab.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            curGGPos = motorGlyphGrab.getCurrentPosition();
+            telemetry.addData("motorGGCounts:", curGGPos);
+            telemetry.update();
+
+            // calculate the speed of the GG motor
+            errorMaxGG = curGGPos - maxGGPos;
+            speedGG = Math.abs(errorMaxGG * KGlyph);
+            speedGG = Range.clip(speedGG, 0.05, 0.3);
+            speedGG = speedGG * Math.signum(errorMaxGG);
+
+            motorGlyphGrab.setPower(speedGG);
+            idle();
+
+            curGGPos = motorGlyphGrab.getCurrentPosition();
+            if (curGGPos < maxGGPos + 50) // only done with this step if we have reached the target position (maxGGPos) and the motor is not busy
             {
                 ggCloseState++;
                 driveClose = false; // we're done closing the GG
                 motorGlyphGrab.setPower(0.0);
+                idle();
             }
         }
 
-
-
-        /*
-        if(gamepad2.dpad_right)
+        // Glyph Grabber drive to position open
+        if(gamepad2.dpad_left)
         {
-            driveOpen = true;
-            ggOpenState = 0;
             driveClose = false;
+            ggOpenState = 0;
+            driveOpen = true;
+            idle();
         }
-
-
-        if(driveClose) // drive grabber to position CLOSE
+        else if (driveOpen && ggOpenState == 0)
         {
-            motorGlyphGrab.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            errorMaxGG = curGGPos - maxGGPos;
-            speedGG = Math.abs(errorMaxGG * KGlyph);
-            speedGG = Range.clip(speedGG, MINSPEED, MAXSPEED);
-            speedGG = speedGG * Math.signum(errorMaxGG);
-            motorGlyphGrab.setPower(speedGG);
-            motorGlyphGrab.setTargetPosition(maxGGPos);
-            if(curGGPos <= maxGGPos)
-                driveClose = false;
-        }
-        else if(driveOpen) // drive grabber to position OPEN
-        {
-            motorGlyphGrab.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorGlyphGrab.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            curGGPos = motorGlyphGrab.getCurrentPosition();
+            telemetry.addData("motorGGCounts:", curGGPos);
+            telemetry.update();
+
+            // calculate the speed of the GG motor
             errorMinGG = curGGPos - minGGPos;
             speedGG = Math.abs(errorMinGG * KGlyph);
-            speedGG = Range.clip(speedGG, MINSPEED, MAXSPEED);
+            speedGG = Range.clip(speedGG, 0.05, 0.25);
             speedGG = speedGG * Math.signum(errorMinGG);
             motorGlyphGrab.setPower(speedGG);
-            motorGlyphGrab.setTargetPosition(minGGPos);
-            if(curGGPos >= minGGPos)
-                driveOpen = false;
+            idle();
+
+            curGGPos = motorGlyphGrab.getCurrentPosition();
+            if (curGGPos > minGGPos) // only done with this step if we have reached the target position (maxGGPos) and the motor is not busy
+            {
+                ggOpenState++;
+                driveOpen = false; // we're done closing the GG
+                motorGlyphGrab.setPower(0.0);
+                idle();
+            }
         }
-*/
 
 /*
         // calculate the power for each motor (corner drive)
