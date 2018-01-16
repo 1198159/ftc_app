@@ -12,6 +12,8 @@ public abstract class MasterTeleOp extends Master
     boolean liftMoving = false;
     boolean liftModeStateChange = false;
 
+    boolean GGFlipped = false;
+
     int liftStage = 0;
 
     double robotAngle;
@@ -263,6 +265,32 @@ public abstract class MasterTeleOp extends Master
                 }
             }
             motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 125.0), 1.0));
+        }
+
+        if (gamepad1.right_stick_button)
+        {
+
+            motorGG.setTargetPosition(motorGG.getCurrentPosition() + 1000);
+            motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 55.0), 1.0));
+
+            sleep(400);
+            if (!GGFlipped)
+            {
+                motorFF.setTargetPosition(FFZero + 750);
+                motorFF.setPower(1.0);
+                sleep(500);
+                GGFlipped = true;
+            }
+            else
+            {
+                motorFF.setTargetPosition(FFZero);
+                motorFF.setPower(1.0);
+                sleep(500);
+                GGFlipped = false;
+            }
+            sleep(200);
+            motorGG.setTargetPosition(motorGG.getCurrentPosition() - 950);
+            motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 55.0), 1.0));
         }
 
         if (motorGG.getCurrentPosition() > GGZero + 3750)

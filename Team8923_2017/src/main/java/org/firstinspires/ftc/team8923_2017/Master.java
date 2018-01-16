@@ -22,6 +22,7 @@ public abstract class Master extends LinearOpMode
     DcMotor motorBL = null;
     DcMotor motorBR = null;
     DcMotor motorGG = null;
+    DcMotor motorFF = null;
 
     // Declare servos here
     Servo servoJJ = null;
@@ -34,6 +35,7 @@ public abstract class Master extends LinearOpMode
     // Declare any robot-wide variables here
     double slowModeDivisor = 1.0;
     int GGZero = 0;
+    int FFZero = 0;
 
     // Declare constants here
     private static  final double GEAR_RATIO = 1.0;
@@ -93,6 +95,7 @@ public abstract class Master extends LinearOpMode
         motorBL = hardwareMap.get(DcMotor.class, "motorBL");
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
         motorGG = hardwareMap.get(DcMotor.class, "motorGG");
+        motorFF = hardwareMap.get(DcMotor.class, "motorFF");
 
         // Servos here
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
@@ -126,8 +129,11 @@ public abstract class Master extends LinearOpMode
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorGG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorFF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Sensors here
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -139,7 +145,8 @@ public abstract class Master extends LinearOpMode
         GGZero = motorGG.getCurrentPosition();
         motorGG.setTargetPosition(GGZero);
 
-
+        FFZero = motorFF.getCurrentPosition();
+        motorFF.getCurrentPosition();
     }
 
     // 45 denotes the angle at which the motors are mounted in referece to the chassis frame
