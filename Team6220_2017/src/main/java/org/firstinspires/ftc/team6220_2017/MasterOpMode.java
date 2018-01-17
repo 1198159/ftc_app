@@ -23,9 +23,6 @@ abstract public class MasterOpMode extends LinearOpMode
     // function works because driveMecanum has a separate parameter that determines direction
     //                                                y = 0 + 0.25x + 0 + 0.75x^3
     Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.25, 0.0, 0.75});
-    // Note: not currently in use
-    // Used to ensure that the robot drives straight when not attempting to turn
-    double targetHeading = 0.0 + headingOffset;
 
     // Contains useful vuforia methods
     VuforiaHelper vuforiaHelper;
@@ -127,13 +124,15 @@ abstract public class MasterOpMode extends LinearOpMode
         glyphMechanism = new GlyphMechanism(this, glyphHeights);
         //
 
-        // Instantiated classes that must be updated each callback
+        // Instantiated gamepad classes that must be updated each callback
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
+        // Add necessary items to callback---------------
         callback.add(driver1);
         callback.add(driver2);
-        //
+        callback.add(glyphMechanism);
+        //-----------------------------------------------
 
 
          // Check to see what parts of the robot are attached.  Some programs (e.g., autonomous and -------------------------
@@ -384,10 +383,8 @@ abstract public class MasterOpMode extends LinearOpMode
         return distance;
     }
 
-    /*
-     Updates every item with elapsed time at the end of the main loop; ensures that operations
-     based on a timer are executed on time
-    */
+    //Updates every item with elapsed time at the end of the main loop; ensures that operations
+    //based on a timer are executed on time
     public void updateCallback(double eTime)
     {
         for (ConcurrentOperation item : callback)

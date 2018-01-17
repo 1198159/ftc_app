@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
  * Encapsulates functionalities for the glyph-scoring mechanism on our robot.
  */
 
-public class GlyphMechanism
+public class GlyphMechanism implements ConcurrentOperation
 {
     MasterOpMode op;
 
@@ -14,11 +15,13 @@ public class GlyphMechanism
 
     double motorCollectorCount = 0.5;
 
-    private boolean wasStickPressed = false;
+    // Tells us how long it has been since the last time the glyph mechanism was rotated
+    double glyphterRotationTime = 0;
 
+    private boolean wasStickPressed = false;
     // Tells us whether or not the rotation mechanism has been rotated for collecting an additional
     // glyph
-    private boolean isRotated = false;
+    private boolean isGlyphMechRotated = false;
 
     // We pass in MasterOpMode so that this class can access important functionalities such as
     // telemetry and pause
@@ -28,44 +31,17 @@ public class GlyphMechanism
         this.glyphHeights = GlyphHeights;
     }
 
-    // Similar to runToPosition, but uses a specialized PID loop for the glyphter.  Using runToPosition
-    // can cause the glyphter motor to stall before reaching its target position
-    public void driveGlyphterToPosition(int targetPosition, double maxPower)
+
+    // todo REMEMBER:  Add hardware devices here
+    public void initialize(HardwareMap hMap){}
+
+    // Call at end of loop
+    public void update(double eTime)
     {
-        double glyphterDiff = targetPosition - op.motorGlyphter.getCurrentPosition();
-        double glyphterPower;
-
-        // Check to see whether the glyphter is close enough to its target to stop moving
-        while ((Math.abs(glyphterDiff) > Constants.GLYPHTER_TOLERANCE_TICKS) && op.opModeIsActive())
-        {
-            glyphterDiff = targetPosition - op.motorGlyphter.getCurrentPosition();
-
-            // Transform glyphterDiff to motor power using PID
-            op.GlyphterFilter.roll(glyphterDiff);
-            glyphterPower = op.GlyphterFilter.getFilteredValue();
-
-            // Ensure glyphter doesn't approach target position too slowly
-            if (Math.abs(glyphterPower) < Constants.MINIMUM_GLYPHTER_POWER)
-            {
-                glyphterPower = Math.signum(glyphterPower) * Constants.MINIMUM_GLYPHTER_POWER;
-            }
-
-            // Ensure glyphter doesn't ever move faster than we want it to
-            if (Math.abs(glyphterPower) > maxPower)
-            {
-                glyphterPower = Math.signum(glyphterPower) * maxPower;
-            }
-
-            op.motorGlyphter.setPower(glyphterPower);
-
-            op.telemetry.addData("Glyphter Encoder Value: ", op.motorGlyphter.getCurrentPosition());
-            // Note:  This gives the ABSOLUTE VALUE of the motor power
-            op.telemetry.addData("Glyphter Power: ", op.motorGlyphter.getPower());
-            op.telemetry.update();
-        }
-
-        op.motorGlyphter.setPower(0);
+        glyphterRotationTime += eTime;
     }
+
+
 
     // Takes input used to move all parts of the glyph mechanism
     public void driveGlyphMech()
@@ -168,32 +144,83 @@ public class GlyphMechanism
         //---------------------------------------------------------------------
 
 
-        // todo Adjust time and power constants
         // Rotation mechanism controls-----------------------------------------
         if (op.driver1.isButtonJustPressed(Button.LEFT_BUMPER))
         {
-            // Rotate glyph mechanism opposite directions based on whether it has been flipped or not
-            if (!isRotated)
-            {
-                op.glyphterRotationServo.setPower(1.0);
-
-                // Wait until servo has reached target
-                op.pauseWhileUpdating(0.5);
-                op.glyphterRotationServo.setPower(0.05);
-            }
-            else if (isRotated)
-            {
-                op.glyphterRotationServo.setPower(-1.0);
-
-                // Wait until servo has reached target
-                op.pauseWhileUpdating(0.5);
-                op.glyphterRotationServo.setPower(-0.05);
-            }
+            rotateGlyphMech();
         }
         //---------------------------------------------------------------------
 
         op.telemetry.addData("Glyphter Enc: ", op.motorGlyphter.getCurrentPosition());
         op.telemetry.addData("MotorCollectorCount: ", motorCollectorCount);
         op.telemetry.update();
+    }
+
+
+    // todo Adjust time and power constants
+    // Rotates glyph mechanism in opposite directions based on whether it has been flipped or not
+    public void rotateGlyphMech()
+    {
+        // Reset glyph mechanism rotation timer every time we call it
+        glyphterRotationTime = 0;
+
+        if (!isGlyphMechRotated)
+        {
+            op.glyphterRotationServo.setPower(1.0);
+
+            // Wait until servo has reached target
+            op.glyphterRotationServo.setPower(0.05);
+
+            isGlyphMechRotated = true;
+        }
+        else if (isGlyphMechRotated)
+        {
+            op.glyphterRotationServo.setPower(-1.0);
+
+            // Wait until servo has reached target
+            op.glyphterRotationServo.setPower(-0.05);
+
+            isGlyphMechRotated = false;
+        }
+    }
+
+
+    // Similar to runToPosition, but uses a specialized PID loop for the glyphter.  Using runToPosition
+    // can cause the glyphter motor to stall before reaching its target position
+    public void driveGlyphterToPosition(int targetPosition, double maxPower)
+    {
+        double glyphterDiff = targetPosition - op.motorGlyphter.getCurrentPosition();
+        double glyphterPower;
+
+        // Check to see whether the glyphter is close enough to its target to stop moving
+        while ((Math.abs(glyphterDiff) > Constants.GLYPHTER_TOLERANCE_TICKS) && op.opModeIsActive())
+        {
+            glyphterDiff = targetPosition - op.motorGlyphter.getCurrentPosition();
+
+            // Transform glyphterDiff to motor power using PID
+            op.GlyphterFilter.roll(glyphterDiff);
+            glyphterPower = op.GlyphterFilter.getFilteredValue();
+
+            // Ensure glyphter doesn't approach target position too slowly
+            if (Math.abs(glyphterPower) < Constants.MINIMUM_GLYPHTER_POWER)
+            {
+                glyphterPower = Math.signum(glyphterPower) * Constants.MINIMUM_GLYPHTER_POWER;
+            }
+
+            // Ensure glyphter doesn't ever move faster than we want it to
+            if (Math.abs(glyphterPower) > maxPower)
+            {
+                glyphterPower = Math.signum(glyphterPower) * maxPower;
+            }
+
+            op.motorGlyphter.setPower(glyphterPower);
+
+            op.telemetry.addData("Glyphter Encoder Value: ", op.motorGlyphter.getCurrentPosition());
+            // Note:  This gives the ABSOLUTE VALUE of the motor power
+            op.telemetry.addData("Glyphter Power: ", op.motorGlyphter.getPower());
+            op.telemetry.update();
+        }
+
+        op.motorGlyphter.setPower(0);
     }
 }
