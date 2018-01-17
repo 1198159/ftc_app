@@ -60,22 +60,22 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
             x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
-            pivotPower = (gamepad1.left_stick_x) * 0.3;
-            //pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
+            //pivotPower = (gamepad1.left_stick_x) * 0.3;
         }
         else if (isCornerDrive) // Corner drive
         {
             y = -Range.clip(gamepad1.right_stick_y, -0.6, 0.6); // Y axis is negative when up
             x = Range.clip(gamepad1.right_stick_x, -0.6, 0.6);
-            //pivotPower = Range.clip(gamepad1.left_stick_x, -0.6, 0.6);
-            pivotPower = (gamepad1.left_stick_x) * 0.6;
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.6, 0.6);
+            //pivotPower = (gamepad1.left_stick_x) * 0.6;
         }
         else // Staccato Mode
         {
             y = -gamepad1.right_stick_y; // Y axis is negative when up
             x = gamepad1.right_stick_x;
-            //pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
-            pivotPower = (gamepad1.left_stick_x) * 0.85;
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
+            //pivotPower = (gamepad1.left_stick_x) * 0.9;
         }
 
         filterJoyStickInput.appendInput(x, y, pivotPower);
