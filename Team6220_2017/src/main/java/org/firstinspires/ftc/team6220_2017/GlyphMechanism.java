@@ -163,6 +163,13 @@ public class GlyphMechanism
         //---------------------------------------------------------------------
 
 
+        // Rotation mechanism controls-----------------------------------------
+        if (op.driver1.isButtonJustPressed(Button.B))
+        {
+            
+        }
+        //---------------------------------------------------------------------
+
         op.telemetry.addData("Glyphter Enc: ", op.motorGlyphter.getCurrentPosition());
         op.telemetry.addData("MotorCollectorCount: ", motorCollectorCount);
         op.telemetry.update();

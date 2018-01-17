@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -75,6 +76,8 @@ abstract public class MasterOpMode extends LinearOpMode
     Servo verticalJewelServo;
 
     Servo wristServo;
+
+    CRServo glyphterServo;
     //
     //----------------------------------------------------
 
@@ -82,7 +85,7 @@ abstract public class MasterOpMode extends LinearOpMode
     ServoToggler verticalJewelServoToggler;
     //
 
-    // Booleans that allow us to choose what parts of the robot we are using in each OpMode
+    // Booleans that allow us to choose what parts of the robot we are and aren't using in each OpMode
     public boolean isDriveTrainAttached = true;
     public boolean isArmAttached = true;
     public boolean isGlyphMechAttached = true;
@@ -144,21 +147,23 @@ abstract public class MasterOpMode extends LinearOpMode
             motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            motorFL.setPower(0.0);
-            motorFR.setPower(0.0);
-            motorBL.setPower(0.0);
-            motorFR.setPower(0.0);
+            motorFL.setPower(0);
+            motorFR.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
             //-------------------------------------------------------------------
         }
         if (isGlyphMechAttached)
         {
             // Initialize glyph mechanism devices--------------------------------
+            glyphterServo = hardwareMap.crservo.get("glyphterServo");
+
             motorGlyphter = hardwareMap.dcMotor.get("motorGlyphter");
             motorCollectorLeft = hardwareMap.dcMotor.get("motorLeftCollector");
             motorCollectorRight = hardwareMap.dcMotor.get("motorRightCollector");
             //-------------------------------------------------------------------
 
-            // Set motor attributes and behaviors--------------------------------
+            // Set device attributes and behaviors--------------------------------
             //motorGlyphter.setDirection(DcMotorSimple.Direction.REVERSE);
             motorGlyphter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             //motorGlyphter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -168,8 +173,10 @@ abstract public class MasterOpMode extends LinearOpMode
             motorCollectorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motorCollectorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motorCollectorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            motorCollectorLeft.setPower(0.0);
-            motorCollectorRight.setPower(0.0);
+            motorCollectorLeft.setPower(0);
+            motorCollectorRight.setPower(0);
+
+            glyphterServo.setPower(0);
             //--------------------------------------------------------------------
         }
         if (isArmAttached)
