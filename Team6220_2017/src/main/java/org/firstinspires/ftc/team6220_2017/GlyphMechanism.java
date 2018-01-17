@@ -16,7 +16,12 @@ public class GlyphMechanism
 
     private boolean wasStickPressed = false;
 
-    // We pass in MasterOpMode so that this class can access important functionalities such as telemetry
+    // Tells us whether or not the rotation mechanism has been rotated for collecting an additional
+    // glyph
+    private boolean isRotated = false;
+
+    // We pass in MasterOpMode so that this class can access important functionalities such as
+    // telemetry and pause
     public GlyphMechanism (MasterOpMode mode, int[] GlyphHeights)
     {
         this.op = mode;
@@ -163,10 +168,27 @@ public class GlyphMechanism
         //---------------------------------------------------------------------
 
 
+        // todo Adjust time and power constants
         // Rotation mechanism controls-----------------------------------------
-        if (op.driver1.isButtonJustPressed(Button.B))
+        if (op.driver1.isButtonJustPressed(Button.LEFT_BUMPER))
         {
-            
+            // Rotate glyph mechanism opposite directions based on whether it has been flipped or not
+            if (!isRotated)
+            {
+                op.glyphterRotationServo.setPower(1.0);
+
+                // Wait until servo has reached target
+                op.pauseWhileUpdating(0.5);
+                op.glyphterRotationServo.setPower(0.05);
+            }
+            else if (isRotated)
+            {
+                op.glyphterRotationServo.setPower(-1.0);
+
+                // Wait until servo has reached target
+                op.pauseWhileUpdating(0.5);
+                op.glyphterRotationServo.setPower(-0.05);
+            }
         }
         //---------------------------------------------------------------------
 

@@ -45,15 +45,15 @@ public class TeleOpTestBed extends MasterAutonomous
             /*
             if (gamepad2.left_bumper)
             {
-                glyphterServo.setPower(1.0);
+                glyphterRotationServo.setPower(1.0);
             }
             else if (gamepad2.right_bumper)
             {
-                glyphterServo.setPower(-1.0);
+                glyphterRotationServo.setPower(-1.0);
             }
             else if (gamepad2.start)
             {
-                glyphterServo.setPower(0);
+                glyphterRotationServo.setPower(0);
             }
             */
 

@@ -335,23 +335,4 @@ abstract public class MasterAutonomous extends MasterOpMode
         telemetry.addData("currentAngle: ", currentAngle);
         telemetry.update();
     }
-
-    // Note:  time parameter is in seconds
-    // Gives the robot time to update state machines
-    void pauseWhileUpdating(double time)
-    {
-        lTime = timer.seconds();
-
-        while(opModeIsActive() && (time > 0))
-        {
-            double eTime = timer.seconds() - lTime;
-            lTime = timer.seconds();
-            time -= eTime;
-            telemetry.addData("eTime:", eTime);
-            telemetry.addData("Seconds Remaining:", time);
-            updateCallback(eTime);
-            telemetry.update();
-            idle();
-        }
-    }
 }

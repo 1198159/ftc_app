@@ -11,8 +11,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Const;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,7 +93,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     Servo wristServo;
 
-    CRServo glyphterServo;
+    CRServo glyphterRotationServo;
     //
     //----------------------------------------------------
 
@@ -174,7 +172,7 @@ abstract public class MasterOpMode extends LinearOpMode
         if (isGlyphMechAttached)
         {
             // Initialize glyph mechanism devices--------------------------------
-            glyphterServo = hardwareMap.crservo.get("glyphterServo");
+            glyphterRotationServo = hardwareMap.crservo.get("glyphterRotationServo");
 
             motorGlyphter = hardwareMap.dcMotor.get("motorGlyphter");
             motorCollectorLeft = hardwareMap.dcMotor.get("motorLeftCollector");
@@ -202,7 +200,7 @@ abstract public class MasterOpMode extends LinearOpMode
             // get a reference to our ColorSensor object.
             sensorRGB = hardwareMap.colorSensor.get("sensor_color");
 
-            glyphterServo.setPower(0);
+            glyphterRotationServo.setPower(0);
             //--------------------------------------------------------------------
         }
         if (isArmAttached)
@@ -407,6 +405,25 @@ abstract public class MasterOpMode extends LinearOpMode
         long initialTime = System.nanoTime();
         while((System.nanoTime() - initialTime)/1000/1000 < t && opModeIsActive())
         {
+            idle();
+        }
+    }
+
+    // Note:  time parameter is in seconds
+    // Gives the robot time to update state machines
+    void pauseWhileUpdating(double time)
+    {
+        lTime = timer.seconds();
+
+        while(opModeIsActive() && (time > 0))
+        {
+            double eTime = timer.seconds() - lTime;
+            lTime = timer.seconds();
+            time -= eTime;
+            telemetry.addData("eTime:", eTime);
+            telemetry.addData("Seconds Remaining:", time);
+            updateCallback(eTime);
+            telemetry.update();
             idle();
         }
     }
