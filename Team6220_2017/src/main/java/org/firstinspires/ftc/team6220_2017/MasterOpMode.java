@@ -265,6 +265,7 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
+    
     /*
      General method for driving robot.  Input is given as a vector in polar form with
      (r, theta) = (drivePower, driveAngle)
@@ -337,11 +338,13 @@ abstract public class MasterOpMode extends LinearOpMode
         telemetry.update();
     }
 
+
     // Other opmodes must go through this method to prevent others from unnecessarily changing headingOffset
     void setRobotStartingOrientation(double newValue)
     {
         headingOffset = newValue;
     }
+
 
     // Prevents angle differences from being outside the range -180 to 180 degrees
     public double normalizeRotationTarget(double finalAngle, double initialAngle)
@@ -356,6 +359,7 @@ abstract public class MasterOpMode extends LinearOpMode
         return diff;
     }
 
+
     // Prevents a single angle from being outside the range -180 to 180 degrees
     public double normalizeAngle(double rawAngle)
     {
@@ -367,6 +371,7 @@ abstract public class MasterOpMode extends LinearOpMode
         return rawAngle;
     }
 
+
     // Takes into account headingOffset to utilize global orientation
     double getAngularOrientationWithOffset()
     {
@@ -375,6 +380,7 @@ abstract public class MasterOpMode extends LinearOpMode
         return correctedHeading;
     }
 
+
     // Finds distance between 2 points
     double calculateDistance(double dx, double dy)
     {
@@ -382,6 +388,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         return distance;
     }
+
 
     //Updates every item with elapsed time at the end of the main loop; ensures that operations
     //based on a timer are executed on time
@@ -393,21 +400,9 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
-    // Waits a number of milliseconds
-     // Note:  Most of the time, we use pauseWhileUpdating() in case the robot needs to do something
-     // during the wait time
-    void pause(int t) throws InterruptedException
-    {
-        //we don't use System.currentTimeMillis() because it can be inconsistent
-        long initialTime = System.nanoTime();
-        while((System.nanoTime() - initialTime)/1000/1000 < t && opModeIsActive())
-        {
-            idle();
-        }
-    }
 
     // Note:  time parameter is in seconds
-    // Gives the robot time to update state machines
+    // Waits for a specified time while giving each hardware system the ability to function simultaneously
     void pauseWhileUpdating(double time)
     {
         lTime = timer.seconds();
@@ -424,6 +419,7 @@ abstract public class MasterOpMode extends LinearOpMode
             idle();
         }
     }
+
 
     void stopDriveMotors()
     {
