@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class GlyphMechanism implements ConcurrentOperation
 {
+    // Declare preliminary variables------------------------------------------
     MasterOpMode op;
 
     int[] glyphHeights;
@@ -16,12 +17,15 @@ public class GlyphMechanism implements ConcurrentOperation
     double motorCollectorCount = 0.5;
 
     // Tells us how long it has been since the last time the glyph mechanism was rotated
-    double glyphterRotationTime = 0;
+    double glyphMechRotationTimer = 0;
 
     private boolean wasStickPressed = false;
     // Tells us whether or not the rotation mechanism has been rotated for collecting an additional
     // glyph
     private boolean isGlyphMechRotated = false;
+    // Times the rotation mechanism so we can tell it when to stop moving
+    private boolean isRotationTimerRunnning = false;
+    //------------------------------------------------------------------------
 
     // We pass in MasterOpMode so that this class can access important functionalities such as
     // telemetry and pause
@@ -38,9 +42,26 @@ public class GlyphMechanism implements ConcurrentOperation
     // Call at end of loop
     public void update(double eTime)
     {
-        glyphterRotationTime += eTime;
-    }
+        if (isRotationTimerRunnning)
+        {
+            glyphMechRotationTimer += eTime;
 
+            // Check to see whether the timer has run out.  If so, we reset it and accomplish the
+            // appropriate actions
+            if (glyphMechRotationTimer > Constants.GLYPH_MECH_ROTATION_TIME)
+            {
+                // Give the rotation servo a small power to make sure the glyph mechanism doesn't move.
+                // This power depends on which position the glyph mechanism is rotated to
+                if (isGlyphMechRotated)
+                    op.glyphterRotationServo.setPower(Constants.MINIMUM_GLYPH_MECH_ROTATION_POWER);
+                else
+                    op.glyphterRotationServo.setPower(-Constants.MINIMUM_GLYPH_MECH_ROTATION_POWER);
+
+                glyphMechRotationTimer = 0;
+                isRotationTimerRunnning = false;
+            }
+        }
+    }
 
 
     // Takes input used to move all parts of the glyph mechanism
@@ -152,7 +173,7 @@ public class GlyphMechanism implements ConcurrentOperation
         //---------------------------------------------------------------------
 
         op.telemetry.addData("Glyphter Enc: ", op.motorGlyphter.getCurrentPosition());
-        op.telemetry.addData("MotorCollectorCount: ", motorCollectorCount);
+        //op.telemetry.addData("MotorCollectorCount: ", motorCollectorCount);
         op.telemetry.update();
     }
 
@@ -161,15 +182,12 @@ public class GlyphMechanism implements ConcurrentOperation
     // Rotates glyph mechanism in opposite directions based on whether it has been flipped or not
     public void rotateGlyphMech()
     {
-        // Reset glyph mechanism rotation timer every time we call it
-        glyphterRotationTime = 0;
+        // Tell timer to start running at the end of the loop in which we call this method
+        isRotationTimerRunnning = true;
 
         if (!isGlyphMechRotated)
         {
             op.glyphterRotationServo.setPower(1.0);
-
-            // Wait until servo has reached target
-            op.glyphterRotationServo.setPower(0.05);
 
             isGlyphMechRotated = true;
         }
@@ -177,14 +195,12 @@ public class GlyphMechanism implements ConcurrentOperation
         {
             op.glyphterRotationServo.setPower(-1.0);
 
-            // Wait until servo has reached target
-            op.glyphterRotationServo.setPower(-0.05);
-
             isGlyphMechRotated = false;
         }
     }
 
 
+    // todo Check to make sure this works properly
     // Similar to runToPosition, but uses a specialized PID loop for the glyphter.  Using runToPosition
     // can cause the glyphter motor to stall before reaching its target position
     public void driveGlyphterToPosition(int targetPosition, double maxPower)

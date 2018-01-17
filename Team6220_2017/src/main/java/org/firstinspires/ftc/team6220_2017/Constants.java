@@ -126,4 +126,10 @@ public class Constants
     public static final int HEIGHT_2 = -5377;         // Subtract 1200 to calculated value
     public static final int HEIGHT_3 = -4513;         // Subtract 1270 to calculated value
     public static final int HEIGHT_4 = -3484;         // Subtract 1330 to calculated value
+
+
+    // Glyph rotation mechanism constants
+     // Tells the glyph rotation mechanism how long it should rotate to accomplish a full turn
+    public static final double GLYPH_MECH_ROTATION_TIME = 0.6;  // todo Adjust
+    public static final double MINIMUM_GLYPH_MECH_ROTATION_POWER = 0.05;  // todo Adjust
 }

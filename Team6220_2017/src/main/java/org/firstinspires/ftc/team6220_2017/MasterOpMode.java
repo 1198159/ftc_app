@@ -17,12 +17,15 @@ import java.util.List;
 abstract public class MasterOpMode extends LinearOpMode
 {
     // Used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
-    private double headingOffset = 0.0;
+    private double headingOffset = 0;
 
-    // Polynomial for adjusting input from joysticks to allow for ease of driving.  Using an even
-    // function works because driveMecanum has a separate parameter that determines direction
-    //                                                y = 0 + 0.25x + 0 + 0.75x^3
-    Polynomial stickCurve = new Polynomial(new double[]{ 0.0, 0.25, 0.0, 0.75});
+    /*
+     Polynomial for adjusting input from joysticks to allow for ease of driving.  A polynomial that
+     is concave up in the 1st quadrant is preferable to a 1st degree polynomial, since a driver
+     generally needs more control in the low speed range than the high range.
+    */
+    //                                             y = 0 + 0.25x + 0 + 0.75x^3
+    Polynomial stickCurve = new Polynomial(new double[]{ 0, 0.25, 0, 0.75});
 
     // Contains useful vuforia methods
     VuforiaHelper vuforiaHelper;
@@ -36,7 +39,7 @@ abstract public class MasterOpMode extends LinearOpMode
     // Classes that encapsulate distinct hardware systems
     ArmMechanism armMechanism;
     GlyphMechanism glyphMechanism;
-    //
+
     ColorSensor sensorRGB;
 
     // get a reference to the RelativeLayout so we can change the background
@@ -53,9 +56,7 @@ abstract public class MasterOpMode extends LinearOpMode
     final float values[] = hsvValues;
 
 
-    // turn the LED on in the beginning, just so user will know that the sensor is active.
-
-    // Declare filters.  We have one for turning, one for encoder navigation, one for moving the
+    // Declare filters.  We have one for turning, one for encoder navigation, one for moving the----
     // glyphter, and 3 for limiting robot acceleration (in autonomous and teleOp)
     PIDFilter RotationFilter;
     PIDFilter TranslationFilter;
@@ -64,12 +65,12 @@ abstract public class MasterOpMode extends LinearOpMode
     AccelerationFilter navigationAccelFilter;
     AccelerationFilter driveAccelFilter;
     AccelerationFilter turnAccelFilter;
-    //
+    //----------------------------------------------------------------------------------------------
 
-    // Declare hardware devices-------------------------
+    // Declare hardware devices---------------------------------------
     BNO055IMU imu;
 
-    // Motors
+    // Motors----------------------
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor motorBL;
@@ -79,20 +80,19 @@ abstract public class MasterOpMode extends LinearOpMode
      // Motor orientations are from top view of robot with glyph mechanism in front
     DcMotor motorCollectorLeft;
     DcMotor motorCollectorRight;
-     //
 
     DcMotor motorArm;
-    //
+    //-----------------------------
 
-    // Servos
+    // Servos----------------------
     Servo lateralJewelServo;
     Servo verticalJewelServo;
 
     Servo wristServo;
 
     CRServo glyphterRotationServo;
-    //
-    //----------------------------------------------------
+    //------------------------------
+    //-----------------------------------------------------------------
 
     // Servo togglers
     ServoToggler verticalJewelServoToggler;
@@ -119,10 +119,10 @@ abstract public class MasterOpMode extends LinearOpMode
         glyphHeights[2] = Constants.HEIGHT_3;
         glyphHeights[3] = Constants.HEIGHT_4;
 
-        // Initialize robot mechanism classes
+        // Initialize robot mechanism classes----------------------------
         armMechanism = new ArmMechanism(this);
         glyphMechanism = new GlyphMechanism(this, glyphHeights);
-        //
+        //---------------------------------------------------------------
 
         // Instantiated gamepad classes that must be updated each callback
         driver1 = new DriverInput(gamepad1);
@@ -434,9 +434,9 @@ abstract public class MasterOpMode extends LinearOpMode
             return;
         }
 
-        motorFL.setPower(0.0);
-        motorFR.setPower(0.0);
-        motorBL.setPower(0.0);
-        motorBR.setPower(0.0);
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+        motorBL.setPower(0);
+        motorBR.setPower(0);
     }
 }
