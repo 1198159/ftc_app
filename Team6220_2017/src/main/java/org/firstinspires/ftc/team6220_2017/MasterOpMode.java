@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.team6220_2017;
 
+import android.app.Activity;
+import android.view.View;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -38,9 +42,23 @@ abstract public class MasterOpMode extends LinearOpMode
     ArmMechanism armMechanism;
     GlyphMechanism glyphMechanism;
     //
+    ColorSensor sensorRGB;
+
+    // get a reference to the RelativeLayout so we can change the background
+    // color of the Robot Controller app to match the hue detected by the RGB sensor.
+    final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(com.qualcomm.ftcrobotcontroller.R.id.RelativeLayout);
 
     // Stores the encoder values for each of the 4 heights that glyphs can be scored at
     int[] glyphHeights = new int[4];
+
+    // hsvValues is an array that will hold the hue, saturation, and value information.
+    float hsvValues[] = {0F,0F,0F};
+
+    // values is a reference to the hsvValues array.
+    final float values[] = hsvValues;
+
+
+    // turn the LED on in the beginning, just so user will know that the sensor is active.
 
     // Declare filters.  We have one for turning, one for encoder navigation, one for moving the
     // glyphter, and 3 for limiting robot acceleration (in autonomous and teleOp)
@@ -175,6 +193,14 @@ abstract public class MasterOpMode extends LinearOpMode
             motorCollectorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             motorCollectorLeft.setPower(0);
             motorCollectorRight.setPower(0);
+
+
+            // set the digital channel to output mode.
+            // remember, the Adafruit sensor is actually two devices.
+            // It's an I2C sensor and it's also an LED that can be turned on or off.
+
+            // get a reference to our ColorSensor object.
+            sensorRGB = hardwareMap.colorSensor.get("sensor_color");
 
             glyphterServo.setPower(0);
             //--------------------------------------------------------------------
