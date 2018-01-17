@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -23,12 +24,6 @@ public class TeleOpTestBed extends MasterAutonomous
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
 
-        /*
-        Servo glyphterServo;
-        glyphterServo = hardwareMap.servo.get("glyphterServo");
-        glyphterServo.setPosition(0.5);
-        */
-
         // Don't want to call nonexistent hardware devices in test program
         isArmAttached = false;
         isDriveTrainAttached = true;
@@ -50,11 +45,15 @@ public class TeleOpTestBed extends MasterAutonomous
             /*
             if (gamepad2.left_bumper)
             {
-                glyphterServo.setPosition(0.4);
+                glyphterServo.setPower(1.0);
             }
             else if (gamepad2.right_bumper)
             {
-                glyphterServo.setPosition(0.5);
+                glyphterServo.setPower(-1.0);
+            }
+            else if (gamepad2.start)
+            {
+                glyphterServo.setPower(0);
             }
             */
 
