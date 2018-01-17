@@ -16,7 +16,7 @@ import java.util.List;
 
 abstract public class MasterOpMode extends LinearOpMode
 {
-    // Used to create global coordinates by adjusting the imu heading based on the robot's starting orientation
+    // Uses the robot's starting orientation to modify imu output and create global heading
     private double headingOffset = 0;
 
     /*
@@ -265,7 +265,7 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
-    
+
     /*
      General method for driving robot.  Input is given as a vector in polar form with
      (r, theta) = (drivePower, driveAngle)
