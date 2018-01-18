@@ -12,17 +12,18 @@ public class GlyphMechanism implements ConcurrentOperation
     // Declare preliminary variables------------------------------------------
     MasterOpMode op;
 
-    int[] glyphHeights;
+    private int[] glyphHeights;
 
-    double motorCollectorCount = 0.5;
+    // For debugging collector speeds
+    private double motorCollectorCount = 0.5;
 
     // Tells us how long it has been since the last time the glyph mechanism was rotated
-    double glyphMechRotationTimer = 0;
+    private double turntableRotationTimer = 0;
 
     private boolean wasStickPressed = false;
     // Tells us whether or not the rotation mechanism has been rotated for collecting an additional
     // glyph
-    private boolean isGlyphMechRotated = false;
+    private boolean isTurntableRotated = false;
     // Times the rotation mechanism so we can tell it when to stop moving
     private boolean isRotationTimerRunnning = false;
     //------------------------------------------------------------------------
@@ -44,22 +45,44 @@ public class GlyphMechanism implements ConcurrentOperation
     {
         if (isRotationTimerRunnning)
         {
-            glyphMechRotationTimer += eTime;
+            turntableRotationTimer += eTime;
 
             // Check to see whether the timer has run out.  If so, we reset it and accomplish the
             // appropriate actions
-            if (glyphMechRotationTimer > Constants.GLYPH_MECH_ROTATION_TIME)
+            if (turntableRotationTimer > Constants.TURNTABLE_ROTATION_TIME)
             {
-                // Give the rotation servo a small power to make sure the glyph mechanism doesn't move.
+                // Give the rotation servo a small power to ensure the glyph mechanism doesn't move.
                 // This power depends on which position the glyph mechanism is rotated to
-                if (isGlyphMechRotated)
-                    op.glyphterRotationServo.setPower(Constants.MINIMUM_GLYPH_MECH_ROTATION_POWER);
+                if (isTurntableRotated)
+                    op.collectorTurntableServo.setPower(Constants.MINIMUM_TURNTABLE_POWER);
                 else
-                    op.glyphterRotationServo.setPower(-Constants.MINIMUM_GLYPH_MECH_ROTATION_POWER);
+                    op.collectorTurntableServo.setPower(-Constants.MINIMUM_TURNTABLE_POWER);
 
-                glyphMechRotationTimer = 0;
+                turntableRotationTimer = 0;
                 isRotationTimerRunnning = false;
             }
+        }
+    }
+
+
+    // todo Adjust time and power constants
+    // Rotates glyph mechanism in opposite directions based on whether it has been flipped or not
+    public void rotateGlyphMech()
+    {
+        // Tell timer to start running at the end of the loop in which we call this method
+        isRotationTimerRunnning = true;
+
+        if (!isTurntableRotated)
+        {
+            op.collectorTurntableServo.setPower(1.0);
+
+            isTurntableRotated = true;
+        }
+        else if (isTurntableRotated)
+        {
+            op.collectorTurntableServo.setPower(-1.0);
+
+            isTurntableRotated = false;
         }
     }
 
@@ -82,7 +105,7 @@ public class GlyphMechanism implements ConcurrentOperation
             op.telemetry.addData("rightStickY: ", glyphterPower);
             op.telemetry.update();
         }
-        // Check to see if the joystick was just released.  If so, transition into automatic control
+         // Check to see if the joystick was just released.  If so, transition into automatic control
         else if (Math.abs(op.gamepad2.right_stick_y) < Constants.MINIMUM_JOYSTICK_POWER && wasStickPressed)
         {
             wasStickPressed = false;
@@ -172,31 +195,10 @@ public class GlyphMechanism implements ConcurrentOperation
         }
         //---------------------------------------------------------------------
 
+
         op.telemetry.addData("Glyphter Enc: ", op.motorGlyphter.getCurrentPosition());
         //op.telemetry.addData("MotorCollectorCount: ", motorCollectorCount);
         op.telemetry.update();
-    }
-
-
-    // todo Adjust time and power constants
-    // Rotates glyph mechanism in opposite directions based on whether it has been flipped or not
-    public void rotateGlyphMech()
-    {
-        // Tell timer to start running at the end of the loop in which we call this method
-        isRotationTimerRunnning = true;
-
-        if (!isGlyphMechRotated)
-        {
-            op.glyphterRotationServo.setPower(1.0);
-
-            isGlyphMechRotated = true;
-        }
-        else if (isGlyphMechRotated)
-        {
-            op.glyphterRotationServo.setPower(-1.0);
-
-            isGlyphMechRotated = false;
-        }
     }
 
 

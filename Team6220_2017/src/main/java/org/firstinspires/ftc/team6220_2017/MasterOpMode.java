@@ -70,40 +70,38 @@ abstract public class MasterOpMode extends LinearOpMode
     // Declare hardware devices---------------------------------------
     BNO055IMU imu;
 
-    // Motors----------------------
+     // Motors----------------------
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
 
     DcMotor motorGlyphter;
-     // Motor orientations are from top view of robot with glyph mechanism in front
+      // Motor orientations are from top view of robot with glyph mechanism in front
     DcMotor motorCollectorLeft;
     DcMotor motorCollectorRight;
 
     DcMotor motorArm;
-    //-----------------------------
+     //-----------------------------
 
-    // Servos----------------------
+     // Servos----------------------
     Servo lateralJewelServo;
     Servo verticalJewelServo;
 
     Servo wristServo;
 
-    CRServo glyphterRotationServo;
-    //------------------------------
+    CRServo collectorTurntableServo;
+     //------------------------------
     //-----------------------------------------------------------------
 
     // Servo togglers
     ServoToggler verticalJewelServoToggler;
-    //
 
     // Booleans that allow us to choose what parts of the robot we are and aren't using in each OpMode
     public boolean isDriveTrainAttached = true;
     public boolean isArmAttached = true;
     public boolean isGlyphMechAttached = true;
     public boolean isJewelJostlerAttached = true;
-    //
 
     // Create a list of tasks to accomplish in order
     List<ConcurrentOperation> callback = new ArrayList<>();
@@ -171,7 +169,7 @@ abstract public class MasterOpMode extends LinearOpMode
         if (isGlyphMechAttached)
         {
             // Initialize glyph mechanism devices--------------------------------
-            glyphterRotationServo = hardwareMap.crservo.get("glyphterRotationServo");
+            collectorTurntableServo = hardwareMap.crservo.get("collectorTurntableServo");
 
             motorGlyphter = hardwareMap.dcMotor.get("motorGlyphter");
             motorCollectorLeft = hardwareMap.dcMotor.get("motorLeftCollector");
@@ -199,7 +197,7 @@ abstract public class MasterOpMode extends LinearOpMode
             // get a reference to our ColorSensor object.
             sensorRGB = hardwareMap.colorSensor.get("sensor_color");
 
-            glyphterRotationServo.setPower(0);
+            collectorTurntableServo.setPower(0);
             //--------------------------------------------------------------------
         }
         if (isArmAttached)
@@ -247,13 +245,14 @@ abstract public class MasterOpMode extends LinearOpMode
         parameters.loggingTag = "IMU";
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
-        //
 
 
+        // Initialize PID filters
         RotationFilter = new PIDFilter(Constants.ROTATION_P, Constants.ROTATION_I, Constants.ROTATION_D);
         TranslationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);
         GlyphterFilter = new PIDFilter(Constants.GLYPHTER_P, Constants.GLYPHTER_I, Constants.GLYPHTER_D);
 
+        // Inititialize acceleration filters
         navigationAccelFilter = new AccelerationFilter(this, Constants.NAV_ACCEL, Constants.NAV_DECEL);
         driveAccelFilter = new AccelerationFilter(this, Constants.DRIVE_ACCEL, Constants.DRIVE_DECEL);
         turnAccelFilter = new AccelerationFilter(this, Constants.TURN_ACCEL, Constants.TURN_DECEL);
