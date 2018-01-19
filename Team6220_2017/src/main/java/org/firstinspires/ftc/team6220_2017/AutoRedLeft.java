@@ -69,14 +69,65 @@ public class AutoRedLeft extends MasterAutonomous
         //-----------------------------------------------
 
 
-        // Retract glyph mechanism---------------------------
+        /*// Retract glyph mechanism---------------------------
         glyphMechanism.driveGlyphterToPosition(0, 1.0);
         //---------------------------------------------------
 
 
         // Move robot toward cryptobox----------------
         moveRobot(90, 0.3, 0.9);
+        //--------------------------------------------*/
+
+        turnTo(90);
+
+        int count = 0;
+        while(!isGlyph() & (count < 4))
+        {
+            // Collect glyphs---------------------------------------
+            motorCollectorLeft.setPower(0.6);
+            motorCollectorRight.setPower(-0.6);
+            driveToPosition(0, 500, 1.0);
+            count++;
+        }
+        // Collect glyphs---------------------------------------
+        motorCollectorLeft.setPower(0.6);
+        motorCollectorRight.setPower(-0.6);
+        pauseWhileUpdating(0.2);
+        motorCollectorLeft.setPower(0);
+        motorCollectorRight.setPower(0);
+        //---------------------------------------------------
+
+        //back up
+        moveRobot(90, 0.3, 0.8);
+
+        turnTo(-90);
+
+        //Move robot towards cryptobox and deploy glyph mechanism to 2nd height----
+        driveToPosition(0, (500*count), 1.0);
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_2);
+        motorGlyphter.setPower(1.0);
+        pauseWhileUpdating(4.0);
+        //--------------------------------------------------------------------------
+
+        // Score glyph---------------------------------------
+        motorCollectorLeft.setPower(-0.6);
+        motorCollectorRight.setPower(0.6);
+        pauseWhileUpdating(1.0);
+        motorCollectorLeft.setPower(0);
+        motorCollectorRight.setPower(0);
+        //---------------------------------------------------
+
+        // Move robot away from cryptobox----------------
+        moveRobot(-90, 0.3, 0.8);
         //-----------------------------------------------
+
+        // Retract glyph mechanism---------------------------
+        glyphMechanism.driveGlyphterToPosition(0, 1.0);
+        //---------------------------------------------------
+
+        // Move robot toward cryptobox----------------
+        moveRobot(90, 0.3, 0.9);
+        //--------------------------------------------
 
         turnTo(90);
 

@@ -80,31 +80,28 @@ public class AutoBlueRight extends MasterAutonomous
         //-----------------------------------------------
 
         turnTo(-90);
+        int count = 0;
+        while(!isGlyph() & (count < 4))
+        {
+            // Collect glyphs---------------------------------------
+            motorCollectorLeft.setPower(0.6);
+            motorCollectorRight.setPower(-0.6);
+            driveToPosition(0, 500, 1.0);
+            count++;
+        }
+        // Collect glyphs---------------------------------------
+        motorCollectorLeft.setPower(0.6);
+        motorCollectorRight.setPower(-0.6);
+        pauseWhileUpdating(0.2);
+        motorCollectorLeft.setPower(0);
+        motorCollectorRight.setPower(0);
+        //---------------------------------------------------
 
-        boolean startCollecting = true;
-        double pauseCounter = 0.1;
-        if(startCollecting & !isGlyph())
-        {
-            pauseCounter += 0.1;
-            // Collect glyphs---------------------------------------
-            motorCollectorLeft.setPower(0.6);
-            motorCollectorRight.setPower(-0.6);
-            moveRobot(0, 0.2, pauseCounter);
-        }
-        else if (isGlyph())
-        {
-            startCollecting = false;
-            // Collect glyphs---------------------------------------
-            motorCollectorLeft.setPower(0.6);
-            motorCollectorRight.setPower(-0.6);
-            pauseWhileUpdating(0.3);
-            motorCollectorLeft.setPower(0);
-            motorCollectorRight.setPower(0);
-            //---------------------------------------------------
-        }
+        //back up
+        moveRobot(-90, 0.3, 0.8);
 
         turnTo(90);
-        moveRobot(0, 0.2, pauseCounter + 0.9);
+        driveToPosition(0, (500*count), 1.0);
         motorGlyphter.setTargetPosition(Constants.HEIGHT_2);
         motorGlyphter.setPower(1.0);
         pauseWhileUpdating(4.0);

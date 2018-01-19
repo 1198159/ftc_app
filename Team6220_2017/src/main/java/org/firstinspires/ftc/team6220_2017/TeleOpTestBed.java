@@ -78,6 +78,26 @@ public class TeleOpTestBed extends MasterAutonomous
                 jewelJostlerCount2 -= 0.01;
                 verticalJewelServo.setPosition(jewelJostlerCount2);
             }
+            else if (driver2.isButtonJustPressed(Button.A))
+            {
+                int count = 0;
+                while(!isGlyph() & (count < 4))
+                {
+                    // Collect glyphs---------------------------------------
+                    motorCollectorLeft.setPower(0.6);
+                    motorCollectorRight.setPower(-0.6);
+                    driveToPosition(0, 500, 1.0);
+                    count++;
+                }
+                // Collect glyphs---------------------------------------
+                motorCollectorLeft.setPower(0.6);
+                motorCollectorRight.setPower(-0.6);
+                pauseWhileUpdating(0.2);
+                motorCollectorLeft.setPower(0);
+                motorCollectorRight.setPower(0);
+                //---------------------------------------------------
+            }
+
             telemetry.addData("VertCount: ", jewelJostlerCount2);
             telemetry.addData("HorizCount: ", jewelJostlerCount);
 
