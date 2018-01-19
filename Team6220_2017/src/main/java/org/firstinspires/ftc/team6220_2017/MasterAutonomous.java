@@ -95,29 +95,34 @@ abstract public class MasterAutonomous extends MasterOpMode
         telemetry.log().add("Setup finished.");
     }
 
+    // We use this method to tell us when the robot has acquired a glyph in autonomous.  It uses
+    // a REV color sensor to read color values; if the blue value is sufficiently large, that means
+    // that a glyph has been collected and is blocking the color sensor.
     public boolean isGlyph()
     {
-        // convert the RGB values to HSV values.
+        // Convert the RGB values to HSV values.
         Color.RGBToHSV((sensorRGB.red() * 255) / 800, (sensorRGB.green() * 255) / 800, (sensorRGB.blue() * 255) / 800, hsvValues);
 
-        // send the info back to driver station using telemetry function.
-        telemetry.addData("Clear", sensorRGB.alpha());
+        // Send color info back to driver station.
         telemetry.addData("Red  ", sensorRGB.red());
         telemetry.addData("Green", sensorRGB.green());
         telemetry.addData("Blue ", sensorRGB.blue());
         telemetry.addData("Hue", hsvValues[0]);
 
-        // change the background color to match the color detected by the RGB sensor.
+        // Change the background color to match the color detected by the RGB sensor.
         // pass a reference to the hue, saturation, and value array as an argument
         // to the HSVToColor method.
-        relativeLayout.post(new Runnable() {
-            public void run() {
+        relativeLayout.post(new Runnable()
+        {
+            public void run()
+            {
                 relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
             }
         });
 
         telemetry.update();
 
+        // Tell whether
         if (sensorRGB.blue() > 150)
         {
             return true;
@@ -127,6 +132,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             return false;
         }
     }
+
     // Tell the robot to turn to a specified angle
     public void turnTo(double targetAngle)
     {

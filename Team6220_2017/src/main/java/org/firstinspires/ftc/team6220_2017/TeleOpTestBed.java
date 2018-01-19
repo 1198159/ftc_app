@@ -80,22 +80,21 @@ public class TeleOpTestBed extends MasterAutonomous
             }
             else if (driver2.isButtonJustPressed(Button.A))
             {
-                int count = 0;
-                while(!isGlyph() & (count < 4))
-                {
-                    // Collect glyphs---------------------------------------
-                    motorCollectorLeft.setPower(0.6);
-                    motorCollectorRight.setPower(-0.6);
-                    driveToPosition(0, 500, 1.0);
-                    count++;
-                }
+                int collectionCount = 0;
                 // Collect glyphs---------------------------------------
                 motorCollectorLeft.setPower(0.6);
                 motorCollectorRight.setPower(-0.6);
+                //------------------------------------------------------
+                while(!isGlyph() && (collectionCount < 4))
+                {
+                    driveToPosition(0, 500, 0.4);
+                    collectionCount++;
+                }
+                // Wait a short time for glyphs in tip of collector, then stop collecting---
                 pauseWhileUpdating(0.2);
                 motorCollectorLeft.setPower(0);
                 motorCollectorRight.setPower(0);
-                //---------------------------------------------------
+                //--------------------------------------------------------------------------
             }
 
             telemetry.addData("VertCount: ", jewelJostlerCount2);
