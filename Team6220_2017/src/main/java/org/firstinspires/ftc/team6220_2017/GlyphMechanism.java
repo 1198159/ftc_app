@@ -65,7 +65,6 @@ public class GlyphMechanism implements ConcurrentOperation
     }
 
 
-    // todo Adjust time and power constants
     // Rotates glyph mechanism in opposite directions based on whether it has been flipped or not
     public void rotateGlyphMech()
     {
@@ -216,19 +215,19 @@ public class GlyphMechanism implements ConcurrentOperation
             glyphterDiff = targetPosition - op.motorGlyphter.getCurrentPosition();
 
             // Transform glyphterDiff to motor power using PID
-            op.GlyphterFilter.roll(glyphterDiff);
-            glyphterPower = op.GlyphterFilter.getFilteredValue();
-
-            // Ensure glyphter doesn't approach target position too slowly
-            if (Math.abs(glyphterPower) < Constants.MINIMUM_GLYPHTER_POWER)
-            {
-                glyphterPower = Math.signum(glyphterPower) * Constants.MINIMUM_GLYPHTER_POWER;
-            }
+            op.glyphterFilter.roll(glyphterDiff);
+            glyphterPower = op.glyphterFilter.getFilteredValue();
 
             // Ensure glyphter doesn't ever move faster than we want it to
             if (Math.abs(glyphterPower) > maxPower)
             {
                 glyphterPower = Math.signum(glyphterPower) * maxPower;
+            }
+
+            // Ensure glyphter doesn't approach target position too slowly
+            if (Math.abs(glyphterPower) < Constants.MINIMUM_GLYPHTER_POWER)
+            {
+                glyphterPower = Math.signum(glyphterPower) * Constants.MINIMUM_GLYPHTER_POWER;
             }
 
             op.motorGlyphter.setPower(glyphterPower);
