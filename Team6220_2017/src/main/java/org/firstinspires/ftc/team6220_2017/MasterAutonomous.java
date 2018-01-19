@@ -4,8 +4,6 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 /*
     Contains important methods for use in our autonomous programs
 */
@@ -145,8 +143,8 @@ abstract public class MasterAutonomous extends MasterOpMode
             angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
 
             // Send raw turning power through PID filter to adjust range and minimize oscillation
-            RotationFilter.roll(angleDiff);
-            turningPower = RotationFilter.getFilteredValue();
+            rotationFilter.roll(angleDiff);
+            turningPower = rotationFilter.getFilteredValue();
 
             // Make sure turningPower doesn't go above maximum power
             if (Math.abs(turningPower) > 1.0)
@@ -264,8 +262,8 @@ abstract public class MasterAutonomous extends MasterOpMode
             driveAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
 
             // Transform position and heading diffs to linear and rotation powers using filters----
-            TranslationFilter.roll(distanceToTarget);
-            drivePower = TranslationFilter.getFilteredValue();
+            translationFilter.roll(distanceToTarget);
+            drivePower = translationFilter.getFilteredValue();
 
             // Ensure robot doesn't approach target position too slowly
             if (Math.abs(drivePower) < Constants.MINIMUM_DRIVE_POWER)
@@ -282,8 +280,8 @@ abstract public class MasterAutonomous extends MasterOpMode
             adjustedDrivePower = navigationAccelFilter.getFilteredValue();
 
              // Additional factor is necessary to ensure turning power is large enough
-            RotationFilter.roll(-1.5 * headingDiff);
-            rotationPower = RotationFilter.getFilteredValue();
+            rotationFilter.roll(-1.5 * headingDiff);
+            rotationPower = rotationFilter.getFilteredValue();
             //-------------------------------------------------------------------------------------
 
             driveMecanum(driveAngle, adjustedDrivePower, rotationPower);

@@ -58,9 +58,9 @@ abstract public class MasterOpMode extends LinearOpMode
 
     // Declare filters.  We have one for turning, one for encoder navigation, one for moving the----
     // glyphter, and 3 for limiting robot acceleration (in autonomous and teleOp)
-    PIDFilter RotationFilter;
-    PIDFilter TranslationFilter;
-    PIDFilter GlyphterFilter;
+    PIDFilter rotationFilter;
+    PIDFilter translationFilter;
+    PIDFilter glyphterFilter;
 
     AccelerationFilter navigationAccelFilter;
     AccelerationFilter driveAccelFilter;
@@ -190,10 +190,6 @@ abstract public class MasterOpMode extends LinearOpMode
             motorCollectorRight.setPower(0);
 
 
-            // set the digital channel to output mode.
-            // remember, the Adafruit sensor is actually two devices.
-            // It's an I2C sensor and it's also an LED that can be turned on or off.
-
             // get a reference to our ColorSensor object.
             sensorRGB = hardwareMap.colorSensor.get("sensor_color");
 
@@ -248,9 +244,9 @@ abstract public class MasterOpMode extends LinearOpMode
 
 
         // Initialize PID filters
-        RotationFilter = new PIDFilter(Constants.ROTATION_P, Constants.ROTATION_I, Constants.ROTATION_D);
-        TranslationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);
-        GlyphterFilter = new PIDFilter(Constants.GLYPHTER_P, Constants.GLYPHTER_I, Constants.GLYPHTER_D);
+        rotationFilter = new PIDFilter(Constants.ROTATION_P, Constants.ROTATION_I, Constants.ROTATION_D);
+        translationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);
+        glyphterFilter = new PIDFilter(Constants.GLYPHTER_P, Constants.GLYPHTER_I, Constants.GLYPHTER_D);
 
         // Inititialize acceleration filters
         navigationAccelFilter = new AccelerationFilter(this, Constants.NAV_ACCEL, Constants.NAV_DECEL);
