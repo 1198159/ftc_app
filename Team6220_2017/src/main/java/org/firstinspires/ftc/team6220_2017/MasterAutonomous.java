@@ -122,7 +122,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         telemetry.update();
 
-        // Tell whether
+        // Tell whether a glyph is in our mechanism
         if (sensorRGB.blue() > 150)
         {
             return true;
