@@ -77,12 +77,12 @@ abstract public class MasterTeleOp extends MasterOpMode
             pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
             //pivotPower = (gamepad1.left_stick_x) * 0.9;
         }
-
+/*
         filterJoyStickInput.appendInput(x, y, pivotPower);
         x = filterJoyStickInput.getFilteredX();
         y = filterJoyStickInput.getFilteredY();
         pivotPower = filterJoyStickInput.getFilteredP();
-
+*/
 /*
         // Reverse mode, activated by GamePad1's left bumper
         if (gamepad1.left_bumper && !isLeftBumperPushed)
