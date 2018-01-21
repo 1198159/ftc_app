@@ -23,11 +23,13 @@ public abstract class Master extends LinearOpMode
     DcMotor motorBR = null;
     DcMotor motorGG = null;
     DcMotor motorFF = null;
+    DcMotor motorRR = null;
 
     // Declare servos here
     Servo servoJJ = null;
     Servo servoGGL = null;
     Servo servoGGR = null;
+    Servo servoRRHand = null;
 
     // Declare any neccessary sensors here
     BNO055IMU imu;
@@ -96,33 +98,39 @@ public abstract class Master extends LinearOpMode
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
         motorGG = hardwareMap.get(DcMotor.class, "motorGG");
         motorFF = hardwareMap.get(DcMotor.class, "motorFF");
+        motorRR = hardwareMap.get(DcMotor.class, "motorRR");
 
         // Servos here
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
         servoGGL = hardwareMap.get(Servo.class, "servoGGL");
         servoGGR = hardwareMap.get(Servo.class, "servoGGR");
+        servoRRHand = hardwareMap.get(Servo.class, "servoRRHand");
 
 
 
         servoJJ.setPosition(SERVO_JJ_UP);
         servoGGL.setPosition(0.3);
         servoGGR.setPosition(0.22);
+        servoRRHand.setPosition(0.5); //TODO: put actual numbers here
 
         //Reset encoders
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        /*motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        //motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);*/
+
+        motorGG.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorFF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorRR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -130,10 +138,7 @@ public abstract class Master extends LinearOpMode
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorGG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-        motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorFF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorRR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Sensors here
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -220,5 +225,15 @@ public abstract class Master extends LinearOpMode
                 || pad.left_stick_button || pad.right_stick_button
                 || pad.start || pad.back || pad.guide || pad.left_trigger > 0.35
                 || pad.right_trigger > 0.35);
+    }
+
+    boolean motorIsAtTarget(DcMotor motor)
+    {
+        // Return false if the motor isn't in RTP mode
+        if(motor.getMode() != DcMotor.RunMode.RUN_TO_POSITION)
+            return false;
+
+        int tolerance = 10;
+        return Math.abs(motor.getCurrentPosition() - motor.getTargetPosition()) < tolerance;
     }
 }

@@ -11,7 +11,8 @@ public abstract class MasterTeleOp extends Master
 {
     boolean liftMoving = false;
     boolean liftModeStateChange = false;
-
+    boolean RRExtended = false;
+    boolean RRHandOpen = false;
     boolean GGFlipped = false;
 
     int liftStage = 0;
@@ -92,11 +93,10 @@ public abstract class MasterTeleOp extends Master
         motorBL.setPower(motorPowerBL);
         motorBR.setPower(motorPowerBR);
     }
-    */
+
     void RunGG()
     {
-
-        /*if(!liftMoving && (gamepad1.dpad_down || gamepad1.dpad_up))
+        if(!liftMoving && (gamepad1.dpad_down || gamepad1.dpad_up))
         {
             liftMoving = true;
             GGLiftTimer.reset();
@@ -122,8 +122,7 @@ public abstract class MasterTeleOp extends Master
         {
             motorGG.setPower(0.0);
             liftMoving = false;
-        }*/
-
+        }
 
         if(!liftModeStateChange && !liftMoving && (gamepad1.dpad_up || gamepad1.dpad_down) && GGLiftTimer.milliseconds() > 500)
         {
@@ -142,7 +141,7 @@ public abstract class MasterTeleOp extends Master
                 motorGG.setTargetPosition(GGZero + (liftStage * 1700));//1700
             }
         }
-/*
+
         if(gamepad1.dpad_up && motorGG.getCurrentPosition() < 1700)
         {
             motorGG.setTargetPosition(1700);
@@ -167,7 +166,7 @@ public abstract class MasterTeleOp extends Master
                 motorGG.setTargetPosition(1700);
             }
         }
-*/
+
         if(liftMoving)
         {
             motorGG.setPower(Math.min(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 500.0), 0.6), 1.0));
@@ -232,7 +231,7 @@ public abstract class MasterTeleOp extends Master
             GGZero = motorGG.getCurrentPosition();
         }
         idle();
-    }
+    }*/
 
     public void RunGGLift()
     {
@@ -360,5 +359,39 @@ public abstract class MasterTeleOp extends Master
         if(gamepad1.left_stick_button && gamepad1.right_stick_button && gamepad1.left_bumper)
             GGZero = motorGG.getCurrentPosition() + 55;
         idle();
+    }
+
+    public void RunRR()
+    {
+        if(gamepad1.dpad_up && !RRExtended)
+        {
+            motorRR.setTargetPosition(-840);
+            motorRR.setPower(-0.25);
+            RRExtended = !RRExtended;
+        }
+        else if(gamepad1.dpad_down && RRExtended)
+        {
+            motorRR.setTargetPosition(0);
+            motorRR.setPower(0.25);
+            RRExtended = !RRExtended;
+        }
+        if(motorIsAtTarget(motorRR))
+        {
+            motorRR.setTargetPosition(motorRR.getCurrentPosition());
+            motorRR.setPower(0.0);
+        }
+
+        if(gamepad1.dpad_up && RRExtended && !RRHandOpen)
+        {
+            servoRRHand.setPosition(0.5); //OPEN
+            RRHandOpen = !RRHandOpen;
+        }
+        else if(gamepad1.dpad_up && RRExtended && RRHandOpen)
+        {
+            servoRRHand.setPosition(0.8); //CLOSED
+            RRHandOpen = !RRHandOpen;
+        }
+
+
     }
 }
