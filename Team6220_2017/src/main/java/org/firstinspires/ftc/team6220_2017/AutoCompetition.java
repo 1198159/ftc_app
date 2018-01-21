@@ -1,15 +1,17 @@
 package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
- *  This is our main autonomous program.  It uses gamepad input before initialization to offer
- *  four different routine options
+ *  Note:  This program is not currently in use.  It may be useful as a template for the future, however.
+ *  This program uses gamepad input prior to initialization to offer four different routine options.
  */
 
-// todo Test setupRoutine
+// todo Update code
 // todo Reimplement encoder navigation when it is ready
 @Autonomous(name = "AutoCompetition", group = "Autonomous")
+@Disabled
 
 public class AutoCompetition extends MasterAutonomous
 {

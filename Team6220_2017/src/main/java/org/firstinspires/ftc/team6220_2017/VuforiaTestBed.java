@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
- *  For testing jewel identification without robot hardware
+ *  For testing jewel identification without robot hardware.
  */
 
 @Autonomous(name = "Vuforia Test", group = "Autonomous")
+@Disabled
 public class VuforiaTestBed extends MasterAutonomous
 {
     @Override

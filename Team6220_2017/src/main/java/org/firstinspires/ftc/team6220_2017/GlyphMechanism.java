@@ -14,6 +14,14 @@ public class GlyphMechanism implements ConcurrentOperation
 
     private int[] glyphHeights;
 
+    /*
+     Since the glyphter motor's encoders are reset while it is deployed, using automatic
+     functionality would normally run the glyphter into the ground.  Subtracting this value from
+     the mechanism's target position allows us to retain automatic movement of the glyphter without
+     retracting it before the start of TeleOp.
+    */
+    public int glyphterOffset = Constants.HEIGHT_2;
+
     // For debugging collector speeds
     private double motorCollectorCount = 0.5;
 
@@ -114,31 +122,38 @@ public class GlyphMechanism implements ConcurrentOperation
          // Drive glyphter automatically
         else if (Math.abs(op.gamepad2.right_stick_y) < Constants.MINIMUM_JOYSTICK_POWER && !wasStickPressed)
         {
+            // If autonomous was not run beforehand, this gives the driver the ability to remove
+            // the effects of glyphterOffset
+            if (op.driver2.isButtonJustPressed(Button.LEFT_STICK_PRESS) && op.driver2.isButtonJustPressed(Button.RIGHT_STICK_PRESS))
+            {
+                glyphterOffset = 0;
+            }
+
             // Protect against Start + A / B running glyph mechanism into ground
             if (op.driver2.isButtonJustPressed(Button.A) && !op.driver2.isButtonPressed(Button.START))
             {
-                op.motorGlyphter.setTargetPosition(glyphHeights[0]);
+                op.motorGlyphter.setTargetPosition(glyphHeights[0] - glyphterOffset);
                 op.motorGlyphter.setPower(1.0);
             }
             else if (op.driver2.isButtonJustPressed(Button.B) && !op.driver2.isButtonPressed(Button.START))
             {
-                op.motorGlyphter.setTargetPosition(glyphHeights[1]);
+                op.motorGlyphter.setTargetPosition(glyphHeights[1] - glyphterOffset);
                 op.motorGlyphter.setPower(1.0);
             }
             else if (op.driver2.isButtonJustPressed(Button.Y))
             {
-                op.motorGlyphter.setTargetPosition(glyphHeights[2]);
+                op.motorGlyphter.setTargetPosition(glyphHeights[2] - glyphterOffset);
                 op.motorGlyphter.setPower(1.0);
             }
             else if (op.driver2.isButtonJustPressed(Button.X))
             {
-                op.motorGlyphter.setTargetPosition(glyphHeights[3]);
+                op.motorGlyphter.setTargetPosition(glyphHeights[3] - glyphterOffset);
                 op.motorGlyphter.setPower(1.0);
             }
             // Stow glyph mechanism
             else if (op.driver2.isButtonJustPressed(Button.START))
             {
-                op.motorGlyphter.setTargetPosition(0);
+                op.motorGlyphter.setTargetPosition(-glyphterOffset);
                 op.motorGlyphter.setPower(1.0);
             }
         }

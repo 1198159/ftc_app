@@ -14,12 +14,11 @@ public class AccelerationFilter implements Filter
 {
     MasterOpMode op;
 
-    // Initialize acceleration and deceleration rates
-    // Units are motor power per millisecond
+    // Initialize acceleration and deceleration rates.  Units are motor power per millisecond.
     double maxPowPerMilliIncrease = 1.0;
     double maxPowPerMilliDecrease = 1.0;
 
-    //variables to keep track of the last time we were called.
+    // Variables to keep track of the last time we were called.
     ElapsedTime timer;
     double millisecondsWhenLastCalled;
 
@@ -27,10 +26,10 @@ public class AccelerationFilter implements Filter
     // Old value has index 1 and new value has index 0
     public double[] values = new double[2];
 
-    //If we haven't been called in a really long time, here's a max value of elapsed time for use in our calculations
-    //so the robot doesn't think it can accelerate far more than it should.
-    //This value can be tuned, since larger values will allow the first iteration to accelerate/decelerate more.
-    //If this value is too small, however, it will always be used instead of the actual elapsed time.
+    // If we haven't been called in a really long time, here's a max value of elapsed time for use in our calculations
+    // so the robot doesn't think it can accelerate far more than it should.
+    // This value can be tuned, since larger values will allow the first iteration to accelerate/decelerate more.
+    // If this value is too small, however, it will always be used instead of the actual elapsed time.
     final private int MAX_LOOP_TIME_MS = 120;
 
     // We pass in MasterOpMode so that this class can access important functionalities such as telemetry

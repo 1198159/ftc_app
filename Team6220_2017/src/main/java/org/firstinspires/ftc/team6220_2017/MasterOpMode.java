@@ -42,22 +42,22 @@ abstract public class MasterOpMode extends LinearOpMode
 
     ColorSensor sensorRGB;
 
-    // get a reference to the RelativeLayout so we can change the background
+    // Get a reference to the RelativeLayout so we can change the background
     // color of the Robot Controller app to match the hue detected by the RGB sensor.
     final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(com.qualcomm.ftcrobotcontroller.R.id.RelativeLayout);
 
-    // Stores the encoder values for each of the 4 heights that glyphs can be scored at
+    // Stores encoder values for each of the 4 heights that glyphs can be scored at.
     int[] glyphHeights = new int[4];
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
     float hsvValues[] = {0F,0F,0F};
 
-    // values is a reference to the hsvValues array.
+    // Values is a reference to the hsvValues array.
     final float values[] = hsvValues;
 
 
-    // Declare filters.  We have one for turning, one for encoder navigation, one for moving the----
-    // glyphter, and 3 for limiting robot acceleration (in autonomous and teleOp)
+    // Declare filters.  We have PID for turning, PID for encoder navigation, PID for moving the----
+    // glyphter, and 3 acceleration-limiting filters (in autonomous and teleOp).
     PIDFilter rotationFilter;
     PIDFilter translationFilter;
     PIDFilter glyphterFilter;
