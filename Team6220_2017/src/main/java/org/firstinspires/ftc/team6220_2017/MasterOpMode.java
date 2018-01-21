@@ -177,9 +177,7 @@ abstract public class MasterOpMode extends LinearOpMode
             //-------------------------------------------------------------------
 
             // Set device attributes and behaviors--------------------------------
-            //motorGlyphter.setDirection(DcMotorSimple.Direction.REVERSE);
             motorGlyphter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            //motorGlyphter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorGlyphter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorGlyphter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -190,9 +188,7 @@ abstract public class MasterOpMode extends LinearOpMode
             motorCollectorRight.setPower(0);
 
 
-            // get a reference to our ColorSensor object.
             sensorRGB = hardwareMap.colorSensor.get("sensor_color");
-
             collectorTurntableServo.setPower(0);
             //--------------------------------------------------------------------
         }
@@ -204,10 +200,13 @@ abstract public class MasterOpMode extends LinearOpMode
             wristServo = hardwareMap.servo.get("wristServo");
             //------------------------------------------------------------
 
-            // Set motor attributes and behaviors-------------------------
+            // Set device attributes and behaviors------------------------
             motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            motorArm.setPower(0);
+            wristServo.setPosition(Constants.WRIST_SERVO_INIT);
             //------------------------------------------------------------
         }
         if (isJewelJostlerAttached)

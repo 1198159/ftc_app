@@ -102,21 +102,19 @@ public class Constants
     public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.21;
     public static final double VERTICAL_JEWEL_SERVO_INIT = 0.57;
 
-    // todo Adjust
-    public static final double WRIST_SERVO_DEPLOYED = 0.9;
-    public static final double WRIST_SERVO_RETRACTED = 0.4;
-    public static final double JOINT_SERVO_DEPLOYED = 1.0;
-    public static final double JOINT_SERVO_RETRACTED = 0.075;
+    public static final double WRIST_SERVO_INIT = 0.5;   // todo Adjust
+    public static final double WRIST_SERVO_INCREMENT = 0.008;   // todo Adjust
     //-------------------------------------------------
+
+
+    // Controls how much power is given to the arm
+    public static final double ARM_POWER_CONSTANT = 0.7;
 
 
     // Ensure that input isn't used when no commands are given
     public static final double MINIMUM_JOYSTICK_POWER = 0.08;
     public static final double MINIMUM_TRIGGER_VALUE = 0.1;
 
-
-    // Controls how much power is given to the arm
-    public static final double ARM_POWER_CONSTANT = 0.7;
 
     // todo Adjust
     // Glyph mechanism scoring heights.  Numbers signify the number of glyphs stacked on top of

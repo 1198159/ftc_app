@@ -10,8 +10,8 @@ public class ArmMechanism
 {
     MasterOpMode op;
 
-    // todo Adjust
-    double wristServoCount = 0.5;
+    // The triggers adjust this value to change the wrist servo's position
+    double wristServoCount = Constants.WRIST_SERVO_INIT;
 
     // We pass in MasterOpMode so that this class can access important functionalities such as telemetry
     public ArmMechanism (MasterOpMode mode)
@@ -31,30 +31,29 @@ public class ArmMechanism
         }
 
 
-        // todo Add code for wrist and joint
         // Run arm using arm motor
         if (op.driver2.getLeftStickMagnitude() > Constants.MINIMUM_JOYSTICK_POWER)
         {
             // Adjust power inputs for the arm motor
-            double armPower = Constants.ARM_POWER_CONSTANT * op.stickCurve.getOuput(op.gamepad2.right_stick_y);
+            double armPower = Constants.ARM_POWER_CONSTANT * op.stickCurve.getOuput(op.gamepad2.left_stick_y);
             op.motorArm.setPower(armPower);
 
             op.telemetry.addData("armPower: ", armPower);
         }
 
+
         // Run wrist using wrist servo
         if (op.driver2.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
         {
-            // todo Adjust
-            wristServoCount -= 0.008;
+            wristServoCount -= Constants.WRIST_SERVO_INCREMENT;
             op.wristServo.setPosition(wristServoCount);
         }
         else if (op.driver2.getRightTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
         {
-            // todo Adjust
-            wristServoCount += 0.008;
+            wristServoCount += Constants.WRIST_SERVO_INCREMENT;
             op.wristServo.setPosition(wristServoCount);
         }
+
 
         op.telemetry.addData("wristServoCount: ", wristServoCount);
         op.telemetry.update();
