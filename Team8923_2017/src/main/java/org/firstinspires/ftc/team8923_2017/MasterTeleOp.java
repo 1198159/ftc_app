@@ -14,6 +14,9 @@ public abstract class MasterTeleOp extends Master
     boolean RRExtended = false;
     boolean RRHandOpen = false;
     boolean GGFlipped = false;
+    boolean RRMoving = false;
+    boolean HandMoving = false;
+    boolean RRAtPosition = true;
 
     int liftStage = 0;
 
@@ -33,6 +36,7 @@ public abstract class MasterTeleOp extends Master
 
     ElapsedTime GGLiftTimer = new ElapsedTime();
     ElapsedTime SlowModeTimer = new ElapsedTime();
+    ElapsedTime HandTimer = new ElapsedTime();
 
 
     void DriveOmni45TeleOp()
@@ -63,6 +67,7 @@ public abstract class MasterTeleOp extends Master
         telemetry.addData("GG distance from target", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()));
         telemetry.addData("GG at position", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3);
         telemetry.addData("SlowMode", slowModeDivisor);
+        telemetry.addData("RR ticks", motorRR.getCurrentPosition());
         //telemetry.addData("lift stage", liftStage);
         telemetry.update();
         idle();
@@ -363,33 +368,53 @@ public abstract class MasterTeleOp extends Master
 
     public void RunRR()
     {
-        if(gamepad1.dpad_up && !RRExtended)
+        if(gamepad1.dpad_up && !RRMoving && !RRExtended)
         {
-            motorRR.setTargetPosition(-840);
-            motorRR.setPower(-0.25);
-            RRExtended = !RRExtended;
+            motorRR.setTargetPosition(1680);
+            motorRR.setPower(Math.signum(motorRR.getTargetPosition() - motorRR.getCurrentPosition()) *
+                    Math.min(Math.abs(0.7 * ((motorRR.getTargetPosition() - motorRR.getCurrentPosition()) / 1680)), 0.1));
+            RRExtended = true;
+            RRMoving = true;
+            RRAtPosition = false;
         }
-        else if(gamepad1.dpad_down && RRExtended)
+        else if(gamepad1.dpad_down && !RRMoving && RRExtended)
         {
             motorRR.setTargetPosition(0);
-            motorRR.setPower(0.25);
-            RRExtended = !RRExtended;
+            motorRR.setPower(Math.signum(motorRR.getTargetPosition() - motorRR.getCurrentPosition()) *
+                    Math.min(Math.abs(0.7 * ((motorRR.getTargetPosition() - motorRR.getCurrentPosition()) / 1680)), 0.1));
+            RRExtended = false;
+            RRMoving = true;
+            RRAtPosition = false;
         }
         if(motorIsAtTarget(motorRR))
         {
+            RRAtPosition = true;
             motorRR.setTargetPosition(motorRR.getCurrentPosition());
-            motorRR.setPower(0.0);
+            RRMoving = false;
+        }
+        if(RRAtPosition)
+        {
+            motorRR.setPower(Math.signum(motorRR.getTargetPosition() - motorRR.getCurrentPosition()) *
+                    Math.min(Math.abs(0.2 * ((motorRR.getTargetPosition() - motorRR.getCurrentPosition()) / 1680)), 0.01));
         }
 
-        if(gamepad1.dpad_up && RRExtended && !RRHandOpen)
+        if(gamepad1.dpad_up && RRExtended && !RRHandOpen && !HandMoving)
         {
             servoRRHand.setPosition(0.5); //OPEN
             RRHandOpen = !RRHandOpen;
+            HandTimer.reset();
+            HandMoving = true;
         }
-        else if(gamepad1.dpad_up && RRExtended && RRHandOpen)
+        else if(gamepad1.dpad_up && RRExtended && RRHandOpen && !HandMoving)
         {
             servoRRHand.setPosition(0.8); //CLOSED
             RRHandOpen = !RRHandOpen;
+            HandTimer.reset();
+            HandMoving = true;
+        }
+        if(HandTimer.milliseconds() > 250 && HandMoving)
+        {
+            HandMoving = false;
         }
 
 

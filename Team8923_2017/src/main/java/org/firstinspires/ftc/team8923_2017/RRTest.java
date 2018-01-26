@@ -40,7 +40,7 @@ public class RRTest extends Master
             telemetry.addData("RR Ticks", RREncoderTicks);
             telemetry.addData("RR Motor Encoder", motorRR.getCurrentPosition());
             telemetry.update();
-            motorRR.setPower(1.0);
+            motorRR.setPower(0.8);
             while (opModeIsActive() && !motorIsAtTarget(motorRR)) {idle();}
             motorRR.setPower(0.0);
             while (opModeIsActive() && loopTimer.milliseconds() > 100)
