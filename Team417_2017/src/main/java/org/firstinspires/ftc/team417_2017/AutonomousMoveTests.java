@@ -3,7 +3,7 @@ package org.firstinspires.ftc.team417_2017;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-//@Autonomous(name="Autonomous Move Tests", group = "Swerve")
+@Autonomous(name="Autonomous Move Tests", group = "Swerve")
 // @Disabled
 
 public class AutonomousMoveTests extends MasterAutonomous
@@ -23,8 +23,10 @@ public class AutonomousMoveTests extends MasterAutonomous
 
 // START OF AUTONOMOUS
 
-        sleep(200);
-        move(0, -350, 0.1, 0.3, 0.7);
+        maxGGPos = -450;
+        closeGG();
+        sleep(500);
+        openGG(-180);
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();

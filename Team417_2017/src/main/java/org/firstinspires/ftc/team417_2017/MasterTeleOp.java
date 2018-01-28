@@ -38,7 +38,7 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     int curGGPos;
     int minGGPos = -180; // a bit less than the original starting position of zero (where we start it) (OPEN is more positive)
-    int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev (CLOSED is more negative)
+    int maxGGPos = -500; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev (CLOSED is more negative)
 
     void omniDriveTeleOp()
     {
