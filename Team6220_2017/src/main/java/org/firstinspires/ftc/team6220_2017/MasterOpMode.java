@@ -42,9 +42,6 @@ abstract public class MasterOpMode extends LinearOpMode
 
     ColorSensor sensorRGB;
 
-    // Get a reference to the RelativeLayout so we can change the background
-    // color of the Robot Controller app to match the hue detected by the RGB sensor.
-    final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(com.qualcomm.ftcrobotcontroller.R.id.RelativeLayout);
 
     // Stores encoder values for each of the 4 heights that glyphs can be scored at.
     int[] glyphHeights = new int[4];
@@ -188,7 +185,7 @@ abstract public class MasterOpMode extends LinearOpMode
             motorCollectorRight.setPower(0);
 
 
-            sensorRGB = hardwareMap.colorSensor.get("sensor_color");
+            //sensorRGB = hardwareMap.colorSensor.get("sensor_color");
             collectorTurntableServo.setPower(0);
             //--------------------------------------------------------------------
         }
