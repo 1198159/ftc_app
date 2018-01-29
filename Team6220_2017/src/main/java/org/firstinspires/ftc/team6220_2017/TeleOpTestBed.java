@@ -60,13 +60,57 @@ public class TeleOpTestBed extends MasterAutonomous
             // Test jewel jostler positions
             if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER))
             {
-                jewelJostlerCount += 0.01;
-                lateralJewelServo.setPosition(jewelJostlerCount);
+                //jewelJostlerCount += 0.01;
+                //lateralJewelServo.setPosition(jewelJostlerCount);
+                collectorTurntableServo.setPower(1.0);
+                pauseWhileUpdating(4.0);
+                collectorTurntableServo.setPower(0);
             }
             else if (driver2.isButtonJustPressed(Button.LEFT_BUMPER))
             {
-                jewelJostlerCount -= 0.01;
-                lateralJewelServo.setPosition(jewelJostlerCount);
+                collectorTurntableServo.setPower(-1.0);
+                pauseWhileUpdating(4.0);
+                collectorTurntableServo.setPower(0);
+                //jewelJostlerCount -= 0.01;
+                //lateralJewelServo.setPosition(jewelJostlerCount);
+            }
+            else if (driver2.isButtonJustPressed(Button.A))
+            {
+                collectorTurntableServo.setPower(-0.25);
+                pauseWhileUpdating(4.0);
+                collectorTurntableServo.setPower(0);
+                //jewelJostlerCount -= 0.01;
+                //lateralJewelServo.setPosition(jewelJostlerCount);
+            }
+            else if (driver2.isButtonJustPressed(Button.B))
+            {
+                collectorTurntableServo.setPower(-0.5);
+                pauseWhileUpdating(4.0);
+                collectorTurntableServo.setPower(0);
+                //jewelJostlerCount -= 0.01;
+                //lateralJewelServo.setPosition(jewelJostlerCount);
+            }
+            else if (driver2.isButtonJustPressed(Button.Y))
+            {
+                collectorTurntableServo.setPower(-0.75);
+                pauseWhileUpdating(4.0);
+                collectorTurntableServo.setPower(0);
+                //jewelJostlerCount -= 0.01;
+                //lateralJewelServo.setPosition(jewelJostlerCount);
+            }
+            else if (driver2.isButtonJustPressed(Button.X))
+            {
+                collectorTurntableServo.setPower(0.5);
+                pauseWhileUpdating(4.0);
+                collectorTurntableServo.setPower(0);
+                //jewelJostlerCount -= 0.01;
+                //lateralJewelServo.setPosition(jewelJostlerCount);
+            }
+            else if (driver2.isButtonJustPressed(Button.DPAD_LEFT))
+            {
+                collectorTurntableServo.setPower(0.0);
+                //jewelJostlerCount -= 0.01;
+                //lateralJewelServo.setPosition(jewelJostlerCount);
             }
             else if (driver2.isButtonJustPressed(Button.DPAD_UP))
             {
@@ -78,7 +122,7 @@ public class TeleOpTestBed extends MasterAutonomous
                 jewelJostlerCount2 -= 0.01;
                 verticalJewelServo.setPosition(jewelJostlerCount2);
             }
-            else if (driver2.isButtonJustPressed(Button.A))
+            else if (driver2.isButtonJustPressed(Button.DPAD_RIGHT))
             {
                 int collectionCount = 0;
                 // Collect glyphs---------------------------------------
