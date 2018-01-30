@@ -26,7 +26,9 @@ public class AutonomousMoveTests extends MasterAutonomous
         maxGGPos = -450;
         closeGG();
         sleep(500);
-        openGG(-180);
+        raiseGM();
+        sleep(500);
+        openGG(-200);
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();

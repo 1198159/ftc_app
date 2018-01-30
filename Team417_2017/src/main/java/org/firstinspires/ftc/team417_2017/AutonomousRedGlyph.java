@@ -195,7 +195,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
 
             // BACK UP FROM THE CRYPTOBOX
             motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            openGG(-500); // open the GG a little bit
+            openGG(-400); // open the GG a little bit
             sleep(200);
             move(0, 160, 0.1, 0.3, 0.7); // back up from the cryptobox
             // release the glyph
@@ -287,9 +287,9 @@ public class AutonomousRedGlyph extends MasterAutonomous
 
             // BACK UP FROM THE CRYPTOBOX
             motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            openGG(-500); // open the GG a little bit
+            openGG(-400); // open the GG a little bit
             sleep(200);
-            move(0, 175, 0.1, 0.3, 0.7); // back up from the cryptobox
+            move(0, 190, 0.1, 0.3, 0.7); // back up from the cryptobox
             sleep(100);
             // release the glyph
             motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
