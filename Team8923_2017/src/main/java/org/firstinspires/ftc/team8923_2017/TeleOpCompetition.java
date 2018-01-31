@@ -28,7 +28,7 @@ public class TeleOpCompetition extends MasterTeleOp
             DriveOmni45TeleOp();
             RunGGLift();
             RunGGClaws();
-            RunRR();
+            //RunRR();
             SendTelemetry();
             idle();
         }

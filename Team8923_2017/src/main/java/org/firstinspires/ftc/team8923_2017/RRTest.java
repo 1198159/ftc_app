@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Test RR hardware to ensure functionality
  */
 
-//@Disabled
+@Disabled
 @TeleOp(name = "RR Motor Test", group = "Test")
 public class RRTest extends Master
 {
@@ -22,6 +22,7 @@ public class RRTest extends Master
     {
         InitHardware();
         waitForStart();
+        /*
         motorRR.setTargetPosition(motorRR.getCurrentPosition());
         loopTimer.reset();
         while (opModeIsActive() && going)
@@ -48,6 +49,8 @@ public class RRTest extends Master
                 if(gamepad1.right_bumper)
                     going =  false;
             }
+
         }
+        */
     }
 }

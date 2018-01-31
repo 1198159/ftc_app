@@ -22,6 +22,7 @@ public class MoveTest extends MasterAutonomous
     double targetAngle;
     double maxSpeed;
     double saturationValue;
+    boolean GGFlipped = false;
     //Declare variables here
     @Override
     public void runOpMode() throws InterruptedException
@@ -32,9 +33,27 @@ public class MoveTest extends MasterAutonomous
         //initVuforia();//Initializes Vuforia
         waitForStart();
 
-        double referenceAngle =  imu.getAngularOrientation().firstAngle;
-        move(referenceAngle, 3000, 0.0, 0.015, 0.35, 1.1);//Go towards parking spot//Was 2.15
+        motorGG.setTargetPosition(motorGG.getCurrentPosition() + 1100);
+        motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 55.0), 1.0));
 
+        sleep(400);
+        if (!GGFlipped)
+        {
+            motorFF.setTargetPosition(FFZero + 750);
+            motorFF.setPower(0.4);
+            sleep(500);
+            GGFlipped = true;
+        }
+        else
+        {
+            motorFF.setTargetPosition(FFZero);
+            motorFF.setPower(-0.4);
+            sleep(500);
+            GGFlipped = false;
+        }
+        sleep(200);
+        motorGG.setTargetPosition(motorGG.getCurrentPosition() - 950);
+        motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 55.0), 1.0));
         while (opModeIsActive())
         {
             //Run();

@@ -23,7 +23,7 @@ public abstract class Master extends LinearOpMode
     DcMotor motorBR = null;
     DcMotor motorGG = null;
     DcMotor motorFF = null;
-    DcMotor motorRR = null;
+    //DcMotor motorRR = null;
 
     // Declare servos here
     Servo servoJJ = null;
@@ -98,20 +98,17 @@ public abstract class Master extends LinearOpMode
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
         motorGG = hardwareMap.get(DcMotor.class, "motorGG");
         motorFF = hardwareMap.get(DcMotor.class, "motorFF");
-        motorRR = hardwareMap.get(DcMotor.class, "motorRR");
+        //motorRR = hardwareMap.get(DcMotor.class, "motorRR");
 
         // Servos here
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
         servoGGL = hardwareMap.get(Servo.class, "servoGGL");
         servoGGR = hardwareMap.get(Servo.class, "servoGGR");
-        servoRRHand = hardwareMap.get(Servo.class, "servoRRHand");
-
 
 
         servoJJ.setPosition(SERVO_JJ_UP);
-        servoGGL.setPosition(0.3);
+        servoGGL.setPosition(0.65);
         servoGGR.setPosition(0.22);
-        servoRRHand.setPosition(0.5); //TODO: put actual numbers here
 
         //Reset encoders
         /*motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -126,11 +123,9 @@ public abstract class Master extends LinearOpMode
 
         motorGG.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorRR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -138,8 +133,6 @@ public abstract class Master extends LinearOpMode
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorGG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorRR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         // Sensors here
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;

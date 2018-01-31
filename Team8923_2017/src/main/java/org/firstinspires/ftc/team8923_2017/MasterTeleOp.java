@@ -3,6 +3,8 @@ package org.firstinspires.ftc.team8923_2017;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.internal.android.dx.dex.file.OffsettedItem;
+
 /**
  * Holds all code necessary to run the robot in driver controlled mode
  */
@@ -17,6 +19,9 @@ public abstract class MasterTeleOp extends Master
     boolean RRMoving = false;
     boolean HandMoving = false;
     boolean RRAtPosition = true;
+    boolean GGLifted = false;
+
+    int GGStart;
 
     int liftStage = 0;
 
@@ -67,7 +72,6 @@ public abstract class MasterTeleOp extends Master
         telemetry.addData("GG distance from target", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()));
         telemetry.addData("GG at position", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3);
         telemetry.addData("SlowMode", slowModeDivisor);
-        telemetry.addData("RR ticks", motorRR.getCurrentPosition());
         //telemetry.addData("lift stage", liftStage);
         telemetry.update();
         idle();
@@ -273,28 +277,52 @@ public abstract class MasterTeleOp extends Master
 
         if (gamepad1.right_stick_button)
         {
+            GGStart = motorGG.getCurrentPosition();
 
-            motorGG.setTargetPosition(motorGG.getCurrentPosition() + 1000);
-            motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 55.0), 1.0));
 
-            sleep(400);
+            servoGGL.setPosition(0.65); //TODO value needs to be changed
+            servoGGR.setPosition(0.15); //TODO value to be changed
+
+            if(motorGG.getCurrentPosition() <= (GGZero + 1000))
+            {
+                motorGG.setTargetPosition(GGZero + 1000);
+                motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 55.0), 1.0));
+                sleep(400);
+                GGLifted = true;
+            }
+
             if (!GGFlipped)
             {
-                motorFF.setTargetPosition(FFZero + 750);
-                motorFF.setPower(1.0);
-                sleep(500);
+                motorFF.setTargetPosition(FFZero + 1800);
+                motorFF.setPower(0.85);
+                sleep(450);
+                motorFF.setPower(0.65);
+                sleep(400);
+                motorFF.setPower(0.03);
+                sleep(50);
+                motorFF.setPower(0.0);
                 GGFlipped = true;
+                FFZero = motorFF.getCurrentPosition();
             }
             else
             {
-                motorFF.setTargetPosition(FFZero);
-                motorFF.setPower(1.0);
-                sleep(500);
+                motorFF.setTargetPosition(FFZero - 1800);
+                motorFF.setPower(-0.85);
+                sleep(450);
+                motorFF.setPower(-0.65);
+                sleep(400);
+                motorFF.setPower(-0.03);
+                sleep(50);
+                motorFF.setPower(0.0);
                 GGFlipped = false;
+                FFZero = motorFF.getCurrentPosition();
             }
-            sleep(200);
-            motorGG.setTargetPosition(motorGG.getCurrentPosition() - 950);
-            motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 55.0), 1.0));
+            if(GGLifted)
+            {
+                sleep(250);
+                motorGG.setTargetPosition(GGStart);
+                motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 55.0), 1.0));
+            }
         }
 
         if (motorGG.getCurrentPosition() > GGZero + 3750)
@@ -344,28 +372,29 @@ public abstract class MasterTeleOp extends Master
         //Full close
         if(gamepad1.a)
         {
-            servoGGL.setPosition(0.5); //TODO value needs to be changed
+            servoGGL.setPosition(0.65); //TODO value needs to be changed
             servoGGR.setPosition(0.15); //TODO value to be changed
         }
         //half open
         //else if(gamepad1.x && !liftMoving)
         else if(gamepad1.x)
         {
-            servoGGL.setPosition(0.34);//TODO value needs to be changed
-            servoGGR.setPosition(0.23);//TODO value needs to be changed
+            servoGGL.setPosition(0.55);//TODO value needs to be changed
+            servoGGR.setPosition(0.35);//TODO value needs to be changed
         }
         //full open
         //else if(gamepad1.b && !liftMoving)
         else if(gamepad1.b)
         {
-            servoGGL.setPosition(0.2);//TODO value needs to be changed
-            servoGGR.setPosition(0.28);//TODO value needs to be changed
+            servoGGL.setPosition(0.45);//TODO value needs to be changed
+            servoGGR.setPosition(0.45);//TODO value needs to be changed
         }
         if(gamepad1.left_stick_button && gamepad1.right_stick_button && gamepad1.left_bumper)
             GGZero = motorGG.getCurrentPosition() + 55;
         idle();
     }
 
+    /*
     public void RunRR()
     {
         if(gamepad1.dpad_up && !RRMoving && !RRExtended)
@@ -419,4 +448,5 @@ public abstract class MasterTeleOp extends Master
 
 
     }
+    */
 }
