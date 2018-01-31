@@ -31,9 +31,7 @@ public class AutoBlueRight extends MasterAutonomous
         telemetry.update();
         //---------------------------------------------------------------------
 
-
         knockJewel(blueJewel, isBlueSide);
-
 
         // Align with and face key column--------------------
         driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.7);
@@ -41,13 +39,11 @@ public class AutoBlueRight extends MasterAutonomous
         driveToPosition(0, -130, 0.4);
         //---------------------------------------------------
 
-
         // Deploy glyph mechanism----------------------------
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
         pauseWhileUpdating(4.0);
         //---------------------------------------------------
-
 
         // Score glyph---------------------------------------
         motorCollectorLeft.setPower(-0.6);
@@ -57,40 +53,42 @@ public class AutoBlueRight extends MasterAutonomous
         motorCollectorRight.setPower(0);
         //---------------------------------------------------
 
-
+        //  todo change all moveRobots to driveToPosition
         // Push glyph in-------------------------------------
         moveRobot(90, 0.2, 0.8);
         //---------------------------------------------------
 
-
-        // Move robot away from cryptobox----------------
+        // Move robot away from cryptobox and turn away----------------
         moveRobot(-90, 0.3, 0.8);
+        turnTo(-90);
         //-----------------------------------------------
 
-
-        turnTo(-90);
-
-
+        // Variable to make sure if we don't find any jewels, we will go back to the cryptobox
         int collectionCount = 0;
+
         // Collect glyphs---------------------------------------
         motorCollectorLeft.setPower(0.6);
         motorCollectorRight.setPower(-0.6);
         //------------------------------------------------------
+
+        // Drive until there is a glyph or until the robot goes too far forward--
         while(!isGlyph() && (collectionCount < 4))
         {
             driveToPosition(0, 500, 0.4);
             collectionCount++;
         }
+        //-----------------------------------------------------------------------
+
         // Wait a short time for glyphs in tip of collector, then stop collecting---
         pauseWhileUpdating(0.2);
         motorCollectorLeft.setPower(0);
         motorCollectorRight.setPower(0);
         //--------------------------------------------------------------------------
 
-        // Back up
+        // Back up and turn towards the cryptobox----------
         moveRobot(-90, 0.3, 0.8);
-
         turnTo(90);
+        //-------------------------------------------------
 
         //Move robot towards cryptobox and deploy glyph mechanism to 2nd height----
         driveToPosition(0, (500 * collectionCount), 1.0);
