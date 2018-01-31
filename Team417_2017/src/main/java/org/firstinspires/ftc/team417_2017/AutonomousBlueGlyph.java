@@ -177,7 +177,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
 
             // BACK UP FROM THE CRYPTOBOX
             motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            openGG(-500); // open the GG a little bit
+            openGG(-400); // open the GG a little bit
             sleep(200);
             move(0, 175, 0.1, 0.3, 0.7); // back up from the cryptobox
             sleep(100);
@@ -279,7 +279,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
             }
             // BACK UP FROM THE CRYPTOBOX
             motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            openGG(-500); // open the GG a little bit
+            openGG(-400); // open the GG a little bit
             sleep(200);
             // back up from the cryptobox
             if (VuMark == RelicRecoveryVuMark.LEFT) move(0, 190, 0.1, 0.3, 0.7);

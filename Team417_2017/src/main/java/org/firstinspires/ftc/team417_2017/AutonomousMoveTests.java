@@ -23,12 +23,14 @@ public class AutonomousMoveTests extends MasterAutonomous
 
 // START OF AUTONOMOUS
 
-        maxGGPos = -450;
-        closeGG();
-        sleep(500);
-        raiseGM();
-        sleep(500);
-        openGG(-200);
+        closeGG(); // -500
+        motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        openGG(-400); // open the GG a little bit
+
+        sleep(200);
+        // release the glyph
+        motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        openGG(-160);
 
         telemetry.addData("Autonomous", "Complete");
         telemetry.update();
