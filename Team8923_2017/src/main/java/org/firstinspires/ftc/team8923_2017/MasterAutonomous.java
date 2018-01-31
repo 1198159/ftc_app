@@ -280,7 +280,7 @@ public abstract class MasterAutonomous extends Master
 
         servoJJ.setPosition(SERVO_JJ_UP);
         servoGGL.setPosition(0.3);
-        servoGGR.setPosition(0.25);
+        servoGGR.setPosition(0.65);
 
         //Reset encoders
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
