@@ -43,7 +43,10 @@ public class AutoRedLeft extends MasterAutonomous
         //---------------------------------------------------
 
         // Deploy glyph mechanism----------------------------
-        glyphMechanism.driveGlyphterToPosition(Constants.HEIGHT_1, 1.0);
+        //glyphMechanism.driveGlyphterToPosition(Constants.HEIGHT_1, 1.0);
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+        motorGlyphter.setPower(1.0);
+        pauseWhileUpdating(4.0);
         //---------------------------------------------------
 
         // Score glyph---------------------------------------
@@ -93,7 +96,9 @@ public class AutoRedLeft extends MasterAutonomous
 
         //Move robot towards cryptobox and deploy glyph mechanism to 2nd height----
         driveToPosition(0, (500 * collectionCount), 1.0);
-        glyphMechanism.driveGlyphterToPosition(Constants.HEIGHT_2, 1.0);
+        //glyphMechanism.driveGlyphterToPosition(Constants.HEIGHT_2, 1.0);
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_2);
+        motorGlyphter.setPower(1.0);
         pauseWhileUpdating(4.0);
         //--------------------------------------------------------------------------
 

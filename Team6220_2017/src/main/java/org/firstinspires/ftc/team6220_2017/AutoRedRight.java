@@ -64,9 +64,9 @@ public class AutoRedRight extends MasterAutonomous
 
         moveRobot(-90, 0.3, 0.5);
         // Retract glyph mechanism---------------------------
-        motorGlyphter.setTargetPosition(0);
-        motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(4.0);
+        //motorGlyphter.setTargetPosition(0);
+        //motorGlyphter.setPower(1.0);
+        //pauseWhileUpdating(4.0);
         //---------------------------------------------------
 
         // Move robot toward cryptobox----------------

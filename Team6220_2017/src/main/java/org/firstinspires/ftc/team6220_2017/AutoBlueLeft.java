@@ -80,9 +80,9 @@ public class AutoBlueLeft extends MasterAutonomous
 
 
         // Retract glyph mechanism---------------------------
-        motorGlyphter.setTargetPosition(0);
-        motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(4.0);
+        // motorGlyphter.setTargetPosition(0);
+        //motorGlyphter.setPower(1.0);
+        //pauseWhileUpdating(4.0);
         //---------------------------------------------------
 
         // Move robot toward cryptobox----------------
