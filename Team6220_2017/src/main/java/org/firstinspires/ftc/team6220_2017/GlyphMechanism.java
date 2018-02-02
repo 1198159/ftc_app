@@ -202,8 +202,8 @@ public class GlyphMechanism implements ConcurrentOperation
         //---------------------------------------------------------------------
 
 
-        // Rotation mechanism controls-----------------------------------------
-        if (op.driver1.isButtonJustPressed(Button.LEFT_BUMPER))
+        // Turntable controls-----------------------------------------
+        if (op.driver2.isButtonJustPressed(Button.RIGHT_BUMPER))
         {
             rotateGlyphMech();
         }
