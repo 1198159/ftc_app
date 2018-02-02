@@ -279,8 +279,8 @@ public abstract class MasterAutonomous extends Master
         servoGGR = hardwareMap.get(Servo.class, "servoGGR");
 
         servoJJ.setPosition(SERVO_JJ_UP);
-        servoGGL.setPosition(0.3);
-        servoGGR.setPosition(0.65);
+        servoGGL.setPosition(0.45);
+        servoGGR.setPosition(0.45);
 
         //Reset encoders
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -338,23 +338,23 @@ public abstract class MasterAutonomous extends Master
 
     void closeGG()
     {
-        servoGGL.setPosition(0.5); //
-        servoGGR.setPosition(0.15); //
+        servoGGL.setPosition(0.65);
+        servoGGR.setPosition(0.15);
 
     }
     void openGG()
     {
-        servoGGL.setPosition(0.15); //Was0.1
-        servoGGR.setPosition(0.28); //Was0.32
+        servoGGL.setPosition(0.45);
+        servoGGR.setPosition(0.45);
     }
 
     void MoveIMU(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
     {
         //Sets motor encoder values
-        newTargetFL = motorFL.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
-        newTargetFR = motorFR.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
-        newTargetBL = motorBL.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
-        newTargetBR = motorBR.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetFL = motorFL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetBL = motorBL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
 
         runtime.reset(); // used for timeout
         targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
