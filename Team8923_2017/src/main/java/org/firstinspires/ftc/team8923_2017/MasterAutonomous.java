@@ -527,21 +527,10 @@ public abstract class MasterAutonomous extends Master
             motorPowerBR = -speedBR + pivot;
 
             //Sets motor power
-            //motorFL.setPower(0.5);
-            //motorFR.setPower(-0.5);
-            //motorBL.setPower(0.5);
-            //motorBR.setPower(-0.5);
             motorFL.setPower(motorPowerFL);
             motorFR.setPower(motorPowerFR);
             motorBL.setPower(motorPowerBL);
             motorBR.setPower(motorPowerBR);
-            //sleep(100);
-
-            //motorFL.setPower(0.0);
-            //motorFR.setPower(0.0);
-            //motorBL.setPower(0.0);
-            //motorBR.setPower(0.0);
-
             idle();
         }
         while (opModeIsActive() &&
@@ -657,17 +646,6 @@ public abstract class MasterAutonomous extends Master
             motorFR.setPower(motorPowerFR);
             motorBL.setPower(motorPowerBL);
             motorBR.setPower(motorPowerBR);
-            //Slows down to allow IMU to catch up
-            /*if (Math.abs(angleError) < 5.0)
-            {
-                sleep(30);
-                motorFL.setPower(0);
-                motorFR.setPower(0);
-                motorBL.setPower(0);
-                motorBR.setPower(0);
-                sleep(150);
-            }
-            */
             idle();
         }
         while (opModeIsActive() && (Math.abs(angleError) > AngleTOL));

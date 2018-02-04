@@ -52,7 +52,7 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
         sleep(700);
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 2.2);//Go towards parking spot//Was 2.15
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 2.35);//Go towards parking spot//Was 2.15
         sleep(500);
         MoveIMURight(referenceAngle, 45.0, 0.0, 0.015, 0.35, 0.15);//Moves away from the cryptobox and towards the middle//Was0.4
         sleep(500);
@@ -64,7 +64,7 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         sleep(700);
         stopGG();
         sleep(500);
-        alignOnLine55(0.5, 5.0, 0.29);//Aligns on line
+        alignOnLine55(0.5, 5.0, 0.3);//Aligns on line
         //MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
         sleep(500);
         if (vuMark == RelicRecoveryVuMark.LEFT)
@@ -77,14 +77,14 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         else if (vuMark == RelicRecoveryVuMark.CENTER)
         {
             MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.05);
-            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.12);
+            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.135);
             telemetry.addData("Stage", "Center");
             telemetry.update();
         }
         else if (vuMark == RelicRecoveryVuMark.RIGHT)
         {
             MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.55);
+            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.56);
             telemetry.addData("Stage", "Right");
             telemetry.update();
         }
