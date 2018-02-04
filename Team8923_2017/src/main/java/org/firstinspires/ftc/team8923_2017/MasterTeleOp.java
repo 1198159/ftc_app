@@ -255,15 +255,15 @@ public abstract class MasterTeleOp extends Master
         {
             if(gamepad1.right_bumper && motorGG.getCurrentPosition() < GGZero + 1850 - TOL)//Was 1700
             {
-                motorGG.setTargetPosition(GGZero + 1850);//Was 1700
+                motorGG.setTargetPosition(GGZero + 1900);//Was 1850
             }
             else if(gamepad1.right_bumper && motorGG.getCurrentPosition() >= GGZero + 1850 - TOL)//Was 1700
             {
-                motorGG.setTargetPosition(GGZero + 3550);//Was 3400
+                motorGG.setTargetPosition(GGZero + 3600);//Was 3550
             }
             else if(gamepad1.left_bumper && motorGG.getCurrentPosition() >= GGZero + 3550 - TOL)//Was 3400
             {
-                motorGG.setTargetPosition(GGZero + 1850);//Was 1700
+                motorGG.setTargetPosition(GGZero + 1900);//Was 1850
             }
             else if(gamepad1.left_bumper && motorGG.getCurrentPosition() <= GGZero + 3550 + TOL)//Was 3400
             {
@@ -274,7 +274,7 @@ public abstract class MasterTeleOp extends Master
 
                 else
                 {
-                    motorGG.setTargetPosition(GGZero + 1800);//Was 1650
+                    motorGG.setTargetPosition(GGZero + 1850);//Was 1800
                 }
             }
             motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 125.0), 1.0));
@@ -321,13 +321,6 @@ public abstract class MasterTeleOp extends Master
             {
                 motorFF.setTargetPosition(FFZero + 850);
                 motorFF.setPower(Math.max(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 770.0)), 0.2));
-                //motorFF.setPower(0.85);
-                //sleep(450);
-                //motorFF.setPower(0.65);
-                //sleep(400);
-                //motorFF.setPower(0.03);
-                //sleep(50);
-                //motorFF.setPower(0.0);
                 if ((Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()) <= 5) || GGFlipTimer.milliseconds() > 1250)
                 {
                     motorFF.setTargetPosition(motorFF.getCurrentPosition());
@@ -342,13 +335,6 @@ public abstract class MasterTeleOp extends Master
             {
                 motorFF.setTargetPosition(FFZero - 100);
                 motorFF.setPower(Math.min(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 770.0)), -0.2));
-                //motorFF.setPower(-0.85);
-                //sleep(450);
-                //motorFF.setPower(-0.65);
-                //sleep(400);
-                //motorFF.setPower(-0.03);
-                //sleep(50);
-                //motorFF.setPower(0.0);
                 if (Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()) <= 5 || GGFlipTimer.milliseconds() > 1250)
                 {
                     motorFF.setPower(0.0);
@@ -377,8 +363,6 @@ public abstract class MasterTeleOp extends Master
         if (motorGG.getCurrentPosition() > GGZero + 3750)
         {
             motorGG.setPower(0.0);
-            //motorGG.setTargetPosition(GGZero + 3670);
-            //motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 125.0), 1.0));
         }
 
 
@@ -412,6 +396,10 @@ public abstract class MasterTeleOp extends Master
             }
             motorGG.setPower(0.0);
             liftModeStateChange = false;
+        }
+        if(gamepad1.left_stick_button)
+        {
+            GGZero = motorGG.getCurrentPosition();
         }
         idle();
     }
