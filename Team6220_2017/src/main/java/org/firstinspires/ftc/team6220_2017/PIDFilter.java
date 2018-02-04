@@ -2,7 +2,7 @@ package org.firstinspires.ftc.team6220_2017;
 
  /*
     Proportional-Integral-Derivative Filter
-    Calculates a input difference, it's first integral, and first derivative.
+    Calculates an input difference, it's first integral, and first derivative.
     Generally used to produce efficient, non-oscillating motion in a one dimensional system.
 
     INPUTS:
@@ -13,7 +13,6 @@ package org.firstinspires.ftc.team6220_2017;
       -First derivative control. (e.g. a motor power)
 */
 
-//TODO decide if this should handle the PID enforcement mode
 public class PIDFilter implements Filter
 {
     // Proportional coefficient

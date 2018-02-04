@@ -22,13 +22,13 @@ public class FIRFilter implements Filter
         weights = w;
     }
 
-    // initalize with weight as a polynominal function of age
+    // Initialize with weight as a polynomial function of age
     public FIRFilter(Polynomial func, int depth)
     {
         weights = SequenceUtilities.arrayFromPolynomial(0,depth,func);
     }
 
-    // setup with new value set
+    // Set up with new value set
     public void roll(double newValue)
     {
         SequenceUtilities.roll(values,newValue);
