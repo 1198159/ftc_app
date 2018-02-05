@@ -21,9 +21,9 @@ public class Constants
 
     // Drive mode constants
     public static final double SLOW_MODE_T_FACTOR = 0.35;
-    public static final double SLOW_MODE_R_FACTOR = 0.35;
-    public static final double T_FACTOR = 0.7;
-    public static final double R_FACTOR = 0.6;
+    public static final double SLOW_MODE_R_FACTOR = 0.25;
+    public static final double T_FACTOR = 0.65;
+    public static final double R_FACTOR = 0.5;
 
 
     // Tolerances
@@ -59,9 +59,9 @@ public class Constants
     // Acceleration loop constants-------------------------------
     public static final double NAV_ACCEL = 0.0016;    // todo Adjust
     public static final double NAV_DECEL = 0.01;    // todo Adjust
-    public static final double DRIVE_ACCEL = 0.0025;    // todo Adjust
+    public static final double DRIVE_ACCEL = 0.002;    // todo Adjust
     public static final double DRIVE_DECEL = 0.01;    // todo Adjust
-    public static final double TURN_ACCEL = 0.0013;    // todo Adjust
+    public static final double TURN_ACCEL = 0.0025;    // todo Adjust
     public static final double TURN_DECEL = 0.01;    // todo Adjust
     //---------------------------------------------------
 
@@ -129,6 +129,6 @@ public class Constants
 
     // Glyph rotation mechanism constants
      // Tells the glyph rotation mechanism how long it should rotate to accomplish a full turn
-    public static final double TURNTABLE_ROTATION_TIME = 1.2;  // todo Adjust
-    public static final double MINIMUM_TURNTABLE_POWER = 0.05;  // todo Adjust
+    public static final double TURNTABLE_ROTATION_TIME = 1.5;  // todo Adjust
+    public static final double MINIMUM_TURNTABLE_POWER = 0.07;  // todo Adjust
 }
