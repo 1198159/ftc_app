@@ -17,6 +17,9 @@ public class AutoBlueRight extends MasterAutonomous
         initializeAuto();
 
         waitForStart();
+        // Move jewel servos so jewel jostler is out of the way of the glyph mechanism
+        verticalJewelServoToggler.retract();
+        lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
 
         vuforiaHelper.getVumark();
         // Get jewel info-----------------------------------------------------
@@ -39,6 +42,7 @@ public class AutoBlueRight extends MasterAutonomous
         driveToPosition(0, -130, 0.4);
         //---------------------------------------------------
 
+        /*
         // Deploy glyph mechanism----------------------------
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
@@ -62,7 +66,9 @@ public class AutoBlueRight extends MasterAutonomous
         moveRobot(-90, 0.3, 0.8);
         turnTo(-90);
         //-----------------------------------------------
+        */
 
+        /*
         // Variable to make sure if we don't find any jewels, we will go back to the cryptobox
         int collectionCount = 0;
 
@@ -117,5 +123,6 @@ public class AutoBlueRight extends MasterAutonomous
         //motorGlyphter.setPower(1.0);
         //pauseWhileUpdating(4.0);
         //---------------------------------------------------
+        */
     }
 }

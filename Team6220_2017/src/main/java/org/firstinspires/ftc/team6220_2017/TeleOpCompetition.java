@@ -17,8 +17,10 @@ public class TeleOpCompetition extends MasterTeleOp
         initializeRobot();
 
         waitForStart();
-        // Move jewel servo so it is out of the way of the glyph mechanism
+        // Move jewel servos so jewel jostler is out of the way of the glyph mechanism
         verticalJewelServoToggler.retract();
+        lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
+
         // Accounts for delay between initializing the program and starting TeleOp
         lTime = timer.seconds();
 

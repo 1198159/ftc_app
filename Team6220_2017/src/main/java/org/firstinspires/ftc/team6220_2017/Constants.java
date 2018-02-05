@@ -95,12 +95,13 @@ public class Constants
 
 
     // Servo positions--------------------------------
+    public static final double LATERAL_JEWEL_SERVO_INIT = 0.0;
     public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.27;
     public static final double LATERAL_JEWEL_SERVO_LEFT = 0.20;
     public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.34;
     public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.50;
     public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.21;
-    public static final double VERTICAL_JEWEL_SERVO_INIT = 0.57;
+    public static final double VERTICAL_JEWEL_SERVO_INIT = 0.43;
 
     public static final double WRIST_SERVO_INIT = 0.5;   // todo Adjust
     public static final double WRIST_SERVO_INCREMENT = 0.008;   // todo Adjust
@@ -128,6 +129,6 @@ public class Constants
 
     // Glyph rotation mechanism constants
      // Tells the glyph rotation mechanism how long it should rotate to accomplish a full turn
-    public static final double TURNTABLE_ROTATION_TIME = 0.6;  // todo Adjust
+    public static final double TURNTABLE_ROTATION_TIME = 1.2;  // todo Adjust
     public static final double MINIMUM_TURNTABLE_POWER = 0.05;  // todo Adjust
 }

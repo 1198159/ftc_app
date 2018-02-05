@@ -84,19 +84,19 @@ public class TeleOpTestBed extends MasterAutonomous
             }
             else if (driver2.isButtonJustPressed(Button.B))
             {
-                collectorTurntableServo.setPower(-0.5);
-                pauseWhileUpdating(4.0);
-                collectorTurntableServo.setPower(0);
-                //jewelJostlerCount -= 0.01;
-                //lateralJewelServo.setPosition(jewelJostlerCount);
+                //collectorTurntableServo.setPower(-0.5);
+                //pauseWhileUpdating(4.0);
+                //collectorTurntableServo.setPower(0);
+                jewelJostlerCount -= 0.01;
+                lateralJewelServo.setPosition(jewelJostlerCount);
             }
             else if (driver2.isButtonJustPressed(Button.Y))
             {
-                collectorTurntableServo.setPower(-0.75);
-                pauseWhileUpdating(4.0);
-                collectorTurntableServo.setPower(0);
-                //jewelJostlerCount -= 0.01;
-                //lateralJewelServo.setPosition(jewelJostlerCount);
+                //collectorTurntableServo.setPower(-0.75);
+                //pauseWhileUpdating(4.0);
+                //collectorTurntableServo.setPower(0);
+                jewelJostlerCount += 0.01;
+                lateralJewelServo.setPosition(jewelJostlerCount);
             }
             else if (driver2.isButtonJustPressed(Button.X))
             {

@@ -16,7 +16,9 @@ public class AutoBlueLeft extends MasterAutonomous
         initializeAuto();
 
         waitForStart();
-
+        // Move jewel servos so jewel jostler is out of the way of the glyph mechanism
+        verticalJewelServoToggler.retract();
+        lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
 
         vuforiaHelper.getVumark();
         // Get jewel info-----------------------------------------------------

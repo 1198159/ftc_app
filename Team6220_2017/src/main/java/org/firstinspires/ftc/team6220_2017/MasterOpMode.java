@@ -219,7 +219,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
             // Set initial servo positions
             verticalJewelServo.setPosition(Constants.VERTICAL_JEWEL_SERVO_INIT);
-            lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
+            lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_INIT);
             //
         }
         //--------------------------------------------------------------------------------------------------------------
