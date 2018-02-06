@@ -129,6 +129,6 @@ public class Constants
 
     // Glyph rotation mechanism constants
      // Tells the glyph rotation mechanism how long it should rotate to accomplish a full turn
-    public static final double TURNTABLE_ROTATION_TIME = 1.5;  // todo Adjust
-    public static final double MINIMUM_TURNTABLE_POWER = 0.07;  // todo Adjust
+    public static final double TURNTABLE_ROTATION_TIME = 1.4;  // todo Adjust
+    public static final double MINIMUM_TURNTABLE_POWER = 0.04;  // todo Adjust
 }
