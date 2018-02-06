@@ -78,12 +78,12 @@ public abstract class MasterAutonomous extends Master
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4;
 
+    // These positions are the allow the JJ to gradually lower
     double SERVO_JJ_MIDDLE1 = 0.45;
     double SERVO_JJ_MIDDLE2 = 0.4;
     double SERVO_JJ_MIDDLE3 = 0.35;
     double SERVO_JJ_MIDDLE4 = 0.3;
     double SERVO_JJ_MIDDLE5 = 0.23;
-    double SERVO_JJ_MIDDLE6 = 0.2;
 
     ElapsedTime GGLiftTimer = new ElapsedTime();
     boolean liftMoving = false;
@@ -112,9 +112,6 @@ public abstract class MasterAutonomous extends Master
     private static final double TURN_POWER_CONSTANT = 1.0 / 175.0;
     private static final double DRIVE_POWER_CONSTANT = 1.0 / 1750.0;
 
-
-
-
     VuforiaLocalizer.CloseableFrame frame;
     Image image = null;
     Image imageRGB565 = null;
@@ -124,9 +121,6 @@ public abstract class MasterAutonomous extends Master
     VuforiaTrackables relicTrackables;
     VuforiaTrackable relicTemplate;
     public RelicRecoveryVuMark vuMark;
-    //Matrix34F rawPose;
-    //Matrix34F rawPose = new Matrix34F();
-
 
     public float leftColorHSV[] = {0f, 0f, 0f};
     public float rightColorHSV[] = {0f, 0f, 0f};
@@ -136,14 +130,6 @@ public abstract class MasterAutonomous extends Master
     float[] HsvSum = {0,0,0};
     float[] HSV = {0,0,0};
     float[] HsvOut = {0,0,0};
-    float avgLeftJewelColor;
-    float avgRightJewelColor;
-    float leftJeweColor;
-    float rightJewelColor;
-
-    float Leftcolor;
-    float Rightcolor;
-    float deltaHSVColor;
 
     int numRedPixels = 0;
     int numBluePixels = 0;
@@ -261,12 +247,6 @@ public abstract class MasterAutonomous extends Master
     void InitHardwareAutonomous()
     {
         // Motors here
-        //motorFL = hardwareMap.get(DcMotor.class, "motorFL");
-        //motorFR = hardwareMap.get(DcMotor.class, "motorFR");
-        //motorBL = hardwareMap.get(DcMotor.class, "motorBL");
-        //motorBR = hardwareMap.get(DcMotor.class, "motorBR");
-        //motorGG = hardwareMap.get(DcMotor.class, "motorGG");
-
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
@@ -282,24 +262,22 @@ public abstract class MasterAutonomous extends Master
         servoGGL.setPosition(0.45);
         servoGGR.setPosition(0.45);
 
-        //Reset encoders
+        // Reset encoders
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-//        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        // Run without encoders
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        // Use run to position
         motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        // Use brake mode
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -315,12 +293,6 @@ public abstract class MasterAutonomous extends Master
         sensorTopRight = hardwareMap.get(ColorSensor.class, "sensorTopRight");
         sensorTopLeft = hardwareMap.get(ColorSensor.class, "sensorTopLeft");
         sensorBottomRight = hardwareMap.get(ColorSensor.class, "sensorBottomRight");
-        /*
-        sensorTopRight = hardwareMap.colorSensor.get("sensorTopRight");
-        sensorTopLeft = hardwareMap.colorSensor.get("sensorTopLeft");
-        sensorBottomRight = hardwareMap.colorSensor.get("sensorBottomRight");
-        */
-
         GGZero = motorGG.getCurrentPosition();
     }
 
@@ -338,12 +310,14 @@ public abstract class MasterAutonomous extends Master
 
     void closeGG()
     {
+        // Close GG claws
         servoGGL.setPosition(0.65);
         servoGGR.setPosition(0.15);
 
     }
     void openGG()
     {
+        // Open GG claws
         servoGGL.setPosition(0.45);
         servoGGR.setPosition(0.45);
     }
@@ -360,16 +334,17 @@ public abstract class MasterAutonomous extends Master
         targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
         targetAngle = adjustAngles(targetAngle);
         do {
+            // Get the current motor positions
             currentFL = motorFL.getCurrentPosition();
             currentFR = motorFR.getCurrentPosition();
             currentBL = motorBL.getCurrentPosition();
             currentBR = motorBR.getCurrentPosition();
 
             currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
-            moveErrorFL = newTargetFL - currentFL;
-            speedFL = Math.abs(kMove * moveErrorFL);
-            speedFL = Range.clip(speedFL, 0.15, maxSpeed);
-            speedFL = speedFL * Math.signum(moveErrorFL);
+            moveErrorFL = newTargetFL - currentFL; // Calculate the error (value of difference between target position and current position
+            speedFL = Math.abs(kMove * moveErrorFL); // Update speed to be the error times a constant
+            speedFL = Range.clip(speedFL, 0.15, maxSpeed); // Update speed to be a minimum of 0.15 amd maxspeed
+            speedFL = speedFL * Math.signum(moveErrorFL); // Update speed
 
             moveErrorFR = newTargetFR - motorFR.getCurrentPosition();
             speedFR = Math.abs(kMove * moveErrorFR);
@@ -386,17 +361,19 @@ public abstract class MasterAutonomous extends Master
             speedBR = Range.clip(speedBR, 0.15, maxSpeed);
             speedBR = speedBR * Math.signum(moveErrorBR);
 
-            targetAngle = adjustAngles(targetAngle);//Makes it so target angle does not wrap
-            angleError = currentRobotAngle - targetAngle;
-            angleError = adjustAngles(angleError);
-            pivot = angleError * kAngle;
+            // Pivot adjusts the robot to maintain its heading
+            targetAngle = adjustAngles(targetAngle); // Makes it so target angle does not wrap
+            angleError = currentRobotAngle - targetAngle; // Error equals robot angle times target
+            angleError = adjustAngles(angleError); // Makes it so target angle does not wrap
+            pivot = angleError * kAngle; // pivot equals the error times a constant
 
-            //Sets values for motor power
+            // Sets values for motor power
             motorPowerFL = -speedFR + pivot;
             motorPowerFR = speedFR + pivot;
             motorPowerBL = -speedFR + pivot;
             motorPowerBR = speedFR + pivot;
 
+            // Set values for motor powers
             motorFL.setPower(motorPowerFL);
             motorFR.setPower(motorPowerFR);
             motorBL.setPower(motorPowerBL);
@@ -406,18 +383,11 @@ public abstract class MasterAutonomous extends Master
 
         while (opModeIsActive() && (runtime.seconds() < timeout) && Math.abs(moveErrorFR) > TOL);
         stopDriving();
-        /*
-        while (opModeIsActive() &&
-                (runtime.seconds() < timeout));
-        */
-        //Stop motors
-
     }
 
+    // This method isn't used anymore as it was replaced by MoveIMU
     void move(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
     {
-
-
         //Sets motor encoder values
         newTargetFL = motorFL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
         newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
@@ -469,12 +439,6 @@ public abstract class MasterAutonomous extends Master
 
         while (opModeIsActive() && (runtime.seconds() < timeout) && Math.abs(moveErrorFR) > TOL);
         stopDriving();
-        /*
-        while (opModeIsActive() &&
-                (runtime.seconds() < timeout));
-        */
-        //Stop motors
-
     }
 
     void MoveIMULeft(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
@@ -598,14 +562,6 @@ public abstract class MasterAutonomous extends Master
             motorFR.setPower(motorPowerFR);
             motorBL.setPower(motorPowerBL);
             motorBR.setPower(motorPowerBR);
-            //sleep(100);
-
-            //motorFL.setPower(0.0);
-            //motorFR.setPower(0.0);
-            //motorBL.setPower(0.0);
-            //motorBR.setPower(0.0);
-
-            //idle();
         }
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout));
@@ -717,28 +673,17 @@ public abstract class MasterAutonomous extends Master
 
     void moveGG(int ticks)
     {
+        // Method raises or lowers GG
         liftMoving = true;
         GGLiftTimer.reset();
         motorGG.setTargetPosition(motorGG.getCurrentPosition() + ticks);
         motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 1000.0));
         idle();
-/*
-        if(liftMoving)
-        {
-            motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 1000.0));
-        }
-
-        if (GGLiftTimer.milliseconds() > 125 && Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3)
-        {
-            motorGG.setPower(0.0);
-            liftMoving = false;
-        }
-        */
-
     }
 
     void DropJJ()
     {
+        // Drops JJ slowly
         servoJJ.setPosition(SERVO_JJ_MIDDLE);
         sleep(200);
         servoJJ.setPosition(SERVO_JJ_MIDDLE1);
@@ -759,6 +704,7 @@ public abstract class MasterAutonomous extends Master
 
     void RetrieveJJ()
     {
+        // Raise JJ
         servoJJ.setPosition(SERVO_JJ_UP);
     }
 
@@ -809,19 +755,19 @@ public abstract class MasterAutonomous extends Master
 //Color Sensor/Aligning methods
     void colorSensorHSV()
     {
-            // convert the RGB values to HSV values.
-            Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopLeft);
-            Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopRight);
-            Color.RGBToHSV((sensorBottomRight.red() * 255) / 800, (sensorBottomRight.green() * 255) / 800, (sensorBottomRight.blue() * 255) / 800, hsvValuesBottomRight);
+        // convert the RGB values to HSV values.
+        Color.RGBToHSV((sensorTopLeft.red() * 255) / 800, (sensorTopLeft.green() * 255) / 800, (sensorTopLeft.blue() * 255) / 800, hsvValuesTopLeft);
+        Color.RGBToHSV((sensorTopRight.red() * 255) / 800, (sensorTopRight.green() * 255) / 800, (sensorTopRight.blue() * 255) / 800, hsvValuesTopRight);
+        Color.RGBToHSV((sensorBottomRight.red() * 255) / 800, (sensorBottomRight.green() * 255) / 800, (sensorBottomRight.blue() * 255) / 800, hsvValuesBottomRight);
 
 
-            //Send current info back to driver
-            //telemetry.addData("H: ", hsvValuesTopRight[0]);
-            telemetry.addData("TopRight_S: ", hsvValuesTopRight[1]);
-            //telemetry.addData("V: ", hsvValuesTopLeft[2]);
-            telemetry.addData("TopLeft_S: ", hsvValuesTopLeft[1]);
-            telemetry.addData("BottomRight_S: ", hsvValuesBottomRight[1]);
-            telemetry.update();
+        //Send current info back to driver
+        //telemetry.addData("H: ", hsvValuesTopRight[0]);
+        telemetry.addData("TopRight_S: ", hsvValuesTopRight[1]);
+        //telemetry.addData("V: ", hsvValuesTopLeft[2]);
+        telemetry.addData("TopLeft_S: ", hsvValuesTopLeft[1]);
+        telemetry.addData("BottomRight_S: ", hsvValuesBottomRight[1]);
+        telemetry.update();
     }
 
     void MoveIMUCont(double referenceAngle, double kAngle, double maxSpeed, double saturationValue)
@@ -898,8 +844,8 @@ public abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
-    void MoveIMUContLeft(double referenceAngle, double kAngle, double maxSpeed, double saturationValue, double timeout
-    )
+    // Moves continuosly left while no sensors are on the line
+    void MoveIMUContLeft(double referenceAngle, double kAngle, double maxSpeed, double saturationValue, double timeout)
     {
         runtime.reset();
         do
@@ -928,17 +874,14 @@ public abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
+    // Method aligns on line with series of translations based on what sensors are on the line
     void alignOnLine55(double saturationValue, double timeout, double speed)
     {
-        float currentAngle;
         //Go forwards until any sensor sees the line
         double referenceAngle = imu.getAngularOrientation().firstAngle;//TODO declare this in init hardware auto
         double runTimes = 0.0;
         runtime.reset();
 
-
-        //while ((hsvValuesTopRight[1] < saturationValue) || (hsvValuesTopLeft[1] < saturationValue) || (hsvValuesBottomRight[1] < saturationValue) && (runTimes < 4.0))
-        //{
             telemetry.addData("Stage", "Zero");
             telemetry.update();
             runTimes ++;
@@ -1032,8 +975,7 @@ public abstract class MasterAutonomous extends Master
             }
             else
             {
-                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue))
-                {
+                while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue)) {
                     driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
                     sleep(300);
                     colorSensorHSV();
@@ -1043,16 +985,15 @@ public abstract class MasterAutonomous extends Master
                 stopDriving();
                 sleep(300);
             }
-        //}
         stopDriving();
         telemetry.addData("Stage", "Five");
         telemetry.update();
-        //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
     }
 
 //-------------------------------------------------------------------------------------------------------------------------------------
 //Vuforia Methods
 
+    //Method returns which vuMark the camera sees
     public RelicRecoveryVuMark GetVumark()
     {
         vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -1062,7 +1003,6 @@ public abstract class MasterAutonomous extends Master
     //Decides if pixel is red, blue or other
     public float countPixel(float hue)
     {
-
         if (hue >= 333 || hue <= 20)//Range of Red Hue
         {
             numRedPixels ++;//Adds to num of red pixels
@@ -1170,10 +1110,10 @@ public abstract class MasterAutonomous extends Master
             leftJewel = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
         }
         else
-            {
-                leftJewel = new Vec2F(781.0f,509.0f);   // set default pixel location of leftjewel//TODO: Find correct dimensions
-            }
-
+        {
+            // set default pixel location of left jewel is VuMark isn't visible
+            leftJewel = new Vec2F(781.0f,509.0f);
+        }
             // Takes a frame
             frame = vuforia.getFrameQueue().take();
 
@@ -1186,8 +1126,8 @@ public abstract class MasterAutonomous extends Master
                 if (imageFormat == PIXEL_FORMAT.RGB565) break;
             }
 
-            int imageWidth = image.getWidth();
-            int imageHeight = image.getHeight();
+            int imageWidth = image.getWidth(); // Gets width of image
+            int imageHeight = image.getHeight(); // Gets height of image
 
             //Creates bitmap of the image to detect color of jewels
             bm = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
@@ -1197,79 +1137,11 @@ public abstract class MasterAutonomous extends Master
             int LeftX = (int) leftJewel.getData()[0];
             int LeftY = (int) leftJewel.getData()[1];
 
+            // Use method for getting Jewel color (seen above)
             GetJewelColor(LeftX, LeftY);
 
         return isLeftJewelRed;
     }
-/*
-    //OLD
-    public boolean GetLeftJewelColor() throws InterruptedException
-    {
-        pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getRawPose();
-
-        if (pose!=null)
-        {
-            Matrix34F rawPose = new Matrix34F();
-            //rawPose = new Matrix34F();
-            float[] poseData = Arrays.copyOfRange(pose.transposed().getData(), 0, 12);
-            rawPose.setData(poseData);
-            // image size is 254 mm x 184 mm
-            //Projects point at
-            //Right: (390, -180, -102)
-            //Left: (165, -175, -102)
-            Vec2F rightJewel = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(390, -180, -102));
-            Vec2F leftJewel = Tool.projectPoint(vuforia.getCameraCalibration(), rawPose, new Vec3F(165, -175, -102));
-
-
-            // Takes a frame
-            frame = vuforia.getFrameQueue().take();
-
-            long numberImages = frame.getNumImages();
-
-            for (int j = 0; j < numberImages; j++)
-            {
-                image = frame.getImage(j);
-                imageFormat = image.getFormat();
-                if (imageFormat == PIXEL_FORMAT.RGB565) break;
-            }
-
-            int imageWidth = image.getWidth();
-            int imageHeight = image.getHeight();
-
-            //Creates bitmap of the image to detect color of jewels
-            bm = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.RGB_565);
-            bm.copyPixelsFromBuffer(image.getPixels());
-
-            //Declare int for left jewels
-            int LeftX = (int) leftJewel.getData()[0];
-            int LeftY = (int) leftJewel.getData()[1];
-
-            //Declares int for right jewels
-            int RightX = (int) rightJewel.getData()[0];
-            int RightY = (int) rightJewel.getData()[1];
-
-
-            avgLeftJewelColor = GetAvgJewelColor(LeftX, LeftY); // gets the averaged jewel HSV color value for the left jewel
-            avgRightJewelColor = GetAvgJewelColor(RightX, RightY);//Gets the averaged jewel HSV color value for the right jewel
-
-            //adjusts color for red so that red is greater that blue by adding 300 since red is only 45
-            Leftcolor = (avgLeftJewelColor < 45) ? avgLeftJewelColor + 300 : avgLeftJewelColor;
-            Rightcolor = (avgRightJewelColor < 45) ? avgRightJewelColor + 300 : avgRightJewelColor;
-
-
-            //leftJewelColor = GetJewelColor(LeftX, LeftY);
-
-            //rightJewelColor = GetJewelColor(RightX, RightY);
-
-        }
-        //Gets the difference between left HSV and right HSV
-        deltaHSVColor = Leftcolor - Rightcolor;
-        // if the left jewel color is positive, the left side is red and the right side is blue
-        if (deltaHSVColor > 0) isLeftJewelRed = true;
-        else isLeftJewelRed = false;
-        return isLeftJewelRed;
-    }
-*/
 
     public void initVuforia()
     {
@@ -1283,7 +1155,12 @@ public abstract class MasterAutonomous extends Master
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         //This licence key belongs to Steve Geffner
-        parameters.vuforiaLicenseKey = "ATJf0AL/////AAAAGQZ9xp9L+k5UkmHj3LjxcoQwNTTBJqjO9LYsbkWQArRpYKQmt7vqe680RCQSS9HatStn1XZVi7rgA8T7qrJz/KYI748M4ZjlKv4Z11gryemJCRA9+WWkQ51D3TuYJbQC46+LDeMfbvcJQoQ79jtXr7xdFhfJl1mRxf+wMVoPWfN6Dhr8q3XVxFwOE/pM3gXWQ0kacbcGR/vy3NAsbOhf02DEe5WoV5PNZTF34LWN3dWURu7NJsnbFzkpzXdogeVAdiQ3QUWDvuhEwvSJY4W+fCTb15t6T/c/GJ/vqptsVKqavXk6MQobnUsVFpFP+5OSuRQe7EgvWuOxn7xn5YlC+CWAYh9LrXDpktwCwBAiX3Gx";
+        parameters.vuforiaLicenseKey = "ATJf0AL/////AAAAGQZ9xp9L+k5UkmHj3LjxcoQwNTTBJqjO9LYsbkWQ" +
+                "ArRpYKQmt7vqe680RCQSS9HatStn1XZVi7rgA8T7qrJz/KYI748M4ZjlKv4Z11gryemJCRA9+WWkQ51" +
+                "D3TuYJbQC46+LDeMfbvcJQoQ79jtXr7xdFhfJl1mRxf+wMVoPWfN6Dhr8q3XVxFwOE/pM3gXWQ0kacb" +
+                "cGR/vy3NAsbOhf02DEe5WoV5PNZTF34LWN3dWURu7NJsnbFzkpzXdogeVAdiQ3QUWDvuhEwvSJY4W+f" +
+                "CTb15t6T/c/GJ/vqptsVKqavXk6MQobnUsVFpFP+5OSuRQe7EgvWuOxn7xn5YlC+CWAYh9LrXDpktwC" +
+                "wBAiX3Gx";
 
         /*
          * We also indicate which camera on the RC that we wish to use.
