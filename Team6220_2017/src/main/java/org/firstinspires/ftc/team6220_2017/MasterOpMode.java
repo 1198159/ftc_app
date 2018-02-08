@@ -185,8 +185,8 @@ abstract public class MasterOpMode extends LinearOpMode
             motorCollectorRight.setPower(0);
 
 
-            //sensorRGB = hardwareMap.colorSensor.get("sensor_color");
-            collectorTurntableServo.setPower(0);
+            sensorRGB = hardwareMap.colorSensor.get("sensor_color");
+            collectorTurntableServo.setPower(Constants.MINIMUM_TURNTABLE_POWER);
             //--------------------------------------------------------------------
         }
         if (isArmAttached)

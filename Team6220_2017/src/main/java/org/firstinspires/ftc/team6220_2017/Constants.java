@@ -57,7 +57,7 @@ public class Constants
 
 
     // Acceleration loop constants-------------------------------
-    public static final double NAV_ACCEL = 0.0016;    // todo Adjust
+    public static final double NAV_ACCEL = 0.0008;    // todo Adjust
     public static final double NAV_DECEL = 0.01;    // todo Adjust
     public static final double DRIVE_ACCEL = 0.002;    // todo Adjust
     public static final double DRIVE_DECEL = 0.01;    // todo Adjust
@@ -87,7 +87,7 @@ public class Constants
 
     // Distances in encoder ticks the robot must drive to respective centers of cryptoboxes in autonomous
     public static final double STRAIGHT_BOX_DISTANCE_RED = 700;    // todo Adjust
-    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 980;    // todo Adjust
+    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 965;    // todo Adjust
     public static final double ANGLED_BOX_DISTANCE_BLUE = 0;  // todo Add
     public static final double ANGLED_BOX_DISTANCE_RED = 0;   // todo Add
     public static final double STRAIGHT_COLUMN_DIFF = 230;   // todo Adjust
@@ -96,11 +96,11 @@ public class Constants
 
     // Servo positions--------------------------------
     public static final double LATERAL_JEWEL_SERVO_INIT = 0.0;
-    public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.27;
-    public static final double LATERAL_JEWEL_SERVO_LEFT = 0.20;
-    public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.34;
+    public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.30/*0.27*/;
+    public static final double LATERAL_JEWEL_SERVO_LEFT = 0.20/*0.20*/;
+    public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.40/*0.34*/;
     public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.50;
-    public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.21;
+    public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.18;
     public static final double VERTICAL_JEWEL_SERVO_INIT = 0.43;
 
     public static final double WRIST_SERVO_INIT = 0.5;   // todo Adjust
@@ -121,10 +121,10 @@ public class Constants
     // Glyph mechanism scoring heights.  Numbers signify the number of glyphs stacked on top of
     // each other in a column.  Units are in andymark encoder ticks
      // Note:  2, 3, and 4 are slightly higher than necessary to accommodate uncertainty in glyph size
-    public static final int HEIGHT_1 = -6500;         // Calculated value:  11037
-    public static final int HEIGHT_2 = -5377;         // Calculated value:  9273
-    public static final int HEIGHT_3 = -4513;         // Calculated value:  8004
-    public static final int HEIGHT_4 = -3484;         // Calculated value:  6519
+    public static final int HEIGHT_1 = -8700/*-6500*/;         // Calculated value:  11037
+    public static final int HEIGHT_2 = -7400/*-5377*/;         // Calculated value:  9273
+    public static final int HEIGHT_3 = -6300/*-4513*/;         // Calculated value:  8004
+    public static final int HEIGHT_4 = -4200/*-3484*/;         // Calculated value:  6519
 
 
     // Glyph rotation mechanism constants
