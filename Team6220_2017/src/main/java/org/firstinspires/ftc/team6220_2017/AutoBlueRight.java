@@ -34,10 +34,10 @@ public class AutoBlueRight extends MasterAutonomous
         telemetry.update();
         //---------------------------------------------------------------------
 
-        knockJewel(blueJewel, isBlueSide);
+        knockJewel(blueJewel, isBlueSide);  // todo Move jewel jostler lower and farther.  Cut down any of 3 pauses?
 
         // Align with and face key column--------------------
-        driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.7);
+        driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.7);  // todo More speed, reduce acceleration?
         turnTo(90);
         driveToPosition(0, -400, 0.5);
         //---------------------------------------------------
@@ -54,7 +54,7 @@ public class AutoBlueRight extends MasterAutonomous
         motorCollectorRight.setPower(0.6);
         //---------------------------------------------------
 
-        //  todo change all moveRobots to driveToPosition
+        // todo Change all moveRobots to driveToPosition
         // Push glyph in-------------------------------------
         //moveRobot(90, 0.2, 0.5);
         //---------------------------------------------------
@@ -69,7 +69,7 @@ public class AutoBlueRight extends MasterAutonomous
 
         motorGlyphter.setTargetPosition(Constants.HEIGHT_4);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(2.0);
+        pauseWhileUpdating(2.0);    // todo Cut time and retract partially while turning?
 
         turnTo(-90);
         driveToPosition(0, -470, 0.4);
