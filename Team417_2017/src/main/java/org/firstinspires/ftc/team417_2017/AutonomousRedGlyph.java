@@ -60,7 +60,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
         Kmove = 1.0/1200.0;
         TOL = 100.0;
         TOL_ANGLE = 2;
-        Kpivot = 1/100.0;
+        Kpivot = 1/200.0;
 
         if (VuforiaDetect.isVisible())
         {
@@ -91,7 +91,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
 
         if(VuforiaDetect.isLeftJewelBlue) // if the left jewel is blue,
         {
-            pivotWithReference(17, refAngle, 0.15,0.5); // then pivot right
+            pivotWithReference(17, refAngle, 0.12,0.3); // then pivot right
             sleep(200);
             servoJewel.setPosition(JEWEL_INIT);
             sleep(200);
@@ -100,7 +100,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
         }
         else // if the left jewel is red,
         {
-            pivotWithReference(-17, refAngle, 0.15, 0.5); // then pivot left
+            pivotWithReference(-17, refAngle, 0.12, 0.3); // then pivot left
             sleep(200);
             servoJewel.setPosition(JEWEL_INIT);
             sleep(200);
@@ -113,27 +113,27 @@ public class AutonomousRedGlyph extends MasterAutonomous
             if (VuMark == RelicRecoveryVuMark.CENTER)
             {
                 // MOVE TOWARDS THE CRYPTOBOX
-                moveTimed(-0.5, 0, 1100); // move left off the balancing stone
+                moveTimed(-0.5, 0, 1200); // move left off the balancing stone
                 sleep(200);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the reference angle
                 sleep(200);
                 Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-                moveMaintainHeading(-100, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
+                moveMaintainHeading(-125, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
                 sleep(200);
                 Kpivot = 1/100.0;
                 pivotWithReference(-140, refAngle, 0.15, 0.55); // turn to face the cryptobox
                 sleep(200);
 
                 // ALIGN TO CORRECT COLUMN
-                move(-100, 0, 0.15, 0.5, 1); // move right
+                move(-160, 0, 0.15, 0.5, 1); // move right
                 sleep(200);
-                move(0, -220, 0.1, 0.3, 2.5); // push the glyph in
+                move(0, -225, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
             }
             else if (VuMark == RelicRecoveryVuMark.RIGHT)
             {
                 // MOVE TOWARDS THE CRYPTOBOX
-                moveTimed(-0.5, 0, 1100); // move left off the balancing stone
+                moveTimed(-0.5, 0, 1200); // move left off the balancing stone
                 sleep(200);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the reference angle
                 sleep(200);
@@ -147,13 +147,13 @@ public class AutonomousRedGlyph extends MasterAutonomous
                 // ALIGN TO CORRECT COLUMN
                 //move(-60, 0, 0.15, 0.5, 1); // move right
                 sleep(200);
-                move(0, -260, 0.1, 0.3, 2.5); // push the glyph in
+                move(0, -275, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
             }
             else if (VuMark == RelicRecoveryVuMark.LEFT)
             {
                 // MOVE TOWARDS THE CRYPTOBOX
-                moveTimed(-0.5, 0, 1100); // move left off the balancing stone
+                moveTimed(-0.5, 0, 1200); // move left off the balancing stone
                 sleep(200);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
                 sleep(200);
@@ -165,7 +165,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
                 sleep(200);
 
                 // ALIGN TO CORRECT COLUMN
-                move(-40, 0, 0.15, 0.5, 1); // move right
+                move(-55, 0, 0.15, 0.5, 1); // move right
                 sleep(200);
                 move(0, -265, 0.1, 0.3, 2.5); // push the glyph in more, since we didn't shift right
                 sleep(200);
@@ -175,21 +175,21 @@ public class AutonomousRedGlyph extends MasterAutonomous
                 telemetry.addData("Vumark", "not visible, going for center");
 
                 // MOVE TOWARDS THE CRYPTOBOX
-                moveTimed(-0.5, 0, 1100); // move left off the balancing stone
+                moveTimed(-0.5, 0, 1200); // move left off the balancing stone
                 sleep(200);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the reference angle
                 sleep(200);
                 Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-                moveMaintainHeading(-100, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
+                moveMaintainHeading(-125, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
                 sleep(200);
                 Kpivot = 1/100.0;
                 pivotWithReference(-140, refAngle, 0.15, 0.55); // turn to face the cryptobox
                 sleep(200);
 
                 // ALIGN TO CORRECT COLUMN
-                move(-100, 0, 0.15, 0.5, 1); // move right
+                move(-160, 0, 0.15, 0.5, 1); // move right
                 sleep(200);
-                move(0, -220, 0.1, 0.3, 2.5); // push the glyph in
+                move(0, -225, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
             }
 
@@ -261,8 +261,8 @@ public class AutonomousRedGlyph extends MasterAutonomous
 
                 // ALIGN TO CORRECT COLUMN
                 Kpivot = 1/100.0; // reset Kpivot
-                move(55, 0, 0.15, 0.5, 1); // move left
-                move(0, -230, 0.1, 0.3, 2.5); // push the glyph in
+                move(65, 0, 0.15, 0.5, 1); // move left
+                move(0, -240, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
             }
             else // if the VuMark is not visible, just go for the center column

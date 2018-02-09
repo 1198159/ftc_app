@@ -60,7 +60,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
         Kmove = 1.0/1200.0;
         TOL = 100.0;
         TOL_ANGLE = 2;
-        Kpivot = 1/100.0;
+        Kpivot = 1/200.0;
 
         if (VuforiaDetect.isVisible())
         {
@@ -91,7 +91,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
 
         if(VuforiaDetect.isLeftJewelBlue) // if the left jewel is blue,
         {
-            pivotWithReference(-17, refAngle, 0.15, 0.5); // then pivot right
+            pivotWithReference(-17, refAngle, 0.12, 0.3); // then pivot right
             sleep(200);
             servoJewel.setPosition(JEWEL_INIT); // move servo back
             sleep(200);
@@ -100,7 +100,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
         }
         else // if the left jewel is red,
         {
-            pivotWithReference(17, refAngle, 0.15, 0.5); // then pivot left
+            pivotWithReference(17, refAngle, 0.12, 0.3); // then pivot left
             sleep(200);
             servoJewel.setPosition(JEWEL_INIT); // move servo back
             sleep(200);
@@ -113,7 +113,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
             if (VuMark == RelicRecoveryVuMark.CENTER)
             {
                 // MOVE TOWARDS THE CRYPTOBOX
-                moveTimed(0.5, 0, 1100); // move right off the balancing stone
+                moveTimed(0.5, 0, 1200); // move right off the balancing stone
                 sleep(200);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
                 sleep(200);
@@ -125,7 +125,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
 
                 // ALIGN TO CORRECT COLUMN
                 Kpivot = 1/100.0; // reset Kpivot
-                move(-50, 0, 0.15, 0.5, 1); // move right
+                move(-45, 0, 0.15, 0.5, 1); // move right
                 sleep(200);
                 move(0, -205, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
@@ -133,7 +133,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
             else if (VuMark == RelicRecoveryVuMark.RIGHT)
             {
                 // MOVE TOWARDS THE CRYPTOBOX
-                moveTimed(0.5, 0, 1100); // move right off the balancing stone
+                moveTimed(0.5, 0, 1200); // move right off the balancing stone
                 sleep(200);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
                 sleep(200);
@@ -153,7 +153,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
             else if (VuMark == RelicRecoveryVuMark.LEFT)
             {
                 // MOVE TOWARDS THE CRYPTOBOX
-                moveTimed(0.5, 0, 1100); // move right off the balancing stone
+                moveTimed(0.5, 0, 1200); // move right off the balancing stone
                 sleep(200);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
                 sleep(200);
@@ -165,14 +165,30 @@ public class AutonomousBlueGlyph extends MasterAutonomous
 
                 // ALIGN TO CORRECT COLUMN
                 Kpivot = 1/100.0; // reset Kpivot
-                move(50, 0, 0.15, 0.5, 1); // move left
+                move(55, 0, 0.15, 0.5, 1); // move left
                 sleep(200);
-                move(0, -170, 0.1, 0.3, 2.5); // push the glyph in
+                move(0, -160, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
             }
             else
             {
+                // MOVE TOWARDS THE CRYPTOBOX
+                moveTimed(0.5, 0, 1200); // move right off the balancing stone
+                sleep(200);
+                pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
+                sleep(200);
+                Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
+                moveMaintainHeading(100, 0, 0, refAngle, 0.15, 0.6, 2.5); // move right towards the cryptobox
+                Kpivot = 1/50; // more aggressive pivot because we're turning a smaller angle
+                pivotWithReference(45, refAngle, 0.15, 0.5); // turn to face the cryptobox
+                sleep(200);
 
+                // ALIGN TO CORRECT COLUMN
+                Kpivot = 1/100.0; // reset Kpivot
+                move(-45, 0, 0.15, 0.5, 1); // move right
+                sleep(200);
+                move(0, -205, 0.1, 0.3, 2.5); // push the glyph in
+                sleep(200);
             }
 
             // BACK UP FROM THE CRYPTOBOX
@@ -272,7 +288,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
                 sleep(200);
 
                 // ALIGN TO CORRECT COLUMN
-                move(60, 0, 0.15, 0.5, 1); // move left
+                move(50, 0, 0.15, 0.5, 1); // move left
                 sleep(200);
                 move(0, -220, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
