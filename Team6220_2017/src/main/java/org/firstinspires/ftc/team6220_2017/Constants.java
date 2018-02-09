@@ -57,7 +57,7 @@ public class Constants
 
 
     // Acceleration loop constants-------------------------------
-    public static final double NAV_ACCEL = 0.0008;    // todo Adjust
+    public static final double NAV_ACCEL = 0.001;    // todo Adjust
     public static final double NAV_DECEL = 0.01;    // todo Adjust
     public static final double DRIVE_ACCEL = 0.002;    // todo Adjust
     public static final double DRIVE_DECEL = 0.01;    // todo Adjust
@@ -90,7 +90,7 @@ public class Constants
     public static final double STRAIGHT_BOX_DISTANCE_BLUE = 965;    // todo Adjust
     public static final double ANGLED_BOX_DISTANCE_BLUE = 0;  // todo Add
     public static final double ANGLED_BOX_DISTANCE_RED = 0;   // todo Add
-    public static final double STRAIGHT_COLUMN_DIFF = 230;   // todo Adjust
+    public static final double STRAIGHT_COLUMN_DIFF = 180;   // todo Adjust
     public static final double ANGLED_COLUMN_DIFF = 0;   // todo Add
 
 

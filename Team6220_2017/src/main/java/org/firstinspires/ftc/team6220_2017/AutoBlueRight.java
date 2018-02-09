@@ -39,14 +39,14 @@ public class AutoBlueRight extends MasterAutonomous
         // Align with and face key column--------------------
         driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.7);
         turnTo(90);
-        driveToPosition(0, -330, 0.4);
+        driveToPosition(0, -400, 0.5);
         //---------------------------------------------------
 
 
         // Deploy glyph mechanism----------------------------
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(2.7);
+        pauseWhileUpdating(2.8);
         //---------------------------------------------------
 
         // Score glyph---------------------------------------
@@ -63,12 +63,13 @@ public class AutoBlueRight extends MasterAutonomous
         //moveRobot(-90, 0.3, 0.8);
         driveToPosition(0, -200, 0.4);
 
+        // Stop collector after robot has backed away from cryptobox to reduce risk of descoring glyphs
         motorCollectorLeft.setPower(0);
         motorCollectorRight.setPower(0);
 
-        motorGlyphter.setTargetPosition(Constants.HEIGHT_3);
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_4);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(1.3);
+        pauseWhileUpdating(2.0);
 
         turnTo(-90);
         driveToPosition(0, -470, 0.4);
@@ -78,12 +79,12 @@ public class AutoBlueRight extends MasterAutonomous
         // Deploy glyph mechanism----------------------------
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(1.3);
+        pauseWhileUpdating(1.7);
         //---------------------------------------------------
 
 
 
-        // Variable to make sure if we don't find any jewels, we will go back to the cryptobox
+        // Variable to make sure that we will go back to the cryptobox if we don't find any glyphs
         int collectionCount = 0;
 
         // Collect glyphs---------------------------------------
@@ -110,7 +111,7 @@ public class AutoBlueRight extends MasterAutonomous
 
         motorGlyphter.setTargetPosition(Constants.HEIGHT_4);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(1.5);
+        pauseWhileUpdating(1.4);
 
         turnTo(90);
         //-------------------------------------------------
@@ -119,20 +120,22 @@ public class AutoBlueRight extends MasterAutonomous
         driveToPosition(0, 430, 0.7);
         motorGlyphter.setTargetPosition(Constants.HEIGHT_3);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(1.5);
+        pauseWhileUpdating(1.5);    // todo Cut time?
         //--------------------------------------------------------------------------
 
         // Score glyphs--------------------------------------
         motorCollectorLeft.setPower(-0.6);
         motorCollectorRight.setPower(0.6);
         pauseWhileUpdating(0.5);
-        motorCollectorLeft.setPower(0);
-        motorCollectorRight.setPower(0);
         //---------------------------------------------------
 
         // Move robot away from cryptobox----------------
-        moveRobot(-90, 0.3, 0.3);
+        driveToPosition(0, -200, 0.4);
         //-----------------------------------------------
+
+        // Stop collector after robot has backed away from cryptobox to reduce risk of descoring glyphs
+        motorCollectorLeft.setPower(0);
+        motorCollectorRight.setPower(0);
 
         // Get ready for teleOp
         //turnTo(-90);

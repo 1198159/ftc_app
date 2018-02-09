@@ -20,7 +20,7 @@ public class GlyphMechanism implements ConcurrentOperation
      the mechanism's target position allows us to retain automatic movement of the glyphter without
      retracting it before the start of TeleOp.
     */
-    public int glyphterOffset = Constants.HEIGHT_2;
+    public int glyphterOffset = Constants.HEIGHT_3;
 
     // For debugging collector speeds
     private double motorCollectorCount = 0.5;
