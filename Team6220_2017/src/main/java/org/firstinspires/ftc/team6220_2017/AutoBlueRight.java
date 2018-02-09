@@ -39,7 +39,7 @@ public class AutoBlueRight extends MasterAutonomous
         // Align with and face key column--------------------
         driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.7);  // todo More speed, reduce acceleration?
         turnTo(90);
-        driveToPosition(0, -400, 0.5);
+        driveToPosition(0, -400, 0.5);  // todo Increase speed?
         //---------------------------------------------------
 
 
@@ -72,14 +72,14 @@ public class AutoBlueRight extends MasterAutonomous
         pauseWhileUpdating(2.0);    // todo Cut time and retract partially while turning?
 
         turnTo(-90);
-        driveToPosition(0, -470, 0.4);
+        driveToPosition(0, -470, 0.4);  // todo Increase speed?
 
         //-----------------------------------------------
 
-        // Deploy glyph mechanism----------------------------
+        // Lower glyph mechanism for collection--------------
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(1.7);
+        pauseWhileUpdating(1.7);    // todo Cut time?
         //---------------------------------------------------
 
 
@@ -95,7 +95,7 @@ public class AutoBlueRight extends MasterAutonomous
         // Drive until there is a glyph or until the robot goes too far forward--
         while(!isGlyph() && (collectionCount < 1))
         {
-            driveToPosition(0, 620, 0.4);
+            driveToPosition(0, 620, 0.4);  // todo Increase speed?
             collectionCount++;
         }
         //-----------------------------------------------------------------------

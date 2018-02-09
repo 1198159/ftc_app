@@ -87,10 +87,10 @@ public class Constants
 
     // Distances in encoder ticks the robot must drive to respective centers of cryptoboxes in autonomous
     public static final double STRAIGHT_BOX_DISTANCE_RED = 700;    // todo Adjust
-    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 965;    // todo Adjust
+    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 965;
     public static final double ANGLED_BOX_DISTANCE_BLUE = 0;  // todo Add
     public static final double ANGLED_BOX_DISTANCE_RED = 0;   // todo Add
-    public static final double STRAIGHT_COLUMN_DIFF = 180;   // todo Adjust
+    public static final double STRAIGHT_COLUMN_DIFF = 180;
     public static final double ANGLED_COLUMN_DIFF = 0;   // todo Add
 
 
