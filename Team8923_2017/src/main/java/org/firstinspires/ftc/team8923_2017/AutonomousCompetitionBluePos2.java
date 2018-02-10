@@ -51,7 +51,7 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
         sleep(700);
-        MoveIMU(referenceAngle, 400.0, 0.0, 0.015, 0.3, 1.8);//Was 1.73 //Go towards parking spot was 1.6
+        MoveIMU(referenceAngle, 400.0, 0.0, 0.015, 0.3, 1.7);//Was 1.73 //Go towards parking spot was 1.6
         IMUPivot(referenceAngle, -90, 0.25, 0.015);
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);
@@ -82,7 +82,7 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         else if (vuMark == RelicRecoveryVuMark.RIGHT)
         {
             MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.64);
+            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.58);
             telemetry.addData("Stage", "Right");
             telemetry.update();
         }

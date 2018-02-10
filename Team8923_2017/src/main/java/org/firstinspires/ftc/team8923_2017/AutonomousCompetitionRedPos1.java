@@ -41,18 +41,18 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
 
         if (isLeftJewelRed == true)
         {
-            IMUPivot(referenceAngle, -15, 0.5, 0.015);
+            IMUPivot(referenceAngle, -11, 0.3, 0.015);
             RetrieveJJ();
-            IMUPivot(referenceAngle, 0, 0.5, 0.015);
+            IMUPivot(referenceAngle, 0, 0.3, 0.015);
         }
         else
         {
-            IMUPivot(referenceAngle, 15, 0.5, 0.015);
+            IMUPivot(referenceAngle, 11, 0.3, 0.015);
             RetrieveJJ();
-            IMUPivot(referenceAngle, 0, 0.5, 0.015);
+            IMUPivot(referenceAngle, 0, 0.3, 0.015);
         }
         sleep(700);
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 2.35);//Go towards parking spot//Was 2.15
+        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 2);//Go towards parking spot//Was 2.15
         sleep(500);
         MoveIMURight(referenceAngle, 45.0, 0.0, 0.015, 0.35, 0.15);//Moves away from the cryptobox and towards the middle//Was0.4
         sleep(500);
@@ -70,7 +70,7 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
             MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.68);
+            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.61);
             telemetry.addData("Stage", "Left");
             telemetry.update();
         }
@@ -84,7 +84,7 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         else if (vuMark == RelicRecoveryVuMark.RIGHT)
         {
             MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.56);
+            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.51);
             telemetry.addData("Stage", "Right");
             telemetry.update();
         }
@@ -105,9 +105,9 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         openGG();
         sleep(500);
         MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.55, 0.22);
-        //sleep(500);
+        sleep(300);
         MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 1.5);
-        //sleep(500);
+        sleep(300);
         MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.45, 0.5);
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {

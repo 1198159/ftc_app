@@ -79,7 +79,7 @@ public abstract class MasterAutonomous extends Master
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4;
 
     // These positions are the allow the JJ to gradually lower
-    double SERVO_JJ_MIDDLE1 = 0.45;
+    double SERVO_JJ_MIDDLE1 = 0.5;
     double SERVO_JJ_MIDDLE2 = 0.4;
     double SERVO_JJ_MIDDLE3 = 0.35;
     double SERVO_JJ_MIDDLE4 = 0.3;

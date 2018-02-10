@@ -55,11 +55,11 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
         sleep(700);
-        MoveIMU(referenceAngle, -400.0, 0.0, 0.015, 0.3, 1.7);//Go towards parking spot
+        MoveIMU(referenceAngle, -400.0, 0.0, 0.015, 0.3, 1.57);//Go towards parking spot
         IMUPivot(referenceAngle, -90, 0.25, 0.015);
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);
-        MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.3, 1.1);//aWas 1.2 for middle
+        MoveIMU(referenceAngle, 100.0, 0.0, 0.015, 0.3, 0.85);//aWas 1.2 for middle
         IMUPivot(referenceAngle, -88, 0.25, 0.015);
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);
@@ -73,7 +73,7 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
             MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.68);
+            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.63);
             telemetry.addData("Stage", "Left");
             telemetry.update();
         }
@@ -87,7 +87,7 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
         else if (vuMark == RelicRecoveryVuMark.RIGHT)
         {
             MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.6);
+            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.52);
             telemetry.addData("Stage", "Right");
             telemetry.update();
         }

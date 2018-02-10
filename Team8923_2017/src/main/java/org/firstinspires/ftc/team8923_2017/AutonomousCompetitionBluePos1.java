@@ -42,19 +42,19 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         if (isLeftJewelRed == true)
         {
             //If the left jewel is red, robot pivots left
-            IMUPivot(referenceAngle, 15, 0.5, 0.015);
+            IMUPivot(referenceAngle, 11, 0.3, 0.015);//0.5
             RetrieveJJ(); // Raise JJ
-            IMUPivot(referenceAngle, 0, 0.5, 0.015); // Pivot back to initial position
+            IMUPivot(referenceAngle, 0, 0.3, 0.015); // Pivot back to initial position
         }
         else
         {
             //If the left jewel isn't red, robot pivots right
-            IMUPivot(referenceAngle, -15, 0.5, 0.015);
+            IMUPivot(referenceAngle, -11, 0.3, 0.015);
             RetrieveJJ(); // Raise JJ
-            IMUPivot(referenceAngle, 0, 0.5, 0.015); // Pivot back to initial position
+            IMUPivot(referenceAngle, 0, 0.3, 0.015); // Pivot back to initial position
         }
         sleep(700);
-        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 2.3);//Go towards parking spot
+        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 2);//Go towards parking spot
         IMUPivot(referenceAngle, 90, 0.25, 0.015); // Pivot towards the cryptobox
         referenceAngle += 90.0; // Updates reference angle
         referenceAngle = adjustAngles(referenceAngle);
@@ -70,7 +70,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         {
             // If VuMark is for left column, robot backs up then translates left
             MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.65);
+            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.55);
             telemetry.addData("Stage", "Left"); // Update telemetry
             telemetry.update();
         }
@@ -84,15 +84,15 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         {
             // If VuMark is for right column, robot backs up then translates right
             MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.71);
+            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.62);
             telemetry.addData("Stage", "Right");
             telemetry.update();
         }
         else
         {
             // If the VuMark wasn't visible, the robot delivers in the center column
-            MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.05);
-            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.1);
+            //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.05);
+            //MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.1);
             //MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.1);
         }
         sleep(500);
@@ -138,7 +138,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         }
         // Robot pivots to face the glyph pile
         IMUPivot(referenceAngle,  -178, 0.45, 0.015);
-        stopDriving();
+        stopDriving(); // Stop robot
         while (opModeIsActive())
         {
             idle();
