@@ -125,7 +125,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
                 sleep(200);
 
                 // ALIGN TO CORRECT COLUMN
-                move(-160, 0, 0.15, 0.5, 1); // move right
+                move(-120, 0, 0.15, 0.5, 1); // move right
                 sleep(200);
                 move(0, -225, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
@@ -145,7 +145,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
                 sleep(200);
 
                 // ALIGN TO CORRECT COLUMN
-                //move(-60, 0, 0.15, 0.5, 1); // move right
+                move(-30, 0, 0.15, 0.5, 1); // move right
                 sleep(200);
                 move(0, -275, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
@@ -187,7 +187,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
                 sleep(200);
 
                 // ALIGN TO CORRECT COLUMN
-                move(-160, 0, 0.15, 0.5, 1); // move right
+                move(-120, 0, 0.15, 0.5, 1); // move right
                 sleep(200);
                 move(0, -225, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(200);
