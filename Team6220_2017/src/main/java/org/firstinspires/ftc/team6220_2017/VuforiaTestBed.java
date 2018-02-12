@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  */
 
 @Autonomous(name = "Vuforia Test", group = "Autonomous")
-@Disabled
+//@Disabled
 public class VuforiaTestBed extends MasterAutonomous
 {
     @Override

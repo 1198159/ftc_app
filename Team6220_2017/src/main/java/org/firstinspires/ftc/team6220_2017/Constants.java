@@ -46,7 +46,7 @@ public class Constants
     // PID loop constants-------------------------------
     public static final double ROTATION_P = TURNING_POWER_FACTOR;
     public static final double ROTATION_I = 0.0;
-    public static final double ROTATION_D = 0.01;
+    public static final double ROTATION_D = 0.012;
     public static final double TRANSLATION_P = DRIVE_POWER_FACTOR;
     public static final double TRANSLATION_I = 0.00000002;    // todo Adjust
     public static final double TRANSLATION_D = 0.004;
@@ -57,7 +57,7 @@ public class Constants
 
 
     // Acceleration loop constants-------------------------------
-    public static final double NAV_ACCEL = 0.0008;    // todo Adjust
+    public static final double NAV_ACCEL = 0.0007;    // todo Adjust
     public static final double NAV_DECEL = 0.01;    // todo Adjust
     public static final double DRIVE_ACCEL = 0.002;    // todo Adjust
     public static final double DRIVE_DECEL = 0.01;    // todo Adjust
@@ -72,6 +72,7 @@ public class Constants
 
     // Vuforia constants
     public static final int JEWEL_SAMPLE_LENGTH = 64;
+    public static final int JEWEL_SAMPLE_HEIGHT = 32;
     public static final int IMAGE_WIDTH = 1280;
     public static final int IMAGE_HEIGHT = 720;
 
@@ -86,8 +87,8 @@ public class Constants
 
 
     // Distances in encoder ticks the robot must drive to respective centers of cryptoboxes in autonomous
-    public static final double STRAIGHT_BOX_DISTANCE_RED = 780;    // todo Adjust
-    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 945;
+    public static final double STRAIGHT_BOX_DISTANCE_RED = 795;    // todo Adjust
+    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 905;
     public static final double ANGLED_BOX_DISTANCE_BLUE = 0;  // todo Add
     public static final double ANGLED_BOX_DISTANCE_RED = 0;   // todo Add
     public static final double STRAIGHT_COLUMN_DIFF = 180;
@@ -97,10 +98,10 @@ public class Constants
     // Servo positions--------------------------------
     public static final double LATERAL_JEWEL_SERVO_INIT = 0.0;
     public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.30;
-    public static final double LATERAL_JEWEL_SERVO_LEFT = 0.18;
-    public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.42;
+    public static final double LATERAL_JEWEL_SERVO_LEFT = 0.17;
+    public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.43;
     public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.50;
-    public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.18;
+    public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.17;
     public static final double VERTICAL_JEWEL_SERVO_INIT = 0.43;
 
     public static final double WRIST_SERVO_INIT = 0.5;   // todo Adjust
