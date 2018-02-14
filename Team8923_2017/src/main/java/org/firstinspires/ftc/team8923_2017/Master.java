@@ -106,9 +106,6 @@ public abstract class Master extends LinearOpMode
         servoGGR = hardwareMap.get(Servo.class, "servoGGR");
 
 
-        servoJJ.setPosition(SERVO_JJ_UP);
-        servoGGL.setPosition(0.65);
-        servoGGR.setPosition(0.22);
 
         //Reset encoders
         /*motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

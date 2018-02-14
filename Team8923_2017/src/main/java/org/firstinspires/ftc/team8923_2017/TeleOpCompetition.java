@@ -21,6 +21,12 @@ public class TeleOpCompetition extends MasterTeleOp
 
 
         waitForStart();
+        // Set servo positions so no penalty
+        servoGGL.setPosition(0.65);
+        servoGGR.setPosition(0.22);
+        servoJJ.setPosition(SERVO_JJ_UP);
+
+
 
         while (opModeIsActive())
         {
