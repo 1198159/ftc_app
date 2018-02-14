@@ -46,7 +46,7 @@ public class Constants
     // PID loop constants-------------------------------
     public static final double ROTATION_P = TURNING_POWER_FACTOR;
     public static final double ROTATION_I = 0.0;
-    public static final double ROTATION_D = 0.01;
+    public static final double ROTATION_D = 0.012;
     public static final double TRANSLATION_P = DRIVE_POWER_FACTOR;
     public static final double TRANSLATION_I = 0.00000002;    // todo Adjust
     public static final double TRANSLATION_D = 0.004;
@@ -57,7 +57,7 @@ public class Constants
 
 
     // Acceleration loop constants-------------------------------
-    public static final double NAV_ACCEL = 0.001;    // todo Adjust
+    public static final double NAV_ACCEL = 0.0007;    // todo Adjust
     public static final double NAV_DECEL = 0.01;    // todo Adjust
     public static final double DRIVE_ACCEL = 0.002;    // todo Adjust
     public static final double DRIVE_DECEL = 0.01;    // todo Adjust
@@ -72,6 +72,7 @@ public class Constants
 
     // Vuforia constants
     public static final int JEWEL_SAMPLE_LENGTH = 64;
+    public static final int JEWEL_SAMPLE_HEIGHT = 32;
     public static final int IMAGE_WIDTH = 1280;
     public static final int IMAGE_HEIGHT = 720;
 
@@ -86,8 +87,8 @@ public class Constants
 
 
     // Distances in encoder ticks the robot must drive to respective centers of cryptoboxes in autonomous
-    public static final double STRAIGHT_BOX_DISTANCE_RED = 700;    // todo Adjust
-    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 965;
+    public static final double STRAIGHT_BOX_DISTANCE_RED = 795;    // todo Adjust
+    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 905;
     public static final double ANGLED_BOX_DISTANCE_BLUE = 0;  // todo Add
     public static final double ANGLED_BOX_DISTANCE_RED = 0;   // todo Add
     public static final double STRAIGHT_COLUMN_DIFF = 180;
@@ -96,11 +97,11 @@ public class Constants
 
     // Servo positions--------------------------------
     public static final double LATERAL_JEWEL_SERVO_INIT = 0.0;
-    public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.30/*0.27*/;
-    public static final double LATERAL_JEWEL_SERVO_LEFT = 0.20/*0.20*/;
-    public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.40/*0.34*/;
+    public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.30;
+    public static final double LATERAL_JEWEL_SERVO_LEFT = 0.17;
+    public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.43;
     public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.50;
-    public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.18;
+    public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.17;
     public static final double VERTICAL_JEWEL_SERVO_INIT = 0.43;
 
     public static final double WRIST_SERVO_INIT = 0.5;   // todo Adjust
@@ -121,7 +122,7 @@ public class Constants
     // Glyph mechanism scoring heights.  Numbers signify the number of glyphs stacked on top of
     // each other in a column.  Units are in andymark encoder ticks
      // Note:  2, 3, and 4 are slightly higher than necessary to accommodate uncertainty in glyph size
-    public static final int HEIGHT_1 = -8700/*-6500*/;         // Calculated value:  11037
+    public static final int HEIGHT_1 = -8950/*-6500*/;         // Calculated value:  11037
     public static final int HEIGHT_2 = -7400/*-5377*/;         // Calculated value:  9273
     public static final int HEIGHT_3 = -6300/*-4513*/;         // Calculated value:  8004
     public static final int HEIGHT_4 = -4200/*-3484*/;         // Calculated value:  6519
@@ -130,5 +131,5 @@ public class Constants
     // Glyph rotation mechanism constants
      // Tells the glyph rotation mechanism how long it should rotate to accomplish a full turn
     public static final double TURNTABLE_ROTATION_TIME = 1.4;  // todo Adjust
-    public static final double MINIMUM_TURNTABLE_POWER = 0.04;  // todo Adjust
+    public static final double MINIMUM_TURNTABLE_POWER = 0.25;  // todo Adjust
 }

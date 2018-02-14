@@ -187,18 +187,21 @@ public class GlyphMechanism implements ConcurrentOperation
             op.motorCollectorRight.setPower(0);
             op.motorCollectorLeft.setPower(0);
         }
-        /*else if (op.driver1.isButtonJustPressed(Button.LEFT_STICK_PRESS))
+        // Allow adjustment of collection speeds if necessary (usually for debugging)
+        else if (op.driver1.isButtonJustPressed(Button.LEFT_STICK_PRESS))
         {
             motorCollectorCount += 0.05;
-            op.motorCollectorLeft.setPower(-0.7);
+            op.motorCollectorLeft.setPower(-motorCollectorCount);
             op.motorCollectorRight.setPower(motorCollectorCount);
+            op.telemetry.addData("motorCollectorCount", motorCollectorCount);
         }
         else if (op.driver1.isButtonJustPressed(Button.RIGHT_STICK_PRESS))
         {
             motorCollectorCount -= 0.05;
-            op.motorCollectorLeft.setPower(-0.7);
+            op.motorCollectorLeft.setPower(-motorCollectorCount);
             op.motorCollectorRight.setPower(motorCollectorCount);
-        }*/
+            op.telemetry.addData("motorCollectorCount", motorCollectorCount);
+        }
         //---------------------------------------------------------------------
 
 

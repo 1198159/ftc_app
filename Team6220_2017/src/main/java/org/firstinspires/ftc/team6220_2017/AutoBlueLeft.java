@@ -37,16 +37,18 @@ public class AutoBlueLeft extends MasterAutonomous
         //---------------------------------------------------------------------
 
 
-        knockJewel(blueJewel, isBlueSide);
+        //knockJewel(blueJewel, isBlueSide);
 
 
         // Move off balancing stone and turn around--------
-        moveRobot(-90, 0.3, 1.55);
-        pauseWhileUpdating(0.3);
-        turnTo(0);
+        driveToPosition(0, -450, 0.7);
+        //moveRobot(-90, 0.3, 1.55);
+        //pauseWhileUpdating(0.3);
+        //turnTo(0);
         //-------------------------------------------------
 
 
+        /*
         // Back up to edge of balancing stone--------------
         moveRobot(-90, 0.3, 0.55);
         turnTo(0);
@@ -90,5 +92,6 @@ public class AutoBlueLeft extends MasterAutonomous
         // Move robot toward cryptobox----------------
         moveRobot(90, 0.3, 0.75);
         //-----------------------------------------------
+        */
     }
 }

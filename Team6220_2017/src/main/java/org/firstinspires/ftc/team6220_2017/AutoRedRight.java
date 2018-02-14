@@ -40,16 +40,16 @@ public class AutoRedRight extends MasterAutonomous
         //---------------------------------------------------------------------
 
 
-        knockJewel(blueJewel, isBlueSide);
+        //knockJewel(blueJewel, isBlueSide);
 
 
-        moveRobot(90, 0.3, 1.2);
-        turnTo(0);
-        moveRobot(180, 0.6, vuforiaHelper.keyColumnDistance(isBlueSide,isLeftBalancingStone));
-        turnTo(0);
-        //moveRobot(180, 0.6, 0.5);
-
-
+        // Move off balancing stone and turn around--------
+        driveToPosition(0, 450, 0.7);
+        //moveRobot(-90, 0.3, 1.55);
+        //pauseWhileUpdating(0.3);
+        //turnTo(0);
+        //-------------------------------------------------
+        /*
         // Deploy glyph mechanism----------------------------
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
@@ -74,6 +74,7 @@ public class AutoRedRight extends MasterAutonomous
         // Move robot toward cryptobox----------------
         moveRobot(90, 0.3, 0.75);
         //-----------------------------------------------
+        */
     }
 }
 

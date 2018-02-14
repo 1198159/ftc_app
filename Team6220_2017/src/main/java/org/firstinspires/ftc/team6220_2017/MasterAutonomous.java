@@ -179,11 +179,56 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopDriveMotors();
     }
 
+    // Tell the robot to turn to a specified angle.  This method is different from turnTo in that
+    // we can tell the robot not to turn faster than a given speed
+    public void adjustableTurnTo(double targetAngle, double maxPower)
+    {
+        double turningPower;
+        currentAngle = getAngularOrientationWithOffset();
+        double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
+
+        // Robot only stops turning when it is within angle tolerance
+        while(Math.abs(angleDiff) >= Constants.ANGLE_TOLERANCE_DEG && opModeIsActive())
+        {
+            currentAngle = getAngularOrientationWithOffset();
+
+            // Give robot raw value for turning power
+            angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
+
+            // Send raw turning power through PID filter to adjust range and minimize oscillation
+            rotationFilter.roll(angleDiff);
+            turningPower = rotationFilter.getFilteredValue();
+
+            // Make sure turningPower doesn't go above maximum power
+            if (Math.abs(turningPower) > maxPower)
+            {
+                turningPower = maxPower * Math.signum(turningPower);
+            }
+
+            // Makes sure turningPower doesn't go below minimum power
+            if(Math.abs(turningPower) < Constants.MINIMUM_TURNING_POWER)
+            {
+                turningPower = Math.signum(turningPower) * Constants.MINIMUM_TURNING_POWER;
+            }
+
+            // Turns robot
+            driveMecanum(0.0, 0.0, turningPower);
+
+            telemetry.addData("angleDiff: ", angleDiff);
+            telemetry.addData("Turning Power: ", turningPower);
+            telemetry.addData("Orientation: ", currentAngle);
+            telemetry.update();
+            idle();
+        }
+
+        stopDriveMotors();
+    }
+
     // We use this method to score a jewel once its color has been determined
     public void knockJewel (VuforiaHelper.BlueJewel blueJewel, boolean isBlueSide) throws InterruptedException
     {
         verticalJewelServoToggler.toggle();
-        pauseWhileUpdating(0.7);
+        pauseWhileUpdating(0.5);
 
         if(isBlueSide)
         {
@@ -209,11 +254,11 @@ abstract public class MasterAutonomous extends MasterOpMode
             }
             // Once again, do nothing if undetermined
         }
-        pauseWhileUpdating(0.7);
+        pauseWhileUpdating(0.4);
 
         lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
         verticalJewelServoToggler.toggle();
-        pauseWhileUpdating(0.5);
+        pauseWhileUpdating(0.4);
     }
 
     // Specialized method for driving the robot in autonomous

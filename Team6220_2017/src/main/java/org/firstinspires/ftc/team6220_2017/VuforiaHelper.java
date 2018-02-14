@@ -252,7 +252,7 @@ public class VuforiaHelper
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.STRAIGHT_BOX_DISTANCE_RED + Constants.STRAIGHT_COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_DISTANCE_RED + Constants.STRAIGHT_COLUMN_DIFF + 15;
                 }
                 else
                 {
@@ -312,9 +312,9 @@ public class VuforiaHelper
 
         // Ensure that we do not attempt to take pixels from outside the image border
         if (x >= 0 && x < Constants.IMAGE_WIDTH - Constants.JEWEL_SAMPLE_LENGTH / 2 && y >= 0 &&
-                y < Constants.IMAGE_HEIGHT - Constants.JEWEL_SAMPLE_LENGTH / 2)
+                y < Constants.IMAGE_HEIGHT - Constants.JEWEL_SAMPLE_HEIGHT / 2)
         {
-            for (int j = y - Constants.JEWEL_SAMPLE_LENGTH / 2; j < y + Constants.JEWEL_SAMPLE_LENGTH / 2; j++) // Columns
+            for (int j = y - Constants.JEWEL_SAMPLE_HEIGHT / 2; j < y + Constants.JEWEL_SAMPLE_HEIGHT / 2; j++) // Columns
             {
                 for (int i = x - Constants.JEWEL_SAMPLE_LENGTH / 2; i < x + Constants.JEWEL_SAMPLE_LENGTH / 2; i++) // Rows
                 {
@@ -330,7 +330,7 @@ public class VuforiaHelper
                     colorOutput[0] += colorTransfer[0];
 
                     // Draw white border around sample region for debugging
-                    if ((j == y - Constants.JEWEL_SAMPLE_LENGTH / 2 + 1) || (j == y + Constants.JEWEL_SAMPLE_LENGTH / 2 - 1)
+                    if ((j == y - Constants.JEWEL_SAMPLE_HEIGHT / 2 + 1) || (j == y + Constants.JEWEL_SAMPLE_HEIGHT / 2 - 1)
                             || (i == x - Constants.JEWEL_SAMPLE_LENGTH / 2 + 1) || (i == x + Constants.JEWEL_SAMPLE_LENGTH / 2 - 1))
                     {
                         bitMap.setPixel(i, j, 0xffffffff);
@@ -357,8 +357,8 @@ public class VuforiaHelper
             rawPose.setData(poseData);
             // todo Test jewel locations
             // Place points where we think the centers of the jewels are relative to the vuMark
-            Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(150, -220, -102));
-            Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(390, -220, -102));
+            Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(150, -220, -40));
+            Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(360, -220, -40));
 
             // Get the latest frame from vuforia
             frame = vuforiaLocalizer.getFrameQueue().take();
