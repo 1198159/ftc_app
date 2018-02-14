@@ -5,7 +5,7 @@ public class AvgFilter
     private double avgX = 0;
     private double avgY = 0;
     private double avgP = 0;
-    int numSamples = 8; // samples to average by
+    int numSamples = 5; // samples to average by
 
     double datX[] = new double[numSamples];
     double datY[] = new double[numSamples];
