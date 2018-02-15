@@ -170,8 +170,8 @@ public class GlyphMechanism implements ConcurrentOperation
          // Score glyphs
         else if (op.driver1.isButtonJustPressed(Button.DPAD_UP))
         {
-            op.motorCollectorRight.setPower(0.55);
-            op.motorCollectorLeft.setPower(-0.55);
+            op.motorCollectorRight.setPower(0.8);
+            op.motorCollectorLeft.setPower(-0.8);
 
         }
          // Stack glyphs (need a slower speed for this)

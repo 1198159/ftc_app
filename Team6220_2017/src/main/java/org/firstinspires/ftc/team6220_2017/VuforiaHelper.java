@@ -45,15 +45,21 @@ public class VuforiaHelper
     boolean isTracking = false;
     //-------------------------------------------------------
 
-    // Variables for jewel color determination---------------
-    float[] colorTransfer = new float[]{0, 0, 0};
      // What we will eventually return
-    float[] colorOutput = new float[]{0, 0, 0};
-     // Sum of all colors from sample pixels
-    float[] colorSum = new float[]{0, 0, 0};
+    float[] colorHSVOutput = new float[]{0, 0, 0};
 
-     // Integer that will be used to store individual pixel colors each loop of getAverageJewelColor()
     int color = 0;
+    int colorRGB = 0;
+    int avgColorRGB = 0;
+    int colorR = 0;
+    int colorG = 0;
+    int colorB = 0;
+    int avgColorR = 0;
+    int avgColorG = 0;
+    int avgColorB = 0;
+    int sumColorR = 0;
+    int sumColorG = 0;
+    int sumColorB = 0;
 
     float colorLeft = 0;
     float colorRight = 0;
@@ -88,13 +94,7 @@ public class VuforiaHelper
     //used for storing info from vuforia frame queue to be analyzed in other methods
     VuforiaLocalizer.CloseableFrame frame;
 
-    /*
-    Necessary image variables
-    Note:  we are using RGB888 because it stores more pixels, so we suspect
-    that we will obtain more accurate colors by using it.  However, we are not certain about this
-    and will need to look further into the issue
-    */
-    // todo find where to initialize and use
+    //Necessary image variables
     Image image = null;
     int imageFormat;
 
@@ -303,44 +303,60 @@ public class VuforiaHelper
     }
 
     // todo Add capability to throw out pixels that are bad (e.g., off jewels or inside jewel holes)
-    // Returns the average hue determined from a sample pixel area
-    public float getAverageJewelColor(int x, int y)
+    // This method returns the average RBG of the entire sampling area of one Jewel, then converts the
+    // averaged RGB value into an HSV value
+    public float getAvgRGBColor(int x, int y)
     {
-        // Reset transfer and output arrays to ensure that we don't accidentally reuse old values
-        Arrays.fill(colorTransfer, 0);
-        Arrays.fill(colorOutput, 0);
+        // Keeps track of how many "bad" pixels need to be thrown out of the average
+        //int badPixelCount = 0;
+
+        sumColorR = 0;
+        sumColorG = 0;
+        sumColorB = 0;
 
         // Ensure that we do not attempt to take pixels from outside the image border
-        if (x >= 0 && x < Constants.IMAGE_WIDTH - Constants.JEWEL_SAMPLE_LENGTH / 2 && y >= 0 &&
-                y < Constants.IMAGE_HEIGHT - Constants.JEWEL_SAMPLE_HEIGHT / 2)
+        if (x >= Constants.JEWEL_SAMPLE_LENGTH / 2 && x < Constants.IMAGE_WIDTH - Constants.JEWEL_SAMPLE_LENGTH / 2
+                && y >= Constants.JEWEL_SAMPLE_HEIGHT / 2 && y < Constants.IMAGE_HEIGHT - Constants.JEWEL_SAMPLE_HEIGHT / 2)
         {
+            colorHSVOutput[0] = 0;
             for (int j = y - Constants.JEWEL_SAMPLE_HEIGHT / 2; j < y + Constants.JEWEL_SAMPLE_HEIGHT / 2; j++) // Columns
             {
                 for (int i = x - Constants.JEWEL_SAMPLE_LENGTH / 2; i < x + Constants.JEWEL_SAMPLE_LENGTH / 2; i++) // Rows
                 {
-                    // Get color of pixel.  This is actually a single integer that stores ARGB
-                    // values in 4 bytes
-                    color = bitMap.getPixel(i, j);
+                    // get RGB color of pixel
+                    colorRGB = bitMap.getPixel(i, j);
+                    colorR = (colorRGB>>16) & 0x000000FF;
+                    colorG = (colorRGB>>8) & 0x000000FF;
+                    colorB = colorRGB & 0x000000FF;
 
-                    // Convert color integer to HSV (hue, sat, val)
-                    // Hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
-                    Color.colorToHSV(color, colorTransfer);
-
-                    // Sum the HSV values of all pixels in bitmap
-                    colorOutput[0] += colorTransfer[0];
+                    sumColorR += colorR;
+                    sumColorG += colorG;
+                    sumColorB += colorB;
 
                     // Draw white border around sample region for debugging
-                    if ((j == y - Constants.JEWEL_SAMPLE_HEIGHT / 2 + 1) || (j == y + Constants.JEWEL_SAMPLE_HEIGHT / 2 - 1)
-                            || (i == x - Constants.JEWEL_SAMPLE_LENGTH / 2 + 1) || (i == x + Constants.JEWEL_SAMPLE_LENGTH / 2 - 1))
+                    if ((j == y - Constants.JEWEL_SAMPLE_HEIGHT / 2 + 2) || (j == y + Constants.JEWEL_SAMPLE_HEIGHT / 2 - 2)
+                            || (i == x - Constants.JEWEL_SAMPLE_LENGTH / 2 + 2) || (i == x + Constants.JEWEL_SAMPLE_LENGTH / 2 - 2))
                     {
                         bitMap.setPixel(i, j, 0xffffffff);
                     }
                 }
             }
-            // Normalize output for 64 x 64 = 4096 pixel square above
-            colorOutput[0] /= 4096;
+
+            // Normalize output for 64x32 = 2048 integration above
+            avgColorR = sumColorR / 2048;
+            avgColorR = (avgColorR & 0x000000FF) << 16;
+            avgColorG = sumColorG / 2048;
+            avgColorG = (avgColorG & 0x000000FF) << 8;
+            avgColorB = sumColorB / 2048;
+            avgColorB = avgColorB & 0x000000FF;
+            avgColorRGB = avgColorR + avgColorG + avgColorB;
         }
-        return colorOutput[0]; // Return the average hue
+        // Convert RGB to HSV - hue, saturation, value
+        // Hue determines color in a 360 degree circle: 0 red, 60 yellow, 120 green, 180 cyan, 240 blue, 300 magenta
+        Color.colorToHSV(avgColorRGB, colorHSVOutput);
+
+        // Return the averaged sampled HSV color value
+        return colorHSVOutput[0];
     }
 
     // Uses a bitmap created by vuforia to determine the average hues of the jewels and compare them,
@@ -357,8 +373,8 @@ public class VuforiaHelper
             rawPose.setData(poseData);
             // todo Test jewel locations
             // Place points where we think the centers of the jewels are relative to the vuMark
-            Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(150, -220, -40));
-            Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(360, -220, -40));
+            Vec2F jewelLeft = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(150, -220, -110));
+            Vec2F jewelRight = Tool.projectPoint(vuforiaLocalizer.getCameraCalibration(), rawPose, new Vec3F(360, -220, -110));
 
             // Get the latest frame from vuforia
             frame = vuforiaLocalizer.getFrameQueue().take();
@@ -387,21 +403,20 @@ public class VuforiaHelper
             int rx = (int) jewelRight.getData()[0];
             int ry = (int) jewelRight.getData()[1];
 
-            avgLeftJewelColor = getAverageJewelColor(lx, ly);
-            avgRightJewelColor = getAverageJewelColor(rx, ry);
+            avgLeftJewelColor = getAvgRGBColor(lx, ly);
+            avgRightJewelColor = getAvgRGBColor(rx, ry);
 
             // Adjust color for red range.  Red color on the jewel can be on either side of 0, so
             // we must subtract 360 if red values are left of 0 to ensure blue is greater than red
-            colorLeft = (avgLeftJewelColor > 315) ? avgLeftJewelColor - 360 : avgLeftJewelColor;
-            colorRight = (avgRightJewelColor > 315) ? avgRightJewelColor - 360 : avgRightJewelColor;
+            colorLeft = (avgLeftJewelColor < 70) ? avgLeftJewelColor + 360 : avgLeftJewelColor;
+            colorRight = (avgRightJewelColor < 70) ? avgRightJewelColor + 360 : avgRightJewelColor;
         }
 
-        //todo Adjust value
         // Check to see if our color samples were actually on the jewel
         // If value tested is negative, then left jewel is blue.  Otherwise, right is blue
         if (Math.abs(colorLeft - colorRight) > 5)
         {
-            if ((colorLeft - colorRight) > 0)
+            if ((colorLeft - colorRight) < 0)
                 blueJewel = BlueJewel.LEFT;
             else
                 blueJewel = BlueJewel.RIGHT;
