@@ -17,7 +17,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     double pivotPower = 0;
     final double ADAGIO_POWER = 0.3;
 
-    boolean isReverseMode = true;
+    boolean isReverseMode = false;
     boolean isLegatoMode = false;
     boolean isCornerDrive = false;
     boolean driveClose = false;
@@ -37,8 +37,10 @@ abstract public class MasterTeleOp extends MasterOpMode
     int errorMinGG; // error for opening grabber
 
     int curGGPos;
+    int curGLPos;
     int minGGPos = -180; // a bit less than the original starting position of zero (where we start it) (OPEN is more positive)
     int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev (CLOSED is more negative)
+    int maxGLPos = 4000; // TODO: test and find value for maxGLPos
 
     void omniDriveTeleOp()
     {
@@ -51,9 +53,9 @@ abstract public class MasterTeleOp extends MasterOpMode
 
         // hold left trigger for reverse mode
         if (gamepad1.left_trigger > 0.0 && !isLegatoMode)
-            isReverseMode = true;
-        else
             isReverseMode = false;
+        else
+            isReverseMode = true;
         telemetry.addData("reverse: ", isReverseMode);
 
         if (isLegatoMode) // Legato Mode
@@ -109,13 +111,15 @@ abstract public class MasterTeleOp extends MasterOpMode
             powerBR = x + y - pivotPower;
         }
 
+        curGLPos = motorGlyphLeft.getCurrentPosition();
         // Glyph lift up/down
         if(-gamepad2.right_stick_y < 0.0) // down
         {
             motorGlyphLeft.setPower(Range.clip(-gamepad2.right_stick_y, -0.65, -0.2));
             motorGlyphRight.setPower(Range.clip(-gamepad2.right_stick_y, -0.65, -0.2));
         }
-        else if(-gamepad2.right_stick_y > 0.0) // up
+        else if(-gamepad2.right_stick_y > 0.0 && curGLPos<maxGLPos) // up
+        //else if(-gamepad2.right_stick_y > 0.0) // up
         {
             motorGlyphLeft.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 0.65));
             motorGlyphRight.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 0.65));
