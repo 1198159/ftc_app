@@ -37,7 +37,7 @@ public class AutoBlueLeft extends MasterAutonomous
         //---------------------------------------------------------------------
 
 
-        //knockJewel(blueJewel, isBlueSide);
+        knockJewel(blueJewel, isBlueSide);
 
 
         // Move off balancing stone and turn around--------

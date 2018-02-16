@@ -40,12 +40,12 @@ public class AutoBlueRight extends MasterAutonomous
 
 
 
-        //knockJewel(blueJewel, isBlueSide);
+        knockJewel(blueJewel, isBlueSide);
 
 
 
         // Drive to key column, turn around, and back up--------------------------------
-        driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.65);  // todo Faster?
+        driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.75);  // todo Faster?
 
         turnTo(90);
 
@@ -71,7 +71,7 @@ public class AutoBlueRight extends MasterAutonomous
 
 
         // Back away from cryptobox and stop collector-----------------------------------
-        driveToPosition(0, -200, 0.5);
+        driveToPosition(0, -200, 0.6);
 
         motorCollectorLeft.setPower(0);
         motorCollectorRight.setPower(0);
@@ -87,7 +87,7 @@ public class AutoBlueRight extends MasterAutonomous
         turnTo(-90);
 
         //moveRobot(-90, 0.8, 0.8);
-        driveToPosition(0, -470, 0.7);
+        driveToPosition(0, -500, 0.8);
         //-------------------------------------------------------------------------------
 
 
@@ -140,7 +140,7 @@ public class AutoBlueRight extends MasterAutonomous
 
         motorGlyphter.setTargetPosition(Constants.HEIGHT_3);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(0.7);    // todo Faster?
+        pauseWhileUpdating(0.6);    // todo Faster?
         //-------------------------------------------------------------------------------
 
 
@@ -154,7 +154,7 @@ public class AutoBlueRight extends MasterAutonomous
 
 
         // Back away quickly from cryptobox and stop collector---------------------------
-        driveToPosition(0, -200, 0.5);
+        driveToPosition(0, -150, 0.5);
 
         motorCollectorLeft.setPower(0);
         motorCollectorRight.setPower(0);
