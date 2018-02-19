@@ -230,11 +230,11 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.STRAIGHT_BOX_DISTANCE_BLUE + Constants.STRAIGHT_COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_DISTANCE_BLUE + Constants.STRAIGHT_COLUMN_DIFF + 12;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.STRAIGHT_BOX_DISTANCE_BLUE - Constants.STRAIGHT_COLUMN_DIFF;
+                    return Constants.STRAIGHT_BOX_DISTANCE_BLUE - Constants.STRAIGHT_COLUMN_DIFF + 7;
                 }
                 else
                 {

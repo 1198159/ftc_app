@@ -46,7 +46,7 @@ public class Constants
     // PID loop constants-------------------------------
     public static final double ROTATION_P = TURNING_POWER_FACTOR;
     public static final double ROTATION_I = 0.0;
-    public static final double ROTATION_D = 0.012;
+    public static final double ROTATION_D = 0.016;
     public static final double TRANSLATION_P = DRIVE_POWER_FACTOR;
     public static final double TRANSLATION_I = 0.00000002;    // todo Adjust
     public static final double TRANSLATION_D = 0.004;

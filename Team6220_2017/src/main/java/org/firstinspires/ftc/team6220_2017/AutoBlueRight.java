@@ -87,7 +87,7 @@ public class AutoBlueRight extends MasterAutonomous
         turnTo(-90);
 
         //moveRobot(-90, 0.8, 0.8);
-        driveToPosition(0, -500, 0.8);
+        driveToPosition(0, -480, 0.8);
         //-------------------------------------------------------------------------------
 
 
@@ -110,7 +110,7 @@ public class AutoBlueRight extends MasterAutonomous
         // Drive until there is a glyph or until the robot goes too far forward----------
         while(!isGlyph() && (collectionCount < 1))
         {
-            driveToPosition(0, 615, 0.7);
+            driveToPosition(0, 595, 0.7);
             collectionCount++;
         }
         //-------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ public class AutoBlueRight extends MasterAutonomous
         motorGlyphter.setPower(1.0);
         pauseWhileUpdating(1.4);    // todo Faster?
 
-        adjustableTurnTo(90, 0.6);
+        adjustableTurnTo(90, 0.7);
         //-------------------------------------------------------------------------------
 
 

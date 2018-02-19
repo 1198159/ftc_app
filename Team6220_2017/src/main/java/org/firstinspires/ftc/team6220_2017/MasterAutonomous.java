@@ -258,7 +258,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_NEUTRAL);
         verticalJewelServoToggler.toggle();
-        pauseWhileUpdating(0.4);
+        pauseWhileUpdating(0.2);
     }
 
     // Specialized method for driving the robot in autonomous
