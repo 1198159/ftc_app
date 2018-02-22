@@ -25,6 +25,12 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     int ggOpenState;
     int ggCloseState;
+    int liftState; // keeps track of the state that GL is in (either -1, 0, 1)
+    int liftLevel = 0; // is either 0, 1, 2, or 3
+    int glyphCounts = 1150; // this is the height of a glyph in encoder count values
+    boolean isLifting = false;
+    boolean isLowering = false;
+
 
     AvgFilter filterJoyStickInput = new AvgFilter();
 
@@ -38,6 +44,8 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     int curGGPos;
     int curGLPos;
+    int tarGLPos;
+    int tolGL = 20;
     int minGGPos = -180; // a bit less than the original starting position of zero (where we start it) (OPEN is more positive)
     int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev (CLOSED is more negative)
     int maxGLPos = 4000; // TODO: test and find value for maxGLPos
@@ -49,14 +57,12 @@ abstract public class MasterTeleOp extends MasterOpMode
             isLegatoMode = true;
         else
             isLegatoMode = false;
-        telemetry.addData("legato: ", isLegatoMode);
 
         // hold left trigger for reverse mode
         if (gamepad1.left_trigger > 0.0 && !isLegatoMode)
             isReverseMode = false;
         else
             isReverseMode = true;
-        telemetry.addData("reverse: ", isReverseMode);
 
         if (isLegatoMode) // Legato Mode
         {
@@ -73,10 +79,10 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             y = -gamepad1.right_stick_y; // Y axis is negative when up
             x = gamepad1.right_stick_x;
-            if (gamepad1.dpad_left) x = -0.9;
-            if (gamepad1.dpad_right) x = 0.9;
-            if (gamepad1.dpad_down) y = -0.9;
-            if (gamepad1.dpad_up) y = 0.9;
+            if (gamepad1.dpad_left) x = -0.75;
+            if (gamepad1.dpad_right) x = 0.75;
+            if (gamepad1.dpad_down) y = -0.75;
+            if (gamepad1.dpad_up) y = 0.75;
             //pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
             pivotPower = (gamepad1.left_stick_x) * 0.9;
         }
@@ -110,31 +116,119 @@ abstract public class MasterTeleOp extends MasterOpMode
             powerBL = -x + y + pivotPower;
             powerBR = x + y - pivotPower;
         }
+        setDriveMotorPower();
+    }
 
+
+    void runJJ()
+    {
+        // JJ SOFTWARE (hold GamePad2 button "B" down for JJ Low Position
+        servoJewel.setPosition(Range.clip((1-gamepad2.right_trigger), JEWEL_LOW, JEWEL_INIT));
+        //if (gamepad2.b) servoJewel.setPosition(JEWEL_LOW + 0.07);
+        //else servoJewel.setPosition(JEWEL_INIT);
+    }
+
+
+    void runManualGlyphLift()
+    {
         curGLPos = motorGlyphLeft.getCurrentPosition();
         // Glyph lift up/down
-        if(-gamepad2.right_stick_y < 0.0) // down
+        if(-gamepad2.right_stick_y < 0.0 && !isLifting) // down
         {
+            tarGLPos = curGLPos;
+            motorGlyphLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorGlyphRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorGlyphLeft.setPower(Range.clip(-gamepad2.right_stick_y, -0.65, -0.2));
             motorGlyphRight.setPower(Range.clip(-gamepad2.right_stick_y, -0.65, -0.2));
         }
-        else if(-gamepad2.right_stick_y > 0.0 && curGLPos<maxGLPos) // up
-        //else if(-gamepad2.right_stick_y > 0.0) // up
+        else if(-gamepad2.right_stick_y > 0.0 && curGLPos<maxGLPos && !isLifting) // up
         {
+            tarGLPos = curGLPos;
+            motorGlyphLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorGlyphRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorGlyphLeft.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 0.65));
             motorGlyphRight.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 0.65));
         }
         else // turn motors off
         {
-            motorGlyphLeft.setPower(0.0);
-            motorGlyphRight.setPower(0.0);
+            if (!isLifting)
+            {
+                motorGlyphLeft.setPower(0.0);
+                motorGlyphRight.setPower(0.0);
+            }
         }
-        telemetry.addData("GlyphLeftPos: ", motorGlyphLeft.getCurrentPosition());
-        telemetry.addData("GlyphRightPos: ", motorGlyphRight.getCurrentPosition());
-        telemetry.update();
+    }
+
+    void runAutoGlyphLift()
+    {
+        if (gamepad2.y) // LIFT ONE GLYPH LEVEL
+        {
+            isLifting = true;
+            liftState = 1;
+            motorGlyphLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorGlyphRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            tarGLPos = Range.clip( ((liftLevel + 1) * glyphCounts) , 0, maxGLPos);
+            idle();
+        }
+        else if (isLifting && liftState==1)
+        {
+            // lift the GM
+            curGLPos = motorGlyphLeft.getCurrentPosition();
+            motorGlyphLeft.setTargetPosition(tarGLPos);
+            motorGlyphRight.setTargetPosition(tarGLPos);
+
+            motorGlyphLeft.setPower(0.65);
+            motorGlyphRight.setPower(0.65);
+
+            if (curGLPos > maxGLPos || curGLPos > tarGLPos-tolGL) // stop conditions
+            {
+                motorGlyphLeft.setPower(0.0);
+                motorGlyphRight.setPower(0.0);
+                liftState = 0; // not lifting anymore
+                isLifting = false;
+                motorGlyphLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                motorGlyphRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                idle();
+            }
+        }
+
+        if (gamepad2.a) // LIFT ONE GLYPH LEVEL
+        {
+            isLifting = true;
+            liftState = -1;
+            motorGlyphLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorGlyphRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            tarGLPos = Range.clip( ((liftLevel - 1) * glyphCounts) , 0, maxGLPos);
+            idle();
+        }
+        else if (isLifting && liftState==-1)
+        {
+            // lift the GM
+            curGLPos = motorGlyphLeft.getCurrentPosition();
+            motorGlyphLeft.setTargetPosition(tarGLPos);
+            motorGlyphRight.setTargetPosition(tarGLPos);
+
+            motorGlyphLeft.setPower(-0.65);
+            motorGlyphRight.setPower(-0.65);
+
+            if (curGLPos < 0 || curGLPos < tarGLPos+tolGL) // stop conditions
+            {
+                motorGlyphLeft.setPower(0.0);
+                motorGlyphRight.setPower(0.0);
+                liftState = 0; // not lifting anymore
+                isLifting = false;
+                motorGlyphLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                motorGlyphRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                idle();
+            }
+        }
+
+        liftLevel = (int) Math.floor((motorGlyphLeft.getCurrentPosition()+tolGL) / glyphCounts);
+    }
 
 
-
+    void runManualGG()
+    {
         // Manual Glyph grabber open/close
         if (!driveOpen && !driveClose)
             curGGPos = motorGlyphGrab.getCurrentPosition(); // set the current position of the GG
@@ -160,12 +254,14 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             motorGlyphGrab.setPower(0.0);
         }
-        telemetry.addData("GlyphGrabPos: ", motorGlyphGrab.getCurrentPosition());
-        telemetry.update();
+    }
 
 
-        // Button GG Open and Close!
-        // Glyph Grabber drive to position close
+
+
+    void runAutoGG()
+    {
+        // CLOSE
         if(gamepad2.dpad_left)
         {
             driveClose = true;
@@ -178,8 +274,6 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorGlyphGrab.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             curGGPos = motorGlyphGrab.getCurrentPosition();
-            telemetry.addData("motorGGCounts:", curGGPos);
-            telemetry.update();
 
             // calculate the speed of the GG motor
             errorMaxGG = curGGPos - maxGGPos;
@@ -200,7 +294,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             }
         }
 
-        // Glyph Grabber drive to position open
+        // OPEN
         if(gamepad2.dpad_right)
         {
             driveClose = false;
@@ -213,8 +307,6 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorGlyphGrab.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             curGGPos = motorGlyphGrab.getCurrentPosition();
-            telemetry.addData("motorGGCounts:", curGGPos);
-            telemetry.update();
 
             // calculate the speed of the GG motor
             errorMinGG = curGGPos - minGGPos;
@@ -233,21 +325,9 @@ abstract public class MasterTeleOp extends MasterOpMode
                 idle();
             }
         }
-
-/*
-        // calculate the power for each motor (corner drive)
-        powerFL = px + 0*py + pivotPower;
-        powerFR = 0*px + py - pivotPower;
-        powerBL = 0*px + py + pivotPower;
-        powerBR = px + 0*py - pivotPower;
-*/
-
-        // set power to the motors
-        motorFL.setPower(powerFL);
-        motorFR.setPower(powerFR);
-        motorBL.setPower(powerBL);
-        motorBR.setPower(powerBR);
     }
+
+
 /*
     void imuOmniTeleOp()
     {
@@ -279,9 +359,31 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorBR.setPower(powerBR);
     }
 */
+
+    void updateTelemetry()
+    {
+        //telemetry.addData("legato: ", isLegatoMode);
+        //telemetry.addData("reverse: ", isReverseMode);
+        telemetry.addData("GlyphLeftPos: ", motorGlyphLeft.getCurrentPosition());
+        telemetry.addData("GlyphRightPos: ", motorGlyphRight.getCurrentPosition());
+        telemetry.addData("LiftLevel: ", liftLevel);
+        telemetry.addData("tarGLPos: ", tarGLPos);
+        //telemetry.addData("GlyphGrabPos: ", motorGlyphGrab.getCurrentPosition());
+        telemetry.update();
+    }
+
     public double modJoyStickInput(double i) // i is the raw joystick input
     {
         return Math.pow(i,2) * Math.signum(i);
+    }
+
+    public void setDriveMotorPower()
+    {
+        // set power to the motors
+        motorFL.setPower(powerFL);
+        motorFR.setPower(powerFR);
+        motorBL.setPower(powerBL);
+        motorBR.setPower(powerBR);
     }
 
     public void configureDashboard()
