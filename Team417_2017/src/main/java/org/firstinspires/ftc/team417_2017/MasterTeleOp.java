@@ -38,9 +38,11 @@ abstract public class MasterTeleOp extends MasterOpMode
     double KGlyph = 1.0f/600.0f; // constant for proportional drive
     double MINSPEED = 0.05;
     double MAXSPEED = 0.4;
+
     double speedGG; // current speed
     int errorMaxGG; // error for closing grabber
     int errorMinGG; // error for opening grabber
+    int prevGGError = 0; // error of GG motor in previous loop
 
     int curGGPos;
     int curGLPos;
@@ -48,7 +50,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     int tolGL = 20;
     int minGGPos = -180; // a bit less than the original starting position of zero (where we start it) (OPEN is more positive)
     int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev (CLOSED is more negative)
-    int maxGLPos = 4000; // TODO: test and find value for maxGLPos
+    int maxGLPos = 4000;
 
     void omniDriveTeleOp()
     {
@@ -88,7 +90,8 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
 
         filterJoyStickInput.appendInput(x, y, pivotPower);
-        x = filterJoyStickInput.getFilteredX();
+        x = filterJoyStickInput.getFilteredX() + ((curGGPos-prevGGError)/-40);
+        prevGGError = motorGlyphGrab.getCurrentPosition();
         y = filterJoyStickInput.getFilteredY();
         pivotPower = filterJoyStickInput.getFilteredP();
 
@@ -110,7 +113,6 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         else
         {
-            // reverse mode
             powerFL = x + y + pivotPower;
             powerFR = -x + y - pivotPower;
             powerBL = -x + y + pivotPower;
