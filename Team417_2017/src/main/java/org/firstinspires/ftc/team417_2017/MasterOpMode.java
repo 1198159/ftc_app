@@ -145,6 +145,8 @@ abstract public class MasterOpMode extends LinearOpMode
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        telemetry.log().setCapacity(8);
+
     } //-----------------------END OF INITIALIZATION SOFTWARE------------------------
 
 
