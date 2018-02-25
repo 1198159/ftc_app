@@ -400,7 +400,23 @@ abstract class MasterAutonomous extends MasterOpMode
         motorGlyphRight.setPower(0.0);
     }
 
-    
+
+    public void lowerGM()
+    {
+        curGMPos = motorGlyphLeft.getCurrentPosition();
+        while (curGMPos > 0)
+        {
+            curGMPos = motorGlyphLeft.getCurrentPosition();
+            telemetry.addData("motorGM:", curGMPos);
+            telemetry.update();
+            motorGlyphLeft.setPower(-powerGlyphUp);
+            motorGlyphRight.setPower(-powerGlyphUp);
+            idle();
+        }
+        motorGlyphLeft.setPower(0.0);
+        motorGlyphRight.setPower(0.0);
+    }
+
 
     public void configureDashboard()
     {
