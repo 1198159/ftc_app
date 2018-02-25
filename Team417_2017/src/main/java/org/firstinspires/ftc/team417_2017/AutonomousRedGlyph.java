@@ -39,7 +39,6 @@ public class AutonomousRedGlyph extends MasterAutonomous
             telemetry.update();
             idle();
         }
-        telemetry.update();
 
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
@@ -304,7 +303,6 @@ public class AutonomousRedGlyph extends MasterAutonomous
                 move(0, -170, 0.1, 0.3, 2.0);
                 sleep(200);
             }
-
             else if (VuMark == RelicRecoveryVuMark.CENTER || VuMark == RelicRecoveryVuMark.UNKNOWN)
             {
                 move(0, -150, 0.1, 0.3, 2.0);
@@ -316,7 +314,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
                 sleep(200);
             }
             // push the glyph in further
-            move(-160, 0, 0.3, 0.5, 2.3);
+            move(170, 0, 0.4, 0.9, 2.3);
             sleep(200);
             // move away from the scored glyph
             move(70, 0, 0.3, 0.5, 1);
