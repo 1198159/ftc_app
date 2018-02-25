@@ -3,16 +3,37 @@ package org.firstinspires.ftc.team6220_2017;
 import com.qualcomm.robotcore.util.Range;
 
 /*
-    Contains methods for accepting and interpreting pilot and co-pilot input
+    Contains methods for accepting and interpreting pilot and co-pilot input.
 */
 abstract public class MasterTeleOp extends MasterOpMode
 {
     boolean slowMode = false;
 
-    // Factor that adjusts magnitudes of vertical and horizontal movement
+    // Factor that adjusts magnitudes of vertical and horizontal movement.
     double tFactor = Constants.T_FACTOR;
-    // Factor that adjusts magnitude of rotational movement
+    // Factor that adjusts magnitude of rotational movement.
     double rFactor = Constants.R_FACTOR;
+
+    // For using turning and other autonomous functionalities in TeleOp.
+    MasterAutonomous masterAutonomous;
+
+
+    // todo Test and implement this for competition
+    // A driver assist that cuts time in TeleOp.  Raises glyphter while turning 180, then lowers
+    // glyphter.
+    void autoAlignToScore()
+    {
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_3);
+        motorGlyphter.setPower(1.0);
+        pauseWhileUpdating(0.4);
+
+        masterAutonomous.turnTo(getAngularOrientationWithOffset() + 180);
+
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+        motorGlyphter.setPower(1.0);
+        pauseWhileUpdating(0.4);
+    }
+
 
     // Takes driver 1 stick input and uses it to give power and direction inputs to the drive
     void driveMecanumWithJoysticks()
