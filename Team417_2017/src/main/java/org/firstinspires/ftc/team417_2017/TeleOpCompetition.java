@@ -9,6 +9,18 @@ public class TeleOpCompetition extends MasterTeleOp
     @Override
     public void runOpMode() throws InterruptedException
     {
+        while (!isStarted())
+        {
+            // select driver 1
+            if (gamepad1.a) driveSlater = true;
+
+            if (driveSlater) telemetry.addData("Driver: ", "Slater");
+            else telemetry.addData("Driver: ", "Flynn");
+
+            telemetry.update();
+            idle();
+        }
+
         super.initializeHardware();
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);

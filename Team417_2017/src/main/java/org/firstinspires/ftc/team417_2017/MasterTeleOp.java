@@ -19,7 +19,7 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     boolean isReverseMode = false;
     boolean isLegatoMode = false;
-    boolean isCornerDrive = false;
+    boolean isStraightDrive = false;
     boolean driveClose = false;
     boolean driveOpen = false;
 
@@ -54,74 +54,141 @@ abstract public class MasterTeleOp extends MasterOpMode
     int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev (CLOSED is more negative)
     int maxGLPos = 4000;
 
+    boolean driveSlater = false;
+
     void omniDriveTeleOp()
     {
-        // hold right trigger for adagio legato mode
-        if (gamepad1.right_trigger > 0.0 && !isCornerDrive)
-            isLegatoMode = true;
+        if (driveSlater)
+        {
+            // hold right trigger for adagio legato mode
+            if (gamepad1.right_trigger > 0.0 && !isStraightDrive)
+                isLegatoMode = true;
+            else
+                isLegatoMode = false;
+
+            // hold left trigger for corner drive
+            if (gamepad1.left_trigger > 0.0 && !isLegatoMode)
+                isStraightDrive = false;
+            else
+                isStraightDrive = true;
+
+            if (isLegatoMode) // Legato Mode
+            {
+                y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
+                x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
+                pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
+                //pivotPower = (gamepad1.left_stick_x) * 0.3;
+            }
+            else if (isStraightDrive) // Corner drive
+            {
+                y = -Range.clip(gamepad1.right_stick_y, -0.6, 0.6); // Y axis is negative when up
+                x = Range.clip(gamepad1.right_stick_x, -0.6, 0.6);
+                pivotPower = Range.clip(gamepad1.left_stick_x, -0.6, 0.6);
+                //pivotPower = (gamepad1.left_stick_x) * 0.6;
+            }
+            else // Staccato Mode
+            {
+                y = -gamepad1.right_stick_y; // Y axis is negative when up
+                x = gamepad1.right_stick_x;
+                pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
+                //pivotPower = (gamepad1.left_stick_x) * 0.9;
+            }
+
+            filterJoyStickInput.appendInput(x, y, pivotPower);
+
+            x = filterJoyStickInput.getFilteredX();
+            prevGGError = motorGlyphGrab.getCurrentPosition();
+            y = filterJoyStickInput.getFilteredY();
+            pivotPower = filterJoyStickInput.getFilteredP();
+
+            if (isStraightDrive)
+            {
+                // corner drive
+                powerFL = -y + pivotPower;
+                powerFR = x - pivotPower;
+                powerBL = x + pivotPower;
+                powerBR = -y - pivotPower;
+            }
+            else if (isReverseMode)
+            {
+                // calculate the power for each motor (this is the default 'forward' in TeleOp)
+                powerFL = -x - y + pivotPower;
+                powerFR = x - y - pivotPower;
+                powerBL = x - y + pivotPower;
+                powerBR = -x - y - pivotPower;
+            }
+            else
+            {
+                powerFL = x + y + pivotPower;
+                powerFR = -x + y - pivotPower;
+                powerBL = -x + y + pivotPower;
+                powerBR = x + y - pivotPower;
+            }
+            setDriveMotorPower();
+        }
         else
-            isLegatoMode = false;
-
-        // hold left trigger for reverse mode
-        if (gamepad1.left_trigger > 0.0 && !isLegatoMode)
-            isReverseMode = false;
-        else
-            isReverseMode = true;
-
-        if (isLegatoMode) // Legato Mode
         {
-            y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
-            x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
-            if (gamepad1.dpad_left) x = -0.3;
-            if (gamepad1.dpad_right) x = 0.3;
-            if (gamepad1.dpad_down) y = -0.3;
-            if (gamepad1.dpad_up) y = 0.3;
-            //pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
-            pivotPower = (gamepad1.left_stick_x) * 0.3;
-        }
-        else // Staccato Mode
-        {
-            y = -gamepad1.right_stick_y; // Y axis is negative when up
-            x = gamepad1.right_stick_x;
-            if (gamepad1.dpad_left) x = -0.75;
-            if (gamepad1.dpad_right) x = 0.75;
-            if (gamepad1.dpad_down) y = -0.75;
-            if (gamepad1.dpad_up) y = 0.75;
-            //pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
-            pivotPower = (gamepad1.left_stick_x) * 0.9;
-        }
+            // hold right trigger for adagio legato mode
+            if (gamepad1.right_trigger > 0.0 && !isStraightDrive)
+                isLegatoMode = true;
+            else
+                isLegatoMode = false;
 
-        filterJoyStickInput.appendInput(x, y, pivotPower);
+            // hold left trigger for reverse mode
+            if (gamepad1.left_trigger > 0.0 && !isLegatoMode)
+                isReverseMode = false;
+            else
+                isReverseMode = true;
 
-        x = filterJoyStickInput.getFilteredX();
-        prevGGError = motorGlyphGrab.getCurrentPosition();
-        y = filterJoyStickInput.getFilteredY();
-        pivotPower = filterJoyStickInput.getFilteredP();
+            if (isLegatoMode) // Legato Mode
+            {
+                y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
+                x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
+                if (gamepad1.dpad_left) x = -0.3;
+                if (gamepad1.dpad_right) x = 0.3;
+                if (gamepad1.dpad_down) y = -0.3;
+                if (gamepad1.dpad_up) y = 0.3;
+                //pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
+                pivotPower = (gamepad1.left_stick_x) * 0.3;
+            } else // Staccato Mode
+            {
+                y = -gamepad1.right_stick_y; // Y axis is negative when up
+                x = gamepad1.right_stick_x;
+                if (gamepad1.dpad_left) x = -0.75;
+                if (gamepad1.dpad_right) x = 0.75;
+                if (gamepad1.dpad_down) y = -0.75;
+                if (gamepad1.dpad_up) y = 0.75;
+                //pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
+                pivotPower = (gamepad1.left_stick_x) * 0.9;
+            }
 
-        if (isCornerDrive)
-        {
-            // corner drive
-            powerFL = -y + pivotPower;
-            powerFR = x - pivotPower;
-            powerBL = x + pivotPower;
-            powerBR = -y - pivotPower;
+            filterJoyStickInput.appendInput(x, y, pivotPower);
+
+            x = filterJoyStickInput.getFilteredX();
+            prevGGError = motorGlyphGrab.getCurrentPosition();
+            y = filterJoyStickInput.getFilteredY();
+            pivotPower = filterJoyStickInput.getFilteredP();
+
+            if (isStraightDrive) {
+                // corner drive
+                powerFL = -y + pivotPower;
+                powerFR = x - pivotPower;
+                powerBL = x + pivotPower;
+                powerBR = -y - pivotPower;
+            } else if (isReverseMode) {
+                // calculate the power for each motor (this is the default 'forward' in TeleOp)
+                powerFL = -x - y + pivotPower;
+                powerFR = x - y - pivotPower;
+                powerBL = x - y + pivotPower;
+                powerBR = -x - y - pivotPower;
+            } else {
+                powerFL = x + y + pivotPower;
+                powerFR = -x + y - pivotPower;
+                powerBL = -x + y + pivotPower;
+                powerBR = x + y - pivotPower;
+            }
+            setDriveMotorPower();
         }
-        else if (isReverseMode)
-        {
-            // calculate the power for each motor (this is the default 'forward' in TeleOp)
-            powerFL = -x - y + pivotPower;
-            powerFR = x - y - pivotPower;
-            powerBL = x - y + pivotPower;
-            powerBR = -x - y - pivotPower;
-        }
-        else
-        {
-            powerFL = x + y + pivotPower;
-            powerFR = -x + y - pivotPower;
-            powerBL = -x + y + pivotPower;
-            powerBR = x + y - pivotPower;
-        }
-        setDriveMotorPower();
     }
 
 
