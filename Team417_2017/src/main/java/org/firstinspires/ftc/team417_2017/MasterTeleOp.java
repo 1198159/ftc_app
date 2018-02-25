@@ -27,7 +27,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     int ggCloseState;
     int liftState; // keeps track of the state that GL is in (either -1, 0, 1)
     int liftLevel = 0; // is either 0, 1, 2, or 3
-    int glyphCounts = 1150; // this is the height of a glyph in encoder count values
+    int glyphCounts = 1300; // this is the height of a glyph in encoder count values
     boolean isLifting = false;
     boolean isLowering = false;
 
@@ -43,11 +43,13 @@ abstract public class MasterTeleOp extends MasterOpMode
     int errorMaxGG; // error for closing grabber
     int errorMinGG; // error for opening grabber
     int prevGGError = 0; // error of GG motor in previous loop
+    double shiftGG = 0.0;
 
-    int curGGPos;
     int curGLPos;
     int tarGLPos;
     int tolGL = 20;
+    double speedGL;
+    int curGGPos;
     int minGGPos = -180; // a bit less than the original starting position of zero (where we start it) (OPEN is more positive)
     int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev (CLOSED is more negative)
     int maxGLPos = 4000;
@@ -90,7 +92,8 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
 
         filterJoyStickInput.appendInput(x, y, pivotPower);
-        x = filterJoyStickInput.getFilteredX() + ((curGGPos-prevGGError)/-40);
+
+        x = filterJoyStickInput.getFilteredX();
         prevGGError = motorGlyphGrab.getCurrentPosition();
         y = filterJoyStickInput.getFilteredY();
         pivotPower = filterJoyStickInput.getFilteredP();
@@ -125,7 +128,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     void runJJ()
     {
         // JJ SOFTWARE (hold GamePad2 button "B" down for JJ Low Position
-        servoJewel.setPosition(Range.clip((1-gamepad2.right_trigger), JEWEL_LOW, JEWEL_INIT));
+        servoJewel.setPosition(Range.clip((1-gamepad2.right_trigger), JEWEL_LOW+0.07, JEWEL_INIT));
         //if (gamepad2.b) servoJewel.setPosition(JEWEL_LOW + 0.07);
         //else servoJewel.setPosition(JEWEL_INIT);
     }
@@ -179,8 +182,9 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorGlyphLeft.setTargetPosition(tarGLPos);
             motorGlyphRight.setTargetPosition(tarGLPos);
 
-            motorGlyphLeft.setPower(0.65);
-            motorGlyphRight.setPower(0.65);
+            speedGL = Range.clip( (tarGLPos-curGLPos)*0.0140, 0.15, 0.65 );
+            motorGlyphLeft.setPower(speedGL);
+            motorGlyphRight.setPower(speedGL);
 
             if (curGLPos > maxGLPos || curGLPos > tarGLPos-tolGL) // stop conditions
             {
@@ -194,7 +198,8 @@ abstract public class MasterTeleOp extends MasterOpMode
             }
         }
 
-        if (gamepad2.a) // LIFT ONE GLYPH LEVEL
+        /*
+        if (gamepad2.a) // LOWER ONE GLYPH LEVEL
         {
             isLifting = true;
             liftState = -1;
@@ -210,8 +215,9 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorGlyphLeft.setTargetPosition(tarGLPos);
             motorGlyphRight.setTargetPosition(tarGLPos);
 
-            motorGlyphLeft.setPower(-0.65);
-            motorGlyphRight.setPower(-0.65);
+            speedGL = -(Range.clip( (tarGLPos-curGLPos)*0.090, 0.15, 0.65 ));
+            motorGlyphLeft.setPower(speedGL);
+            motorGlyphRight.setPower(speedGL);
 
             if (curGLPos < 0 || curGLPos < tarGLPos+tolGL) // stop conditions
             {
@@ -224,7 +230,7 @@ abstract public class MasterTeleOp extends MasterOpMode
                 idle();
             }
         }
-
+        */
         liftLevel = (int) Math.floor((motorGlyphLeft.getCurrentPosition()+tolGL) / glyphCounts);
     }
 
