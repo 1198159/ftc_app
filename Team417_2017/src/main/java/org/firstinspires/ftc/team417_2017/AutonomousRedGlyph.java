@@ -295,19 +295,33 @@ public class AutonomousRedGlyph extends MasterAutonomous
             motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             openGG(minGGPos);
             sleep(100);
-            pivotWithReference(0, refAngle, 0.15, 0.55);
+            pivotWithReference(0, refAngle, 0.15, 0.55); // side of the robot is facing
             sleep(200);
-            // back up a bit more, to make sure that the robot is not touching the deposited glyph
             move(85, 0, 0.1, 0.3, 0.7);
             sleep(200);
             if (VuMark == RelicRecoveryVuMark.RIGHT)
-                move(0, -200, 0.1, 0.3, 2.0);
-            else if (VuMark == RelicRecoveryVuMark.CENTER)
+            {
+                move(0, -170, 0.1, 0.3, 2.0);
+                sleep(200);
+            }
+
+            else if (VuMark == RelicRecoveryVuMark.CENTER || VuMark == RelicRecoveryVuMark.UNKNOWN)
+            {
                 move(0, -150, 0.1, 0.3, 2.0);
+                sleep(200);
+            }
             else if (VuMark == RelicRecoveryVuMark.LEFT)
+            {
                 move(0, -150, 0.1, 0.3, 2.0);
-            else telemetry.addData("Autonomous", "Done");
+                sleep(200);
+            }
+            // push the glyph in further
+            move(-160, 0, 0.3, 0.5, 2.3);
+            sleep(200);
+            // move away from the scored glyph
+            move(70, 0, 0.3, 0.5, 1);
             sleep(100);
+            lowerGM();
         }
 
         telemetry.addData("Autonomous", "Complete");
