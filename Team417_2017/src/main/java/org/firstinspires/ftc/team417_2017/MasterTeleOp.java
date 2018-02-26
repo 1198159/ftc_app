@@ -61,37 +61,34 @@ abstract public class MasterTeleOp extends MasterOpMode
         if (driveSlater)
         {
             // hold right trigger for adagio legato mode
-            if (gamepad1.right_trigger > 0.0 && !isStraightDrive)
+            if (gamepad1.right_trigger > 0.0)
                 isLegatoMode = true;
             else
                 isLegatoMode = false;
 
             // hold left trigger for straight drive
-            if (gamepad1.left_trigger > 0.0 && !isLegatoMode)
-                isStraightDrive = false;
-            else
+            if (gamepad1.left_trigger > 0.0)
                 isStraightDrive = true;
+            else
+                isStraightDrive = false;
 
             if (isLegatoMode) // Legato Mode
             {
                 y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
                 x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
                 pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
-                //pivotPower = (gamepad1.left_stick_x) * 0.3;
             }
             else if (isStraightDrive) // Straight drive
             {
                 y = -Range.clip(gamepad1.right_stick_y, -0.6, 0.6); // Y axis is negative when up
                 x = 0;
                 pivotPower = Range.clip(gamepad1.left_stick_x, -0.6, 0.6);
-                //pivotPower = (gamepad1.left_stick_x) * 0.6;
             }
             else // Staccato Mode (standard)
             {
                 y = -gamepad1.right_stick_y; // Y axis is negative when up
                 x = gamepad1.right_stick_x;
                 pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
-                //pivotPower = (gamepad1.left_stick_x) * 0.9;
             }
 
             filterJoyStickInput.appendInput(x, y, pivotPower);
@@ -101,29 +98,11 @@ abstract public class MasterTeleOp extends MasterOpMode
             y = filterJoyStickInput.getFilteredY();
             pivotPower = filterJoyStickInput.getFilteredP();
 
-            if (isStraightDrive)
-            {
-                // straight drive
-                powerFL = -x - y + pivotPower;
-                powerFR = x - y - pivotPower;
-                powerBL = x - y + pivotPower;
-                powerBR = -x - y - pivotPower;
-            }
-            else if (isReverseMode)
-            {
-                // calculate the power for each motor (this is the default 'forward' in TeleOp)
-                powerFL = -x - y + pivotPower;
-                powerFR = x - y - pivotPower;
-                powerBL = x - y + pivotPower;
-                powerBR = -x - y - pivotPower;
-            }
-            else
-            {
-                powerFL = x + y + pivotPower;
-                powerFR = -x + y - pivotPower;
-                powerBL = -x + y + pivotPower;
-                powerBR = x + y - pivotPower;
-            }
+            powerFL = -x - y + pivotPower;
+            powerFR = x - y - pivotPower;
+            powerBL = x - y + pivotPower;
+            powerBR = -x - y - pivotPower;
+
             setDriveMotorPower();
         }
         else
