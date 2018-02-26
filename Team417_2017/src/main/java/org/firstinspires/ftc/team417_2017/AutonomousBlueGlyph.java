@@ -203,13 +203,27 @@ public class AutonomousBlueGlyph extends MasterAutonomous
             sleep(100);
             pivotWithReference(0, refAngle, 0.15, 0.55);
             sleep(200);
-            // back up a bit more, to make sure that the robot is not touching the deposited glyph
-            sleep(200);
             move(-85, 0, 0.1, 0.3, 0.7);
-            if (VuMark == RelicRecoveryVuMark.RIGHT) move(0, -150, 0.1, 0.3, 2.0);
-            else if (VuMark == RelicRecoveryVuMark.LEFT) move(0, -150, 0.1, 0.3, 2.0);
-            else move(0, -85, 0.1, 0.3, 0.7);
+            if (VuMark == RelicRecoveryVuMark.RIGHT)
+            {
+                move(0, -150, 0.1, 0.3, 2.0);
+            }
+            else if (VuMark == RelicRecoveryVuMark.LEFT)
+            {
+                move(0, -150, 0.1, 0.3, 2.0);
+            }
+            else if (VuMark == RelicRecoveryVuMark.CENTER || VuMark == RelicRecoveryVuMark.UNKNOWN)
+            {
+                move(0, -120, 0.1, 0.3, 0.7);
+            }
             sleep(100);
+            // push the glyph in further
+            move(170, 0, 0.4, 0.9, 2.3);
+            sleep(200);
+            // move away from the scored glyph
+            move(-70, 0, 0.3, 0.5, 1);
+            sleep(100);
+            lowerGM();
         }
         else // BLUE RIGHT
         {

@@ -12,7 +12,8 @@ public class TeleOpCompetition extends MasterTeleOp
         while (!isStarted())
         {
             // select driver 1
-            if (gamepad1.a) driveSlater = true;
+            if (gamepad1.x) driveSlater = true;
+            if (gamepad1.y) driveSlater = false;
 
             if (driveSlater) telemetry.addData("Driver: ", "Slater");
             else telemetry.addData("Driver: ", "Flynn");
