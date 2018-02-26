@@ -150,7 +150,8 @@ abstract public class MasterTeleOp extends MasterOpMode
                 if (gamepad1.dpad_up) y = 0.3;
                 //pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
                 pivotPower = (gamepad1.left_stick_x) * 0.3;
-            } else // Staccato Mode
+            }
+            else // Staccato Mode
             {
                 y = -gamepad1.right_stick_y; // Y axis is negative when up
                 x = gamepad1.right_stick_x;
@@ -169,19 +170,16 @@ abstract public class MasterTeleOp extends MasterOpMode
             y = filterJoyStickInput.getFilteredY();
             pivotPower = filterJoyStickInput.getFilteredP();
 
-            if (isStraightDrive) {
-                // corner drive
-                powerFL = -y + pivotPower;
-                powerFR = x - pivotPower;
-                powerBL = x + pivotPower;
-                powerBR = -y - pivotPower;
-            } else if (isReverseMode) {
+            if (isReverseMode)
+            {
                 // calculate the power for each motor (this is the default 'forward' in TeleOp)
                 powerFL = -x - y + pivotPower;
                 powerFR = x - y - pivotPower;
                 powerBL = x - y + pivotPower;
                 powerBR = -x - y - pivotPower;
-            } else {
+            }
+            else
+            {
                 powerFL = x + y + pivotPower;
                 powerFR = -x + y - pivotPower;
                 powerBL = -x + y + pivotPower;
