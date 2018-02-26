@@ -66,7 +66,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             else
                 isLegatoMode = false;
 
-            // hold left trigger for corner drive
+            // hold left trigger for straight drive
             if (gamepad1.left_trigger > 0.0 && !isLegatoMode)
                 isStraightDrive = false;
             else
@@ -79,14 +79,14 @@ abstract public class MasterTeleOp extends MasterOpMode
                 pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
                 //pivotPower = (gamepad1.left_stick_x) * 0.3;
             }
-            else if (isStraightDrive) // Corner drive
+            else if (isStraightDrive) // Straight drive
             {
                 y = -Range.clip(gamepad1.right_stick_y, -0.6, 0.6); // Y axis is negative when up
-                x = Range.clip(gamepad1.right_stick_x, -0.6, 0.6);
+                x = 0;
                 pivotPower = Range.clip(gamepad1.left_stick_x, -0.6, 0.6);
                 //pivotPower = (gamepad1.left_stick_x) * 0.6;
             }
-            else // Staccato Mode
+            else // Staccato Mode (standard)
             {
                 y = -gamepad1.right_stick_y; // Y axis is negative when up
                 x = gamepad1.right_stick_x;
@@ -103,11 +103,11 @@ abstract public class MasterTeleOp extends MasterOpMode
 
             if (isStraightDrive)
             {
-                // corner drive
-                powerFL = -y + pivotPower;
-                powerFR = x - pivotPower;
-                powerBL = x + pivotPower;
-                powerBR = -y - pivotPower;
+                // straight drive
+                powerFL = -x - y + pivotPower;
+                powerFR = x - y - pivotPower;
+                powerBL = x - y + pivotPower;
+                powerBR = -x - y - pivotPower;
             }
             else if (isReverseMode)
             {
