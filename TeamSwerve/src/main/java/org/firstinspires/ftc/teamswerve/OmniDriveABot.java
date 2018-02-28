@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
  * Program used to control Drive-A-Bots.
  * This can be a reference for drive controls.
  */
-@TeleOp(name="OmniDriveABot", group = "Swerve")
+//@TeleOp(name="OmniDriveABot", group = "Swerve")
 //@Disabled
 public class OmniDriveABot extends LinearOpMode
 {

@@ -17,7 +17,7 @@ import java.util.Locale;
  * Program used to control Drive-A-Bots.YAY!!
  * This can be a good reference for drive controls.
  */
-@TeleOp(name="JustinOmniDrive", group = "Swerve")
+//@TeleOp(name="JustinOmniDrive", group = "Swerve")
 // @Disabled
 public class JustinOmniDrive extends LinearOpMode
 {

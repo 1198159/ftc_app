@@ -9,7 +9,7 @@ RC and DS phones.  The point is to simply display the running total of test data
 if the WeightedMovingAverage class is working properly.  Please use this class as a test when a
 change is made.
  */
-@TeleOp(name="FilterTest", group = "Swerve") // The test shows up as "FilterTest" on the DS phone.
+//@TeleOp(name="FilterTest", group = "Swerve") // The test shows up as "FilterTest" on the DS phone.
 public class FilterTest extends LinearOpMode // This class extends LinearOpMode.
 {
     @Override // tells the compiler we're overriding the base class method, because this is a subclass
