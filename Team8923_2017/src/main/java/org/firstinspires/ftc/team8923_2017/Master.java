@@ -27,8 +27,10 @@ public abstract class Master extends LinearOpMode
 
     // Declare servos here
     Servo servoJJ = null;
-    Servo servoGGL = null;
-    Servo servoGGR = null;
+    Servo servoGGUL = null;
+    Servo servoGGUR = null;
+    Servo servoGGDL = null;
+    Servo servoGGDR = null;
     Servo servoRRHand = null;
 
     // Declare any neccessary sensors here
@@ -102,10 +104,10 @@ public abstract class Master extends LinearOpMode
 
         // Servos here
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
-        servoGGL = hardwareMap.get(Servo.class, "servoGGL");
-        servoGGR = hardwareMap.get(Servo.class, "servoGGR");
-
-
+        servoGGUL = hardwareMap.get(Servo.class, "servoGGUL");
+        servoGGUR = hardwareMap.get(Servo.class, "servoGGUR");
+        servoGGDL = hardwareMap.get(Servo.class, "servoGGDL");
+        servoGGDR = hardwareMap.get(Servo.class, "servoGGDR");
 
         //Reset encoders
         /*motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
