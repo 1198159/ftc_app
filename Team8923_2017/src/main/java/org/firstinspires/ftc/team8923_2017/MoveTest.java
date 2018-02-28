@@ -10,55 +10,31 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
-@Autonomous(name="Move Test", group = "Swerve")
-//@Disabled
-/**
+@Autonomous(name="IMU Movement Test", group = "Test")
+/*
  * Runable shell for Master Autonomous code
  */
 //@Disabled
 public class MoveTest extends MasterAutonomous
 {
-    private ElapsedTime runtime = new ElapsedTime();
-    double targetAngle;
-    double maxSpeed;
-    double saturationValue;
-    boolean GGFlipped = false;
     //Declare variables here
     @Override
     public void runOpMode() throws InterruptedException
     {
-        //ChooseOptions();
-
-        InitAuto();//Initializes Hardware and sets position based on alliance
-        //initVuforia();//Initializes Vuforia
+        InitHardware();
+        ChooseOptions();
+        InitAuto();
         waitForStart();
-
-        motorGG.setTargetPosition(motorGG.getCurrentPosition() + 1100);
-        motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 55.0), 1.0));
-
-        sleep(400);
-        if (!GGFlipped)
-        {
-            motorFF.setTargetPosition(FFZero + 750);
-            motorFF.setPower(0.4);
-            sleep(500);
-            GGFlipped = true;
-        }
-        else
-        {
-            motorFF.setTargetPosition(FFZero);
-            motorFF.setPower(-0.4);
-            sleep(500);
-            GGFlipped = false;
-        }
-        sleep(200);
-        motorGG.setTargetPosition(motorGG.getCurrentPosition() - 950);
-        motorGG.setPower(Math.max((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 55.0), 1.0));
         while (opModeIsActive())
         {
-            //Run();
-            idle();
+            Run();
         }
-
+        /*while (opModeIsActive())
+        {
+            telemetry.addData("IMU first angle", imu.getAngularOrientation().firstAngle);
+            telemetry.addData("IMU second angle", imu.getAngularOrientation().secondAngle);
+            telemetry.addData("IMU third angle", imu.getAngularOrientation().thirdAngle);
+            telemetry.update();
+        }*/
     }
 }
