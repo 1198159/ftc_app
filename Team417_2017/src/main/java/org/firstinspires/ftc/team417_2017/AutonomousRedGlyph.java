@@ -52,9 +52,9 @@ public class AutonomousRedGlyph extends MasterAutonomous
         // grab the glyph
         motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         closeGG();
-        sleep(200);
+        sleep(100);
         raiseGM();
-        sleep(200);
+        sleep(100);
 
         Kmove = 1.0/1200.0;
         TOL = 100.0;
@@ -79,7 +79,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
 
         // lower the servos, putting jewel manipulator into position
         servoJewel.setPosition(JEWEL_LOW);
-        sleep(200);
+        sleep(100);
 
         VuforiaDetect.GetLeftJewelColor(); // calculate if the left jewel is blue or not
 
@@ -90,7 +90,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
 
         if(VuforiaDetect.isLeftJewelBlue) // if the left jewel is blue,
         {
-            pivotWithReference(17, refAngle, 0.12,0.3); // then pivot right
+            pivotWithReference(17, refAngle, 0.15,0.3); // then pivot right
             sleep(200);
             servoJewel.setPosition(JEWEL_INIT);
             sleep(200);
@@ -99,7 +99,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
         }
         else // if the left jewel is red,
         {
-            pivotWithReference(-17, refAngle, 0.12, 0.3); // then pivot left
+            pivotWithReference(-17, refAngle, 0.15, 0.3); // then pivot left
             sleep(200);
             servoJewel.setPosition(JEWEL_INIT);
             sleep(200);
@@ -113,61 +113,61 @@ public class AutonomousRedGlyph extends MasterAutonomous
             {
                 // MOVE TOWARDS THE CRYPTOBOX
                 moveTimed(-0.5, 0, 1200); // move left off the balancing stone
-                sleep(200);
+                sleep(100);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the reference angle
-                sleep(200);
+                sleep(100);
                 Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-                moveMaintainHeading(-125, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
-                sleep(200);
+                moveMaintainHeading(-125, 0, 0, refAngle, 0.15, 0.6, 1.6); // move left towards the cryptobox
+                sleep(100);
                 Kpivot = 1/100.0;
                 pivotWithReference(-140, refAngle, 0.15, 0.55); // turn to face the cryptobox
-                sleep(200);
+                sleep(100);
 
                 // ALIGN TO CORRECT COLUMN
                 move(-120, 0, 0.15, 0.5, 1); // move right
-                sleep(200);
+                sleep(100);
                 move(0, -225, 0.1, 0.3, 2.5); // push the glyph in
-                sleep(200);
+                sleep(100);
             }
             else if (VuMark == RelicRecoveryVuMark.RIGHT)
             {
                 // MOVE TOWARDS THE CRYPTOBOX
                 moveTimed(-0.5, 0, 1200); // move left off the balancing stone
-                sleep(200);
+                sleep(100);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the reference angle
-                sleep(200);
+                sleep(100);
                 Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-                moveMaintainHeading(-310, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
-                sleep(200);
+                moveMaintainHeading(-310, 0, 0, refAngle, 0.15, 0.6, 1.6); // move left towards the cryptobox
+                sleep(100);
                 Kpivot = 1/100.0;
                 pivotWithReference(140, refAngle, 0.15, 0.55); // turn to face the cryptobox
-                sleep(200);
+                sleep(100);
 
                 // ALIGN TO CORRECT COLUMN
                 move(-30, 0, 0.15, 0.5, 1); // move right
-                sleep(200);
+                sleep(100);
                 move(0, -275, 0.1, 0.3, 2.5); // push the glyph in
-                sleep(200);
+                sleep(100);
             }
             else if (VuMark == RelicRecoveryVuMark.LEFT)
             {
                 // MOVE TOWARDS THE CRYPTOBOX
                 moveTimed(-0.5, 0, 1200); // move left off the balancing stone
-                sleep(200);
+                sleep(100);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
-                sleep(200);
+                sleep(100);
                 Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-                moveMaintainHeading(-110, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
-                sleep(200);
+                moveMaintainHeading(-110, 0, 0, refAngle, 0.15, 0.6, 1.6); // move left towards the cryptobox
+                sleep(100);
                 Kpivot = 1/100.0;
                 pivotWithReference(-140, refAngle, 0.15, 0.55); // turn to face the cryptobox
-                sleep(200);
+                sleep(100);
 
                 // ALIGN TO CORRECT COLUMN
                 move(-55, 0, 0.15, 0.5, 1); // move right
-                sleep(200);
+                sleep(100);
                 move(0, -265, 0.1, 0.3, 2.5); // push the glyph in more, since we didn't shift right
-                sleep(200);
+                sleep(100);
             }
             else // If the VuMark is not visible we go for the center
             {
@@ -175,35 +175,51 @@ public class AutonomousRedGlyph extends MasterAutonomous
 
                 // MOVE TOWARDS THE CRYPTOBOX
                 moveTimed(-0.5, 0, 1200); // move left off the balancing stone
-                sleep(200);
+                sleep(100);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the reference angle
-                sleep(200);
+                sleep(100);
                 Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-                moveMaintainHeading(-125, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
-                sleep(200);
+                moveMaintainHeading(-125, 0, 0, refAngle, 0.15, 0.6, 1.6); // move left towards the cryptobox
+                sleep(100);
                 Kpivot = 1/100.0;
                 pivotWithReference(-140, refAngle, 0.15, 0.55); // turn to face the cryptobox
-                sleep(200);
+                sleep(100);
 
                 // ALIGN TO CORRECT COLUMN
                 move(-120, 0, 0.15, 0.5, 1); // move right
-                sleep(200);
+                sleep(100);
                 move(0, -225, 0.1, 0.3, 2.5); // push the glyph in
-                sleep(200);
+                sleep(100);
             }
 
             // BACK UP FROM THE CRYPTOBOX
             motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             openGG(-400); // open the GG a little bit
-            sleep(200);
+            sleep(100);
             move(0, 160, 0.1, 0.3, 0.7); // back up from the cryptobox
             // release the glyph
             motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             openGG(minGGPos);
-            pivotWithReference(0, refAngle, 0.15, 0.55);
-            // back up a bit more, to make sure that the robot is not touching the deposited glyph
-            move(0, -50, 0.1, 0.3, 0.7);
+            pivotWithReference(-90, refAngle, 0.15, 0.55); // robot left side faces the deposited glyph
             sleep(100);
+            move(90, 0, 0.3, 0.5, 2);
+            sleep(100);
+            if (VuMark != RelicRecoveryVuMark.RIGHT)
+            {
+                move(0, -145, 0.1, 0.6, 1.5);
+            }
+            else
+            {
+                move(0, 145, 0.1, 0.6, 1.5);
+            }
+            sleep(100);
+            move(-170, 0, 0.4, 0.9, 2.3); // push the glyph into Cryptobox with side of robot
+            sleep(100);
+            move(70, 0, 0.3, 0.5, 1);
+            sleep(100);
+            lowerGM();
+            deployGGExtensions();
+            pivotWithReference(0, refAngle, 0.15, 0.55); // robot GG faces the Glyph pile
         }
         else // RED RIGHT
         {
@@ -211,83 +227,83 @@ public class AutonomousRedGlyph extends MasterAutonomous
             {
                 // MOVE TOWARDS THE CRYPTOBOX
                 moveTimed(-0.5, 0, 1100); // move left off the balancing stone
-                sleep(200);
+                sleep(100);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
-                sleep(200);
+                sleep(100);
                 Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-                moveMaintainHeading(-120, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
+                moveMaintainHeading(-120, 0, 0, refAngle, 0.15, 0.6, 1.6); // move left towards the cryptobox
                 Kpivot = 1/50; // more aggressive pivot because we're turning a smaller angle
                 pivotWithReference(-45, refAngle, 0.15, 0.5); // turn to face the cryptobox
-                sleep(200);
+                sleep(100);
 
                 // ALIGN TO CORRECT COLUMN
                 Kpivot = 1/100.0; // reset Kpivot
                 //move(-70, 0, 0.15, 0.5, 1); // move right
                 move(0, -210, 0.1, 0.3, 2.5); // push the glyph in
-                sleep(200);
+                sleep(100);
             }
             else if (VuMark == RelicRecoveryVuMark.RIGHT)
             {
                 // MOVE TOWARDS THE CRYPTOBOX
                 moveTimed(-0.5, 0, 1100); // move left off the balancing stone
-                sleep(200);
+                sleep(100);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
-                sleep(200);
+                sleep(100);
                 Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-                moveMaintainHeading(-80, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
+                moveMaintainHeading(-80, 0, 0, refAngle, 0.15, 0.6, 1.6); // move left towards the cryptobox
                 Kpivot = 1/50; // more aggressive pivot because we're turning a smaller angle
                 pivotWithReference(-45, refAngle, 0.15, 0.5); // turn to face the cryptobox
-                sleep(200);
+                sleep(100);
 
                 // ALIGN TO CORRECT COLUMN
                 Kpivot = 1/100.0; // reset Kpivot
                 move(-185, 0, 0.15, 0.5, 1); // move right
                 move(0, -100, 0.1, 0.3, 2.5); // push the glyph in
-                sleep(200);
+                sleep(100);
             }
             else if (VuMark == RelicRecoveryVuMark.LEFT)
             {
                 // MOVE TOWARDS THE CRYPTOBOX
                 moveTimed(-0.5, 0, 1100); // move left off the balancing stone
-                sleep(200);
+                sleep(100);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
-                sleep(200);
+                sleep(100);
                 Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-                moveMaintainHeading(-100, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
+                moveMaintainHeading(-100, 0, 0, refAngle, 0.15, 0.6, 1.6); // move left towards the cryptobox
                 Kpivot = 1/50; // more aggressive pivot because we're turning a smaller angle
                 pivotWithReference(-45, refAngle, 0.15, 0.5); // turn to face the cryptobox
-                sleep(200);
+                sleep(100);
 
                 // ALIGN TO CORRECT COLUMN
                 Kpivot = 1/100.0; // reset Kpivot
                 move(65, 0, 0.15, 0.5, 1); // move left
                 move(0, -240, 0.1, 0.3, 2.5); // push the glyph in
-                sleep(200);
+                sleep(100);
             }
             else // if the VuMark is not visible, just go for the center column
             {
                 // MOVE TOWARDS THE CRYPTOBOX
                 moveTimed(-0.5, 0, 1100); // move left off the balancing stone
-                sleep(200);
+                sleep(100);
                 pivotWithReference(0, refAngle, 0.15, 0.5); // fix the robot heading
-                sleep(200);
+                sleep(100);
                 Kpivot = 1/70; // higher kPivot for his method because pivoting gets priority over encoder counts
-                moveMaintainHeading(-120, 0, 0, refAngle, 0.15, 0.6, 2.5); // move left towards the cryptobox
+                moveMaintainHeading(-120, 0, 0, refAngle, 0.15, 0.6, 1.6); // move left towards the cryptobox
                 Kpivot = 1/50; // more aggressive pivot because we're turning a smaller angle
                 pivotWithReference(-45, refAngle, 0.15, 0.5); // turn to face the cryptobox
-                sleep(200);
+                sleep(100);
 
                 // ALIGN TO CORRECT COLUMN
                 Kpivot = 1/100.0; // reset Kpivot
                 //move(-70, 0, 0.15, 0.5, 1); // move right
                 move(0, -210, 0.1, 0.3, 2.5); // push the glyph in
-                sleep(200);
+                sleep(100);
             }
 
             // BACK UP FROM THE CRYPTOBOX
             motorGlyphGrab.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             openGG(-400); // open the GG a little bit
-            sleep(200);
+            sleep(100);
             move(0, 190, 0.1, 0.3, 0.7); // back up from the cryptobox
             sleep(100);
             // release the glyph
@@ -295,31 +311,32 @@ public class AutonomousRedGlyph extends MasterAutonomous
             openGG(minGGPos);
             sleep(100);
             pivotWithReference(0, refAngle, 0.15, 0.55); // side of the robot is facing
-            sleep(200);
+            sleep(100);
             move(85, 0, 0.1, 0.3, 0.7);
-            sleep(200);
+            sleep(100);
             if (VuMark == RelicRecoveryVuMark.RIGHT)
             {
                 move(0, -170, 0.1, 0.3, 2.0);
-                sleep(200);
+                sleep(100);
             }
             else if (VuMark == RelicRecoveryVuMark.CENTER || VuMark == RelicRecoveryVuMark.UNKNOWN)
             {
                 move(0, -150, 0.1, 0.3, 2.0);
-                sleep(200);
+                sleep(100);
             }
             else if (VuMark == RelicRecoveryVuMark.LEFT)
             {
                 move(0, -150, 0.1, 0.3, 2.0);
-                sleep(200);
+                sleep(100);
             }
             // push the glyph in further
-            move(170, 0, 0.4, 0.9, 2.3);
-            sleep(200);
+            move(-170, 0, 0.4, 0.9, 2.3);
+            sleep(100);
             // move away from the scored glyph
             move(70, 0, 0.3, 0.5, 1);
             sleep(100);
             lowerGM();
+            deployGGExtensions();
         }
 
         telemetry.addData("Autonomous", "Complete");
