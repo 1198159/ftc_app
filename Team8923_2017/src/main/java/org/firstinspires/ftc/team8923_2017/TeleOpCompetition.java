@@ -1,11 +1,6 @@
 package org.firstinspires.ftc.team8923_2017;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
-
-import java.lang.reflect.GenericSignatureFormatError;
 
 /**
  * Runable shell for Master TeleOp code
@@ -26,10 +21,10 @@ public class TeleOpCompetition extends MasterTeleOp
 
         waitForStart();
         // Set servo positions so no penalty
-        servoGGUL.setPosition(GGServoPositions.LEFTFULLOPEN.val()); //TODO value needs to be changed
-        servoGGUR.setPosition(GGServoPositions.RIGHTFULLOPEN.val()); //TODO value needs to be changed
-        servoGGDL.setPosition(GGServoPositions.LEFTFULLOPEN.val()); //TODO value needs to be changed
-        servoGGDR.setPosition(GGServoPositions.RIGHTFULLOPEN.val()); //TODO value needs to be changed
+        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val()); //TODO value needs to be changed
+        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val()); //TODO value needs to be changed
+        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val()); //TODO value needs to be changed
+        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val()); //TODO value needs to be changed
         servoJJ.setPosition(SERVO_JJ_UP);
 
         while (opModeIsActive())

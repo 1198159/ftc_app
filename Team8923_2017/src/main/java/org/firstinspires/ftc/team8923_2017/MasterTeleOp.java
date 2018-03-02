@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team8923_2017;
 
+import com.qualcomm.ftccommon.configuration.EditLegacyServoControllerActivity;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -44,15 +46,25 @@ public abstract class MasterTeleOp extends Master
     private ElapsedTime SlowModeTimer = new ElapsedTime();
     private ElapsedTime GGFlipTimer = new ElapsedTime();
     private ElapsedTime AutoBalanceTimeout = new ElapsedTime();
+    private ElapsedTime UpAndDownGGClawReset = new ElapsedTime();
 
     enum GGServoPositions
     {
-        LEFTFULLOPEN(0.65),
-        RIGHTFULLOPEN(0.15),
-        LEFTHALFOPEN(0.55),
-        RIGHTHALFOPEN(0.35),
-        LEFTFULLCLOSED(0.45),
-        RIGHTFULLCLOSED(0.45);
+        UPPERLEFTFULLOPEN(0.30),
+        UPPERLEFTHALFOPEN(0.50),
+        UPPERLEFTFULLCLOSED(0.60),
+
+        UPPERRIGHTFULLOPEN(0.60),
+        UPPERRIGHTHALFOPEN(0.35),
+        UPPERRIGHTFULLCLOSED(0.20),
+
+        LOWERLEFTFULLOPEN(0.55),
+        LOWERLEFTHALFOPEN(0.40),
+        LOWERLEFTFULLCLOSED(0.30),
+
+        LOWERRIGHTFULLOPEN(0.35),
+        LOWERRIGHTHALFOPEN(0.50),
+        LOWERRIGHTFULLCLOSED(0.60);
 
         public final double val;
         GGServoPositions(double i) { val = i; }
@@ -133,6 +145,8 @@ public abstract class MasterTeleOp extends Master
         telemetry.addData("GG at position", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3);
         telemetry.addData("SlowMode", slowModeDivisor);
         telemetry.addData("FF Tics", Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()));
+        telemetry.addData("Dpad_Up", gamepad1.dpad_up);
+        telemetry.addData("Dpad_Down", gamepad1.dpad_down);
         /*telemetry.addData("imu rot Y", imu.getAngularOrientation().firstAngle );
         telemetry.addData("imu rot X", imu.getAngularOrientation().secondAngle);
         telemetry.addData("imu rot Z", imu.getAngularOrientation().thirdAngle);
@@ -201,10 +215,10 @@ public abstract class MasterTeleOp extends Master
 
         if(GGStart <= (GGZero + 300) && GGFlipStage == 1)
         {
-            servoGGUL.setPosition(GGServoPositions.LEFTFULLCLOSED.val());
-            servoGGUR.setPosition(GGServoPositions.RIGHTFULLCLOSED.val());
-            servoGGDL.setPosition(GGServoPositions.LEFTFULLCLOSED.val());
-            servoGGDR.setPosition(GGServoPositions.RIGHTFULLCLOSED.val());
+            servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
+            servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
+            servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
+            servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
             if(GGFlipTimer.milliseconds() > 125)
             {
                 motorGG.setTargetPosition(GGZero + 300);
@@ -230,8 +244,8 @@ public abstract class MasterTeleOp extends Master
 
             if (!GGFlipped)
             {
-                motorFF.setTargetPosition(FFZero + 850);
-                motorFF.setPower(Math.max(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 770.0)), 0.2));
+                motorFF.setTargetPosition(FFZero - 850);
+                motorFF.setPower(Math.min(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 770.0)), -0.2));
                 if ((Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()) <= 5) || GGFlipTimer.milliseconds() > 1250)
                 {
                     motorFF.setTargetPosition(motorFF.getCurrentPosition());
@@ -244,8 +258,8 @@ public abstract class MasterTeleOp extends Master
             }
             else
             {
-                motorFF.setTargetPosition(FFZero - 100);
-                motorFF.setPower(Math.min(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 770.0)), -0.2));
+                motorFF.setTargetPosition(FFZero + 100);
+                motorFF.setPower(Math.max(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 770.0)), 0.2));
                 if (Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()) <= 5 || GGFlipTimer.milliseconds() > 1250)
                 {
                     motorFF.setPower(0.0);
@@ -259,7 +273,10 @@ public abstract class MasterTeleOp extends Master
         }
         if(GGStart < 3400 && GGFlipStage == 3)
         {
-            motorGG.setTargetPosition(GGStart + 150);
+            if(topGGClosed && bottomGGClosed)
+                motorGG.setTargetPosition(GGStart);
+            else
+                motorGG.setTargetPosition(GGStart + 150);
             motorGG.setPower(Math.signum(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) *
                 Math.min(Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 150.0), 1.0));
             if (Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) <= 10)
@@ -310,26 +327,32 @@ public abstract class MasterTeleOp extends Master
         //Full close
         if(gamepad1.a)
         {
-            servoGGUL.setPosition(GGServoPositions.LEFTFULLCLOSED.val());
-            servoGGUR.setPosition(GGServoPositions.RIGHTFULLCLOSED.val());
-            servoGGDL.setPosition(GGServoPositions.LEFTFULLCLOSED.val());
-            servoGGDR.setPosition(GGServoPositions.RIGHTFULLCLOSED.val());
+            servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
+            servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
+            servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
+            servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
+            topGGClosed = true;
+            bottomGGClosed = true;
         }
         //half open
         else if(gamepad1.x)
         {
-            servoGGUL.setPosition(GGServoPositions.LEFTHALFOPEN.val());
-            servoGGUR.setPosition(GGServoPositions.RIGHTHALFOPEN.val());
-            servoGGDL.setPosition(GGServoPositions.LEFTHALFOPEN.val());
-            servoGGDR.setPosition(GGServoPositions.RIGHTHALFOPEN.val());
+            servoGGUL.setPosition(GGServoPositions.UPPERLEFTHALFOPEN.val());
+            servoGGUR.setPosition(GGServoPositions.UPPERRIGHTHALFOPEN.val());
+            servoGGDL.setPosition(GGServoPositions.LOWERLEFTHALFOPEN.val());
+            servoGGDR.setPosition(GGServoPositions.LOWERRIGHTHALFOPEN.val());
+            topGGClosed = false;
+            bottomGGClosed = false;
         }
         //full open
         else if(gamepad1.b)
         {
-            servoGGUL.setPosition(GGServoPositions.LEFTFULLOPEN.val());
-            servoGGUR.setPosition(GGServoPositions.RIGHTFULLOPEN.val());
-            servoGGDL.setPosition(GGServoPositions.LEFTFULLOPEN.val());
-            servoGGDR.setPosition(GGServoPositions.RIGHTFULLOPEN.val());
+            servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
+            servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
+            servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
+            servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
+            topGGClosed = false;
+            bottomGGClosed = false;
         }
 
         if(gamepad1.left_stick_button && gamepad1.right_stick_button && gamepad1.left_bumper)
@@ -337,35 +360,77 @@ public abstract class MasterTeleOp extends Master
             GGZero = motorGG.getCurrentPosition() + 55;
         }
 
-        if(gamepad1.dpad_down)
+        if(gamepad1.dpad_up || gamepad1.dpad_down)
         {
-            if(!GGFlipped)
+            if (gamepad1.dpad_down && UpAndDownGGClawReset.milliseconds() > 125)
             {
-                servoGGDL.setPosition(GGServoPositions.LEFTFULLCLOSED.val());
-                servoGGDR.setPosition(GGServoPositions.RIGHTFULLCLOSED.val());
-                bottomGGClosed = true;
+                if (!GGFlipped)
+                {
+                    if (!bottomGGClosed)
+                    {
+                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
+                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
+                        bottomGGClosed = true;
+                    }
+                    else
+                    {
+                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
+                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
+                        bottomGGClosed = false;
+                    }
+
+                }
+                else
+                {
+                    if (!topGGClosed)
+                    {
+                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
+                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
+                        topGGClosed = true;
+                    }
+                    else
+                    {
+                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
+                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
+                        topGGClosed = false;
+                    }
+                }
             }
-            else
+
+            else if (gamepad1.dpad_up && UpAndDownGGClawReset.milliseconds() > 125)
             {
-                servoGGUL.setPosition(GGServoPositions.LEFTFULLCLOSED.val());
-                servoGGUR.setPosition(GGServoPositions.RIGHTFULLCLOSED.val());
-                topGGClosed = true;
+                if (!GGFlipped)
+                {
+                    if (!topGGClosed)
+                    {
+                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
+                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
+                        topGGClosed = true;
+                    }
+                    else
+                    {
+                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
+                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
+                        topGGClosed = false;
+                    }
+                }
+                else
+                {
+                    if (!bottomGGClosed)
+                    {
+                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
+                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
+                        bottomGGClosed = true;
+                    }
+                    else
+                    {
+                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
+                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
+                        bottomGGClosed = false;
+                    }
+                }
             }
-        }
-        else if(gamepad1.dpad_up)
-        {
-            if(!GGFlipped)
-            {
-                servoGGUL.setPosition(GGServoPositions.LEFTFULLCLOSED.val());
-                servoGGUR.setPosition(GGServoPositions.RIGHTFULLCLOSED.val());
-                topGGClosed = true;
-            }
-            else
-            {
-                servoGGDL.setPosition(GGServoPositions.LEFTFULLCLOSED.val());
-                servoGGDR.setPosition(GGServoPositions.RIGHTFULLCLOSED.val());
-                bottomGGClosed = true;
-            }
+            UpAndDownGGClawReset.reset();
         }
         idle();
     }
