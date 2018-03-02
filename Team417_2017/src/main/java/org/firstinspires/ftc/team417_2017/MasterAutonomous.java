@@ -284,6 +284,14 @@ abstract class MasterAutonomous extends MasterOpMode
         motorBR.setPower(0);
     }
 
+    public void deployGGExtensions() throws InterruptedException
+    {
+        moveTimed(0, -0.9, 350);
+        sleep(50);
+        moveTimed(0, 0.7, 400);
+        sleep(100);
+    }
+
     // pivot using IMU, but with a reference start angle, but this angle has to be determined (read) before this method is called
     public void pivotWithReference(double targetAngle, double refAngle, double minSpeed, double maxSpeed)
     {
