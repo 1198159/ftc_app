@@ -50,19 +50,19 @@ public abstract class MasterTeleOp extends Master
 
     enum GGServoPositions
     {
-        UPPERLEFTFULLOPEN(0.30),
+        UPPERLEFTFULLOPEN(0.35),
         UPPERLEFTHALFOPEN(0.50),
         UPPERLEFTFULLCLOSED(0.60),
 
-        UPPERRIGHTFULLOPEN(0.60),
+        UPPERRIGHTFULLOPEN(0.55),
         UPPERRIGHTHALFOPEN(0.35),
         UPPERRIGHTFULLCLOSED(0.20),
 
-        LOWERLEFTFULLOPEN(0.55),
+        LOWERLEFTFULLOPEN(0.50),
         LOWERLEFTHALFOPEN(0.40),
         LOWERLEFTFULLCLOSED(0.30),
 
-        LOWERRIGHTFULLOPEN(0.35),
+        LOWERRIGHTFULLOPEN(0.40),
         LOWERRIGHTHALFOPEN(0.50),
         LOWERRIGHTFULLCLOSED(0.60);
 
@@ -362,7 +362,7 @@ public abstract class MasterTeleOp extends Master
 
         if(gamepad1.dpad_up || gamepad1.dpad_down)
         {
-            if (gamepad1.dpad_down && UpAndDownGGClawReset.milliseconds() > 125)
+            if (gamepad1.dpad_up && UpAndDownGGClawReset.milliseconds() > 125)
             {
                 if (!GGFlipped)
                 {
@@ -397,7 +397,7 @@ public abstract class MasterTeleOp extends Master
                 }
             }
 
-            else if (gamepad1.dpad_up && UpAndDownGGClawReset.milliseconds() > 125)
+            else if (gamepad1.dpad_down && UpAndDownGGClawReset.milliseconds() > 125)
             {
                 if (!GGFlipped)
                 {
