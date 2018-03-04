@@ -246,25 +246,8 @@ public abstract class MasterAutonomous extends Master
 
     void InitHardwareAutonomous()
     {
-        // Motors here
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorFR = hardwareMap.dcMotor.get("motorFR");
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorGG = hardwareMap.dcMotor.get("motorGG");
+        InitHardware();
 
-        // Servos here
-        servoJJ = hardwareMap.get(Servo.class, "servoJJ");
-        servoGGUL = hardwareMap.get(Servo.class, "servoGGUL");
-        servoGGUR = hardwareMap.get(Servo.class, "servoGGUR");
-        servoGGDL = hardwareMap.get(Servo.class, "servoGGDL");
-        servoGGDR = hardwareMap.get(Servo.class, "servoGGDR");
-
-        servoJJ.setPosition(SERVO_JJ_UP);
-        //servoGGL.setPosition(0.35);
-        //servoGGR.setPosition(0.55);
-
-        // Reset encoders
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -276,21 +259,6 @@ public abstract class MasterAutonomous extends Master
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Use run to position
-        motorGG.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // Use brake mode
-        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Sensors here
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
 
         sensorTopRight = hardwareMap.get(ColorSensor.class, "sensorTopRight");
         sensorTopLeft = hardwareMap.get(ColorSensor.class, "sensorTopLeft");
@@ -330,10 +298,10 @@ public abstract class MasterAutonomous extends Master
     void MoveIMU(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
     {
         //Sets motor encoder values
-        newTargetFL = motorFL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
-        newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
-        newTargetBL = motorBL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
-        newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetFL = motorFL.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetFR = motorFR.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetBL = motorBL.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetBR = motorBR.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
 
         runtime.reset(); // used for timeout
         targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
@@ -390,61 +358,6 @@ public abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
-    // This method isn't used anymore as it was replaced by MoveIMU
-    void move(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
-    {
-        //Sets motor encoder values
-        newTargetFL = motorFL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
-        newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
-        newTargetBL = motorBL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
-        newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
-
-        runtime.reset(); // used for timeout
-        targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
-        targetAngle = adjustAngles(targetAngle);
-        do {
-            currentFL = motorFL.getCurrentPosition();
-            currentFR = motorFR.getCurrentPosition();
-            currentBL = motorBL.getCurrentPosition();
-            currentBR = motorBR.getCurrentPosition();
-
-            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
-            moveErrorFL = newTargetFL + currentFL;
-            speedFL = Math.abs(kMove * moveErrorFL);
-            speedFL = Range.clip(speedFL, 0.15, maxSpeed);
-            speedFL = speedFL * Math.signum(moveErrorFL);
-
-            moveErrorFR = newTargetFR + motorFR.getCurrentPosition();
-            speedFR = Math.abs(kMove * moveErrorFR);
-            speedFR = Range.clip(speedFR, 0.15, maxSpeed);
-            speedFR = speedFR * Math.signum(moveErrorFR);
-
-            moveErrorBL = newTargetBL + currentBL;
-            speedBL = Math.abs(kMove * moveErrorBL);
-            speedBL = Range.clip(speedBL, 0.15, maxSpeed);
-            speedBL = speedBL * Math.signum(moveErrorBL);
-
-            moveErrorBR = newTargetBR + currentBR;
-            speedBR = Math.abs(kMove * moveErrorBR);
-            speedBR = Range.clip(speedBR, 0.15, maxSpeed);
-            speedBR = speedBR * Math.signum(moveErrorBR);
-
-            //Sets values for motor power
-            motorPowerFL = -speedFR + pivot;
-            motorPowerFR = speedFR + pivot;
-            motorPowerBL = -speedFR + pivot;
-            motorPowerBR = speedFR + pivot;
-
-            motorFL.setPower(motorPowerFL);
-            motorFR.setPower(motorPowerFR);
-            motorBL.setPower(motorPowerBL);
-            motorBR.setPower(motorPowerBR);
-            idle();
-        }
-
-        while (opModeIsActive() && (runtime.seconds() < timeout) && Math.abs(moveErrorFR) > TOL);
-        stopDriving();
-    }
 
     void MoveIMULeft(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)
     {
@@ -454,10 +367,10 @@ public abstract class MasterAutonomous extends Master
         currentBR = motorBR.getCurrentPosition();
 
         //Sets motor encoder values
-        newTargetFL = motorFL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
-        newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
-        newTargetBL = motorBL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
-        newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetFL = motorFL.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetFR = motorFR.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetBL = motorBL.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetBR = motorBR.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
 
         runtime.reset(); // used for timeout
         targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
@@ -521,10 +434,10 @@ public abstract class MasterAutonomous extends Master
         currentBR = motorBR.getCurrentPosition();
 
         //Sets motor encoder values
-        newTargetFL = motorFL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
-        newTargetFR = motorFR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
-        newTargetBL = motorBL.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
-        newTargetBR = motorBR.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetFL = motorFL.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetFR = motorFR.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
+        newTargetBL = motorBL.getCurrentPosition() - (int) (moveMM / MM_PER_TICK);
+        newTargetBR = motorBR.getCurrentPosition() + (int) (moveMM / MM_PER_TICK);
 
         runtime.reset(); // used for timeout
         targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
@@ -896,7 +809,7 @@ public abstract class MasterAutonomous extends Master
             while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue))
             {
                 //MoveIMUCont(referenceAngle, 0.015, speed, saturationValue);
-                MoveIMU(referenceAngle, 190.0, 0.0, 0.015, speed, 0.2);
+                MoveIMU(referenceAngle, 900.0, 0.0, 0.015, speed, 0.2);
                 colorSensorHSV();
             }
             stopDriving();

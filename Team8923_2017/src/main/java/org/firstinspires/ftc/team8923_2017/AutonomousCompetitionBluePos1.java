@@ -54,7 +54,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
             IMUPivot(referenceAngle, 0, 0.3, 0.015); // Pivot back to initial position
         }
         sleep(700);
-        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 2);//Go towards parking spot
+        MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.35, 2);//Go towards parking spot
         IMUPivot(referenceAngle, 90, 0.25, 0.015); // Pivot towards the cryptobox
         referenceAngle += 90.0; // Updates reference angle
         referenceAngle = adjustAngles(referenceAngle);
@@ -69,8 +69,8 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
             // If VuMark is for left column, robot backs up then translates left
-            MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.55);
+            MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.35, 0.3);
+            MoveIMULeft(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.55);
             telemetry.addData("Stage", "Left"); // Update telemetry
             telemetry.update();
         }
@@ -83,8 +83,8 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         else if (vuMark == RelicRecoveryVuMark.RIGHT)
         {
             // If VuMark is for right column, robot backs up then translates right
-            MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.62);
+            MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.35, 0.3);
+            MoveIMURight(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.62);
             telemetry.addData("Stage", "Right");
             telemetry.update();
         }
@@ -97,9 +97,9 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         }
         sleep(500);
         // Robot moves forward and delivers glyph
-        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
+        MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.8);
         // Robot backs up slightly so less pressure is applied on the field wall
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.1);
+        MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.35, 0.1);
         sleep(700);
         moveGG(-750); // Lower GG lift
         sleep(700);
@@ -108,33 +108,33 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         openGG(); // Open GG claws
         sleep(500);
         // RObot backs up
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.55, 0.22);
+        MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.55, 0.22);
         //sleep(500);
         // Robot moves forward to make sure the glyph is in the column
-        MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 1.5);
+        MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.35, 1.5);
         //sleep(500);
         // Robot backs up again
-        MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.45, 0.5);
+        MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.45, 0.5);
         // Based on which column the robot delivered in, robot does a series of translation to move back to center of cryptobox
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
-            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.43);
-            MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.12);
+            MoveIMURight(referenceAngle, 900.0, 0.0, 0.015, 0.55, 0.43);
+            MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.55, 0.12);
         }
         else if (vuMark == RelicRecoveryVuMark.CENTER)
         {
-            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.1);
-            MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.05);
+            MoveIMURight(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.1);
+            MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.05);
         }
         else if (vuMark == RelicRecoveryVuMark.RIGHT)
         {
-            MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.35);
-            MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.55, 0.2);
+            MoveIMULeft(referenceAngle, 900.0, 0.0, 0.015, 0.55, 0.35);
+            MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.55, 0.2);
         }
         else
         {
-            MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.1);
-            MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.05);
+            MoveIMURight(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.1);
+            MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.05);
         }
         // Robot pivots to face the glyph pile
         IMUPivot(referenceAngle,  -178, 0.45, 0.015);
