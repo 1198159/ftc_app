@@ -15,6 +15,28 @@ import com.qualcomm.robotcore.util.Range;
 
 public abstract class Master extends LinearOpMode
 {
+    enum GGServoPositions
+    {
+        UPPERLEFTFULLOPEN(0.35),
+        UPPERLEFTHALFOPEN(0.45),
+        UPPERLEFTFULLCLOSED(0.60),
+
+        UPPERRIGHTFULLOPEN(0.55),
+        UPPERRIGHTHALFOPEN(0.40),
+        UPPERRIGHTFULLCLOSED(0.20),
+
+        LOWERLEFTFULLOPEN(0.50),
+        LOWERLEFTHALFOPEN(0.40),
+        LOWERLEFTFULLCLOSED(0.30),
+
+        LOWERRIGHTFULLOPEN(0.40),
+        LOWERRIGHTHALFOPEN(0.50),
+        LOWERRIGHTFULLCLOSED(0.60);
+
+        public final double val;
+        GGServoPositions(double i) { val = i; }
+        public final double val() { return val; }
+    }
 
     // Declare motors here
     DcMotor motorFL = null;

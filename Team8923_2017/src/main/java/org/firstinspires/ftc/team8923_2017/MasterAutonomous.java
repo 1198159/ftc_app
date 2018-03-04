@@ -255,8 +255,10 @@ public abstract class MasterAutonomous extends Master
 
         // Servos here
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
-        servoGGL = hardwareMap.get(Servo.class, "servoGGL");
-        servoGGR = hardwareMap.get(Servo.class, "servoGGR");
+        servoGGUL = hardwareMap.get(Servo.class, "servoGGUL");
+        servoGGUR = hardwareMap.get(Servo.class, "servoGGUR");
+        servoGGDL = hardwareMap.get(Servo.class, "servoGGDL");
+        servoGGDR = hardwareMap.get(Servo.class, "servoGGDR");
 
         servoJJ.setPosition(SERVO_JJ_UP);
         //servoGGL.setPosition(0.35);
@@ -311,15 +313,18 @@ public abstract class MasterAutonomous extends Master
     void closeGG()
     {
         // Close GG claws
-        servoGGL.setPosition(0.65);
-        servoGGR.setPosition(0.15);
-
+        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
+        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
+        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
+        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
     }
     void openGG()
     {
         // Open GG claws
-        servoGGL.setPosition(0.45);
-        servoGGR.setPosition(0.45);
+        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
+        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
+        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
+        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
     }
 
     void MoveIMU(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)

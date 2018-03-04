@@ -22,7 +22,7 @@ public class MoveTest extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         InitHardware();
-        ChooseOptions();
+        //ChooseOptions();
         InitAuto();
         waitForStart();
         while (opModeIsActive())
