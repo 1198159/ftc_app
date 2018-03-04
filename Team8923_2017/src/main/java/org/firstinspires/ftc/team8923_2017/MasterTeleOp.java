@@ -292,21 +292,22 @@ public abstract class MasterTeleOp extends Master
 
         if(gamepad1.right_trigger > 0.35 || gamepad1.left_trigger > 0.35)
         {
-            while(gamepad1.right_trigger > 0.35)
+            if(gamepad1.right_trigger > 0.35) //TODO FIX WHILE STATEMENT
             {
-                motorGG.setTargetPosition(motorGG.getCurrentPosition() + 3000);
+                motorGG.setTargetPosition(GGZero + 5000);
                 liftModeStateChange = true;
-                motorGG.setPower(0.25);
+                motorGG.setPower(0.60);
             }
-            motorGG.setPower(0.0);
-            liftModeStateChange = false;
-
-            while(gamepad1.left_trigger > 0.35)
+            else if(gamepad1.left_trigger > 0.35) //TODO FIX WHILE STATEMENT
             {
-                motorGG.setTargetPosition(motorGG.getCurrentPosition() - 3000);
+                motorGG.setTargetPosition(GGZero - 1000);
                 liftModeStateChange = true;
-                motorGG.setPower(-0.25);
+                motorGG.setPower(-0.60);
             }
+        }
+        else if (liftModeStateChange)
+        {
+            motorGG.setTargetPosition(motorGG.getCurrentPosition());
             motorGG.setPower(0.0);
             liftModeStateChange = false;
         }
