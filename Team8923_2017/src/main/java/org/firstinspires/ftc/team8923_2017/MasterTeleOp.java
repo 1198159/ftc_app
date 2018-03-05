@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.team8923_2017;
 
-import com.qualcomm.ftccommon.configuration.EditLegacyServoControllerActivity;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -33,8 +31,10 @@ public abstract class MasterTeleOp extends Master
     private boolean GGLifted = false;
     private boolean bottomGGClosed = false;
     private boolean topGGClosed = false;
-    private boolean firstTime = true; // used to reset GGFlipTimer on the first time through the statement
+    private boolean FlipTimerNotJustReset = true; // used to reset GGFlipTimer on the first time through the statement
     private boolean autoBalanceStable = false;
+    private boolean GGSafetyEscapePositionSet = false;
+    private boolean FFFudgeTimerReset = false;
     boolean autoBalancing = false;
 
     private int GGStart;
@@ -45,6 +45,7 @@ public abstract class MasterTeleOp extends Master
     private ElapsedTime GGFlipTimer = new ElapsedTime();
     private ElapsedTime AutoBalanceTimeout = new ElapsedTime();
     private ElapsedTime UpAndDownGGClawReset = new ElapsedTime();
+    private ElapsedTime FFFudgeTimer = new ElapsedTime();
 
     void DriveOmni45TeleOp()
     {
@@ -116,10 +117,11 @@ public abstract class MasterTeleOp extends Master
     public void SendTelemetry()
     {
         telemetry.addData("GG Lift Ticks", motorGG.getCurrentPosition() - GGZero);
+        telemetry.addData("FF Tics", FFZero - motorFF.getCurrentPosition());
+        telemetry.addData("FF distance to target", Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()));
         telemetry.addData("GG distance from target", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()));
         telemetry.addData("GG at position", Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) < 3);
         telemetry.addData("SlowMode", slowModeDivisor);
-        telemetry.addData("FF Tics", Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()));
         telemetry.addData("Dpad_Up", gamepad1.dpad_up);
         telemetry.addData("Dpad_Down", gamepad1.dpad_down);
         /*telemetry.addData("imu rot Y", imu.getAngularOrientation().firstAngle );
@@ -185,7 +187,7 @@ public abstract class MasterTeleOp extends Master
         else if (GGFlipStage == 0)
         {
             motorFF.setTargetPosition(holdPosition);
-            motorFF.setPower((motorFF.getTargetPosition() - motorFF.getCurrentPosition() * 400));
+            motorFF.setPower((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 100.0));
         }
 
         if(GGStart <= (GGZero + 600) && GGFlipStage == 1)
@@ -212,42 +214,122 @@ public abstract class MasterTeleOp extends Master
 
         if (GGFlipStage == 2)
         {
-            if(firstTime)
+            if(FlipTimerNotJustReset)
             {
                 GGFlipTimer.reset();
-                firstTime = false;
+                FlipTimerNotJustReset = false;
             }
 
             if (!GGFlipped)
             {
-                motorFF.setTargetPosition(FFZero - 850);
-                motorFF.setPower(Math.min(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 770.0)), -0.2));
-                if ((Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()) <= 5) || GGFlipTimer.milliseconds() > 1250)
+                motorFF.setTargetPosition(FFZero - 725);
+                motorFF.setPower(Math.min(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 770.0)), -0.3));
+                if ((Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()) <= 5))
                 {
-                    motorFF.setTargetPosition(motorFF.getCurrentPosition());
                     motorFF.setPower(0.0);
-                    GGFlipped = true;
+                    FlipTimerNotJustReset = true;
                     GGFlipStage = 3;
-                    holdPosition = motorFF.getCurrentPosition();
-                    firstTime = true;
+                }
+                // FF jam safety feature
+                else if(GGFlipTimer.milliseconds() > 2000)
+                {
+                    motorFF.setPower(0.0);
+
+                    if(motorGG.getCurrentPosition() < 3450 && !GGSafetyEscapePositionSet)
+                    {
+                        motorGG.setTargetPosition(motorGG.getCurrentPosition() + 450);
+                        GGSafetyEscapePositionSet = true;
+                    }
+                    else if(motorGG.getCurrentPosition() > 3450 && !GGSafetyEscapePositionSet)
+                    {
+                        motorGG.setTargetPosition(motorGG.getCurrentPosition());
+                        GGSafetyEscapePositionSet = true;
+                    }
+
+                    motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 175.0));
+
+                    if(Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) <= 10)
+                    {
+                        motorGG.setPower(0.0);
+                        GGFlipTimer.reset();
+                        GGSafetyEscapePositionSet = false;
+                    }
                 }
             }
             else
             {
-                motorFF.setTargetPosition(FFZero + 100);
-                motorFF.setPower(Math.max(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 770.0)), 0.2));
-                if (Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()) <= 5 || GGFlipTimer.milliseconds() > 1250)
+                motorFF.setTargetPosition(FFZero - 25);
+                motorFF.setPower(Math.max(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 770.0)), 0.3));
+
+                if (Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()) <= 5)
                 {
                     motorFF.setPower(0.0);
-                    GGFlipped = false;
-                    FFZero = motorFF.getCurrentPosition();
+                    FlipTimerNotJustReset = true;
                     GGFlipStage = 3;
-                    holdPosition = motorFF.getCurrentPosition();
-                    firstTime = true;
+                }
+                // FF jam safety feature
+                else if(GGFlipTimer.milliseconds() > 2000)
+                {
+                    motorFF.setPower(0.0);
+
+                    if(motorGG.getCurrentPosition() < 3450 && !GGSafetyEscapePositionSet)
+                    {
+                        motorGG.setTargetPosition(motorGG.getCurrentPosition() + 450);
+                        GGSafetyEscapePositionSet = true;
+                    }
+                    else if(motorGG.getCurrentPosition() > 3450 && !GGSafetyEscapePositionSet)
+                    {
+                        motorGG.setTargetPosition(motorGG.getCurrentPosition());
+                        GGSafetyEscapePositionSet = true;
+                    }
+
+                    motorGG.setPower((motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 175.0));
+
+                    if(Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) <= 10)
+                    {
+                        motorGG.setPower(0.0);
+                        GGFlipTimer.reset();
+                        GGSafetyEscapePositionSet = false;
+                    }
                 }
             }
         }
-        if(GGLifted && GGFlipStage == 3)
+
+        if(GGFlipStage == 3)
+        {
+            if(!FFFudgeTimerReset)
+            {
+                FFFudgeTimer.reset();
+                FFFudgeTimerReset = true;
+            }
+            if(FFFudgeTimer.milliseconds() < 125)
+            {
+                if(!GGFlipped)
+                {
+                    motorFF.setTargetPosition(FFZero - 1000);
+                    motorFF.setPower(-1.0);
+                }
+                else
+                {
+                    motorFF.setTargetPosition(FFZero + 200);
+                    motorFF.setPower(1.0);
+                }
+            }
+            else
+            {
+                FFFudgeTimerReset = false;
+                FFFudgeTimer.reset();
+                motorFF.setPower(0.0);
+                if(!GGFlipped)
+                    holdPosition = motorFF.getCurrentPosition() + 5;
+                else
+                    holdPosition = motorFF.getCurrentPosition() - 5;
+                GGFlipStage = 4;
+                GGFlipped = !GGFlipped;
+            }
+        }
+
+        if(GGLifted && GGFlipStage == 4)
         {
             motorGG.setTargetPosition(GGZero + 250);
             motorGG.setPower(Math.signum(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) *
@@ -268,7 +350,7 @@ public abstract class MasterTeleOp extends Master
                 GGLifted = false;
             }
         }
-        else if (GGFlipStage == 3)
+        else if (GGFlipStage == 4)
             GGFlipStage = 0;
 
         /* ====== FINE ADJUST ===== */

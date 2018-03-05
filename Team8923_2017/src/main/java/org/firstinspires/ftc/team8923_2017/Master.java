@@ -170,41 +170,41 @@ public abstract class Master extends LinearOpMode
 
     // 45 denotes the angle at which the motors are mounted in referece to the chassis frame
     void driveOmni45(double driveAngle, double drivePower, double turnPower)
-{
-    // Calculate out x and y directions of drive power, where y is forward (0 degrees) and x is right (-90 degrees)
-    double x = drivePower * -Math.sin(Math.toRadians(driveAngle));
-    double y = drivePower * Math.cos(Math.toRadians(driveAngle));
+    {
+        // Calculate out x and y directions of drive power, where y is forward (0 degrees) and x is right (-90 degrees)
+        double x = drivePower * -Math.sin(Math.toRadians(driveAngle));
+        double y = drivePower * Math.cos(Math.toRadians(driveAngle));
 
-        /*
-         * to explain:
-         * each wheel omni wheel exerts a force in one direction like tank but differs in the fact that they have rollers mounted perpendicular
-         * to the wheels outer edge so they can passively roll at 90 degrees to the wheel's facing. This means that with the wheels mounted at 45
-         * degrees to the chassis frame and assuming the left hand rule for the motors, each wheel's power needs to be 90 degrees out of phase
-         * from the previous wheel on the unit circle starting with positive y and x for FL and going clockwise around the unit circle and robot
-         * from there
-         */
+            /*
+             * to explain:
+             * each wheel omni wheel exerts a force in one direction like tank but differs in the fact that they have rollers mounted perpendicular
+             * to the wheels outer edge so they can passively roll at 90 degrees to the wheel's facing. This means that with the wheels mounted at 45
+             * degrees to the chassis frame and assuming the left hand rule for the motors, each wheel's power needs to be 90 degrees out of phase
+             * from the previous wheel on the unit circle starting with positive y and x for FL and going clockwise around the unit circle and robot
+             * from there
+             */
 
-    double powerFL = y + x + (turnPower * 0.9);
-    double powerFR = -y + x + (turnPower * 0.9);
-    double powerBL = y - x + (turnPower * 0.9);
-    double powerBR = -y - x + (turnPower * 0.9);
+        double powerFL = y + x + (turnPower * 0.9);
+        double powerFR = -y + x + (turnPower * 0.9);
+        double powerBL = y - x + (turnPower * 0.9);
+        double powerBR = -y - x + (turnPower * 0.9);
 
-    double scalar = Math.max(Math.abs(powerFL),  Math.max(Math.abs(powerFR),
-            Math.max(Math.abs(powerBL), Math.abs(powerBR))));
+        double scalar = Math.max(Math.abs(powerFL),  Math.max(Math.abs(powerFR),
+                Math.max(Math.abs(powerBL), Math.abs(powerBR))));
 
-    if(scalar < 1)
-        scalar = 1;
+        if(scalar < 1)
+            scalar = 1;
 
-    powerFL /= (scalar * slowModeDivisor);
-    powerFR /= (scalar * slowModeDivisor);
-    powerBL /= (scalar * slowModeDivisor);
-    powerBR /= (scalar * slowModeDivisor);
+        powerFL /= (scalar * slowModeDivisor);
+        powerFR /= (scalar * slowModeDivisor);
+        powerBL /= (scalar * slowModeDivisor);
+        powerBR /= (scalar * slowModeDivisor);
 
-    motorFL.setPower(powerFL);
-    motorFR.setPower(powerFR);
-    motorBL.setPower(powerBL);
-    motorBR.setPower(powerBR);
-}
+        motorFL.setPower(powerFL);
+        motorFR.setPower(powerFR);
+        motorBL.setPower(powerBL);
+        motorBR.setPower(powerBR);
+    }
 
 
 
