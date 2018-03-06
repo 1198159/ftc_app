@@ -86,7 +86,7 @@ public abstract class MasterTeleOp extends Master
             {
                 double autoBalanceTargetAngle = Math.toDegrees(Math.atan2((-imu.getAngularOrientation().secondAngle) * 10.0,
                         (-imu.getAngularOrientation().thirdAngle) * 10.0));
-                double autoBalancePower = Math.min(Math.abs(((-imu.getAngularOrientation().thirdAngle * (1 / 30.0)))), 0.5);
+                double autoBalancePower = Math.max(Math.min(Math.abs(((-imu.getAngularOrientation().thirdAngle * (1 / 30.0)))), 0.6), 0.15);
                 /*double autoBalanceTurnPower = Math.min(Math.abs((autoBalanceTargetAngle - imu.getAngularOrientation().firstAngle) * (1 / 90.0)), 0.5) *
                         Math.signum((autoBalanceTargetAngle - imu.getAngularOrientation().firstAngle));*/
 
