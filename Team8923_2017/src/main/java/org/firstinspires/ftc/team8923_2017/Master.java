@@ -69,6 +69,7 @@ public abstract class Master extends LinearOpMode
     private static final double TICKS_PER_WHEEL_REVOLUTION = TICKS_PER_MOTOR_REVOLUTION / GEAR_RATIO;
     private static final double WHEEL_DIAMETER = 4.0 * 25.4; // 4 inch diameter to MM = 101.6
     private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;// = 319.024
+    private static final double TURN_POWER_CONSTANT = 0.9;
     //private static final double CORRECTION_FACTOR = 0.92;
     static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/; //319.024/1120 = .28484
     //Servos constants
@@ -184,10 +185,10 @@ public abstract class Master extends LinearOpMode
              * from there
              */
 
-        double powerFL = y + x + (turnPower * 0.9);
-        double powerFR = -y + x + (turnPower * 0.9);
-        double powerBL = y - x + (turnPower * 0.9);
-        double powerBR = -y - x + (turnPower * 0.9);
+        double powerFL = y + x + (turnPower * TURN_POWER_CONSTANT);
+        double powerFR = -y + x + (turnPower * TURN_POWER_CONSTANT);
+        double powerBL = y - x + (turnPower * TURN_POWER_CONSTANT);
+        double powerBR = -y - x + (turnPower * TURN_POWER_CONSTANT);
 
         double scalar = Math.max(Math.abs(powerFL),  Math.max(Math.abs(powerFR),
                 Math.max(Math.abs(powerBL), Math.abs(powerBR))));

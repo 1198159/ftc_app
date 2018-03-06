@@ -25,7 +25,6 @@ public abstract class MasterTeleOp extends Master
     ElapsedTime GGLiftTimer = new ElapsedTime();
     ElapsedTime HandTimer = new ElapsedTime(); */
     //endregion
-
     private boolean liftModeStateChange = false;
     private boolean GGFlipped = false;
     private boolean GGLifted = false;
@@ -178,28 +177,34 @@ public abstract class MasterTeleOp extends Master
 
         /* ===== FLIPPY FLIP ===== */
 
+        //if right stick button pressed, enter FF flip state machine
         if (gamepad1.right_stick_button && GGFlipStage == 0)
         {
             GGStart = motorGG.getCurrentPosition();
             GGFlipStage = 1;
             GGFlipTimer.reset();
         }
+        //FF actively holds position when it's not doing anything
         else if (GGFlipStage == 0)
         {
             motorFF.setTargetPosition(holdPosition);
             motorFF.setPower((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 100.0));
         }
 
+        //move GG up if it starts too low to flip without a jam
         if(GGStart <= (GGZero + 600) && GGFlipStage == 1)
         {
+            //close the servos to pick up glyphs that might get left behind and prevent
+            //damage to servo arms that could get caught on the ground
             servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
             servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
             servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
             servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
+            //wait for servos to close
             if(GGFlipTimer.milliseconds() > 125)
             {
+                //raise GG to a position that it is safe for the FF to rotate
                 motorGG.setTargetPosition(GGZero + 600);
-                //noinspection NumericOverflow
                 motorGG.setPower(Math.signum(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) *
                         Math.min(Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 50.0), 1.0));
                 if ((Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) <= 10))
@@ -209,17 +214,21 @@ public abstract class MasterTeleOp extends Master
                 }
             }
         }
+        //otherwise just move on
         else if (GGStart >= (GGZero + 600)  && GGFlipStage == 1)
             GGFlipStage ++;
 
+        //Flip the FF close to the hardware stop using encoders
         if (GGFlipStage == 2)
         {
+            //reset timer first time through
             if(FlipTimerNotJustReset)
             {
                 GGFlipTimer.reset();
                 FlipTimerNotJustReset = false;
             }
 
+            //flip the GG if it isn't
             if (!GGFlipped)
             {
                 motorFF.setTargetPosition(FFZero - 725);
@@ -256,6 +265,7 @@ public abstract class MasterTeleOp extends Master
                     }
                 }
             }
+            //un-flip the GG otherwise
             else
             {
                 motorFF.setTargetPosition(FFZero - 25);
@@ -295,6 +305,7 @@ public abstract class MasterTeleOp extends Master
             }
         }
 
+        //make sure FF is fully on the hardware stop
         if(GGFlipStage == 3)
         {
             if(!FFFudgeTimerReset)
@@ -329,6 +340,7 @@ public abstract class MasterTeleOp extends Master
             }
         }
 
+        //move the GG to the elevated end value if it started on the first stage (Also open servos that were open before)
         if(GGLifted && GGFlipStage == 4)
         {
             motorGG.setTargetPosition(GGZero + 250);
@@ -350,6 +362,7 @@ public abstract class MasterTeleOp extends Master
                 GGLifted = false;
             }
         }
+        //otherwise go back to the beginning
         else if (GGFlipStage == 4)
             GGFlipStage = 0;
 
@@ -357,13 +370,13 @@ public abstract class MasterTeleOp extends Master
 
         if(gamepad1.right_trigger > 0.35 || gamepad1.left_trigger > 0.35)
         {
-            if(gamepad1.right_trigger > 0.35) //TODO FIX WHILE STATEMENT
+            if(gamepad1.right_trigger > 0.35)
             {
                 motorGG.setTargetPosition(GGZero + 5000);
                 liftModeStateChange = true;
                 motorGG.setPower(0.60);
             }
-            else if(gamepad1.left_trigger > 0.35) //TODO FIX WHILE STATEMENT
+            else if(gamepad1.left_trigger > 0.35)
             {
                 motorGG.setTargetPosition(GGZero - 1000);
                 liftModeStateChange = true;
@@ -381,10 +394,6 @@ public abstract class MasterTeleOp extends Master
             GGZero = motorGG.getCurrentPosition();
         }
 
-        /*if (motorGG.getCurrentPosition() > GGZero + 3750)
-        {
-            motorGG.setPower(0.0);
-        }*/
         idle();
     }
 
