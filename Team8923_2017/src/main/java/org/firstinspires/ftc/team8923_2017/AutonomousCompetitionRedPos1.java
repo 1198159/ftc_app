@@ -64,7 +64,7 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         sleep(700);
         stopGG();
         sleep(500);
-        alignOnLine55(0.5, 5.0, 0.3);//Aligns on line
+        alignOnLine(0.5, 5.0, 0.3);//Aligns on line
         //MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
         sleep(500);
         if (vuMark == RelicRecoveryVuMark.LEFT)

@@ -341,10 +341,10 @@ public abstract class MasterAutonomous extends Master
             pivot = angleError * kAngle; // pivot equals the error times a constant
 
             // Sets values for motor power
-            motorPowerFL = -speedFR + pivot;
-            motorPowerFR = speedFR + pivot;
-            motorPowerBL = -speedFR + pivot;
-            motorPowerBR = speedFR + pivot;
+            motorPowerFL = speedFR + pivot;
+            motorPowerFR = -speedFR + pivot;
+            motorPowerBL = speedFR + pivot;
+            motorPowerBR = -speedFR + pivot;
 
             // Set values for motor powers
             motorFL.setPower(motorPowerFL);
@@ -403,10 +403,10 @@ public abstract class MasterAutonomous extends Master
             pivot = angleError * kAngle;
 
             //Sets values for motor power
-            motorPowerFL = speedBR + pivot;
-            motorPowerFR = speedBR + pivot;
-            motorPowerBL = -speedBR + pivot;
-            motorPowerBR = -speedBR + pivot;
+            motorPowerFL = -speedBR + pivot;
+            motorPowerFR = -speedBR + pivot;
+            motorPowerBL = speedBR + pivot;
+            motorPowerBR = speedBR + pivot;
 
             //Sets motor power
             motorFL.setPower(motorPowerFL);
@@ -793,7 +793,7 @@ public abstract class MasterAutonomous extends Master
     }
 
     // Method aligns on line with series of translations based on what sensors are on the line
-    void alignOnLine55(double saturationValue, double timeout, double speed)
+    void alignOnLine(double saturationValue, double timeout, double speed)
     {
         //Go forwards until any sensor sees the line
         double referenceAngle = imu.getAngularOrientation().firstAngle;//TODO declare this in init hardware auto
@@ -809,7 +809,8 @@ public abstract class MasterAutonomous extends Master
             while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesTopLeft[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue))
             {
                 //MoveIMUCont(referenceAngle, 0.015, speed, saturationValue);
-                MoveIMU(referenceAngle, 900.0, 0.0, 0.015, speed, 0.2);
+                MoveIMU(referenceAngle, 900.0, 0.0, 0.015, speed, 0.15);
+                sleep(200);
                 colorSensorHSV();
             }
             stopDriving();

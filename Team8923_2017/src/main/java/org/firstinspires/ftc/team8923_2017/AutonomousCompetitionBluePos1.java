@@ -54,7 +54,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
             IMUPivot(referenceAngle, 0, 0.3, 0.015); // Pivot back to initial position
         }
         sleep(700);
-        MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.35, 2);//Go towards parking spot
+        MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.35, 2.25);//Go towards parking spot
         IMUPivot(referenceAngle, 90, 0.25, 0.015); // Pivot towards the cryptobox
         referenceAngle += 90.0; // Updates reference angle
         referenceAngle = adjustAngles(referenceAngle);
@@ -63,14 +63,15 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         sleep(700);
         stopGG(); // Stop GG lift movement
         sleep(300);
-        alignOnLine55(0.4, 3.0, 0.3); // Align on the lines in front of the cryptobox
+        MoveIMU(referenceAngle, -900, 0.0, 0.015, 0.3, 0.4);
+        alignOnLine(0.4, 3.0, 0.3); // Align on the lines in front of the cryptobox
         // Robot is now aligned on the lines in front of the cryptobox (In front of the middle of crypobox)
         sleep(300);
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
             // If VuMark is for left column, robot backs up then translates left
             MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMULeft(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.55);
+            MoveIMULeft(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.6);
             telemetry.addData("Stage", "Left"); // Update telemetry
             telemetry.update();
         }
@@ -84,7 +85,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         {
             // If VuMark is for right column, robot backs up then translates right
             MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMURight(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.62);
+            MoveIMURight(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.66);
             telemetry.addData("Stage", "Right");
             telemetry.update();
         }
@@ -114,20 +115,26 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.35, 1.5);
         //sleep(500);
         // Robot backs up again
-        MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.45, 0.5);
+        MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.45, 0.58);
+
         // Based on which column the robot delivered in, robot does a series of translation to move back to center of cryptobox
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
+            telemetry.addData("Column: ", "Left");
+            telemetry.update();
             MoveIMURight(referenceAngle, 900.0, 0.0, 0.015, 0.55, 0.43);
             MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.55, 0.12);
         }
         else if (vuMark == RelicRecoveryVuMark.CENTER)
         {
+            telemetry.addData("Column: ", "Center");
+            telemetry.update();
             MoveIMURight(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.1);
             MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.05);
         }
         else if (vuMark == RelicRecoveryVuMark.RIGHT)
         {
+            telemetry.addData("Column: ", "Right");
             MoveIMULeft(referenceAngle, 900.0, 0.0, 0.015, 0.55, 0.35);
             MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.55, 0.2);
         }
