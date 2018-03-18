@@ -37,7 +37,7 @@ public class TeleOpCompetition extends MasterTeleOp
         {
             //imuOmniTeleOp();
             omniDriveTeleOp();
-            runJJ();
+            runServos();
             runManualGlyphLift();
             runAutoGlyphLift();
             runManualGG();

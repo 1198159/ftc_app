@@ -186,12 +186,19 @@ abstract public class MasterTeleOp extends MasterOpMode
     }
 
 
-    void runJJ()
+    void runServos()
     {
         // JJ SOFTWARE (hold GamePad2 button "B" down for JJ Low Position
         servoJewel.setPosition(Range.clip((1-gamepad2.right_trigger), JEWEL_LOW+0.07, JEWEL_INIT));
         //if (gamepad2.b) servoJewel.setPosition(JEWEL_LOW + 0.07);
         //else servoJewel.setPosition(JEWEL_INIT);
+
+        // Balance servo control
+        if(gamepad2.b)
+        {
+            servoLeft.setPosition(0.5);
+            servoRight.setPosition(0.5);
+        }
     }
 
 
