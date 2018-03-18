@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team417_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
@@ -20,6 +21,8 @@ public class AutonomousBlueGlyph extends MasterAutonomous
         VuforiaDetect.initVuforia(); // initialize Vuforia
         telemetry.addData("Done: ", "initializing");
         telemetry.update();
+
+        CameraDevice.getInstance().setFlashTorchMode(true); // turn on phone light
 
         while (!isStarted())
         {
@@ -40,6 +43,8 @@ public class AutonomousBlueGlyph extends MasterAutonomous
             idle();
         }
         telemetry.update();
+
+        CameraDevice.getInstance().setFlashTorchMode(true); // turn on phone light
 
 // Wait for the game to start (driver presses PLAY)
         waitForStart();

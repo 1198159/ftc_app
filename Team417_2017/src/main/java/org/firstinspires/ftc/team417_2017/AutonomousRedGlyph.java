@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team417_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
@@ -21,6 +22,8 @@ public class AutonomousRedGlyph extends MasterAutonomous
         telemetry.addData("Done: ", "initializing");
         telemetry.update();
 
+        CameraDevice.getInstance().setFlashTorchMode(true); // turn on phone light
+
         while (!isStarted())
         {
             // select position left or right, from drivers facing the field
@@ -35,16 +38,17 @@ public class AutonomousRedGlyph extends MasterAutonomous
                  * loop until this condition occurs, then move on to act accordingly depending
                  * on which VuMark was visible. */
             telemetry.addData("VuMark", "%s visible", VuMark);
-
             telemetry.update();
             idle();
         }
+        CameraDevice.getInstance().setFlashTorchMode(false); // turn off phone light
 
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
 
 // Wait for the game to start (driver presses PLAY)
         waitForStart();
+
         autoRuntime.reset(); // set the 30 second timer
 
 // START OF AUTONOMOUS
