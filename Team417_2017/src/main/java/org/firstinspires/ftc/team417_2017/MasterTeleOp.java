@@ -23,6 +23,9 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean driveClose = false;
     boolean driveOpen = false;
 
+    boolean isServoLowered;
+    boolean isXPushed;
+
     int ggOpenState;
     int ggCloseState;
     int liftState; // keeps track of the state that GL is in (either -1, 0, 1)
@@ -193,11 +196,23 @@ abstract public class MasterTeleOp extends MasterOpMode
         //if (gamepad2.b) servoJewel.setPosition(JEWEL_LOW + 0.07);
         //else servoJewel.setPosition(JEWEL_INIT);
 
-        // Balance servo control
-        if(gamepad2.b)
+        // Balance servo control (move left and right servo down)
+        if (gamepad2.x && !isXPushed)
         {
-            servoLeft.setPosition(0.5);
-            servoRight.setPosition(0.5);
+            isXPushed = true;
+            isServoLowered = !isServoLowered;
+        }
+        isXPushed = gamepad2.x;
+
+        if(isServoLowered)
+        {
+            servoLeft.setPosition(LEFT_LOW);
+            servoRight.setPosition(RIGHT_LOW);
+        }
+        else
+        {
+            servoLeft.setPosition(LEFT_HIGH);
+            servoRight.setPosition(RIGHT_HIGH);
         }
     }
 

@@ -52,6 +52,11 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double JEWEL_INIT = 0.965;
     static final double JEWEL_LOW = 0.35;
 
+    static final double LEFT_LOW = 0.88;
+    static final double LEFT_HIGH = 0.15;
+    static final double RIGHT_LOW = 0.26;
+    static final double RIGHT_HIGH = 1.0;
+
     // declare color sensor variables
     // hsvValues is an array that will hold the hue, saturation, and value information.
     float hsvValues[] = {0F,0F,0F};
@@ -132,8 +137,9 @@ abstract public class MasterOpMode extends LinearOpMode
         servoRight = hardwareMap.servo.get("servoRight");
 
         servoJewel.setPosition(JEWEL_INIT);
-        servoLeft.setPosition(0);
-        servoRight.setPosition(0);
+        // set left and right servos to up position
+        servoLeft.setPosition(LEFT_HIGH);
+        servoRight.setPosition(RIGHT_HIGH);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
