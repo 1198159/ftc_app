@@ -39,12 +39,15 @@ public abstract class MasterTeleOp extends Master
     private int GGStart;
     private int GGFlipStage = 0;
     private int holdPosition;
+    private double SSATimeout = 1.0;
 
     private ElapsedTime SlowModeTimer = new ElapsedTime();
     private ElapsedTime GGFlipTimer = new ElapsedTime();
     private ElapsedTime AutoBalanceTimeout = new ElapsedTime();
     private ElapsedTime UpAndDownGGClawReset = new ElapsedTime();
     private ElapsedTime FFFudgeTimer = new ElapsedTime();
+    private ElapsedTime SSALTimeout = new ElapsedTime();
+    private ElapsedTime SSARTimeout = new ElapsedTime();
 
     void DriveOmni45TeleOp()
     {
@@ -85,7 +88,7 @@ public abstract class MasterTeleOp extends Master
             {
                 double autoBalanceTargetAngle = Math.toDegrees(Math.atan2((-imu.getAngularOrientation().secondAngle) * 10.0,
                         (-imu.getAngularOrientation().thirdAngle) * 10.0));
-                double autoBalancePower = Math.max(Math.min(Math.abs(((-imu.getAngularOrientation().thirdAngle * (1 / 30.0)))), 0.6), 0.15);
+                double autoBalancePower = Math.max(Math.min(Math.abs(((-imu.getAngularOrientation().thirdAngle * (1 / 30.0)))), 0.6), 0.17);
                 /*double autoBalanceTurnPower = Math.min(Math.abs((autoBalanceTargetAngle - imu.getAngularOrientation().firstAngle) * (1 / 90.0)), 0.5) *
                         Math.signum((autoBalanceTargetAngle - imu.getAngularOrientation().firstAngle));*/
 
@@ -508,6 +511,50 @@ public abstract class MasterTeleOp extends Master
             UpAndDownGGClawReset.reset();
         }
         idle();
+    }
+
+    void RunVortex()
+    {
+        motorSSL.setPower(gamepad2.left_stick_y);
+        motorSSR.setPower(gamepad2.right_stick_y);
+
+        if(!(gamepad2.right_bumper || gamepad2.right_trigger > 0.35))
+            SSALTimeout.reset();
+        if(!(gamepad2.left_bumper || gamepad2.left_trigger > 0.35))
+            SSARTimeout.reset();
+
+        if(gamepad2.right_bumper || gamepad2.right_trigger > 0.35 || gamepad2.left_bumper || gamepad2.left_trigger > 0.35) // to decrease compute time (possibly)
+        {
+            if (SSALTimeout.milliseconds() < SSATimeout)
+            {
+                if (gamepad2.left_trigger > 0.35)
+                    servoSSAL.setPower(1.0);
+                else if (gamepad2.left_bumper)
+                    servoSSAL.setPower(-1.0);
+            }
+            else
+            {
+                if (gamepad2.left_trigger > 0.35)
+                    servoSSAL.setPower(0.2);
+                else if (gamepad2.left_bumper)
+                    servoSSAL.setPower(-0.2);
+            }
+
+            if (SSARTimeout.milliseconds() < SSATimeout)
+            {
+                if (gamepad2.right_trigger > 0.35)
+                    servoSSAL.setPower(1.0);
+                else if (gamepad2.right_bumper)
+                    servoSSAL.setPower(-1.0);
+            }
+            else
+            {
+                if (gamepad2.right_trigger > 0.35)
+                    servoSSAL.setPower(0.2);
+                else if (gamepad2.right_bumper)
+                    servoSSAL.setPower(-0.2);
+            }
+        }
     }
 
     //region RR Code

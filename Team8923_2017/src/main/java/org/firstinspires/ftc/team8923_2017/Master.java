@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team8923_2017;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -54,6 +55,10 @@ public abstract class Master extends LinearOpMode
     Servo servoGGDL = null;
     Servo servoGGDR = null;
     Servo servoRRHand = null;
+    CRServo motorSSL = null;
+    CRServo motorSSR = null;
+    CRServo servoSSAL = null;
+    CRServo servoSSAR = null;
 
     // Declare any neccessary sensors here
     BNO055IMU imu;
@@ -131,17 +136,10 @@ public abstract class Master extends LinearOpMode
         servoGGUR = hardwareMap.get(Servo.class, "servoGGUR");
         servoGGDL = hardwareMap.get(Servo.class, "servoGGDL");
         servoGGDR = hardwareMap.get(Servo.class, "servoGGDR");
-
-        //Reset encoders
-        /*motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);*/
+        motorSSL = hardwareMap.get(CRServo.class, "motorSSL");
+        motorSSR = hardwareMap.get(CRServo.class, "motorSSR");
+        servoSSAL = hardwareMap.get(CRServo.class, "servoSSAL");
+        servoSSAR = hardwareMap.get(CRServo.class, "servoSSAR");
 
         motorGG.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -155,6 +153,8 @@ public abstract class Master extends LinearOpMode
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorGG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
         // Sensors here
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
