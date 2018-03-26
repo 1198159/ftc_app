@@ -25,6 +25,8 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     boolean isServoLowered;
     boolean isXPushed;
+    boolean isLeftBumperPushed;
+    boolean isRightBumperPushed;
 
     int ggOpenState;
     int ggCloseState;
@@ -197,12 +199,25 @@ abstract public class MasterTeleOp extends MasterOpMode
         //else servoJewel.setPosition(JEWEL_INIT);
 
         // Balance servo control (move left and right servo down)
-        if (gamepad2.x && !isXPushed)
+        if (driveSlater)
         {
-            isXPushed = true;
-            isServoLowered = !isServoLowered;
+            if (gamepad1.right_bumper && !isRightBumperPushed)
+            {
+                isRightBumperPushed = true;
+                isServoLowered = !isServoLowered;
+            }
+            isRightBumperPushed = gamepad1.right_bumper;
         }
-        isXPushed = gamepad2.x;
+        else
+        {
+            if (gamepad1.left_bumper && !isLeftBumperPushed)
+            {
+                isLeftBumperPushed = true;
+                isServoLowered = !isServoLowered;
+            }
+            isLeftBumperPushed = gamepad1.left_bumper;
+        }
+
 
         if(isServoLowered)
         {
