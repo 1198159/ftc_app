@@ -75,8 +75,8 @@ abstract public class MasterOpMode extends LinearOpMode
 
     DcMotor motorGlyphter;
       // Motor orientations are from top view of robot with glyph mechanism in front
-    DcMotor motorCollectorLeft;
-    DcMotor motorCollectorRight;
+    CRServo motorCollectorLeft;
+    CRServo motorCollectorRight;
 
     DcMotor motorArm;
      //-----------------------------
@@ -169,8 +169,8 @@ abstract public class MasterOpMode extends LinearOpMode
             collectorTurntableServo = hardwareMap.crservo.get("collectorTurntableServo");
 
             motorGlyphter = hardwareMap.dcMotor.get("motorGlyphter");
-            motorCollectorLeft = hardwareMap.dcMotor.get("motorLeftCollector");
-            motorCollectorRight = hardwareMap.dcMotor.get("motorRightCollector");
+            motorCollectorLeft = hardwareMap.crservo.get("motorLeftCollector");
+            motorCollectorRight = hardwareMap.crservo.get("motorRightCollector");
             //-------------------------------------------------------------------
 
             // Set device attributes and behaviors--------------------------------
@@ -178,9 +178,9 @@ abstract public class MasterOpMode extends LinearOpMode
             motorGlyphter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorGlyphter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            motorCollectorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motorCollectorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motorCollectorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            //motorCollectorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            //motorCollectorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            //motorCollectorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             motorCollectorLeft.setPower(0);
             motorCollectorRight.setPower(0);
 
