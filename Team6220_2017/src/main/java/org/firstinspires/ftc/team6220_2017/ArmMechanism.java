@@ -31,7 +31,7 @@ public class ArmMechanism
         }
 
 
-        // Run arm using arm motor
+        // Run arm
         if (op.driver2.getLeftStickMagnitude() > Constants.MINIMUM_JOYSTICK_POWER)
         {
             // Adjust power inputs for the arm motor
@@ -42,7 +42,7 @@ public class ArmMechanism
         }
 
 
-        // Run wrist using wrist servo
+        // Run wrist
         if (op.driver2.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
         {
             wristServoCount -= Constants.WRIST_SERVO_INCREMENT;
@@ -53,6 +53,11 @@ public class ArmMechanism
             wristServoCount += Constants.WRIST_SERVO_INCREMENT;
             op.wristServo.setPosition(wristServoCount);
         }
+
+
+        // Run grabber
+        if (op.driver2.isButtonJustPressed(Button.X))
+            op.grabberServoToggler.toggle();
 
 
         op.telemetry.addData("wristServoCount: ", wristServoCount);

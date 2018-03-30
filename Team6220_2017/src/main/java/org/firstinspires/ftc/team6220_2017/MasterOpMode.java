@@ -86,6 +86,7 @@ abstract public class MasterOpMode extends LinearOpMode
     Servo verticalJewelServo;
 
     Servo wristServo;
+    Servo grabberServo;
 
     CRServo collectorTurntableServo;
      //------------------------------
@@ -93,6 +94,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     // Servo togglers
     ServoToggler verticalJewelServoToggler;
+    ServoToggler grabberServoToggler;
 
     // Booleans that allow us to choose what parts of the robot we are and aren't using in each OpMode
     public boolean isDriveTrainAttached = true;
@@ -139,7 +141,6 @@ abstract public class MasterOpMode extends LinearOpMode
             motorFR = hardwareMap.dcMotor.get("motorFrontRight");
             motorBL = hardwareMap.dcMotor.get("motorBackLeft");
             motorBR = hardwareMap.dcMotor.get("motorBackRight");
-            //
 
             // Set motor attributes and behaviors------------------------------
             motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -195,7 +196,11 @@ abstract public class MasterOpMode extends LinearOpMode
             motorArm = hardwareMap.dcMotor.get("motorArm");
 
             wristServo = hardwareMap.servo.get("wristServo");
+            grabberServo = hardwareMap.servo.get("grabberServo");
             //------------------------------------------------------------
+
+            // Servo togglers
+            grabberServoToggler = new ServoToggler(grabberServo, Constants.GRABBER_SERVO_RELEASE, Constants.GRABBER_SERVO_GRIP);
 
             // Set device attributes and behaviors------------------------
             motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -204,6 +209,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
             motorArm.setPower(0);
             wristServo.setPosition(Constants.WRIST_SERVO_INIT);
+            grabberServoToggler.deploy();
             //------------------------------------------------------------
         }
         if (isJewelJostlerAttached)
@@ -211,16 +217,13 @@ abstract public class MasterOpMode extends LinearOpMode
             // Jewel servos
             verticalJewelServo = hardwareMap.servo.get("verticalJewelServo");
             lateralJewelServo = hardwareMap.servo.get("lateralJewelServo");
-            //
 
             // Servo togglers
             verticalJewelServoToggler = new ServoToggler(verticalJewelServo, Constants.VERTICAL_JEWEL_SERVO_RETRACTED, Constants.VERTICAL_JEWEL_SERVO_DEPLOYED);
-            //
 
             // Set initial servo positions
             verticalJewelServo.setPosition(Constants.VERTICAL_JEWEL_SERVO_INIT);
             lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_INIT);
-            //
         }
         //--------------------------------------------------------------------------------------------------------------
 

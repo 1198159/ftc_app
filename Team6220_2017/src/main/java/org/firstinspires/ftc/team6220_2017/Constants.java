@@ -106,6 +106,8 @@ public class Constants
 
     public static final double WRIST_SERVO_INIT = 0.5;   // todo Adjust
     public static final double WRIST_SERVO_INCREMENT = 0.008;   // todo Adjust
+    public static final double GRABBER_SERVO_GRIP = 0.5;   // todo Adjust
+    public static final double GRABBER_SERVO_RELEASE = 0;   // todo Adjust
     //-------------------------------------------------
 
 
