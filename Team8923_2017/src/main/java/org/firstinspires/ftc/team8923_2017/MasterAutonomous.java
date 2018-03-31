@@ -4,19 +4,13 @@ package org.firstinspires.ftc.team8923_2017;
  * Holds all code necessary to run the robot in autonomous controlled mode
  */
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.hardware.Camera;
-import android.view.View;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import com.vuforia.CameraDevice;
 import com.vuforia.Image;
 import com.vuforia.Matrix34F;
 import com.vuforia.PIXEL_FORMAT;
@@ -281,18 +275,14 @@ public abstract class MasterAutonomous extends Master
     void closeGG()
     {
         // Close GG claws
-        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
-        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
-        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
-        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
+        servoGGL.setPosition(GGServoPositions.LEFTFULLCLOSED.val());
+        servoGGR.setPosition(GGServoPositions.RIGHTFULLCLOSED.val());
     }
     void openGG()
     {
         // Open GG claws
-        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
-        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
-        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
-        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
+        servoGGL.setPosition(GGServoPositions.LEFTFULLOPEN.val());
+        servoGGR.setPosition(GGServoPositions.RIGHTFULLOPEN.val());
     }
 
     void MoveIMU(double referenceAngle, double moveMM, double targetAngle, double kAngle, double maxSpeed, double timeout)

@@ -21,10 +21,8 @@ public class TeleOpCompetition extends MasterTeleOp
 
         waitForStart();
         // Set servo positions so no penalty
-        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val()); //TODO value needs to be changed
-        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val()); //TODO value needs to be changed
-        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val()); //TODO value needs to be changed
-        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val()); //TODO value needs to be changed
+        servoGGL.setPosition(GGServoPositions.LEFTFULLOPEN.val()); //TODO value needs to be changed
+        servoGGR.setPosition(GGServoPositions.RIGHTFULLOPEN.val()); //TODO value needs to be changed
         servoJJ.setPosition(SERVO_JJ_UP);
 
         while (opModeIsActive())

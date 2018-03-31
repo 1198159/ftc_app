@@ -8,28 +8,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public abstract class MasterTeleOp extends Master
 {
-    //region UNUSED VARIABLES
-    /*boolean liftMoving = false;
-    boolean RRExtended = false;
-    boolean RRHandOpen = false;
-    boolean RRMoving = false;
-    boolean HandMoving = false;
-    boolean RRAtPosition = true;
-
-    int liftStage = 0;
-
-    int smallMovementsUp = 0;
-    int smallMovementsDown = 0;
-    int GGTOL = 15;
-
-    ElapsedTime GGLiftTimer = new ElapsedTime();
-    ElapsedTime HandTimer = new ElapsedTime(); */
-    //endregion
     private boolean liftModeStateChange = false;
     private boolean GGFlipped = false;
     private boolean GGLifted = false;
-    private boolean bottomGGClosed = false;
-    private boolean topGGClosed = false;
     private boolean FlipTimerNotJustReset = true; // used to reset GGFlipTimer on the first time through the statement
     private boolean autoBalanceStable = false;
     private boolean GGSafetyEscapePositionSet = false;
@@ -39,15 +20,14 @@ public abstract class MasterTeleOp extends Master
     private int GGStart;
     private int GGFlipStage = 0;
     private int holdPosition;
-    private double SSATimeout = 1.0;
+    private double TriggerIntToBoolVal = 0.10;
 
     private ElapsedTime SlowModeTimer = new ElapsedTime();
     private ElapsedTime GGFlipTimer = new ElapsedTime();
     private ElapsedTime AutoBalanceTimeout = new ElapsedTime();
-    private ElapsedTime UpAndDownGGClawReset = new ElapsedTime();
+    private ElapsedTime GGClawReset = new ElapsedTime();
     private ElapsedTime FFFudgeTimer = new ElapsedTime();
-    private ElapsedTime SSALTimeout = new ElapsedTime();
-    private ElapsedTime SSARTimeout = new ElapsedTime();
+    private ElapsedTime SSATimeout = new ElapsedTime();
 
     void DriveOmni45TeleOp()
     {
@@ -126,16 +106,6 @@ public abstract class MasterTeleOp extends Master
         telemetry.addData("SlowMode", slowModeDivisor);
         telemetry.addData("Dpad_Up", gamepad1.dpad_up);
         telemetry.addData("Dpad_Down", gamepad1.dpad_down);
-        /*telemetry.addData("imu rot Y", imu.getAngularOrientation().firstAngle );
-        telemetry.addData("imu rot X", imu.getAngularOrientation().secondAngle);
-        telemetry.addData("imu rot Z", imu.getAngularOrientation().thirdAngle);
-        telemetry.addData("Drive Angle", Math.toDegrees(Math.atan2((-imu.getAngularOrientation().secondAngle) * 10.0,
-                (-imu.getAngularOrientation().thirdAngle) * 10.0)));
-        telemetry.addData("Power", Math.min(Math.abs(((-imu.getAngularOrientation().thirdAngle * (1 / 25.0)))), 0.25));
-        telemetry.addData("Turn Power", Math.min(Math.abs((autoBalanceTargetAngle - imu.getAngularOrientation().firstAngle) * (1 / 90.0)), 0.5) *
-                Math.signum((autoBalanceTargetAngle - imu.getAngularOrientation().firstAngle)));
-        telemetry.addData("autoBalancing", autoBalancing);*/
-        //telemetry.addData("lift stage", liftStage);
         telemetry.update();
         idle();
     }
@@ -199,10 +169,8 @@ public abstract class MasterTeleOp extends Master
         {
             //close the servos to pick up glyphs that might get left behind and prevent
             //damage to servo arms that could get caught on the ground
-            servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
-            servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
-            servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
-            servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
+            servoGGL.setPosition(GGServoPositions.LEFTFULLCLOSED.val());
+            servoGGR.setPosition(GGServoPositions.RIGHTFULLCLOSED.val());
             //wait for servos to close
             if(GGFlipTimer.milliseconds() > 125)
             {
@@ -343,22 +311,12 @@ public abstract class MasterTeleOp extends Master
             }
         }
 
-        //move the GG to the elevated end value if it started on the first stage (Also open servos that were open before)
+        //move the GG to the elevated end value if it started on the first stage
         if(GGLifted && GGFlipStage == 4)
         {
             motorGG.setTargetPosition(GGZero + 250);
             motorGG.setPower(Math.signum(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) *
                 Math.min(Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 150.0), 1.0));
-            if(!topGGClosed)
-            {
-                servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
-                servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
-            }
-            if(!bottomGGClosed)
-            {
-                servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
-                servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
-            }
             if (Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) <= 10)
             {
                 GGFlipStage = 0;
@@ -371,15 +329,15 @@ public abstract class MasterTeleOp extends Master
 
         /* ====== FINE ADJUST ===== */
 
-        if(gamepad1.right_trigger > 0.35 || gamepad1.left_trigger > 0.35)
+        if(gamepad1.right_trigger > TriggerIntToBoolVal || gamepad1.left_trigger > TriggerIntToBoolVal)
         {
-            if(gamepad1.right_trigger > 0.35)
+            if(gamepad1.right_trigger > TriggerIntToBoolVal)
             {
                 motorGG.setTargetPosition(GGZero + 5000);
                 liftModeStateChange = true;
                 motorGG.setPower(0.60);
             }
-            else if(gamepad1.left_trigger > 0.35)
+            else if(gamepad1.left_trigger > TriggerIntToBoolVal)
             {
                 motorGG.setTargetPosition(GGZero - 1000);
                 liftModeStateChange = true;
@@ -405,32 +363,20 @@ public abstract class MasterTeleOp extends Master
         //Full close
         if(gamepad1.a)
         {
-            servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
-            servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
-            servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
-            servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
-            topGGClosed = true;
-            bottomGGClosed = true;
+            servoGGL.setPosition(GGServoPositions.LEFTFULLCLOSED.val());
+            servoGGR.setPosition(GGServoPositions.RIGHTFULLCLOSED.val());
         }
         //half open
         else if(gamepad1.x)
         {
-            servoGGUL.setPosition(GGServoPositions.UPPERLEFTHALFOPEN.val());
-            servoGGUR.setPosition(GGServoPositions.UPPERRIGHTHALFOPEN.val());
-            servoGGDL.setPosition(GGServoPositions.LOWERLEFTHALFOPEN.val());
-            servoGGDR.setPosition(GGServoPositions.LOWERRIGHTHALFOPEN.val());
-            topGGClosed = false;
-            bottomGGClosed = false;
+            servoGGL.setPosition(GGServoPositions.LEFTHALFOPEN.val());
+            servoGGR.setPosition(GGServoPositions.RIGHTHALFOPEN.val());
         }
         //full open
         else if(gamepad1.b)
         {
-            servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
-            servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
-            servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
-            servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
-            topGGClosed = false;
-            bottomGGClosed = false;
+            servoGGL.setPosition(GGServoPositions.LEFTFULLOPEN.val());
+            servoGGR.setPosition(GGServoPositions.RIGHTFULLOPEN.val());
         }
 
         if(gamepad1.left_stick_button && gamepad1.right_stick_button && gamepad1.left_bumper)
@@ -438,122 +384,68 @@ public abstract class MasterTeleOp extends Master
             GGZero = motorGG.getCurrentPosition() + 55;
         }
 
-        if(gamepad1.dpad_up || gamepad1.dpad_down)
-        {
-            if (gamepad1.dpad_up && UpAndDownGGClawReset.milliseconds() > 125)
-            {
-                if (!GGFlipped)
-                {
-                    if (!bottomGGClosed)
-                    {
-                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
-                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
-                        bottomGGClosed = true;
-                    }
-                    else
-                    {
-                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
-                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
-                        bottomGGClosed = false;
-                    }
-
-                }
-                else
-                {
-                    if (!topGGClosed)
-                    {
-                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
-                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
-                        topGGClosed = true;
-                    }
-                    else
-                    {
-                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
-                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
-                        topGGClosed = false;
-                    }
-                }
-            }
-
-            else if (gamepad1.dpad_down && UpAndDownGGClawReset.milliseconds() > 125)
-            {
-                if (!GGFlipped)
-                {
-                    if (!topGGClosed)
-                    {
-                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
-                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
-                        topGGClosed = true;
-                    }
-                    else
-                    {
-                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
-                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
-                        topGGClosed = false;
-                    }
-                }
-                else
-                {
-                    if (!bottomGGClosed)
-                    {
-                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
-                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
-                        bottomGGClosed = true;
-                    }
-                    else
-                    {
-                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
-                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
-                        bottomGGClosed = false;
-                    }
-                }
-            }
-            UpAndDownGGClawReset.reset();
-        }
         idle();
     }
 
     void RunVortex()
     {
-        motorSSL.setPower(gamepad2.left_stick_y);
-        motorSSR.setPower(gamepad2.right_stick_y);
+        if(!(Math.abs(gamepad2.left_stick_y) < 0.0))
+            SSATimeout.reset();
 
-        if(!(gamepad2.right_bumper || gamepad2.right_trigger > 0.35))
-            SSALTimeout.reset();
-        if(!(gamepad2.left_bumper || gamepad2.left_trigger > 0.35))
-            SSARTimeout.reset();
-
-        if(gamepad2.right_bumper || gamepad2.right_trigger > 0.35 || gamepad2.left_bumper || gamepad2.left_trigger > 0.35) // to decrease compute time (possibly)
+        if(!(Math.abs(gamepad2.left_stick_y) == 0.0) || gamepad2.right_bumper || gamepad2.right_trigger > TriggerIntToBoolVal
+                || gamepad2.left_bumper || gamepad2.left_trigger > TriggerIntToBoolVal) // to decrease compute time (possibly)
         {
-            if (SSALTimeout.milliseconds() < SSATimeout)
+            if (SSATimeout.milliseconds() < 1.0) // run time of the arms before they throttle down
             {
-                if (gamepad2.left_trigger > 0.35)
+                if (gamepad2.left_stick_y > 0.0)
+                {
                     servoSSAL.setPower(1.0);
-                else if (gamepad2.left_bumper)
+                    servoSSAR.setPower(-1.0);
+                } else if (gamepad2.left_stick_y < 0.0)
+                {
                     servoSSAL.setPower(-1.0);
-            }
-            else
+                    servoSSAR.setPower(1.0);
+                }
+            } else
             {
-                if (gamepad2.left_trigger > 0.35)
+                if (gamepad2.left_stick_y > 0.0)
+                {
                     servoSSAL.setPower(0.2);
-                else if (gamepad2.left_bumper)
+                    servoSSAR.setPower(-0.2);
+                } else if (gamepad2.left_stick_y < 0.0)
+                {
                     servoSSAL.setPower(-0.2);
+                    servoSSAR.setPower(0.2);
+                }
             }
 
-            if (SSARTimeout.milliseconds() < SSATimeout)
+            if (gamepad2.left_trigger > TriggerIntToBoolVal)
             {
-                if (gamepad2.right_trigger > 0.35)
-                    servoSSAL.setPower(1.0);
-                else if (gamepad2.right_bumper)
-                    servoSSAL.setPower(-1.0);
+                motorSSL.setPower(-0.5);
+                servoSSAL.setPower(-0.3);
             }
-            else
+            else if (gamepad2.left_bumper)
             {
-                if (gamepad2.right_trigger > 0.35)
-                    servoSSAL.setPower(0.2);
-                else if (gamepad2.right_bumper)
-                    servoSSAL.setPower(-0.2);
+                motorSSL.setPower(0.5);
+                servoSSAL.setPower(-0.3);
             }
+            if (gamepad2.right_trigger > TriggerIntToBoolVal)
+            {
+                motorSSR.setPower(0.5);
+                servoSSAR.setPower(0.3);
+            }
+            else if (gamepad2.right_bumper)
+            {
+                motorSSR.setPower(-0.5);
+                servoSSAR.setPower(0.3);
+            }
+        }
+        else
+        {
+            motorSSL.setPower(0.0);
+            motorSSR.setPower(0.0);
+            servoSSAL.setPower(0.0);
+            servoSSAR.setPower(0.0);
         }
     }
 

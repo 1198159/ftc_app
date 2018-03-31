@@ -6,9 +6,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 /**
  * Main robot code center, hold all the information needed to run the robot
@@ -18,21 +15,13 @@ public abstract class Master extends LinearOpMode
 {
     enum GGServoPositions
     {
-        UPPERLEFTFULLOPEN(0.35),
-        UPPERLEFTHALFOPEN(0.45),
-        UPPERLEFTFULLCLOSED(0.60),
+        LEFTFULLOPEN(0.50),
+        LEFTHALFOPEN(0.40),
+        LEFTFULLCLOSED(0.30),
 
-        UPPERRIGHTFULLOPEN(0.55),
-        UPPERRIGHTHALFOPEN(0.40),
-        UPPERRIGHTFULLCLOSED(0.20),
-
-        LOWERLEFTFULLOPEN(0.50),
-        LOWERLEFTHALFOPEN(0.40),
-        LOWERLEFTFULLCLOSED(0.30),
-
-        LOWERRIGHTFULLOPEN(0.40),
-        LOWERRIGHTHALFOPEN(0.50),
-        LOWERRIGHTFULLCLOSED(0.60);
+        RIGHTFULLOPEN(0.40),
+        RIGHTHALFOPEN(0.50),
+        RIGHTFULLCLOSED(0.60);
 
         public final double val;
         GGServoPositions(double i) { val = i; }
@@ -50,10 +39,8 @@ public abstract class Master extends LinearOpMode
 
     // Declare servos here
     Servo servoJJ = null;
-    Servo servoGGUL = null;
-    Servo servoGGUR = null;
-    Servo servoGGDL = null;
-    Servo servoGGDR = null;
+    Servo servoGGL = null;
+    Servo servoGGR = null;
     Servo servoRRHand = null;
     CRServo motorSSL = null;
     CRServo motorSSR = null;
@@ -132,10 +119,8 @@ public abstract class Master extends LinearOpMode
 
         // Servos here
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
-        servoGGUL = hardwareMap.get(Servo.class, "servoGGUL");
-        servoGGUR = hardwareMap.get(Servo.class, "servoGGUR");
-        servoGGDL = hardwareMap.get(Servo.class, "servoGGDL");
-        servoGGDR = hardwareMap.get(Servo.class, "servoGGDR");
+        servoGGL = hardwareMap.get(Servo.class, "servoGGL");
+        servoGGR = hardwareMap.get(Servo.class, "servoGGR");
         motorSSL = hardwareMap.get(CRServo.class, "motorSSL");
         motorSSR = hardwareMap.get(CRServo.class, "motorSSR");
         servoSSAL = hardwareMap.get(CRServo.class, "servoSSAL");
