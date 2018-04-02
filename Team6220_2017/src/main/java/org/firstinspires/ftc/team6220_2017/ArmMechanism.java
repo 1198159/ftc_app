@@ -36,7 +36,15 @@ public class ArmMechanism
         {
             // Adjust power inputs for the arm motor
             double armPower = Constants.ARM_POWER_CONSTANT * op.stickCurve.getOuput(op.gamepad2.left_stick_y);
-            op.motorArm.setPower(armPower);
+
+            // Set encoder limits for the arm's range of motion.  If it is retracted or extended
+            // as far as it can be, we do not want to attempt to move beyond those points.
+            if (op.motorArm.getCurrentPosition() >= 3000 && Math.signum(op.gamepad2.left_stick_y) < 0)  // todo Adjust encoder limit
+                op.motorArm.setPower(0);
+            else if (op.motorArm.getCurrentPosition() <= 10 && Math.signum(op.gamepad2.left_stick_y) > 0)   // todo Adjust encoder limit
+                op.motorArm.setPower(0);
+            else
+                op.motorArm.setPower(armPower);
 
             op.telemetry.addData("armPower: ", armPower);
         }
@@ -56,7 +64,7 @@ public class ArmMechanism
 
 
         // Run grabber
-        if (op.driver2.isButtonJustPressed(Button.X))
+        if (op.driver2.isButtonJustPressed(Button.A))
             op.grabberServoToggler.toggle();
 
 

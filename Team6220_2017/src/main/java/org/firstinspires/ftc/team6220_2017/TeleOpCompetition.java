@@ -35,11 +35,17 @@ public class TeleOpCompetition extends MasterTeleOp
             // 1st driver:  left stick rotates robot, right stick translates robot
             // 2nd driver:  right bumper retracts jewel jostler if it falls
             driveMecanumWithJoysticks();
-            // 2nd driver:  left stick moves arm, triggers move wrist
+            // 2nd driver:  left stick moves arm, triggers move wrist, A button toggles grabber
             //armMechanism.driveArm();
             // 1st driver:  dpad down collects, dpad up scores
             // 2nd driver:  a, b, x, and y raise the glyphter to 4 glyph heights
             glyphMechanism.driveGlyphMech();
+
+            // In case turntable servo starts malfunctioning, driver 2 can stop it
+            if (driver2.isButtonJustPressed(Button.Y))
+            {
+                collectorTurntableServo.setPower(0);
+            }
 
 
             /*
