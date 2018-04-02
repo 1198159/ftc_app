@@ -96,13 +96,13 @@ public class Constants
 
 
     // Servo positions--------------------------------
-    public static final double LATERAL_JEWEL_SERVO_INIT = 0.0;
-    public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.30;
-    public static final double LATERAL_JEWEL_SERVO_LEFT = 0.16;
-    public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.43;
-    public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.50;
-    public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.175;
-    public static final double VERTICAL_JEWEL_SERVO_INIT = 0.43;
+    public static final double LATERAL_JEWEL_SERVO_INIT = 0;
+    public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.26;
+    public static final double LATERAL_JEWEL_SERVO_LEFT = 0.19;
+    public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.38;
+    public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.52;
+    public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.20;
+    public static final double VERTICAL_JEWEL_SERVO_INIT = 0.45;
 
     public static final double WRIST_SERVO_INIT = 0.5;   // todo Adjust
     public static final double WRIST_SERVO_INCREMENT = 0.008;   // todo Adjust
