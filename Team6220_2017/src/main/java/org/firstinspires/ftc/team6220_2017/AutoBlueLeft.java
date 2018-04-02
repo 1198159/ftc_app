@@ -70,7 +70,7 @@ public class AutoBlueLeft extends MasterAutonomous
 
         // Score glyph---------------------------------------
         motorCollectorLeft.setPower(-0.7);
-        motorCollectorRight.setPower(0.4);
+        motorCollectorRight.setPower(-0.4);
         pauseWhileUpdating(1.0);
         motorCollectorLeft.setPower(0);
         motorCollectorRight.setPower(0);

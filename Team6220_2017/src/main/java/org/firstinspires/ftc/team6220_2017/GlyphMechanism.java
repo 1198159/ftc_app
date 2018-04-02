@@ -164,21 +164,21 @@ public class GlyphMechanism implements ConcurrentOperation
          // Collect glyphs
         if (op.driver1.isButtonJustPressed(Button.DPAD_DOWN))
         {
-            op.motorCollectorRight.setPower(-0.7);
-            op.motorCollectorLeft.setPower(0.7);
+            op.motorCollectorRight.setPower(0.8);
+            op.motorCollectorLeft.setPower(0.8);
         }
          // Score glyphs
         else if (op.driver1.isButtonJustPressed(Button.DPAD_UP))
         {
-            op.motorCollectorRight.setPower(0.8);
+            op.motorCollectorRight.setPower(-0.8);
             op.motorCollectorLeft.setPower(-0.8);
 
         }
          // Stack glyphs (need a slower speed for this)
         else if (op.driver1.isButtonJustPressed(Button.DPAD_RIGHT))
         {
-            op.motorCollectorRight.setPower(0.3);
-            op.motorCollectorLeft.setPower(-0.3);
+            op.motorCollectorRight.setPower(-0.4);
+            op.motorCollectorLeft.setPower(-0.4);
 
         }
          // Stop collector
@@ -191,17 +191,18 @@ public class GlyphMechanism implements ConcurrentOperation
         else if (op.driver1.isButtonJustPressed(Button.LEFT_STICK_PRESS))
         {
             motorCollectorCount += 0.05;
-            op.motorCollectorLeft.setPower(-motorCollectorCount);
+            op.motorCollectorLeft.setPower(motorCollectorCount);
             op.motorCollectorRight.setPower(motorCollectorCount);
             op.telemetry.addData("motorCollectorCount", motorCollectorCount);
         }
         else if (op.driver1.isButtonJustPressed(Button.RIGHT_STICK_PRESS))
         {
             motorCollectorCount -= 0.05;
-            op.motorCollectorLeft.setPower(-motorCollectorCount);
+            op.motorCollectorLeft.setPower(motorCollectorCount);
             op.motorCollectorRight.setPower(motorCollectorCount);
             op.telemetry.addData("motorCollectorCount", motorCollectorCount);
         }
+        op.telemetry.update();
         //---------------------------------------------------------------------
 
 
@@ -215,7 +216,7 @@ public class GlyphMechanism implements ConcurrentOperation
 
         op.telemetry.addData("Glyphter Enc: ", op.motorGlyphter.getCurrentPosition());
         //op.telemetry.addData("MotorCollectorCount: ", motorCollectorCount);
-        op.telemetry.update();
+        //op.telemetry.update();
     }
 
 

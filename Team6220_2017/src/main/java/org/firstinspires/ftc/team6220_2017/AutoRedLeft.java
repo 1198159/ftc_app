@@ -66,7 +66,7 @@ public class AutoRedLeft extends MasterAutonomous
 
         // Score glyph-------------------------------------------------------------------
         motorCollectorLeft.setPower(-0.5);
-        motorCollectorRight.setPower(0.5);
+        motorCollectorRight.setPower(-0.5);
         pauseWhileUpdating(0.3);
 
         //-------------------------------------------------------------------------------
@@ -105,7 +105,7 @@ public class AutoRedLeft extends MasterAutonomous
 
         // Collect glyphs----------------------------------------------------------------
         motorCollectorLeft.setPower(0.5);
-        motorCollectorRight.setPower(-0.5);
+        motorCollectorRight.setPower(0.5);
         //-------------------------------------------------------------------------------
 
 
@@ -150,7 +150,7 @@ public class AutoRedLeft extends MasterAutonomous
 
         // Score glyphs------------------------------------------------------------------
         motorCollectorLeft.setPower(-0.5);
-        motorCollectorRight.setPower(0.5);
+        motorCollectorRight.setPower(-0.5);
         pauseWhileUpdating(0.5);
         //-------------------------------------------------------------------------------
 
