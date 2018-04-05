@@ -37,7 +37,7 @@ public class GlyphMechanism implements ConcurrentOperation
     //------------------------------------------------------------------------
 
     // We pass in MasterOpMode so that this class can access important functionalities such as
-    // telemetry and pause
+    // telemetry and pauseWhileUpdating
     public GlyphMechanism (MasterOpMode mode, int[] GlyphHeights)
     {
         this.op = mode;
@@ -47,6 +47,7 @@ public class GlyphMechanism implements ConcurrentOperation
 
     // todo REMEMBER:  Add hardware devices here
     public void initialize(HardwareMap hMap){}
+
 
     // Call at end of loop
     public void update(double eTime)
@@ -85,7 +86,7 @@ public class GlyphMechanism implements ConcurrentOperation
 
             isTurntableRotated = true;
         }
-        else if (isTurntableRotated)
+        else
         {
             op.collectorTurntableServo.setPower(-1.0);
 
@@ -193,16 +194,13 @@ public class GlyphMechanism implements ConcurrentOperation
             motorCollectorCount += 0.05;
             op.motorCollectorLeft.setPower(motorCollectorCount);
             op.motorCollectorRight.setPower(motorCollectorCount);
-            op.telemetry.addData("motorCollectorCount", motorCollectorCount);
         }
         else if (op.driver1.isButtonJustPressed(Button.RIGHT_STICK_PRESS))
         {
             motorCollectorCount -= 0.05;
             op.motorCollectorLeft.setPower(motorCollectorCount);
             op.motorCollectorRight.setPower(motorCollectorCount);
-            op.telemetry.addData("motorCollectorCount", motorCollectorCount);
         }
-        op.telemetry.update();
         //---------------------------------------------------------------------
 
 
@@ -216,7 +214,7 @@ public class GlyphMechanism implements ConcurrentOperation
 
         op.telemetry.addData("Glyphter Enc: ", op.motorGlyphter.getCurrentPosition());
         //op.telemetry.addData("MotorCollectorCount: ", motorCollectorCount);
-        //op.telemetry.update();
+        op.telemetry.update();
     }
 
 

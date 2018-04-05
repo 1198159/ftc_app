@@ -384,8 +384,8 @@ abstract public class MasterOpMode extends LinearOpMode
     }
 
 
-    //Updates every item with elapsed time at the end of the main loop; ensures that operations
-    //based on a timer are executed on time
+    // Updates every item with elapsed time at the end of the main loop; ensures that operations
+    // based on a timer are executed on time
     public void updateCallback(double eTime)
     {
         for (ConcurrentOperation item : callback)
