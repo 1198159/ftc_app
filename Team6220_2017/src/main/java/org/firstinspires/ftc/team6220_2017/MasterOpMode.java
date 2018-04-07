@@ -85,6 +85,8 @@ abstract public class MasterOpMode extends LinearOpMode
     Servo lateralJewelServo;
     Servo verticalJewelServo;
 
+    Servo glyphClipServo;
+
     Servo wristServo;
     Servo grabberServo;
 
@@ -95,6 +97,7 @@ abstract public class MasterOpMode extends LinearOpMode
     // Servo togglers
     ServoToggler verticalJewelServoToggler;
     ServoToggler grabberServoToggler;
+    ServoToggler glyphClipServoToggler;
 
     // Booleans that allow us to choose what parts of the robot we are and aren't using in each OpMode
     public boolean isDriveTrainAttached = true;
@@ -187,7 +190,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
 
             sensorRGB = hardwareMap.colorSensor.get("sensor_color");
-            collectorTurntableServo.setPower(Constants.MINIMUM_TURNTABLE_POWER);
+            collectorTurntableServo.setPower(-Constants.MINIMUM_TURNTABLE_POWER);
             //--------------------------------------------------------------------
         }
         if (isArmAttached)
@@ -226,6 +229,12 @@ abstract public class MasterOpMode extends LinearOpMode
             lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_INIT);
         }
         //--------------------------------------------------------------------------------------------------------------
+
+
+        // Create and initialize glyph clip.  We use this to score our first glyph in autonomous.
+        glyphClipServo = hardwareMap.servo.get("glyphClipServo");
+        glyphClipServoToggler = new ServoToggler(glyphClipServo, Constants.GLYPH_CLIP_SERVO_RETRACTED, Constants.GLYPH_CLIP_SERVO_DEPLOYED);
+        glyphClipServoToggler.retract();
 
 
         // todo REV imu can occasionally taking a long time to initialize or even fail to do so; why is this?
