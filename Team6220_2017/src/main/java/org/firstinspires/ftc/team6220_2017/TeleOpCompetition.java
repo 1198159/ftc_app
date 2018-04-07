@@ -41,10 +41,11 @@ public class TeleOpCompetition extends MasterTeleOp
             // 2nd driver:  a, b, x, and y raise the glyphter to 4 glyph heights
             glyphMechanism.driveGlyphMech();
 
-            // In case turntable servo starts malfunctioning, driver 2 can stop it
-            if (driver2.isButtonJustPressed(Button.Y))
+
+            if (driver1.isButtonJustPressed(Button.B))
             {
-                collectorTurntableServo.setPower(0);
+                glyphClipServoToggler.toggle();
+                telemetry.addData("Glyph Clip Pos:", glyphClipServo.getPosition());
             }
 
 

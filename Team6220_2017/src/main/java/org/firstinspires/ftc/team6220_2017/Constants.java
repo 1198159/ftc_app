@@ -104,6 +104,9 @@ public class Constants
     public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.20;
     public static final double VERTICAL_JEWEL_SERVO_INIT = 0.45;
 
+    public static final double GLYPH_CLIP_SERVO_RETRACTED = 0;   // todo Adjust
+    public static final double GLYPH_CLIP_SERVO_DEPLOYED = 0.45;   // todo Adjust
+
     public static final double WRIST_SERVO_INIT = 0.5;   // todo Adjust
     public static final double WRIST_SERVO_INCREMENT = 0.008;   // todo Adjust
     public static final double GRABBER_SERVO_GRIP = 0.5;   // todo Adjust
@@ -132,6 +135,6 @@ public class Constants
 
     // Glyph rotation mechanism constants
      // Tells the glyph rotation mechanism how long it should rotate to accomplish a full turn
-    public static final double TURNTABLE_ROTATION_TIME = 1.4;  // todo Adjust
-    public static final double MINIMUM_TURNTABLE_POWER = 0.25;  // todo Adjust
+    public static final double TURNTABLE_ROTATION_TIME = 1.2;  // todo Adjust
+    public static final double MINIMUM_TURNTABLE_POWER = 0.05;  // todo Adjust
 }
