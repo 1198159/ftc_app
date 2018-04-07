@@ -209,6 +209,11 @@ public class GlyphMechanism implements ConcurrentOperation
         {
             rotateGlyphMech();
         }
+         // If turntable servo starts malfunctioning, driver 2 can stop it.
+        else if (op.driver2.isButtonJustPressed(Button.Y))
+        {
+            op.collectorTurntableServo.setPower(0);
+        }
         //---------------------------------------------------------------------
 
 
