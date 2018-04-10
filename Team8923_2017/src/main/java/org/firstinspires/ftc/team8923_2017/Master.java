@@ -45,7 +45,6 @@ public abstract class Master extends LinearOpMode
     DcMotor motorBR = null;
     DcMotor motorGG = null;
     DcMotor motorFF = null;
-    //DcMotor motorRR = null;
 
     // Declare servos here
     Servo servoJJ = null;
@@ -53,7 +52,6 @@ public abstract class Master extends LinearOpMode
     Servo servoGGUR = null;
     Servo servoGGDL = null;
     Servo servoGGDR = null;
-    Servo servoRRHand = null;
 
     // Declare any neccessary sensors here
     BNO055IMU imu;
@@ -70,8 +68,7 @@ public abstract class Master extends LinearOpMode
     private static final double WHEEL_DIAMETER = 4.0 * 25.4; // 4 inch diameter to MM = 101.6
     private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;// = 319.024
     private static final double TURN_POWER_CONSTANT = 0.9;
-    //private static final double CORRECTION_FACTOR = 0.92;
-    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/; //319.024/1120 = .28484
+    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION;
     //Servos constants
     double SERVO_JJ_UP = 0.8; //Port 5, Hub 1
     double SERVO_JJ_DOWN = 0.15;
@@ -123,7 +120,6 @@ public abstract class Master extends LinearOpMode
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
         motorGG = hardwareMap.get(DcMotor.class, "motorGG");
         motorFF = hardwareMap.get(DcMotor.class, "motorFF");
-        //motorRR = hardwareMap.get(DcMotor.class, "motorRR");
 
         // Servos here
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
@@ -131,17 +127,6 @@ public abstract class Master extends LinearOpMode
         servoGGUR = hardwareMap.get(Servo.class, "servoGGUR");
         servoGGDL = hardwareMap.get(Servo.class, "servoGGDL");
         servoGGDR = hardwareMap.get(Servo.class, "servoGGDR");
-
-        //Reset encoders
-        /*motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);*/
 
         motorGG.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -176,14 +161,14 @@ public abstract class Master extends LinearOpMode
         double x = drivePower * -Math.sin(Math.toRadians(driveAngle));
         double y = drivePower * Math.cos(Math.toRadians(driveAngle));
 
-            /*
-             * to explain:
-             * each wheel omni wheel exerts a force in one direction like tank but differs in the fact that they have rollers mounted perpendicular
-             * to the wheels outer edge so they can passively roll at 90 degrees to the wheel's facing. This means that with the wheels mounted at 45
-             * degrees to the chassis frame and assuming the left hand rule for the motors, each wheel's power needs to be 90 degrees out of phase
-             * from the previous wheel on the unit circle starting with positive y and x for FL and going clockwise around the unit circle and robot
-             * from there
-             */
+        /*
+         * to explain:
+         * each wheel omni wheel exerts a force in one direction like tank but differs in the fact that they have rollers mounted perpendicular
+         * to the wheels outer edge so they can passively roll at 90 degrees to the wheel's facing. This means that with the wheels mounted at 45
+         * degrees to the chassis frame and assuming the left hand rule for the motors, each wheel's power needs to be 90 degrees out of phase
+         * from the previous wheel on the unit circle starting with positive y and x for FL and going clockwise around the unit circle and robot
+         * from there
+         */
 
         double powerFL = y + x + (turnPower * TURN_POWER_CONSTANT);
         double powerFR = -y + x + (turnPower * TURN_POWER_CONSTANT);
