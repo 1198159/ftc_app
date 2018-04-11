@@ -18,6 +18,7 @@ public abstract class MasterTeleOp extends Master
     private boolean GGSafetyEscapePositionSet = false;
     private boolean FFFudgeTimerReset = false;
     boolean autoBalancing = false;
+    boolean isJJDropped = false;
 
     private int GGStart;
     private int GGFlipStage = 0;
@@ -321,13 +322,13 @@ public abstract class MasterTeleOp extends Master
                 Math.min(Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) * (1 / 150.0), 1.0));
             if(!topGGClosed)
             {
-                servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
-                servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
+                servoGGDL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
+                servoGGDR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
             }
             if(!bottomGGClosed)
             {
-                servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
-                servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
+                servoGGUL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
+                servoGGUR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
             }
             if (Math.abs(motorGG.getTargetPosition() - motorGG.getCurrentPosition()) <= 10)
             {
@@ -403,10 +404,28 @@ public abstract class MasterTeleOp extends Master
             bottomGGClosed = false;
         }
 
-        if(gamepad1.left_stick_button && gamepad1.right_stick_button && gamepad1.left_bumper)
+        if(gamepad1.left_stick_button || gamepad2.a)
         {
             GGZero = motorGG.getCurrentPosition() + 55;
         }
+
+        if(gamepad2.b)
+        {
+            // Drops JJ slowly
+            servoJJ.setPosition(SERVO_JJ_MIDDLE);
+            sleep(200);
+            servoJJ.setPosition(SERVO_JJ_MIDDLE1);
+            sleep(200);
+            servoJJ.setPosition(SERVO_JJ_MIDDLE2);
+            sleep(200);
+            servoJJ.setPosition(SERVO_JJ_MIDDLE3);
+            sleep(200);
+            servoJJ.setPosition(SERVO_JJ_MIDDLE4);
+            sleep(200);
+            servoJJ.setPosition(SERVO_JJ_MIDDLE5);
+            sleep(200);
+        }
+        if(gamepad2.y)
 
         if(gamepad1.dpad_up || gamepad1.dpad_down)
         {
@@ -416,14 +435,14 @@ public abstract class MasterTeleOp extends Master
                 {
                     if (!bottomGGClosed)
                     {
-                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
-                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
+                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
+                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
                         bottomGGClosed = true;
                     }
                     else
                     {
-                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
-                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
+                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
+                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
                         bottomGGClosed = false;
                     }
 
@@ -432,14 +451,14 @@ public abstract class MasterTeleOp extends Master
                 {
                     if (!topGGClosed)
                     {
-                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
-                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
+                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
+                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
                         topGGClosed = true;
                     }
                     else
                     {
-                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
-                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
+                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
+                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
                         topGGClosed = false;
                     }
                 }
@@ -451,14 +470,14 @@ public abstract class MasterTeleOp extends Master
                 {
                     if (!topGGClosed)
                     {
-                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
-                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
+                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
+                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
                         topGGClosed = true;
                     }
                     else
                     {
-                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
-                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
+                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
+                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
                         topGGClosed = false;
                     }
                 }
@@ -466,14 +485,14 @@ public abstract class MasterTeleOp extends Master
                 {
                     if (!bottomGGClosed)
                     {
-                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLCLOSED.val());
-                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLCLOSED.val());
+                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLCLOSED.val());
+                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLCLOSED.val());
                         bottomGGClosed = true;
                     }
                     else
                     {
-                        servoGGDL.setPosition(GGServoPositions.LOWERLEFTFULLOPEN.val());
-                        servoGGDR.setPosition(GGServoPositions.LOWERRIGHTFULLOPEN.val());
+                        servoGGUL.setPosition(GGServoPositions.UPPERLEFTFULLOPEN.val());
+                        servoGGUR.setPosition(GGServoPositions.UPPERRIGHTFULLOPEN.val());
                         bottomGGClosed = false;
                     }
                 }

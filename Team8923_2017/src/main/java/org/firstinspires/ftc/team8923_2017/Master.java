@@ -17,21 +17,21 @@ public abstract class Master extends LinearOpMode
 {
     enum GGServoPositions
     {
-        UPPERLEFTFULLOPEN(0.35),
-        UPPERLEFTHALFOPEN(0.45),
-        UPPERLEFTFULLCLOSED(0.60),
+        UPPERLEFTFULLOPEN(0.45),
+        UPPERLEFTHALFOPEN(0.65),
+        UPPERLEFTFULLCLOSED(0.70),
 
-        UPPERRIGHTFULLOPEN(0.55),
-        UPPERRIGHTHALFOPEN(0.40),
-        UPPERRIGHTFULLCLOSED(0.20),
+        UPPERRIGHTFULLOPEN(0.45),
+        UPPERRIGHTHALFOPEN(0.35),
+        UPPERRIGHTFULLCLOSED(0.30),
 
-        LOWERLEFTFULLOPEN(0.50),
-        LOWERLEFTHALFOPEN(0.40),
-        LOWERLEFTFULLCLOSED(0.30),
+        LOWERLEFTFULLOPEN(0.45),
+        LOWERLEFTHALFOPEN(0.35),
+        LOWERLEFTFULLCLOSED(0.25),
 
-        LOWERRIGHTFULLOPEN(0.40),
-        LOWERRIGHTHALFOPEN(0.50),
-        LOWERRIGHTFULLCLOSED(0.60);
+        LOWERRIGHTFULLOPEN(0.50),
+        LOWERRIGHTHALFOPEN(0.65),
+        LOWERRIGHTFULLCLOSED(0.80);
 
         public final double val;
         GGServoPositions(double i) { val = i; }
@@ -73,8 +73,11 @@ public abstract class Master extends LinearOpMode
     double SERVO_JJ_UP = 0.8; //Port 5, Hub 1
     double SERVO_JJ_DOWN = 0.15;
     double SERVO_JJ_MIDDLE = 0.5;
-    double SERVO_JJ_MIDDLE1 = 0.4;
-    double SERVO_JJ_MIDDLE2 = 0.5;
+    double SERVO_JJ_MIDDLE1 = 0.5;
+    double SERVO_JJ_MIDDLE2 = 0.4;
+    double SERVO_JJ_MIDDLE3 = 0.35;
+    double SERVO_JJ_MIDDLE4 = 0.3;
+    double SERVO_JJ_MIDDLE5 = 0.27;
 
     int GGLiftTicks = 1700; // was 1700
 
