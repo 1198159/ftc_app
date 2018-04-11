@@ -79,11 +79,7 @@ public abstract class MasterAutonomous extends Master
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4;
 
     // These positions are the allow the JJ to gradually lower
-    double SERVO_JJ_MIDDLE1 = 0.5;
-    double SERVO_JJ_MIDDLE2 = 0.4;
-    double SERVO_JJ_MIDDLE3 = 0.35;
-    double SERVO_JJ_MIDDLE4 = 0.3;
-    double SERVO_JJ_MIDDLE5 = 0.23;
+
 
     ElapsedTime GGLiftTimer = new ElapsedTime();
     boolean liftMoving = false;
@@ -209,6 +205,7 @@ public abstract class MasterAutonomous extends Master
     void InitAuto()
     {
         InitHardwareAutonomous();
+        RetrieveJJ();
 /*
         switch (alliance)
         {
@@ -810,7 +807,7 @@ public abstract class MasterAutonomous extends Master
             {
                 //MoveIMUCont(referenceAngle, 0.015, speed, saturationValue);
                 MoveIMU(referenceAngle, 900.0, 0.0, 0.015, speed, 0.15);
-                sleep(200);
+                sleep(100);
                 colorSensorHSV();
             }
             stopDriving();
@@ -825,7 +822,7 @@ public abstract class MasterAutonomous extends Master
                 while ((opModeIsActive()) && hsvValuesTopLeft[1] < saturationValue)
                 {
                     driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
-                    sleep(300);
+                    sleep(100);
                     colorSensorHSV();
                 }
                 stopDriving();
@@ -840,7 +837,7 @@ public abstract class MasterAutonomous extends Master
                 while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue))
                 {
                     driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
-                    sleep(300);
+                    sleep(100);
                     colorSensorHSV();
                 }
                 stopDriving();
@@ -856,7 +853,7 @@ public abstract class MasterAutonomous extends Master
                 while ((opModeIsActive()) && (hsvValuesTopRight[1] < saturationValue) && (hsvValuesBottomRight[1] < saturationValue))
                 {
                     MoveIMUContLeft(referenceAngle, 0, speed, saturationValue, 0.1);
-                    sleep(300);
+                    sleep(100);
                     colorSensorHSV();
                 }
                 stopDriving();
@@ -865,7 +862,7 @@ public abstract class MasterAutonomous extends Master
                 while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue))
                 {
                     driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
-                    sleep(300);
+                    sleep(100);
                     colorSensorHSV();
                 }
                 stopDriving();
@@ -879,7 +876,7 @@ public abstract class MasterAutonomous extends Master
                 while ((opModeIsActive()) && (hsvValuesBottomRight[1] < saturationValue))
                 {
                     MoveIMUContLeft(referenceAngle, 0, speed, saturationValue, 0.1);
-                    sleep(300);
+                    sleep(100);
                     colorSensorHSV();
                 }
                 stopDriving();
@@ -887,7 +884,7 @@ public abstract class MasterAutonomous extends Master
                 while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue))
                 {
                     driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
-                    sleep(300);
+                    sleep(100);
                     colorSensorHSV();
                 }
                 stopDriving();
@@ -896,13 +893,13 @@ public abstract class MasterAutonomous extends Master
             {
                 while ((opModeIsActive()) && (hsvValuesTopLeft[1] < saturationValue)) {
                     driveOmni45Cont(-55, speed, 0, saturationValue, 0.1);
-                    sleep(300);
+                    sleep(100);
                     colorSensorHSV();
                 }
                 telemetry.addData("Stage", "4.5");
                 telemetry.update();
                 stopDriving();
-                sleep(300);
+                sleep(100);
             }
         stopDriving();
         telemetry.addData("Stage", "Five");

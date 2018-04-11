@@ -4,11 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous(name="Move Test 2", group = "Swerve")
-//@Disabled
 /**
  * Runable shell for Master Autonomous code
  */
-@Disabled
+//@Disabled
 public class MoveTest2 extends MasterAutonomous
 {
     //Declare variables here
@@ -19,17 +18,12 @@ public class MoveTest2 extends MasterAutonomous
         //ChooseOptions();
 
         InitAuto();//Initializes Hardware and sets position based on alliance
-        initVuforia();//Initializes Vuforia
+        //initVuforia();//Initializes Vuforia
 
         waitForStart();
 
-        double referenceAngle =  imu.getAngularOrientation().firstAngle;
+        DropJJ();
 
-        alignOnLine(0.4, 2.0, 0.29);
-        //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-        //MoveIMULeft(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.6);
-        //MoveIMU(referenceAngle, -190.0, 0.0, 0.015, 0.35, 0.3);
-        //MoveIMURight(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.5);
         while (opModeIsActive())
         {
             //Run();

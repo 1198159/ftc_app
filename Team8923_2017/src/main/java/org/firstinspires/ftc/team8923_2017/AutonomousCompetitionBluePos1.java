@@ -20,9 +20,12 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         //ChooseOptions();
-
+        telemetry.addData("InitState:", "InitStarted");
+        telemetry.update();
         InitAuto();//Initializes Hardware and sets position based on alliance
         initVuforia();//Initializes Vuforia
+        telemetry.addData("InitState:", "InitFinished");
+        telemetry.update();
 
         waitForStart();
         GetVumark();
@@ -71,7 +74,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         {
             // If VuMark is for left column, robot backs up then translates left
             MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMULeft(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.6);
+            MoveIMULeft(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.67);
             telemetry.addData("Stage", "Left"); // Update telemetry
             telemetry.update();
         }

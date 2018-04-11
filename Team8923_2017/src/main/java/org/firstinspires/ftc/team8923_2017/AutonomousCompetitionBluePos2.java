@@ -18,9 +18,12 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         //ChooseOptions();
-
+        telemetry.addData("InitState:", "InitStarted");
+        telemetry.update();
         InitAuto();//Initializes Hardware and sets position based on alliance
         initVuforia();//Initializes Vuforia
+        telemetry.addData("InitState:", "InitFinished");
+        telemetry.update();
 
 
         waitForStart();
