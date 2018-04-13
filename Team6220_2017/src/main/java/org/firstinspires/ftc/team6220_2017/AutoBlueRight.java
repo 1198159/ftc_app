@@ -28,11 +28,14 @@ public class AutoBlueRight extends MasterAutonomous
         vuforiaHelper.getVumark();
         // Get jewel info---------------------------------------------------------------
         // if the vuMark is not visible, vuforia will tell us
-        if (vuforiaHelper.isVisible()) {
+        if (vuforiaHelper.isVisible())
+        {
             blueJewel = vuforiaHelper.getLeftJewelColor();
             telemetry.addData("Left Hue: ", vuforiaHelper.avgLeftJewelColor);
             telemetry.addData("Right Hue: ", vuforiaHelper.avgRightJewelColor);
-        } else {
+        }
+        else
+        {
             telemetry.addData("vuMark: ", "not visible");
         }
         telemetry.update();
@@ -44,16 +47,19 @@ public class AutoBlueRight extends MasterAutonomous
 
 
 
-        // Drive to key column, turn around, and back up--------------------------------
+        // Drive to key column, turn, and score glyph with glyph clip--------------------
         driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.75);  // todo Faster?
 
-        turnTo(90);
+        //turnTo(90);
+        turnTo(-90);
 
-        driveToPosition(0, -350, 0.6);
+        //driveToPosition(0, -350, 0.6);
+        glyphClipServoToggler.toggle();
+        driveToPosition(0, -100, 0.4);
         //-------------------------------------------------------------------------------
 
 
-
+        /*
         // Deploy glyph mechanism--------------------------------------------------------
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
@@ -97,6 +103,12 @@ public class AutoBlueRight extends MasterAutonomous
         motorGlyphter.setPower(1.0);
         pauseWhileUpdating(1.8);
         //-------------------------------------------------------------------------------
+        */
+        // Lower glyph mechanism for collection------------------------------------------
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+        motorGlyphter.setPower(1.0);
+        pauseWhileUpdating(3.3);
+        //-------------------------------------------------------------------------------
 
 
 
@@ -125,10 +137,12 @@ public class AutoBlueRight extends MasterAutonomous
 
 
 
-        // Raise glyphter and turn slowly toward cryptobox to prevent flying glyphs------
+        // Raise glyphter, Back up, and turn slowly toward cryptobox to prevent flying glyphs------
         motorGlyphter.setTargetPosition(Constants.HEIGHT_4);
         motorGlyphter.setPower(1.0);
         pauseWhileUpdating(1.4);    // todo Faster?
+
+        driveToPosition(0, -150, 0.6);
 
         adjustableTurnTo(90, 0.7);
         //-------------------------------------------------------------------------------
@@ -136,7 +150,7 @@ public class AutoBlueRight extends MasterAutonomous
 
 
         // Move robot toward cryptobox and deploy glyph mechanism------------------------
-        driveToPosition(0, 330, 0.7);
+        driveToPosition(0, 180, 0.6);
 
         motorGlyphter.setTargetPosition(Constants.HEIGHT_3);
         motorGlyphter.setPower(1.0);
@@ -159,7 +173,6 @@ public class AutoBlueRight extends MasterAutonomous
         motorCollectorLeft.setPower(0);
         motorCollectorRight.setPower(0);
         //-------------------------------------------------------------------------------
-
 
 
         // Get ready for teleOp

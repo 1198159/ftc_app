@@ -234,7 +234,7 @@ abstract public class MasterOpMode extends LinearOpMode
         // Create and initialize glyph clip.  We use this to score our first glyph in autonomous.
         glyphClipServo = hardwareMap.servo.get("glyphClipServo");
         glyphClipServoToggler = new ServoToggler(glyphClipServo, Constants.GLYPH_CLIP_SERVO_RETRACTED, Constants.GLYPH_CLIP_SERVO_DEPLOYED);
-        glyphClipServoToggler.retract();
+        //glyphClipServoToggler.retract();
 
 
         // todo REV imu can occasionally taking a long time to initialize or even fail to do so; why is this?

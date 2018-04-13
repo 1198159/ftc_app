@@ -39,6 +39,8 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         vuforiaHelper = new VuforiaHelper();
         vuforiaHelper.setupVuforia();
+
+        glyphClipServoToggler.deploy();
     }
 
     // Note: not currently in use

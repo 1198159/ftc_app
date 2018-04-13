@@ -43,38 +43,29 @@ public class AutoRedRight extends MasterAutonomous
         knockJewel(blueJewel, isBlueSide);
 
 
-        // Move off balancing stone and turn around--------
-        driveToPosition(0, 450, 0.7);
+        // Move off balancing stone and turn---------------
+        driveToPosition(0, 450, 0.7);  // todo Adjust y distance
+        turnTo(-90);
         //moveRobot(-90, 0.3, 1.55);
         //pauseWhileUpdating(0.3);
         //turnTo(0);
         //-------------------------------------------------
-        /*
-        // Deploy glyph mechanism----------------------------
-        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
-        motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(4.0);
-        //---------------------------------------------------
 
-        // Score glyph---------------------------------------
-        motorCollectorLeft.setPower(-0.7);
-        motorCollectorRight.setPower(-0.4);
-        pauseWhileUpdating(1.0);
-        motorCollectorLeft.setPower(0);
-        motorCollectorRight.setPower(0);
-        //---------------------------------------------------
 
-        moveRobot(-90, 0.3, 0.5);
-        // Retract glyph mechanism---------------------------
-        //motorGlyphter.setTargetPosition(0);
-        //motorGlyphter.setPower(1.0);
-        //pauseWhileUpdating(4.0);
-        //---------------------------------------------------
 
-        // Move robot toward cryptobox----------------
-        moveRobot(90, 0.3, 0.75);
-        //-----------------------------------------------
-        */
+        // Navigate to key column using Vuforia and turn--- // todo Adjust keyColumnDistance
+        driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.5);  // todo Faster?
+
+        turnTo(-180);
+        //-------------------------------------------------
+
+
+
+        // Score glyph-------------------------------------
+        glyphClipServoToggler.toggle();
+        driveToPosition(0, -100, 0.4);  // todo Adjust y distance
+        driveToPosition(0, 100, 0.6);
+        //-------------------------------------------------
     }
 }
 
