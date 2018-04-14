@@ -38,13 +38,6 @@ abstract public class MasterTeleOp extends MasterOpMode
     // Takes driver 1 stick input and uses it to give power and direction inputs to the drive
     void driveMecanumWithJoysticks()
     {
-        // Allows the 2nd driver to raise the vertical jewel servo if it fails during the match
-        if(driver2.isButtonPressed(Button.LEFT_BUMPER))
-        {
-            verticalJewelServoToggler.retract();
-        }
-
-
         // Note: factors are different for translation and rotation
         // Slow mode functionality.  1st driver presses right bumper to toggle slow mode
         if (driver1.isButtonJustPressed(Button.RIGHT_BUMPER) && !slowMode)
