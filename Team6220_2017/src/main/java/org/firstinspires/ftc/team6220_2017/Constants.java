@@ -108,9 +108,9 @@ public class Constants
     public static final double GLYPH_CLIP_SERVO_DEPLOYED = 0.45;   // todo Adjust
 
     public static final double WRIST_SERVO_INIT = 0.5;   // todo Adjust
-    public static final double WRIST_SERVO_INCREMENT = 0.008;   // todo Adjust
-    public static final double GRABBER_SERVO_GRIP = 0.5;   // todo Adjust
-    public static final double GRABBER_SERVO_RELEASE = 0;   // todo Adjust
+    public static final double WRIST_SERVO_INCREMENT = 0.005;   // todo Adjust
+    public static final double GRABBER_SERVO_GRIP = 0.95;   // todo Adjust
+    public static final double GRABBER_SERVO_RELEASE = 0.50;   // todo Adjust
     //-------------------------------------------------
 
 
@@ -120,7 +120,7 @@ public class Constants
 
     // Ensure that input isn't used when no commands are given
     public static final double MINIMUM_JOYSTICK_POWER = 0.08;
-    public static final double MINIMUM_TRIGGER_VALUE = 0.1;
+    public static final double MINIMUM_TRIGGER_VALUE = 0.2;
 
 
     // todo Adjust

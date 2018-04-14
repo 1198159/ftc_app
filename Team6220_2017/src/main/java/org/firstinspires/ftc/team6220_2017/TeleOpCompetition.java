@@ -12,8 +12,7 @@ public class TeleOpCompetition extends MasterTeleOp
     @Override
     public void runOpMode() throws InterruptedException
     {
-        // todo Take this out when the arm is operational again
-        isArmAttached = false;
+        isArmAttached = true;
         initializeRobot();
 
         waitForStart();
@@ -40,6 +39,7 @@ public class TeleOpCompetition extends MasterTeleOp
             // 1st driver:  dpad down collects, dpad up scores
             // 2nd driver:  a, b, x, and y raise the glyphter to 4 glyph heights
             glyphMechanism.driveGlyphMech();
+            armMechanism.driveArm();
 
 
             if (driver1.isButtonJustPressed(Button.B))

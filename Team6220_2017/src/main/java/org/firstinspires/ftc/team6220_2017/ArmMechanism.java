@@ -32,7 +32,7 @@ public class ArmMechanism
 
 
         // Run arm
-        if (op.driver2.getLeftStickMagnitude() > Constants.MINIMUM_JOYSTICK_POWER)
+        if (Math.abs(op.driver2.getLeftStickMagnitude()) > Constants.MINIMUM_JOYSTICK_POWER)
         {
             // Adjust power inputs for the arm motor
             double armPower = Constants.ARM_POWER_CONSTANT * op.stickCurve.getOuput(op.gamepad2.left_stick_y);
@@ -47,7 +47,7 @@ public class ArmMechanism
                 op.motorArm.setPower(armPower);
 
             op.telemetry.addData("armPower: ", armPower);
-        }
+        }  
 
 
         // Run wrist
@@ -64,7 +64,7 @@ public class ArmMechanism
 
 
         // Run grabber
-        if (op.driver2.isButtonJustPressed(Button.A))
+        if (op.driver2.isButtonJustPressed(Button.DPAD_UP))
             op.grabberServoToggler.toggle();
 
 
