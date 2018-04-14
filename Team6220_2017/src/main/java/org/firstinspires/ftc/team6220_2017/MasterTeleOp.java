@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.util.Range;
 abstract public class MasterTeleOp extends MasterOpMode
 {
     boolean slowMode = false;
+    // Tells us whether the robot's direction of movement is shifted or not
+    boolean driveDirectionShift = false;
 
     // Factor that adjusts magnitudes of vertical and horizontal movement.
     double tFactor = Constants.T_FACTOR;
@@ -25,13 +27,13 @@ abstract public class MasterTeleOp extends MasterOpMode
     {
         motorGlyphter.setTargetPosition(Constants.HEIGHT_3);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(0.4);
+        pauseWhileUpdating(0.4);    // todo Adjust
 
         masterAutonomous.turnTo(getAngularOrientationWithOffset() + 180);
 
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(0.4);
+        pauseWhileUpdating(0.4);    // todo Adjust
     }
 
 
@@ -66,6 +68,18 @@ abstract public class MasterTeleOp extends MasterOpMode
         double adjustedRotationPower = turnAccelFilter.getFilteredValue();
         //----------------------------------------------------------------------------------------
 
-        driveMecanum(angle, adjustedDrivePower, adjustedRotationPower);
+
+        // Change drive direction based on driver input
+        if (driver1.isButtonJustPressed(Button.Y))
+            driveDirectionShift = false;
+        else if (driver1.isButtonJustPressed(Button.X))
+            driveDirectionShift = true;
+
+
+        // Drive in direction based on whether driveDirectionShift is true
+        if (!driveDirectionShift)
+            driveMecanum(angle, adjustedDrivePower, adjustedRotationPower);
+        else
+            driveMecanum(angle + Math.PI / 2, adjustedDrivePower, adjustedRotationPower);
     }
 }

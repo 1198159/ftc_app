@@ -44,6 +44,13 @@ public class TeleOpCompetition extends MasterTeleOp
 
 
             // Extra functionalities-------------------------------------------------------
+             // Allows the 2nd driver to raise the vertical jewel servo if it fails during the match
+            if(driver2.isButtonPressed(Button.LEFT_BUMPER))
+            {
+                verticalJewelServoToggler.retract();
+            }
+
+
              // For testing and in case glyph clip needs to be actuated during TeleOp
             if (driver1.isButtonJustPressed(Button.B))
             {
@@ -51,11 +58,6 @@ public class TeleOpCompetition extends MasterTeleOp
                 telemetry.addData("Glyph Clip Pos:", glyphClipServo.getPosition());
             }
 
-             // Allows the 2nd driver to raise the vertical jewel servo if it fails during the match
-            if(driver2.isButtonPressed(Button.LEFT_BUMPER))
-            {
-                verticalJewelServoToggler.retract();
-            }
 
              // 1st driver can use this to quickly get ready to collect after delivering glyphs
             if (driver1.isButtonJustPressed(Button.LEFT_BUMPER))
