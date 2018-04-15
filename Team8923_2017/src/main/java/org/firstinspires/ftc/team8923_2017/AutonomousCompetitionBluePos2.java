@@ -27,6 +27,8 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
 
 
         waitForStart();
+        motorFF.setTargetPosition(motorFF.getCurrentPosition() + 5);
+        motorFF.setPower((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 100.0));
         GetVumark();
         // turn on flash light
         //CameraDevice.getInstance().setFlashTorchMode(true);
@@ -54,7 +56,7 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
             IMUPivot(referenceAngle, 0, 0.5, 0.015);
         }
         sleep(700);
-        MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.3, 1.7);//Was 1.73 //Go towards parking spot was 1.6
+        MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.3, 1.8);//Was 1.73 //Go towards parking spot was 1.6
         IMUPivot(referenceAngle, -90, 0.25, 0.015);
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);
@@ -68,13 +70,13 @@ public class AutonomousCompetitionBluePos2 extends MasterAutonomous
         sleep(700);
         stopGG();
         sleep(500);
-        MoveIMU(referenceAngle, -900, 0.0, 0.015, 0.3, 0.4);
+        MoveIMU(referenceAngle, -900, 0.0, 0.015, 0.3, 0.3);
         alignOnLine(0.5, 3.0, 0.3);
         sleep(500);
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
             MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMULeft(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.65);
+            MoveIMULeft(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.71);
             telemetry.addData("Stage", "Left");
             telemetry.update();
         }

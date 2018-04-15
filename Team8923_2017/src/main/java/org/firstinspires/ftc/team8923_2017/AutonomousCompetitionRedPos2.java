@@ -30,7 +30,8 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
 
 
         waitForStart();
-
+        motorFF.setTargetPosition(motorFF.getCurrentPosition() + 5);
+        motorFF.setPower((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 100.0));
         // turn on flash light
         CameraDevice.getInstance().setFlashTorchMode(true);
         GetVumark();
@@ -78,7 +79,7 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
             MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMULeft(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.63);
+            MoveIMULeft(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.67);
             telemetry.addData("Stage", "Left");
             telemetry.update();
         }

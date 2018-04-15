@@ -29,6 +29,8 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
 
 
         waitForStart();
+        motorFF.setTargetPosition(motorFF.getCurrentPosition() + 5);
+        motorFF.setPower((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 100.0));
         GetVumark();
         // turn on flash light
         //CameraDevice.getInstance().setFlashTorchMode(true);
@@ -56,7 +58,7 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
             IMUPivot(referenceAngle, 0, 0.3, 0.015);
         }
         sleep(700);
-        MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.35, 2);//Go towards parking spot//Was 2.15
+        MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.35, 2.2);//Go towards parking spot//Was 2.15
         sleep(500);
         MoveIMURight(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.15);//Moves away from the cryptobox and towards the middle//Was0.4
         sleep(500);
@@ -67,10 +69,11 @@ public class AutonomousCompetitionRedPos1 extends MasterAutonomous
         moveGG(-750);
         sleep(700);
         stopGG();
-        sleep(500);
+        sleep(300);
+        MoveIMU(referenceAngle, -900, 0.0, 0.015, 0.3, 0.3);
         alignOnLine(0.5, 5.0, 0.3);//Aligns on line
         //MoveIMU(referenceAngle, 190.0, 0.0, 0.015, 0.35, 0.8);
-        sleep(500);
+        sleep(300);
         if (vuMark == RelicRecoveryVuMark.LEFT)
         {
             MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.35, 0.3);

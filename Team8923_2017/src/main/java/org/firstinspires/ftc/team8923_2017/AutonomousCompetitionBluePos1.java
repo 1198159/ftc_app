@@ -28,6 +28,8 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         telemetry.update();
 
         waitForStart();
+        motorFF.setTargetPosition(motorFF.getCurrentPosition() + 5);
+        motorFF.setPower((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 100.0));
         GetVumark();
         // turn on flash light if needed in bad lighting conditions
         //CameraDevice.getInstance().setFlashTorchMode(true);
@@ -57,7 +59,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
             IMUPivot(referenceAngle, 0, 0.3, 0.015); // Pivot back to initial position
         }
         sleep(700);
-        MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.35, 2.25);//Go towards parking spot
+        MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.35, 2.2);//Go towards parking spot
         IMUPivot(referenceAngle, 90, 0.25, 0.015); // Pivot towards the cryptobox
         referenceAngle += 90.0; // Updates reference angle
         referenceAngle = adjustAngles(referenceAngle);
@@ -66,8 +68,8 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         sleep(700);
         stopGG(); // Stop GG lift movement
         sleep(300);
-        MoveIMU(referenceAngle, -900, 0.0, 0.015, 0.3, 0.4);
-        alignOnLine(0.4, 3.0, 0.3); // Align on the lines in front of the cryptobox
+        MoveIMU(referenceAngle, -900, 0.0, 0.015, 0.3, 0.3);
+        alignOnLine(0.5, 3.0, 0.3); // Align on the lines in front of the cryptobox
         // Robot is now aligned on the lines in front of the cryptobox (In front of the middle of crypobox)
         sleep(300);
         if (vuMark == RelicRecoveryVuMark.LEFT)
@@ -88,7 +90,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         {
             // If VuMark is for right column, robot backs up then translates right
             MoveIMU(referenceAngle, -900.0, 0.0, 0.015, 0.35, 0.3);
-            MoveIMURight(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.66);
+            MoveIMURight(referenceAngle, 900.0, 0.0, 0.015, 0.35, 0.71);
             telemetry.addData("Stage", "Right");
             telemetry.update();
         }
