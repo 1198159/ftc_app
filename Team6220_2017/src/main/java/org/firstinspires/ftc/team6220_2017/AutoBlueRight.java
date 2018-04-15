@@ -51,12 +51,13 @@ public class AutoBlueRight extends MasterAutonomous
         driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.75);  // todo Faster?
 
         //turnTo(90);
-        turnTo(-90);
+        turnTo(-75);
 
         //driveToPosition(0, -350, 0.6);
         glyphClipServoToggler.toggle();
-        driveToPosition(0, -100, 0.4);
+        driveToPosition(0, -150, 0.5);
         //-------------------------------------------------------------------------------
+        turnTo(-90);
 
 
         /*
@@ -105,7 +106,7 @@ public class AutoBlueRight extends MasterAutonomous
         //-------------------------------------------------------------------------------
         */
         // Lower glyph mechanism for collection------------------------------------------
-        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+       /* motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
         pauseWhileUpdating(3.3);
         //-------------------------------------------------------------------------------
@@ -176,6 +177,6 @@ public class AutoBlueRight extends MasterAutonomous
 
 
         // Get ready for teleOp
-        //turnTo(-90);
+        //turnTo(-90);*/
     }
 }

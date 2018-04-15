@@ -218,7 +218,7 @@ public class GlyphMechanism implements ConcurrentOperation
 
 
         op.telemetry.addData("Glyphter Enc: ", op.motorGlyphter.getCurrentPosition());
-        //op.telemetry.addData("MotorCollectorCount: ", motorCollectorCount);
+        op.telemetry.addData(" MotorCollectorCount: ", motorCollectorCount);
         op.telemetry.update();
     }
 
@@ -254,9 +254,9 @@ public class GlyphMechanism implements ConcurrentOperation
 
             op.motorGlyphter.setPower(glyphterPower);
 
-            op.telemetry.addData("Glyphter Encoder Value: ", op.motorGlyphter.getCurrentPosition());
+            //op.telemetry.addData("Glyphter Encoder Value: ", op.motorGlyphter.getCurrentPosition());
             // Note:  This gives the ABSOLUTE VALUE of the motor power
-            op.telemetry.addData("Glyphter Power: ", op.motorGlyphter.getPower());
+            //op.telemetry.addData("Glyphter Power: ", op.motorGlyphter.getPower());
             op.telemetry.update();
         }
 

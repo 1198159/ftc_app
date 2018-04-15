@@ -32,22 +32,24 @@ public class ArmMechanism
 
 
         // Run arm
-        if (Math.abs(op.driver2.getLeftStickMagnitude()) > Constants.MINIMUM_JOYSTICK_POWER)
+        if (op.driver2.getLeftStickMagnitude() > Constants.MINIMUM_JOYSTICK_POWER)
         {
             // Adjust power inputs for the arm motor
             double armPower = Constants.ARM_POWER_CONSTANT * op.stickCurve.getOuput(op.gamepad2.left_stick_y);
 
+            op.motorArm.setPower(armPower);
+
             // Set encoder limits for the arm's range of motion.  If it is retracted or extended
             // as far as it can be, we do not want to attempt to move beyond those points.
-            if (op.motorArm.getCurrentPosition() >= 3000 && Math.signum(op.gamepad2.left_stick_y) < 0)  // todo Adjust encoder limit
+            /*if (op.motorArm.getCurrentPosition() >= 3000 && Math.signum(op.gamepad2.left_stick_y) < 0)  // todo Adjust encoder limit
                 op.motorArm.setPower(0);
             else if (op.motorArm.getCurrentPosition() <= 10 && Math.signum(op.gamepad2.left_stick_y) > 0)   // todo Adjust encoder limit
                 op.motorArm.setPower(0);
             else
-                op.motorArm.setPower(armPower);
+                op.motorArm.setPower(armPower);*/
 
-            op.telemetry.addData("armPower: ", armPower);
-        }  
+
+        }
 
 
         // Run wrist
@@ -68,7 +70,9 @@ public class ArmMechanism
             op.grabberServoToggler.toggle();
 
 
-        op.telemetry.addData("wristServoCount: ", wristServoCount);
+        //op.telemetry.addData("wristServoCount: ", wristServoCount);
+        //op.telemetry.addData("armPower: ", armPower);
+        op.telemetry.addData("encoder value: ", op.motorArm.getCurrentPosition());
         op.telemetry.update();
     }
 }

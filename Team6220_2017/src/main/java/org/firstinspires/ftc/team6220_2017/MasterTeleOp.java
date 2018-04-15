@@ -80,6 +80,6 @@ abstract public class MasterTeleOp extends MasterOpMode
         if (!driveDirectionShift)
             driveMecanum(angle, adjustedDrivePower, adjustedRotationPower);
         else
-            driveMecanum(angle + Math.PI / 2, adjustedDrivePower, adjustedRotationPower);
+            driveMecanum(angle + 180, adjustedDrivePower, adjustedRotationPower);
     }
 }

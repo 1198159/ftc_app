@@ -25,7 +25,7 @@ public class TeleOpTestBed extends MasterAutonomous
         driver2 = new DriverInput(gamepad2);
 
         // Don't want to call nonexistent hardware devices in test program
-        isArmAttached = false;
+        isArmAttached = true;
         isDriveTrainAttached = true;
         isGlyphMechAttached = true;
         initializeRobot();
@@ -148,7 +148,7 @@ public class TeleOpTestBed extends MasterAutonomous
             if (driver1.isButtonJustPressed(Button.DPAD_UP))
             {
                 //lateralJewelServo.setPosition(Constants.LATERAL_JEWEL_SERVO_LEFT);
-                driveToPosition(0, 1210, 1.0);
+                driveToPosition(0, 1000, 1.0);
             }
             else if (driver1.isButtonJustPressed(Button.DPAD_DOWN))
             {

@@ -16,6 +16,7 @@ public class Constants
     // Robot specifications
     public static final float WHEEL_DIAMETER_MM = 4 * MM_PER_INCH;    // 4 inch diameter wheel
     public static final double GEAR_RATIO = 48.0 / 84.0;            // Driven to driving gear
+    // Actually 25.4 ticks / inch
     public static final double MM_PER_ANDYMARK_TICK = (Math.PI * WHEEL_DIAMETER_MM) / (ANDYMARK_TICKS_PER_ROTATION * GEAR_RATIO);
 
 
@@ -87,8 +88,8 @@ public class Constants
 
 
     // Distances in encoder ticks the robot must drive to respective centers of cryptoboxes in autonomous
-    public static final double STRAIGHT_BOX_DISTANCE_RED = 795;    // todo Adjust
-    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 925;
+    public static final double STRAIGHT_BOX_DISTANCE_RED = 1007;    // todo Adjust
+    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 915;
     public static final double ANGLED_BOX_DISTANCE_BLUE = 0;  // todo Add
     public static final double ANGLED_BOX_DISTANCE_RED = 0;   // todo Add
     public static final double STRAIGHT_COLUMN_DIFF = 180;
@@ -105,7 +106,7 @@ public class Constants
     public static final double VERTICAL_JEWEL_SERVO_INIT = 0.45;
 
     public static final double GLYPH_CLIP_SERVO_RETRACTED = 0;   // todo Adjust
-    public static final double GLYPH_CLIP_SERVO_DEPLOYED = 0.45;   // todo Adjust
+    public static final double GLYPH_CLIP_SERVO_DEPLOYED = 0.38;   // todo Adjust
 
     public static final double WRIST_SERVO_INIT = 0.5;   // todo Adjust
     public static final double WRIST_SERVO_INCREMENT = 0.005;   // todo Adjust
@@ -127,10 +128,10 @@ public class Constants
     // Glyph mechanism scoring heights.  Numbers signify the number of glyphs stacked on top of
     // each other in a column.  Units are in andymark encoder ticks
      // Note:  2, 3, and 4 are slightly higher than necessary to accommodate uncertainty in glyph size
-    public static final int HEIGHT_1 = -8850/*-6500*/;         // Calculated value:  11037
-    public static final int HEIGHT_2 = -7400/*-5377*/;         // Calculated value:  9273
-    public static final int HEIGHT_3 = -6300/*-4513*/;         // Calculated value:  8004
-    public static final int HEIGHT_4 = -4200/*-3484*/;         // Calculated value:  6519
+    public static final int HEIGHT_1 = -11680/*-6500*/;         // Calculated value:  11037
+    public static final int HEIGHT_2 = -9280/*-5377*/;         // Calculated value:  9273
+    public static final int HEIGHT_3 = -72000/*-4513*/;         // Calculated value:  8004
+    public static final int HEIGHT_4 = -6100/*-3484*/;         // Calculated value:  6519
 
 
     // Glyph rotation mechanism constants
