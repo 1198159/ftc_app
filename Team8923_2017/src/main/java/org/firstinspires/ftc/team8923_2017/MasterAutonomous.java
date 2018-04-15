@@ -807,7 +807,7 @@ public abstract class MasterAutonomous extends Master
             {
                 //MoveIMUCont(referenceAngle, 0.015, speed, saturationValue);
                 MoveIMU(referenceAngle, 900.0, 0.0, 0.015, speed, 0.15);
-                sleep(100);
+                sleep(200);
                 colorSensorHSV();
             }
             stopDriving();

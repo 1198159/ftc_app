@@ -19,7 +19,7 @@ public abstract class Master extends LinearOpMode
     {
         UPPERLEFTFULLOPEN(0.45),
         UPPERLEFTHALFOPEN(0.65),
-        UPPERLEFTFULLCLOSED(0.70),
+        UPPERLEFTFULLCLOSED(0.77),
 
         UPPERRIGHTFULLOPEN(0.45),
         UPPERRIGHTHALFOPEN(0.35),
@@ -73,7 +73,7 @@ public abstract class Master extends LinearOpMode
     double SERVO_JJ_UP = 0.8; //Port 5, Hub 1
     double SERVO_JJ_DOWN = 0.15;
     double SERVO_JJ_MIDDLE = 0.5;
-    double SERVO_JJ_MIDDLE1 = 0.5;
+    double SERVO_JJ_MIDDLE1 = 0.45;
     double SERVO_JJ_MIDDLE2 = 0.4;
     double SERVO_JJ_MIDDLE3 = 0.35;
     double SERVO_JJ_MIDDLE4 = 0.3;

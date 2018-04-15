@@ -69,7 +69,7 @@ public abstract class MasterTeleOp extends Master
             {
                 double autoBalanceTargetAngle = Math.toDegrees(Math.atan2((-imu.getAngularOrientation().secondAngle) * 10.0,
                         (-imu.getAngularOrientation().thirdAngle) * 10.0));
-                double autoBalancePower = Math.max(Math.min(Math.abs(((-imu.getAngularOrientation().thirdAngle * (1 / 30.0)))), 0.6), 0.15);
+                double autoBalancePower = Math.max(Math.min(Math.abs(((-imu.getAngularOrientation().thirdAngle * (1 / 26.0)))), 0.6), 0.15);
                 /*double autoBalanceTurnPower = Math.min(Math.abs((autoBalanceTargetAngle - imu.getAngularOrientation().firstAngle) * (1 / 90.0)), 0.5) *
                         Math.signum((autoBalanceTargetAngle - imu.getAngularOrientation().firstAngle));*/
 
@@ -205,8 +205,8 @@ public abstract class MasterTeleOp extends Master
             //flip the GG if it isn't
             if (!GGFlipped)
             {
-                motorFF.setTargetPosition(FFZero - 725);
-                motorFF.setPower(Math.min(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 770.0)), -0.3));
+                motorFF.setTargetPosition(FFZero - 737);//was 725
+                motorFF.setPower(Math.min(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 700.0)), -0.3));//was 770
                 if ((Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()) <= 5))
                 {
                     motorFF.setPower(0.0);
@@ -242,8 +242,8 @@ public abstract class MasterTeleOp extends Master
             //un-flip the GG otherwise
             else
             {
-                motorFF.setTargetPosition(FFZero - 25);
-                motorFF.setPower(Math.max(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 770.0)), 0.3));
+                motorFF.setTargetPosition(FFZero - 13);//was 25
+                motorFF.setPower(Math.max(((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 700.0)), 0.3));//was 770
 
                 if (Math.abs(motorFF.getTargetPosition() - motorFF.getCurrentPosition()) <= 5)
                 {
@@ -287,7 +287,7 @@ public abstract class MasterTeleOp extends Master
                 FFFudgeTimer.reset();
                 FFFudgeTimerReset = true;
             }
-            if(FFFudgeTimer.milliseconds() < 125)
+            if(FFFudgeTimer.milliseconds() < 125)//was 125
             {
                 if(!GGFlipped)
                 {
@@ -413,19 +413,12 @@ public abstract class MasterTeleOp extends Master
         {
             // Drops JJ slowly
             servoJJ.setPosition(SERVO_JJ_MIDDLE);
-            sleep(200);
-            servoJJ.setPosition(SERVO_JJ_MIDDLE1);
-            sleep(200);
-            servoJJ.setPosition(SERVO_JJ_MIDDLE2);
-            sleep(200);
-            servoJJ.setPosition(SERVO_JJ_MIDDLE3);
-            sleep(200);
-            servoJJ.setPosition(SERVO_JJ_MIDDLE4);
-            sleep(200);
             servoJJ.setPosition(SERVO_JJ_MIDDLE5);
-            sleep(200);
         }
         if(gamepad2.y)
+        {
+            servoJJ.setPosition(SERVO_JJ_UP);
+        }
 
         if(gamepad1.dpad_up || gamepad1.dpad_down)
         {
