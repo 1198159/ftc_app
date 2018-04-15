@@ -168,7 +168,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
                 sleep(100);
 
                 // ALIGN TO CORRECT COLUMN
-                move(-55, 0, 0.15, 0.5, 1); // move right
+                move(-45, 0, 0.15, 0.5, 1); // move right
                 sleep(100);
                 move(0, -265, 0.1, 0.3, 2.5); // push the glyph in more, since we didn't shift right
                 sleep(100);
@@ -222,6 +222,11 @@ public class AutonomousRedGlyph extends MasterAutonomous
             move(70, 0, 0.3, 0.5, 1);
             sleep(100);
             lowerGM();
+            if (VuMark == RelicRecoveryVuMark.LEFT) // if it's the left column, back up before deploying the GG extensions
+            {
+                move(0, 120, 0.4, 0.7, 1);
+                sleep(100);
+            }
             deployGGExtensions();
             pivotWithReference(0, refAngle, 0.15, 0.55); // robot GG faces the Glyph pile
         }
@@ -261,7 +266,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
 
                 // ALIGN TO CORRECT COLUMN
                 Kpivot = 1/100.0; // reset Kpivot
-                move(-185, 0, 0.15, 0.5, 1); // move right
+                move(-160, 0, 0.15, 0.5, 1); // move right
                 move(0, -100, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(100);
             }
@@ -280,7 +285,7 @@ public class AutonomousRedGlyph extends MasterAutonomous
 
                 // ALIGN TO CORRECT COLUMN
                 Kpivot = 1/100.0; // reset Kpivot
-                move(65, 0, 0.15, 0.5, 1); // move left
+                move(70, 0, 0.15, 0.5, 1); // move left
                 move(0, -240, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(100);
             }

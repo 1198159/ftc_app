@@ -249,7 +249,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
                 sleep(100);
 
                 // ALIGN TO CORRECT COLUMN
-                move(50, 0, 0.15, 0.5, 1); // move left
+                move(60, 0, 0.15, 0.5, 1); // move left
                 sleep(100);
                 move(0, -220, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(100);
@@ -308,7 +308,7 @@ public class AutonomousBlueGlyph extends MasterAutonomous
                 sleep(100);
 
                 // ALIGN TO CORRECT COLUMN
-                move(50, 0, 0.15, 0.5, 1); // move left
+                move(60, 0, 0.15, 0.5, 1); // move left
                 sleep(100);
                 move(0, -220, 0.1, 0.3, 2.5); // push the glyph in
                 sleep(100);
@@ -348,6 +348,11 @@ public class AutonomousBlueGlyph extends MasterAutonomous
             move(-80, 0, 0.3, 0.5, 1);
             sleep(100);
             lowerGM();
+            if (VuMark == RelicRecoveryVuMark.RIGHT) // if it's the right column, back up before deploying the GG extensions
+            {
+                move(0, 120, 0.4, 0.7, 1);
+                sleep(100);
+            }
             deployGGExtensions();
             pivotWithReference(0, refAngle, 0.15, 0.55); // robot GG faces the Glyph pile
         }
