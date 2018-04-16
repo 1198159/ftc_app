@@ -110,18 +110,18 @@ public class Constants
 
     public static final double WRIST_SERVO_INIT = 0.5;   // todo Adjust
     public static final double WRIST_SERVO_INCREMENT = 0.005;   // todo Adjust
-    public static final double GRABBER_SERVO_GRIP = 0.95;   // todo Adjust
+    public static final double GRABBER_SERVO_GRIP = 0.92;   // todo Adjust
     public static final double GRABBER_SERVO_RELEASE = 0.50;   // todo Adjust
     //-------------------------------------------------
 
 
     // Controls how much power is given to the arm
-    public static final double ARM_POWER_CONSTANT = 0.7;
+    public static final double ARM_POWER_CONSTANT = 1.0;
 
 
     // Ensure that input isn't used when no commands are given
-    public static final double MINIMUM_JOYSTICK_POWER = 0.08;
-    public static final double MINIMUM_TRIGGER_VALUE = 0.2;
+    public static final double MINIMUM_JOYSTICK_POWER = 0.05;
+    public static final double MINIMUM_TRIGGER_VALUE = 0.1;
 
 
     // todo Adjust

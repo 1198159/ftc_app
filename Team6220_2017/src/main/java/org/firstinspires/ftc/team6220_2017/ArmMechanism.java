@@ -47,8 +47,10 @@ public class ArmMechanism
                 op.motorArm.setPower(0);
             else
                 op.motorArm.setPower(armPower);*/
-
-
+        }
+        else
+        {
+            op.motorArm.setPower(0);
         }
 
 
