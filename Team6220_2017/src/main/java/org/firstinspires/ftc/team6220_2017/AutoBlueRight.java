@@ -55,7 +55,7 @@ public class AutoBlueRight extends MasterAutonomous
 
         //driveToPosition(0, -350, 0.6);
         glyphClipServoToggler.toggle();
-        driveToPosition(0, -150, 0.5);
+        driveToPosition(0, -135, 0.5);
         //-------------------------------------------------------------------------------
         turnTo(-90);
 
@@ -105,8 +105,11 @@ public class AutoBlueRight extends MasterAutonomous
         pauseWhileUpdating(1.8);
         //-------------------------------------------------------------------------------
         */
+
+
+
         // Lower glyph mechanism for collection------------------------------------------
-       /* motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
         pauseWhileUpdating(3.3);
         //-------------------------------------------------------------------------------
@@ -123,7 +126,7 @@ public class AutoBlueRight extends MasterAutonomous
         // Drive until there is a glyph or until the robot goes too far forward----------
         while(!isGlyph() && (collectionCount < 1))
         {
-            driveToPosition(0, 595, 0.7);
+            driveToPosition(0, 580, 0.7);
             collectionCount++;
         }
         //-------------------------------------------------------------------------------
@@ -176,7 +179,14 @@ public class AutoBlueRight extends MasterAutonomous
         //-------------------------------------------------------------------------------
 
 
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_4);
+        pauseWhileUpdating(0.8);    // todo Adjust
+
+        driveToPosition(0, -150, 0.5);
+
         // Get ready for teleOp
-        //turnTo(-90);*/
+        turnTo(-90);
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+        pauseWhileUpdating(2.4);    // todo Adjust
     }
 }

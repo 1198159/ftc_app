@@ -63,8 +63,8 @@ public class AutoRedRight extends MasterAutonomous
 
         // Score glyph-------------------------------------
         glyphClipServoToggler.toggle();
-        driveToPosition(0, -130, 0.5);  // todo Adjust y distance
-        driveToPosition(0, 130, 0.5);
+        driveToPosition(0, -100, 0.5);  // todo Adjust y distance
+        driveToPosition(0, 100, 0.5);
         //-------------------------------------------------
     }
 }

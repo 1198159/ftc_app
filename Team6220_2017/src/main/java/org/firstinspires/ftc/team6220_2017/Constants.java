@@ -88,12 +88,12 @@ public class Constants
 
 
     // Distances in encoder ticks the robot must drive to respective centers of cryptoboxes in autonomous
-    public static final double STRAIGHT_BOX_DISTANCE_RED = 1007;    // todo Adjust
-    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 915;
-    public static final double ANGLED_BOX_DISTANCE_BLUE = 0;  // todo Add
-    public static final double ANGLED_BOX_DISTANCE_RED = 0;   // todo Add
+    public static final double STRAIGHT_BOX_DISTANCE_RED = 1007;
+    public static final double STRAIGHT_BOX_DISTANCE_BLUE = 930;
+    public static final double ANGLED_BOX_DISTANCE_BLUE = 300;  // todo Adjust
+    public static final double ANGLED_BOX_DISTANCE_RED = 300;   // todo Adjust
     public static final double STRAIGHT_COLUMN_DIFF = 180;
-    public static final double ANGLED_COLUMN_DIFF = 0;   // todo Add
+    public static final double ANGLED_COLUMN_DIFF = 180;   // todo Adjust
 
 
     // Servo positions--------------------------------
@@ -131,7 +131,7 @@ public class Constants
     // Glyph mechanism scoring heights.  Numbers signify the number of glyphs stacked on top of
     // each other in a column.  Units are in andymark encoder ticks
      // Note:  2, 3, and 4 are slightly higher than necessary to accommodate uncertainty in glyph size
-    public static final int HEIGHT_1 = -11680/*-6500*/;         // Calculated value:  11037
+    public static final int HEIGHT_1 = -11630/*-6500*/;         // Calculated value:  11037
     public static final int HEIGHT_2 = -9280/*-5377*/;         // Calculated value:  9273
     public static final int HEIGHT_3 = -7200/*-4513*/;         // Calculated value:  8004
     public static final int HEIGHT_4 = -6100/*-3484*/;         // Calculated value:  6519

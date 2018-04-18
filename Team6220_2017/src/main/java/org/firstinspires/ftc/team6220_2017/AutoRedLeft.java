@@ -53,7 +53,7 @@ public class AutoRedLeft extends MasterAutonomous
 
         //driveToPosition(0, -350, 0.6);
         glyphClipServoToggler.toggle();
-        driveToPosition(0, -140, 0.5);
+        driveToPosition(0, -135, 0.5);
         //-------------------------------------------------------------------------------
         turnTo(90);
 
@@ -178,9 +178,14 @@ public class AutoRedLeft extends MasterAutonomous
         //-------------------------------------------------------------------------------
 
         motorGlyphter.setTargetPosition(Constants.HEIGHT_4);
+        pauseWhileUpdating(0.8);    // todo Adjust
+
+        driveToPosition(0, -150, 0.5);
+
 
         // Get ready for teleOp
         turnTo(90);
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
+        pauseWhileUpdating(2.4);    // todo Adjust
     }
 }

@@ -215,15 +215,15 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.ANGLED_BOX_TIME_BLUE + Constants.ANGLED_COLUMN_TIME_DIFF;
+                    return Constants.ANGLED_BOX_DISTANCE_BLUE + Constants.ANGLED_COLUMN_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.ANGLED_BOX_TIME_BLUE - Constants.ANGLED_COLUMN_TIME_DIFF;
+                    return Constants.ANGLED_BOX_DISTANCE_BLUE - Constants.ANGLED_COLUMN_DIFF;
                 }
                 else
                 {
-                    return Constants.ANGLED_BOX_TIME_BLUE;
+                    return Constants.ANGLED_BOX_DISTANCE_BLUE;
                 }
             }
             else
@@ -263,15 +263,15 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.ANGLED_BOX_TIME_RED - Constants.ANGLED_COLUMN_TIME_DIFF;
+                    return Constants.ANGLED_BOX_DISTANCE_RED - Constants.ANGLED_COLUMN_DIFF;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.ANGLED_BOX_TIME_RED + Constants.ANGLED_COLUMN_TIME_DIFF;
+                    return Constants.ANGLED_BOX_DISTANCE_RED + Constants.ANGLED_COLUMN_DIFF;
                 }
                 else
                 {
-                    return Constants.ANGLED_BOX_TIME_RED;
+                    return Constants.ANGLED_BOX_DISTANCE_RED;
                 }
             }
         }
