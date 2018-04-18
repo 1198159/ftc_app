@@ -34,7 +34,7 @@ public class TeleOpCompetition extends MasterTeleOp
             // 1st driver:  left stick rotates robot, right stick translates robot, right bumper
             // toggles slow mode
             driveMecanumWithJoysticks();
-            // 2nd driver:  left stick moves arm, triggers move wrist, dpad up toggles grabber
+            // 2nd driver:  left stick moves arm, triggers move wrist, bumpers move grabber
             armMechanism.driveArm();
             // 1st driver:  dpad down collects, dpad up scores, dpad left stops collector, dpad
             // right ejects glyphs slowly
@@ -45,7 +45,7 @@ public class TeleOpCompetition extends MasterTeleOp
 
             // Extra functionalities-------------------------------------------------------
              // Allows the 2nd driver to raise the vertical jewel servo if it fails during the match
-            if(driver2.isButtonPressed(Button.LEFT_BUMPER))
+            if(driver2.isButtonPressed(Button.DPAD_UP))
             {
                 verticalJewelServoToggler.retract();
             }
@@ -59,11 +59,13 @@ public class TeleOpCompetition extends MasterTeleOp
             }
 
 
+            /*
              // 1st driver can use this to quickly get ready to collect after delivering glyphs
             if (driver1.isButtonJustPressed(Button.LEFT_BUMPER))
             {
                 autoAlignToScore();
             }
+            */
             //-----------------------------------------------------------------------------
 
 

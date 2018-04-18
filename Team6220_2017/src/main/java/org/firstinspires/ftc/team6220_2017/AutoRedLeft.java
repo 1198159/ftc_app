@@ -53,7 +53,7 @@ public class AutoRedLeft extends MasterAutonomous
 
         //driveToPosition(0, -350, 0.6);
         glyphClipServoToggler.toggle();
-        driveToPosition(0, -150, 0.5);
+        driveToPosition(0, -140, 0.5);
         //-------------------------------------------------------------------------------
         turnTo(90);
 
@@ -102,7 +102,9 @@ public class AutoRedLeft extends MasterAutonomous
         pauseWhileUpdating(1.8);
         //-------------------------------------------------------------------------------
         */
-        /*
+
+
+
         // Lower glyph mechanism for collection------------------------------------------
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
@@ -121,7 +123,7 @@ public class AutoRedLeft extends MasterAutonomous
         // Drive until there is a glyph or until the robot goes too far forward----------
         while(!isGlyph() && (collectionCount < 1))
         {
-            driveToPosition(0, 595, 0.7);
+            driveToPosition(0, 580, 0.7);
             collectionCount++;
         }
         //-------------------------------------------------------------------------------
@@ -151,6 +153,8 @@ public class AutoRedLeft extends MasterAutonomous
         // Move robot toward cryptobox and deploy glyph mechanism------------------------
         driveToPosition(0, 180, 0.6);
 
+        adjustableTurnTo(-94, 0.7);
+
         motorGlyphter.setTargetPosition(Constants.HEIGHT_3);
         motorGlyphter.setPower(1.0);
         pauseWhileUpdating(0.6);    // todo Faster?
@@ -173,10 +177,10 @@ public class AutoRedLeft extends MasterAutonomous
         motorCollectorRight.setPower(0);
         //-------------------------------------------------------------------------------
 
-
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_4);
 
         // Get ready for teleOp
-        //turnTo(90);
-        */
+        turnTo(90);
+        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
     }
 }

@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.team6220_2017;
 
-import com.qualcomm.robotcore.util.Range;
-
 /**
  *  Encapsulates driver input for operating relic arm
  */
@@ -11,7 +9,7 @@ public class ArmMechanism
     MasterOpMode op;
 
     // The triggers adjust this value to change the wrist servo's position
-    double wristServoCount = Constants.WRIST_SERVO_INIT;
+    double wristServoCount = Constants.WRIST_SERVO_RETRACTED;
 
     // We pass in MasterOpMode so that this class can access important functionalities such as telemetry
     public ArmMechanism (MasterOpMode mode)
@@ -55,26 +53,34 @@ public class ArmMechanism
 
 
         // Run wrist
-        if (op.driver2.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
+        if (op.driver2.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)    // todo Reverse servos in config!!!
         {
-            wristServoCount -= Constants.WRIST_SERVO_INCREMENT;
+            wristServoCount -= Constants.WRIST_SERVO_INCREMENT * op.driver2.getLeftTriggerValue();     // todo Adjust increment
             op.wristServo.setPosition(wristServoCount);
         }
         else if (op.driver2.getRightTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
         {
-            wristServoCount += Constants.WRIST_SERVO_INCREMENT;
+            wristServoCount += Constants.WRIST_SERVO_INCREMENT * op.driver2.getRightTriggerValue();
             op.wristServo.setPosition(wristServoCount);
         }
+        else if (op.driver2.isButtonJustPressed(Button.DPAD_LEFT))
+            op.wristServoToggler.toggle();
 
 
         // Run grabber
-        if (op.driver2.isButtonJustPressed(Button.DPAD_UP))
+        if (op.driver2.isButtonJustPressed(Button.LEFT_BUMPER))     // todo Adjust grabber servo positions!!!
             op.grabberServoToggler.toggle();
-
+        // Increment grabber slowly if something goes wrong
+        else if (op.driver2.isButtonJustPressed(Button.DPAD_UP))
+            op.grabberServo.setPosition(op.grabberServo.getPosition() - Constants.GRABBER_SERVO_INCREMENT);      // todo Adjust increment
+        else if (op.driver2.isButtonJustPressed(Button.DPAD_DOWN))
+            op.grabberServo.setPosition(op.grabberServo.getPosition() + Constants.GRABBER_SERVO_INCREMENT);      // todo Adjust increment
 
         //op.telemetry.addData("wristServoCount: ", wristServoCount);
         //op.telemetry.addData("armPower: ", armPower);
         op.telemetry.addData("encoder value: ", op.motorArm.getCurrentPosition());
+        //op.telemetry.addData("grabberPos: ", op.grabberServo.getPosition());
+        //op.telemetry.addData("wristPos: ", op.wristServo.getPosition());
         op.telemetry.update();
     }
 }

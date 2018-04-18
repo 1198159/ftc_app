@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.team6220_2017;
 
-import android.app.Activity;
-import android.view.View;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -10,6 +7,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +96,7 @@ abstract public class MasterOpMode extends LinearOpMode
     // Servo togglers
     ServoToggler verticalJewelServoToggler;
     ServoToggler grabberServoToggler;
+    ServoToggler wristServoToggler;
     ServoToggler glyphClipServoToggler;
 
     // Booleans that allow us to choose what parts of the robot we are and aren't using in each OpMode
@@ -204,6 +204,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
             // Servo togglers
             grabberServoToggler = new ServoToggler(grabberServo, Constants.GRABBER_SERVO_RELEASE, Constants.GRABBER_SERVO_GRIP);
+            wristServoToggler = new ServoToggler(wristServo, Constants.WRIST_SERVO_RETRACTED, Constants.WRIST_SERVO_DEPLOYED);
 
             // Set device attributes and behaviors------------------------
             motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

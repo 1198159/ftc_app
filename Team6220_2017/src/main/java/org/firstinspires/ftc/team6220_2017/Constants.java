@@ -108,10 +108,13 @@ public class Constants
     public static final double GLYPH_CLIP_SERVO_RETRACTED = 0;   // todo Adjust
     public static final double GLYPH_CLIP_SERVO_DEPLOYED = 0.38;   // todo Adjust
 
-    public static final double WRIST_SERVO_INIT = 0.5;   // todo Adjust
+    public static final double WRIST_SERVO_INIT = 1.0;   // todo Adjust
+    public static final double WRIST_SERVO_RETRACTED = 0.9;   // todo Adjust
+    public static final double WRIST_SERVO_DEPLOYED = 0.5;   // todo Adjust
     public static final double WRIST_SERVO_INCREMENT = 0.005;   // todo Adjust
-    public static final double GRABBER_SERVO_GRIP = 0.92;   // todo Adjust
-    public static final double GRABBER_SERVO_RELEASE = 0.50;   // todo Adjust
+    public static final double GRABBER_SERVO_GRIP = 0.42;   // todo Adjust
+    public static final double GRABBER_SERVO_RELEASE = 0.04;   // todo Adjust
+    public static final double GRABBER_SERVO_INCREMENT = 0.05;   // todo Adjust
     //-------------------------------------------------
 
 
@@ -121,7 +124,7 @@ public class Constants
 
     // Ensure that input isn't used when no commands are given
     public static final double MINIMUM_JOYSTICK_POWER = 0.05;
-    public static final double MINIMUM_TRIGGER_VALUE = 0.1;
+    public static final double MINIMUM_TRIGGER_VALUE = 0.33;    // todo How large does this value need to be to prevent twitching?
 
 
     // todo Adjust
@@ -130,7 +133,7 @@ public class Constants
      // Note:  2, 3, and 4 are slightly higher than necessary to accommodate uncertainty in glyph size
     public static final int HEIGHT_1 = -11680/*-6500*/;         // Calculated value:  11037
     public static final int HEIGHT_2 = -9280/*-5377*/;         // Calculated value:  9273
-    public static final int HEIGHT_3 = -72000/*-4513*/;         // Calculated value:  8004
+    public static final int HEIGHT_3 = -7200/*-4513*/;         // Calculated value:  8004
     public static final int HEIGHT_4 = -6100/*-3484*/;         // Calculated value:  6519
 
 
