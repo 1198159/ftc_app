@@ -53,65 +53,19 @@ public class AutoBlueRight extends MasterAutonomous
         //turnTo(90);
         turnTo(-75);
 
-        //driveToPosition(0, -350, 0.6);
         glyphClipServoToggler.toggle();
-        driveToPosition(0, -135, 0.5);
+        driveToPosition(0, -115, 0.5);
         //-------------------------------------------------------------------------------
         turnTo(-90);
-
-
-        /*
-        // Deploy glyph mechanism--------------------------------------------------------
-        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
-        motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(3.3);
-        //-------------------------------------------------------------------------------
-
-
-
-        // Score glyph-------------------------------------------------------------------
-        motorCollectorLeft.setPower(-0.5);
-        motorCollectorRight.setPower(-0.5);
-        pauseWhileUpdating(0.3);
-        //-------------------------------------------------------------------------------
-
-
-
-        // Back away from cryptobox and stop collector-----------------------------------
-        driveToPosition(0, -200, 0.6);
-
-        motorCollectorLeft.setPower(0);
-        motorCollectorRight.setPower(0);
-        //-------------------------------------------------------------------------------
-
-
-
-        // Raise glyphter, turn toward glyph pile, and back up---------------------------
-        motorGlyphter.setTargetPosition(Constants.HEIGHT_4);
-        motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(1.5);
-
+        moveRobot(-90, 0.4, 0.3);
         turnTo(-90);
-
-        //moveRobot(-90, 0.8, 0.8);
-        driveToPosition(0, -480, 0.8);
-        //-------------------------------------------------------------------------------
 
 
 
         // Lower glyph mechanism for collection------------------------------------------
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(1.8);
-        //-------------------------------------------------------------------------------
-        */
-
-
-
-        // Lower glyph mechanism for collection------------------------------------------
-        motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
-        motorGlyphter.setPower(1.0);
-        pauseWhileUpdating(3.3);
+        pauseWhileUpdating(3.6);
         //-------------------------------------------------------------------------------
 
 
@@ -126,10 +80,15 @@ public class AutoBlueRight extends MasterAutonomous
         // Drive until there is a glyph or until the robot goes too far forward----------
         while(!isGlyph() && (collectionCount < 1))
         {
-            driveToPosition(0, 580, 0.7);
+            driveToPosition(0, 600, 0.7);
             collectionCount++;
         }
         //-------------------------------------------------------------------------------
+
+
+
+        turnTo(-98);
+        turnTo(-90);
 
 
 
@@ -141,14 +100,16 @@ public class AutoBlueRight extends MasterAutonomous
 
 
 
-        // Raise glyphter, Back up, and turn slowly toward cryptobox to prevent flying glyphs------
+        // Back up, Raise glyphter, and turn slowly toward cryptobox to prevent flying glyphs---
+        driveToPosition(0, -160, 0.6);
         motorGlyphter.setTargetPosition(Constants.HEIGHT_4);
         motorGlyphter.setPower(1.0);
         pauseWhileUpdating(1.4);    // todo Faster?
 
-        driveToPosition(0, -150, 0.6);
-
         adjustableTurnTo(90, 0.7);
+
+        motorCollectorLeft.setPower(0);
+        motorCollectorRight.setPower(0);
         //-------------------------------------------------------------------------------
 
 
@@ -171,21 +132,19 @@ public class AutoBlueRight extends MasterAutonomous
 
 
 
-        // Back away quickly from cryptobox and stop collector---------------------------
-        driveToPosition(0, -150, 0.5);
+        driveToPosition(0, -180, 0.6);
 
-        motorCollectorLeft.setPower(0);
-        motorCollectorRight.setPower(0);
-        //-------------------------------------------------------------------------------
-
+        motorCollectorLeft.setPower(0.0);
+        motorCollectorRight.setPower(0.0);
 
         motorGlyphter.setTargetPosition(Constants.HEIGHT_4);
-        pauseWhileUpdating(0.8);    // todo Adjust
+        pauseWhileUpdating(1.0);    // todo Adjust
 
-        driveToPosition(0, -150, 0.5);
+
 
         // Get ready for teleOp
         turnTo(-90);
+        driveToPosition(0, -250, 0.5);
         motorGlyphter.setTargetPosition(Constants.HEIGHT_1);
         pauseWhileUpdating(2.4);    // todo Adjust
     }

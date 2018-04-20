@@ -263,11 +263,11 @@ public class VuforiaHelper
             {
                 if (vuMark == RelicRecoveryVuMark.RIGHT)
                 {
-                    return Constants.ANGLED_BOX_DISTANCE_RED - Constants.ANGLED_COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_DISTANCE_RED - Constants.ANGLED_COLUMN_DIFF + 15;
                 }
                 else if (vuMark == RelicRecoveryVuMark.LEFT)
                 {
-                    return Constants.ANGLED_BOX_DISTANCE_RED + Constants.ANGLED_COLUMN_DIFF;
+                    return Constants.ANGLED_BOX_DISTANCE_RED + Constants.ANGLED_COLUMN_DIFF + 50;
                 }
                 else
                 {

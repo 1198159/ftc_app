@@ -24,7 +24,7 @@ public class Constants
     public static final double SLOW_MODE_T_FACTOR = 0.35;
     public static final double SLOW_MODE_R_FACTOR = 0.25;
     public static final double T_FACTOR = 0.7;
-    public static final double R_FACTOR = 0.6;
+    public static final double R_FACTOR = 0.72;
 
 
     // Tolerances
@@ -91,7 +91,7 @@ public class Constants
     public static final double STRAIGHT_BOX_DISTANCE_RED = 1007;
     public static final double STRAIGHT_BOX_DISTANCE_BLUE = 930;
     public static final double ANGLED_BOX_DISTANCE_BLUE = 300;  // todo Adjust
-    public static final double ANGLED_BOX_DISTANCE_RED = 300;   // todo Adjust
+    public static final double ANGLED_BOX_DISTANCE_RED = 450;   // todo Adjust
     public static final double STRAIGHT_COLUMN_DIFF = 180;
     public static final double ANGLED_COLUMN_DIFF = 180;   // todo Adjust
 
@@ -99,21 +99,21 @@ public class Constants
     // Servo positions--------------------------------
     public static final double LATERAL_JEWEL_SERVO_INIT = 0;
     public static final double LATERAL_JEWEL_SERVO_NEUTRAL = 0.26;
-    public static final double LATERAL_JEWEL_SERVO_LEFT = 0.19;
-    public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.38;
+    public static final double LATERAL_JEWEL_SERVO_LEFT = 0.17;
+    public static final double LATERAL_JEWEL_SERVO_RIGHT = 0.42;
     public static final double VERTICAL_JEWEL_SERVO_RETRACTED = 0.52;
     public static final double VERTICAL_JEWEL_SERVO_DEPLOYED = 0.20;
-    public static final double VERTICAL_JEWEL_SERVO_INIT = 0.45;
+    public static final double VERTICAL_JEWEL_SERVO_INIT = 0.49;
 
     public static final double GLYPH_CLIP_SERVO_RETRACTED = 0;   // todo Adjust
     public static final double GLYPH_CLIP_SERVO_DEPLOYED = 0.38;   // todo Adjust
 
     public static final double WRIST_SERVO_INIT = 1.0;   // todo Adjust
-    public static final double WRIST_SERVO_RETRACTED = 0.9;   // todo Adjust
+    public static final double WRIST_SERVO_RETRACTED = 0.89;   // todo Adjust
     public static final double WRIST_SERVO_DEPLOYED = 0.5;   // todo Adjust
     public static final double WRIST_SERVO_INCREMENT = 0.005;   // todo Adjust
-    public static final double GRABBER_SERVO_GRIP = 0.42;   // todo Adjust
-    public static final double GRABBER_SERVO_RELEASE = 0.04;   // todo Adjust
+    public static final double GRABBER_SERVO_GRIP = 0.43;   // todo Adjust
+    public static final double GRABBER_SERVO_RELEASE = 0.22;   // todo Adjust
     public static final double GRABBER_SERVO_INCREMENT = 0.05;   // todo Adjust
     //-------------------------------------------------
 

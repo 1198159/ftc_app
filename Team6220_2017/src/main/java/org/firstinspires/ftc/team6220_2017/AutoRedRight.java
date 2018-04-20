@@ -44,7 +44,7 @@ public class AutoRedRight extends MasterAutonomous
 
 
         // Move off balancing stone and turn---------------
-        driveToPosition(0, 450, 0.7);  // todo Adjust y distance
+        driveToPosition(0, 530, 0.7);  // todo Adjust y distance
         turnTo(-90);
         //moveRobot(-90, 0.3, 1.55);
         //pauseWhileUpdating(0.3);
@@ -56,15 +56,16 @@ public class AutoRedRight extends MasterAutonomous
         // Navigate to key column using Vuforia and turn--- // todo Adjust keyColumnDistance
         driveToPosition(0, -vuforiaHelper.keyColumnDistance(isBlueSide, isLeftBalancingStone), 0.5);  // todo Faster?
 
-        turnTo(-180);
+        turnTo(165);
         //-------------------------------------------------
 
 
 
         // Score glyph-------------------------------------
         glyphClipServoToggler.toggle();
-        driveToPosition(0, -100, 0.5);  // todo Adjust y distance
-        driveToPosition(0, 100, 0.5);
+        driveToPosition(0, -120, 0.5);  // todo Adjust y distance
+        moveRobot(-90, 0.4, 0.3);
+        driveToPosition(0, 60, 0.5);
         //-------------------------------------------------
     }
 }
