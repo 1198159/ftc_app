@@ -30,6 +30,7 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
 
 
         waitForStart();
+        RetrieveJJ();
         motorFF.setTargetPosition(motorFF.getCurrentPosition() + 5);
         motorFF.setPower((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 100.0));
         // turn on flash light
@@ -64,7 +65,7 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
         IMUPivot(referenceAngle, -90, 0.25, 0.015);
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);
-        MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.3, 1.1);//aWas 1.2 for middle
+        MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.3, 1.3);//aWas 1.2 for middle
         IMUPivot(referenceAngle, -88, 0.25, 0.015);
         referenceAngle -= 90.0;
         referenceAngle = adjustAngles(referenceAngle);

@@ -28,6 +28,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
         telemetry.update();
 
         waitForStart();
+        RetrieveJJ();
         motorFF.setTargetPosition(motorFF.getCurrentPosition() + 5);
         motorFF.setPower((motorFF.getTargetPosition() - motorFF.getCurrentPosition()) * (1 / 100.0));
         GetVumark();

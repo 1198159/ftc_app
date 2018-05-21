@@ -205,7 +205,7 @@ public abstract class MasterAutonomous extends Master
     void InitAuto()
     {
         InitHardwareAutonomous();
-        RetrieveJJ();
+        //RetrieveJJ();
 /*
         switch (alliance)
         {
@@ -608,9 +608,9 @@ public abstract class MasterAutonomous extends Master
         servoJJ.setPosition(SERVO_JJ_MIDDLE3);
         sleep(200);
         servoJJ.setPosition(SERVO_JJ_MIDDLE4);
-        sleep(200);
-        servoJJ.setPosition(SERVO_JJ_MIDDLE5);
-        sleep(200);
+        //sleep(200);
+        //servoJJ.setPosition(SERVO_JJ_MIDDLE5);
+        //sleep(200);
         /*servoJJ.setPosition(SERVO_JJ_MIDDLE6);
         sleep(200);
         servoJJ.setPosition(SERVO_JJ_DOWN);
