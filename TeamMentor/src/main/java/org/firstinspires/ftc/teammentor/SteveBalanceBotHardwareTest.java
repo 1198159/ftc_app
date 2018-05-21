@@ -1,17 +1,12 @@
 package org.firstinspires.ftc.teammentor;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.Locale;
 
@@ -19,16 +14,17 @@ import java.util.Locale;
 /**
  * Program used to control a self-balancing robot on two wheels.
  */
-@TeleOp(name="BalanceBot Test", group = "Steve")
-@Disabled
-public class SteveBalanceBotMotorTest extends SteveBalancebotMaster
+@TeleOp(name="BalanceBot Hardware Test", group = "Steve")
+// @Disabled
+public class SteveBalanceBotHardwareTest extends SteveBalancebotMaster
 {
 
 
     @Override public void runOpMode() throws InterruptedException
     {
         double error = 0;
-        double motorSpeed = 0.0;
+        double motorMove = 0.5;
+        double motorStop = 0.0;
 
         // Initialize hardware and other important things
         initializeRobot();
@@ -51,11 +47,36 @@ public class SteveBalanceBotMotorTest extends SteveBalancebotMaster
         while(opModeIsActive())
         {
 
-            motorLeft.setPower(gamepad1.left_stick_y);
-            motorRight.setPower(gamepad1.right_stick_y);
+            //motorLeft.setPower(motorMove);
+            //motorRight.setPower(motorMove);
 
-            telemetry.addData("left encoder", motorLeft.getCurrentPosition());
-            telemetry.addData("right encoder", motorRight.getCurrentPosition());
+            if (gamepad1.a) {
+                motorLeft.setPower(motorMove);
+                motorRight.setPower(motorMove);
+            }
+
+            if (gamepad1.b) {
+                motorLeft.setPower(motorStop);
+                motorRight.setPower(motorStop);
+            }
+
+           // telemetry.addData("left encoder", motorLeft.getCurrentPosition());
+           // telemetry.addData("right encoder", motorRight.getCurrentPosition());
+
+
+
+            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            //gravity  = imu.getGravity();
+            //telemetry.addData("heading", formatAngle(angles.angleUnit, angles.firstAngle));
+            telemetry.addData("roll", formatAngle(angles.angleUnit, angles.secondAngle));
+            //telemetry.addData("pitch", formatAngle(angles.angleUnit, angles.thirdAngle));
+            /*
+            telemetry.addData("grvty", gravity.toString());
+            telemetry.addData("mag", String.format(Locale.getDefault(), "%.3f",
+                                    Math.sqrt(gravity.xAccel*gravity.xAccel
+                                            + gravity.yAccel*gravity.yAccel
+                                            + gravity.zAccel*gravity.zAccel)));
+            */
 
             telemetry.update();
             idle();
@@ -63,21 +84,6 @@ public class SteveBalanceBotMotorTest extends SteveBalancebotMaster
     }
 
 
-    public void configureDashboard()
-    {
-
-        telemetry.addLine()
-                .addData("Left", new Func<String>() {
-                    @Override public String value() {
-                return formatNumber(motorLeft.getCurrentPosition());
-                }
-                })
-                .addData("Right", new Func<String>() {
-                    @Override public String value() {
-                        return formatNumber(motorRight.getCurrentPosition());
-                    }
-                });
-    }
 
     public String formatNumber(double d)
     {

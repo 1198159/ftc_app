@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -30,11 +31,11 @@ abstract public class SteveBalancebotMaster extends LinearOpMode
 
     // State used for updating telemetry
     Orientation angles;
-    //Acceleration gravity;
+    Acceleration gravity;
 
 
     //The IMU emits heading ("first angle"), roll ("second angle"), and pitch ("third angle").
-    //On my robot, roll determines whether the robot is balanced.
+    //On my new robot, rooll determines whether the robot is balanced.
     double targetRoll = 0.0;
 
     double currentRoll = 0.0;
@@ -45,21 +46,22 @@ abstract public class SteveBalancebotMaster extends LinearOpMode
     //notes about P constant
     /*
      *  NEVEREST 20's
-     *  0.01 was not enough correction?
-     *  0.05 looks like not enough correction; the robot keeps leaning and then starts rocking back and forth quickly
-     *  0.1 rocks back and forth even more violently
-     *  0.02 seems "pretty close" but still too weak
-     *  0.03 seems "almost there" but still a bit too weak
-     *
-     *
-     *  NEVEREST 40's
+     *  (new design, no data)
      *
     */
 
-    //These PID constants assume Neverest 40's.
-    public double P_CONSTANT = 0.08;
+    //These PID constants assume Neverest 20's and my second iteration of the robot design.
+    public double P_CONSTANT = 0.016;
     public double I_CONSTANT = 0.0000;
-    public double D_CONSTANT = 0.0000;
+    public double D_CONSTANT = 0.006;
+
+
+    /* If the robot tips over too far, it's not really recoverable.
+     * Let's define a constant that is a fail-safe to stop the motors if the robot has tipped too far.
+     * My manual tipping of the robot suggests that up to 10 may be fine, and 20 is certainly "too far".
+    */
+    double MAX_SAFE_ROLL = 25.0;
+
 
     public void initializeRobot()
     {

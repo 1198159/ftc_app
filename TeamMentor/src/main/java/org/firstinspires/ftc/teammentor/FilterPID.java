@@ -81,6 +81,10 @@ public class FilterPID {
         sumOfAllErrors = 0;
     }
 
+    public double getP() {return KP;}
+    public double getD() {return KD;}
+    public double getI() {return KI;}
+
     private String formatNumber(double d)
     {
         return String.format("%.8f", d);

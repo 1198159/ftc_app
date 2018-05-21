@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -23,20 +24,21 @@ import java.util.Locale;
 public class SteveBalanceBot extends SteveBalancebotMaster
 {
 
-
     @Override public void runOpMode() throws InterruptedException
     {
         double error = 0;
         double motorSpeed = 0.0;
+        boolean emergencyStop = false;
+
+        ElapsedTime time = new ElapsedTime();
+
+        FileWriter fileWriter = new FileWriter("balancebot.csv");
 
         // Initialize hardware and other important things
         initializeRobot();
 
         //Configure telemetry, if we want it on
         //configureDashboard();
-
-        // Wait until start button has been pressed
-        waitForStart();
 
         //wait for IMU to start running
         while (imu.getSystemStatus() != BNO055IMU.SystemStatus.RUNNING_FUSION)
@@ -46,45 +48,51 @@ public class SteveBalanceBot extends SteveBalancebotMaster
             idle();
         }
 
+        // Wait until start button has been pressed
+        waitForStart();
+
+        time.reset();
+
+
         // Main loop
-        while(opModeIsActive())
+        while(opModeIsActive() && !emergencyStop)
         {
 
             //some gamepad controls that may help me tune the PID constants
             if (gamepad1.a)
             {
                 while (gamepad1.a) {}
-                D_CONSTANT += 0.001;
+                P_CONSTANT += 0.002;
                 filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
             }
             if (gamepad1.b)
             {
                 while (gamepad1.b) {}
-                D_CONSTANT -= 0.001;
+                P_CONSTANT -= 0.002;
                 filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
             }
             if (gamepad1.x)
             {
                 while (gamepad1.x) {}
-                P_CONSTANT += 0.001;
+                P_CONSTANT += 0.01;
                 filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
             }
             if (gamepad1.y)
             {
                 while (gamepad1.y) {}
-                P_CONSTANT -= 0.001;
+                P_CONSTANT -= 0.01;
                 filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
             }
             if (gamepad1.dpad_up)
             {
                 while (gamepad1.dpad_up) {}
-                I_CONSTANT += 0.001;
+                D_CONSTANT += 0.001;
                 filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
             }
             if (gamepad1.dpad_down)
             {
                 while (gamepad1.dpad_down) {}
-                I_CONSTANT -= 0.001;
+                D_CONSTANT -= 0.001;
                 filterPID.updateFilterConstants(P_CONSTANT, I_CONSTANT, D_CONSTANT);
             }
             if (gamepad1.left_bumper)
@@ -97,17 +105,54 @@ public class SteveBalanceBot extends SteveBalancebotMaster
 
 
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            //currentRoll = AngleUnit.DEGREES.normalize(degrees)
-            currentRoll = AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.secondAngle));
-            //telemetry.addData("cur", currentRoll);
+            //currentRoll = AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.secondAngle));
+            currentRoll = AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.secondAngle);
+            //telemetry.addData("roll", currentRoll);
 
-            error = targetRoll - currentRoll;
+            if (Math.abs(currentRoll) > MAX_SAFE_ROLL)
+            {
+                emergencyStop = true;
+                motorLeft.setPower(0);
+                motorRight.setPower(0);
+                telemetry.addData("estop", "estop");
+                fileWriter.closeFile();
 
-            motorSpeed = filterPID.getFilteredValue(error);
-            //telemetry.addData("speed", motorSpeed);
+                //opmode will end now due to emergencyStop being true
+                while (true)
+                {
+                    telemetry.addData("PID",
+                            formatPID(filterPID.getP()) + "," +
+                                    formatPID(filterPID.getI()) + "," +
+                                    formatPID(filterPID.getD()));
+                    telemetry.update();
+                    idle();
+                }
 
-            motorLeft.setPower(motorSpeed);
-            motorRight.setPower(motorSpeed);
+            }
+            else {
+                error = targetRoll - currentRoll;
+
+                motorSpeed = filterPID.getFilteredValue(error);
+                //telemetry.addData("speed", motorSpeed);
+
+                String p = formatPID(filterPID.getP()) + ",";
+                String i = formatPID(filterPID.getI()) + ",";
+                String d = formatPID(filterPID.getD());
+
+                fileWriter.println(time.milliseconds() + "," +
+                        error + "," +
+                        formatNumberEightDigits(motorSpeed) +
+                        p + i + d);
+
+                telemetry.addData("error", error);
+                telemetry.addData("PID",
+                        formatPID(filterPID.getP()) + ",  " +
+                                formatPID(filterPID.getI()) + ",  " +
+                                formatPID(filterPID.getD()));
+
+                motorLeft.setPower(motorSpeed);
+                motorRight.setPower(motorSpeed);
+            }
 
             telemetry.update();
             idle();
@@ -188,6 +233,10 @@ public class SteveBalanceBot extends SteveBalancebotMaster
 
     String formatDegrees(double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+    }
+
+    String formatPID(double factor){
+        return String.format("%.8f", factor);
     }
     String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
