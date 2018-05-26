@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -146,37 +146,43 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#getMotorVelocity-int-org.firstinspires.ftc.robotcore.external.navigation.AngleUnit-">getMotorVelocity</a></span>(int&nbsp;motor,
-                <a href="../../../../org/firstinspires/ftc/robotcore/external/navigation/AngleUnit.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">AngleUnit</a>&nbsp;unit)</code>
-<div class="block">Returns the targeted velocity of the indicated motor.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#getMotorVelocity-int-">getMotorVelocity</a></span>(int&nbsp;motor)</code>
+<div class="block">Returns the velocity of the indicated motor in ticks per second.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#getMotorVelocity-int-org.firstinspires.ftc.robotcore.external.navigation.AngleUnit-">getMotorVelocity</a></span>(int&nbsp;motor,
+                <a href="../../../../org/firstinspires/ftc/robotcore/external/navigation/AngleUnit.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">AngleUnit</a>&nbsp;unit)</code>
+<div class="block">Returns the velocity of the indicated motor.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../com/qualcomm/robotcore/hardware/PIDCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDCoefficients</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#getPIDCoefficients-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-">getPIDCoefficients</a></span>(int&nbsp;motor,
                   <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode)</code>
 <div class="block">Returns the coefficients used for PID control on the indicated motor when in the indicated mode</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#isMotorEnabled-int-">isMotorEnabled</a></span>(int&nbsp;motor)</code>
 <div class="block">Returns whether a particular motor on the controller is energized</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#setMotorDisable-int-">setMotorDisable</a></span>(int&nbsp;motor)</code>
 <div class="block">Individually denergizes a particular motor</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#setMotorEnable-int-">setMotorEnable</a></span>(int&nbsp;motor)</code>
 <div class="block">Individually energizes a particular motor</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#setMotorTargetPosition-int-int-int-">setMotorTargetPosition</a></span>(int&nbsp;motor,
                       int&nbsp;position,
@@ -184,7 +190,14 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 <div class="block">Sets the target position and tolerance for a 'run to position' operation.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#setMotorVelocity-int-double-">setMotorVelocity</a></span>(int&nbsp;motor,
+                double&nbsp;ticksPerSecond)</code>
+<div class="block">Sets the target velocity of the indicated motor.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#setMotorVelocity-int-double-org.firstinspires.ftc.robotcore.external.navigation.AngleUnit-">setMotorVelocity</a></span>(int&nbsp;motor,
                 double&nbsp;angularRate,
@@ -192,7 +205,7 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 <div class="block">Sets the target velocity of the indicated motor.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#setPIDCoefficients-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-com.qualcomm.robotcore.hardware.PIDCoefficients-">setPIDCoefficients</a></span>(int&nbsp;motor,
                   <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode,
@@ -280,6 +293,22 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 </dl>
 </li>
 </ul>
+<a name="setMotorVelocity-int-double-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setMotorVelocity</h4>
+<pre>void&nbsp;setMotorVelocity(int&nbsp;motor,
+                      double&nbsp;ticksPerSecond)</pre>
+<div class="block">Sets the target velocity of the indicated motor.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>motor</code> - the port number of the motor on this controller</dd>
+<dd><code>ticksPerSecond</code> - the new target rate for that motor, in ticks per second</dd>
+</dl>
+</li>
+</ul>
 <a name="setMotorVelocity-int-double-org.firstinspires.ftc.robotcore.external.navigation.AngleUnit-">
 <!--   -->
 </a>
@@ -300,6 +329,22 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 </dl>
 </li>
 </ul>
+<a name="getMotorVelocity-int-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMotorVelocity</h4>
+<pre>double&nbsp;getMotorVelocity(int&nbsp;motor)</pre>
+<div class="block">Returns the velocity of the indicated motor in ticks per second.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>motor</code> - the motor whose velocity is desired</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the current target velocity of the motor in ticks per second</dd>
+</dl>
+</li>
+</ul>
 <a name="getMotorVelocity-int-org.firstinspires.ftc.robotcore.external.navigation.AngleUnit-">
 <!--   -->
 </a>
@@ -308,13 +353,13 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 <h4>getMotorVelocity</h4>
 <pre>double&nbsp;getMotorVelocity(int&nbsp;motor,
                         <a href="../../../../org/firstinspires/ftc/robotcore/external/navigation/AngleUnit.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">AngleUnit</a>&nbsp;unit)</pre>
-<div class="block">Returns the targeted velocity of the indicated motor.</div>
+<div class="block">Returns the velocity of the indicated motor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>motor</code> - the motor whose velocity is desired</dd>
 <dd><code>unit</code> - the angular unit in which the velocity is to be expressed</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the current target velocity of the motor</dd>
+<dd>the current velocity of the motor</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#getVelocity-org.firstinspires.ftc.robotcore.external.navigation.AngleUnit-"><code>DcMotorEx.getVelocity(AngleUnit)</code></a></dd>
 </dl>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6,"i10":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -180,42 +180,54 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.html" title
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#getVelocity--">getVelocity</a></span>()</code>
+<div class="block">Returns the current velocity of the motor, in ticks per second</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>double</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#getVelocity-org.firstinspires.ftc.robotcore.external.navigation.AngleUnit-">getVelocity</a></span>(<a href="../../../../org/firstinspires/ftc/robotcore/external/navigation/AngleUnit.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">AngleUnit</a>&nbsp;unit)</code>
 <div class="block">Returns the current velocity of the motor, in angular units per second</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#isMotorEnabled--">isMotorEnabled</a></span>()</code>
 <div class="block">Returns whether this motor is energized</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#setMotorDisable--">setMotorDisable</a></span>()</code>
 <div class="block">Individually de-energizes this particular motor</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#setMotorEnable--">setMotorEnable</a></span>()</code>
 <div class="block">Individually energizes this particular motor</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#setPIDCoefficients-com.qualcomm.robotcore.hardware.DcMotor.RunMode-com.qualcomm.robotcore.hardware.PIDCoefficients-">setPIDCoefficients</a></span>(<a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode,
                   <a href="../../../../com/qualcomm/robotcore/hardware/PIDCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDCoefficients</a>&nbsp;pidCoefficients)</code>
 <div class="block">Sets the PID control coefficients for one of the PID modes of this motor.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#setTargetPositionTolerance-int-">setTargetPositionTolerance</a></span>(int&nbsp;tolerance)</code>
 <div class="block">Sets the target positioning tolerance of this motor</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#setVelocity-double-">setVelocity</a></span>(double&nbsp;angularRate)</code>
+<div class="block">Sets the velocity of the motor</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#setVelocity-double-org.firstinspires.ftc.robotcore.external.navigation.AngleUnit-">setVelocity</a></span>(double&nbsp;angularRate,
            <a href="../../../../org/firstinspires/ftc/robotcore/external/navigation/AngleUnit.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">AngleUnit</a>&nbsp;unit)</code>
@@ -303,6 +315,20 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.html" title
 </dl>
 </li>
 </ul>
+<a name="setVelocity-double-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setVelocity</h4>
+<pre>void&nbsp;setVelocity(double&nbsp;angularRate)</pre>
+<div class="block">Sets the velocity of the motor</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>angularRate</code> - the desired ticks per second</dd>
+</dl>
+</li>
+</ul>
 <a name="setVelocity-double-org.firstinspires.ftc.robotcore.external.navigation.AngleUnit-">
 <!--   -->
 </a>
@@ -318,6 +344,20 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.html" title
 <dd><code>unit</code> - the units in which angularRate is expressed</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#getVelocity-org.firstinspires.ftc.robotcore.external.navigation.AngleUnit-"><code>getVelocity(AngleUnit)</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="getVelocity--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVelocity</h4>
+<pre>double&nbsp;getVelocity()</pre>
+<div class="block">Returns the current velocity of the motor, in ticks per second</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the current velocity of the motor</dd>
 </dl>
 </li>
 </ul>

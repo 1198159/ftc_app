@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -186,7 +186,7 @@ implements java.lang.Iterable&lt;<a href="../../../../com/qualcomm/robotcore/har
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#analogOutput">analogOutput</a></span></code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>Context</code></td>
+<td class="colFirst"><code>android.content.Context</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#appContext">appContext</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -296,7 +296,7 @@ implements java.lang.Iterable&lt;<a href="../../../../com/qualcomm/robotcore/har
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#HardwareMap-Context-">HardwareMap</a></span>(Context&nbsp;appContext)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#HardwareMap-android.content.Context-">HardwareMap</a></span>(android.content.Context&nbsp;appContext)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -376,6 +376,14 @@ implements java.lang.Iterable&lt;<a href="../../../../com/qualcomm/robotcore/har
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#size--">size</a></span>()</code>
 <div class="block">Returns the number of unique device objects currently found in this HardwareMap.</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>&lt;T&gt;&nbsp;T</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#tryGet-java.lang.Class-java.lang.String-">tryGet</a></span>(java.lang.Class&lt;? extends T&gt;&nbsp;classOrInterface,
+      java.lang.String&nbsp;deviceName)</code>
+<div class="block">Retrieves the (first) device with the indicated name which is also an instance of the
+ indicated class or interface.</div>
 </td>
 </tr>
 </table>
@@ -674,7 +682,7 @@ implements java.lang.Iterable&lt;<a href="../../../../com/qualcomm/robotcore/har
 <ul class="blockListLast">
 <li class="blockList">
 <h4>appContext</h4>
-<pre>public final&nbsp;Context appContext</pre>
+<pre>public final&nbsp;android.content.Context appContext</pre>
 </li>
 </ul>
 </li>
@@ -685,13 +693,13 @@ implements java.lang.Iterable&lt;<a href="../../../../com/qualcomm/robotcore/har
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="HardwareMap-Context-">
+<a name="HardwareMap-android.content.Context-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>HardwareMap</h4>
-<pre>public&nbsp;HardwareMap(Context&nbsp;appContext)</pre>
+<pre>public&nbsp;HardwareMap(android.content.Context&nbsp;appContext)</pre>
 </li>
 </ul>
 </li>
@@ -726,7 +734,37 @@ implements java.lang.Iterable&lt;<a href="../../../../com/qualcomm/robotcore/har
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#get-java.lang.String-"><code>get(String)</code></a>, 
 <a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#getAll-java.lang.Class-"><code>getAll(Class)</code></a>, 
-<a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.DeviceMapping.html#get-java.lang.String-"><code>HardwareMap.DeviceMapping.get(String)</code></a></dd>
+<a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.DeviceMapping.html#get-java.lang.String-"><code>HardwareMap.DeviceMapping.get(String)</code></a>, 
+<a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#tryGet-java.lang.Class-java.lang.String-"><code>tryGet(Class, String)</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="tryGet-java.lang.Class-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>tryGet</h4>
+<pre>public&nbsp;&lt;T&gt;&nbsp;T&nbsp;tryGet(java.lang.Class&lt;? extends T&gt;&nbsp;classOrInterface,
+                    java.lang.String&nbsp;deviceName)</pre>
+<div class="block">Retrieves the (first) device with the indicated name which is also an instance of the
+ indicated class or interface. If no such device is found, null is returned. Example:
+
+ <pre>
+    DcMotor motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
+    ColorSensor colorSensor = hardwareMap.get(ColorSensor.class, "myColorSensor");
+ </pre></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>classOrInterface</code> - the class or interface indicating the type of the device object to be retrieved</dd>
+<dd><code>deviceName</code> - the name of the device object to be retrieved</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a device with the indicated name which is an instance of the indicated class or interface</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#get-java.lang.String-"><code>get(String)</code></a>, 
+<a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#getAll-java.lang.Class-"><code>getAll(Class)</code></a>, 
+<a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.DeviceMapping.html#get-java.lang.String-"><code>HardwareMap.DeviceMapping.get(String)</code></a>, 
+<a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#get-java.lang.Class-java.lang.String-"><code>get(Class, String)</code></a></dd>
 </dl>
 </li>
 </ul>

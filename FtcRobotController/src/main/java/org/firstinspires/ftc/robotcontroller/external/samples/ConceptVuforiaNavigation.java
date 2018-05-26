@@ -30,11 +30,11 @@
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -81,7 +81,7 @@ import java.util.List;
  */
 
 @Autonomous(name="Concept: Vuforia Navigation", group ="Concept")
-@Disabled
+// @Disabled WRONG
 public class ConceptVuforiaNavigation extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
@@ -94,7 +94,19 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
      */
     VuforiaLocalizer vuforia;
 
+    /**
+     * This is the webcam we are to use. As with other hardware devices such as motors and
+     * servos, this device is identified using the robot configuration tool in the FTC application.
+     */
+    WebcamName webcamName;
+
     @Override public void runOpMode() {
+
+        /*
+         * Retrieve the camera we are to use.
+         */
+        webcamName = hardwareMap.get(WebcamName.class, "webcam");
+
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
          * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
@@ -115,17 +127,16 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
          * random data. As an example, here is a example of a fragment of a valid key:
          *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
          * Once you've obtained a license key, copy the string from the Vuforia web site
-         * and paste it in to your code onthe next line, between the double quotes.
+         * and paste it in to your code on the next line, between the double quotes.
          */
-        parameters.vuforiaLicenseKey = "ATsODcD/////AAAAAVw2lR...d45oGpdljdOh5LuFB9nDNfckoxb8COxKSFX";
+        // WRONG: remove real key before release before release
+        parameters.vuforiaLicenseKey = "AXcvdAD/////AAADmeAgjY5Fe0yHvh72y9/lFm8S1V6le66U/3YycNiUtC7rJicpxMsf7kzvkk8HOJj6AATgLTLyDIdTcPy/l7fGRAEjmjAqOXzNO4pi4BmTuXRLH3iLFY5w6hby2W9sh6R9HxWtA9Y6zKRTC3aVkWqUs6VBChVoMX7eweMT8YL12S+hKFndrKlQAsqeM66oXJ2MBXNBIt8UXwK+3We6YAKWktsvKo5x6d2X9C7qrgUl83vDHh7jqJUf0/gi9H77mavyT4Ds8cAv6K52SBmZjExOD6cxbYr4nAhreS/kgQHIPPJssUDqj5imYeQeDXRCeHLl5sz7+5+4csLJixo4irUhe27YvRDSfshvcjz0jIsne+YL";
 
-        /*
-         * We also indicate which camera on the RC that we wish to use.
-         * Here we chose the back (HiRes) camera (for greater range), but
-         * for a competition robot, the front camera might be more convenient.
+        /**
+         * We also indicate which camera on the RC we wish to use.
          */
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        parameters.cameraName = webcamName;
+        this.vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
         /**
          * Load the data sets that for the trackable objects we wish to track. These particular data
@@ -160,7 +171,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
         /**
          * In order for localization to work, we need to tell the system where each target we
          * wish to use for navigation resides on the field, and we need to specify where on the robot
-         * the phone resides. These specifications are in the form of <em>transformation matrices.</em>
+         * the camera resides. These specifications are in the form of <em>transformation matrices.</em>
          * Transformation matrices are a central, important concept in the math here involved in localization.
          * See <a href="https://en.wikipedia.org/wiki/Transformation_matrix">Transformation Matrix</a>
          * for detailed information. Commonly, you'll encounter transformation matrices as instances
@@ -198,9 +209,10 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
          * This example places the "chips" image on the perimeter wall to the Right
          *  of the Blue Driver station.  Similar to the Blue Beacon Location on the Res-Q
          *
-         * See the doc folder of this project for a description of the field Axis conventions.
+         * See the doc folder of this project for a description of the Field Coordinate System
+         * conventions.
          *
-         * Initially the target is conceptually lying at the origin of the field's coordinate system
+         * Initially the target is conceptually lying at the origin of the Field Coordinate System
          * (the center of the field), facing up.
          *
          * In this configuration, the target's coordinate system aligns with that of the field.
@@ -241,10 +253,56 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
         RobotLog.ii(TAG, "Blue Target=%s", format(blueTargetLocationOnField));
 
         /**
-         * Create a transformation matrix describing where the phone is on the robot. Here, we
-         * put the phone on the right hand side of the robot with the screen facing in (see our
-         * choice of BACK camera above) and in landscape mode. Starting from alignment between the
-         * robot's and phone's axes, this is a rotation of -90deg along the Y axis.
+         * We also need to tell Vuforia where the <em>cameras</em> are relative to the robot.
+         *
+         * Just as there is a Field Coordinate System, so too there is a Robot Coordinate System.
+         * The two share many similarities. The origin of the Robot Coordinate System is wherever
+         * you choose to make it on the robot, but typically you'd choose somewhere in the middle
+         * of the robot. From that origin, the Y axis is horizontal and positive out towards the
+         * "front" of the robot (however you choose "front" to be defined), the X axis is horizontal
+         * and positive out towards the "right" of the robot (i.e.: 90deg horizontally clockwise from
+         * the positive Y axis), and the Z axis is vertical towards the sky.
+         *
+         * Similarly, for each camera there is a Camera Coordinate System. The origin of a Camera
+         * Coordinate System lies in the middle of the sensor inside of the camera. The Z axis is
+         * positive coming out of the lens of the camera in a direction perpendicular to the plane
+         * of the sensor. When looking at the face of the lens of the camera (down the positive Z
+         * axis), the X axis is positive off to the right in the plane of the sensor, and the Y axis
+         * is positive out the top of the lens in the plane of the sensor at 90 horizontally
+         * counter clockwise from the X axis.
+         *
+         * Next, there is Phone Coordinate System (for robots that have phones, of course), though
+         * with the advent of Vuforia support for Webcams, this coordinate system is less significant
+         * than it was previously. The Phone Coordinate System is defined thusly: with the phone in
+         * flat front of you in portrait mode (i.e. as it is when running the robot controller app)
+         * and you are staring straight at the face of the phone,
+         *     * X is positive heading off to your right,
+         *     * Y is positive heading up through the top edge of the phone, and
+         *     * Z is pointing out of the screen, toward you.
+         * The origin of the Phone Coordinate System is at the origin of the Camera Coordinate System
+         * of the front-facing camera on the phone.
+         *
+         * Finally, it is worth noting that trackable Vuforia Image Targets have their <em>own</em>
+         * coordinate system (see {@link VuforiaTrackable}. This is sometimes referred to as the
+         * Target Coordinate System. In keeping with the above, when looking at the target in its
+         * natural orientation, in the Target Coodinate System
+         *     * X is positive heading off to your right,
+         *     * Y is positive heading up through the top edge of the target, and
+         *     * Z is pointing out of the target, toward you.
+         *
+         * One can observe that the Camera Coordinate System of the front-facing camera on a phone
+         * coincides with the Phone Coordinate System. Further, when a phone is placed on its back
+         * at the origin of the Robot Coordinate System and aligned appropriately, those coordinate
+         * systems also coincide with the Robot Coordinate System. Got it?
+         *
+         * In this example here, we're going to assume that we put the camera on the right side
+         * of the robot (facing outwards, of course). To determine the transformation matrix that
+         * describes that location, first consider the camera as lying on its back at the origin
+         * of the Robot Coordinate System such that the Camera Coordinate System and Robot Coordinate
+         * System coincide. Then the transformation we need is
+         *      * first a rotation of the camera by +90deg along the robot X axis,
+         *      * then a rotation of the camera by +90deg along the robot Z axis, and
+         *      * finally a translation of the camera to the side of the robot.
          *
          * When determining whether a rotation is positive or negative, consider yourself as looking
          * down the (positive) axis of rotation from the positive towards the origin. Positive rotations
@@ -252,32 +310,33 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
          * axis towards the origin. A positive rotation about Z (ie: a rotation parallel to the the X-Y
          * plane) is then CCW, as one would normally expect from the usual classic 2D geometry.
          */
-        OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
+
+        OpenGLMatrix cameraLocationOnRobot = OpenGLMatrix
                 .translation(mmBotWidth/2,0,0)
                 .multiplied(Orientation.getRotationMatrix(
-                        AxesReference.EXTRINSIC, AxesOrder.YZY,
-                        AngleUnit.DEGREES, -90, 0, 0));
-        RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
+                        AxesReference.EXTRINSIC, AxesOrder.XZY,
+                        AngleUnit.DEGREES, 90, 90, 0));
+        RobotLog.ii(TAG, "camera=%s", format(cameraLocationOnRobot));
 
         /**
          * Let the trackable listeners we care about know where the phone is. We know that each
          * listener is a {@link VuforiaTrackableDefaultListener} and can so safely cast because
          * we have not ourselves installed a listener of a different type.
          */
-        ((VuforiaTrackableDefaultListener)redTarget.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
-        ((VuforiaTrackableDefaultListener)blueTarget.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+        ((VuforiaTrackableDefaultListener)redTarget.getListener()).setCameraLocationOnRobot(parameters.cameraName, cameraLocationOnRobot);
+        ((VuforiaTrackableDefaultListener)blueTarget.getListener()).setCameraLocationOnRobot(parameters.cameraName, cameraLocationOnRobot);
 
         /**
          * A brief tutorial: here's how all the math is going to work:
          *
-         * C = phoneLocationOnRobot  maps   phone coords -> robot coords
-         * P = tracker.getPose()     maps   image target coords -> phone coords
+         * C = cameraLocationOnRobot    maps   camera coords -> robot coords
+         * P = tracker.getPose()        maps   image target coords -> camera coords
          * L = redTargetLocationOnField maps   image target coords -> field coords
          *
          * So
          *
-         * C.inverted()              maps   robot coords -> phone coords
-         * P.inverted()              maps   phone coords -> imageTarget coords
+         * C.inverted()                 maps   robot coords -> camera coords
+         * P.inverted()                 maps   camera coords -> imageTarget coords
          *
          * Putting that all together,
          *

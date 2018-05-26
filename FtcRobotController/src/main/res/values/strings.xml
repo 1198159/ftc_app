@@ -68,4 +68,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   <string name="packageName">@string/packageNameRobotController</string>
 
+    <string-array name="pref_pairing_kind_values">
+        <item>"WifiDirect"</item>
+        <item>"RCWirelessAP"</item>
+    </string-array>
+
 </resources>

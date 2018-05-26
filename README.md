@@ -41,6 +41,22 @@ For technical questions regarding the SDK, please visit the FTC Technology forum
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http://ftcforum.usfirst.org/forumdisplay.php?156-FTC-Technology
 
+**************************************************************************************
+# Release Information
+**************************************************************************************
+
+Version 3.8 (built on 18.05.26)
+FTC System Testing Release
+
+Changes include:
+ * (Preliminary) Support for connecting robot controllers to USB webcams
+     - Integration of webcam support into Vuforia
+ * (Preliminary) New, easier-to-use access-point pairing model for use with Control Hubs
+     - Wifi Direct is no longer used when pairing with a Control Hub
+ * *Note:* when using this release on a Control Hub, an upgraded version of the Android OS and other software is
+   _required_ on the Control Hub; this can be found [at this location](https://www.dropbox.com/sh/p7nhw9ilj7fu32l/AAAJjSq5woVpijobGE-hj_G4a?dl=0).
+ * Use of this release on any robot controller requires the use of the corresponding new
+   version of the driver station, which can also be found [here](https://www.dropbox.com/sh/p7nhw9ilj7fu32l/AAAJjSq5woVpijobGE-hj_G4a?dl=0).
 
 **************************************************************************************
 # Release Information

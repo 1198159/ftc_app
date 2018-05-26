@@ -149,24 +149,31 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>Activity</code></td>
+<td class="colFirst"><code>android.app.Activity</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#activity">activity</a></span></code>
 <div class="block">The activity in which the localizer is to run.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.CameraDirection</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraDirection">cameraDirection</a></span></code>
-<div class="block">Indicates the camera which Vuforia should use.</div>
+<td class="colFirst"><code>Camera</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#camera">camera</a></span></code>
+<div class="block">If non-null, then this indicates the <code>Camera</code> to use with Vuforia.</div>
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.CameraDirection</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraDirection">cameraDirection</a></span></code>
+<div class="block">If <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#camera"><code>camera</code></a> is null and <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraName"><code>cameraName</code></a> is the 'unknown' camera name, then
+ this value is used to indicate the camera to use with Vuforia.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.CameraMonitorFeedback.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.Parameters.CameraMonitorFeedback</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraMonitorFeedback">cameraMonitorFeedback</a></span></code>
 <div class="block">Indicates the style of camera monitoring feedback to use.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraMonitorViewIdParent">cameraMonitorViewIdParent</a></span></code>
 <div class="block">The resource id of the view within <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#activity"><code>activity</code></a> that will be used
@@ -174,11 +181,17 @@ extends java.lang.Object</pre>
  camera is seeing.</div>
 </td>
 </tr>
-<tr class="altColor">
-<td class="colFirst"><code>ViewGroup</code></td>
+<tr class="rowColor">
+<td class="colFirst"><code>android.view.ViewGroup</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraMonitorViewParent">cameraMonitorViewParent</a></span></code>
 <div class="block">The view that will be used as the parent for a live monitor which provides
  feedback as to what the the camera is seeing.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>CameraName</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraName">cameraName</a></span></code>
+<div class="block">If <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#camera"><code>camera</code></a> is non-null, this value is ignored.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -189,16 +202,26 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#secondsUsbPermissionTimeout">secondsUsbPermissionTimeout</a></span></code>
+<div class="block">How long to wait for USB permissions when connecting to a webcam.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#useExtendedTracking">useExtendedTracking</a></span></code>
 <div class="block">Indicates whether to use Vuforia's extended tracking mode.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#vuforiaLicenseKey">vuforiaLicenseKey</a></span></code>
 <div class="block">The license key with which to use Vuforia.</div>
 </td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#webcamCalibrationsResource">webcamCalibrationsResource</a></span></code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -269,6 +292,45 @@ extends java.lang.Object</pre>
  <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html" title="class in org.firstinspires.ftc.robotcore.external.navigation"><code>VuforiaLocalizer.Parameters</code></a> instance with which you initialize Vuforia.</div>
 </li>
 </ul>
+<a name="camera">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>camera</h4>
+<pre>public&nbsp;Camera camera</pre>
+<div class="block">If non-null, then this indicates the <code>Camera</code> to use with Vuforia. Otherwise,
+ the camera is determined using <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraName"><code>cameraName</code></a> and <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraDirection"><code>cameraDirection</code></a>.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraName"><code>cameraName</code></a>, 
+<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraDirection"><code>cameraDirection</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="cameraName">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cameraName</h4>
+<pre>public&nbsp;CameraName cameraName</pre>
+<div class="block">If <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#camera"><code>camera</code></a> is non-null, this value is ignored.
+
+ Otherwise, if this value is neither null nor the 'unknown' camera name, the it indicates
+ the name of the camera to use with Vuforia. It will be opened as needed.
+
+ Otherwise, if this value is the 'unknown' camera name, then this value is ignored and
+ <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraDirection"><code>cameraDirection</code></a> is used to indicate the camera.
+
+ Otherwise, this value is null, and an error has occurred.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#camera"><code>camera</code></a>, 
+<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraDirection"><code>cameraDirection</code></a></dd>
+</dl>
+</li>
+</ul>
 <a name="cameraDirection">
 <!--   -->
 </a>
@@ -276,10 +338,13 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>cameraDirection</h4>
 <pre>public&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.CameraDirection</a> cameraDirection</pre>
-<div class="block">Indicates the camera which Vuforia should use.</div>
+<div class="block">If <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#camera"><code>camera</code></a> is null and <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraName"><code>cameraName</code></a> is the 'unknown' camera name, then
+ this value is used to indicate the camera to use with Vuforia. Note that this value
+ can only indicate the use of built-in cameras found on a phone.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation"><code>VuforiaLocalizer.CameraDirection</code></a></dd>
+<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#camera"><code>camera</code></a>, 
+<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraName"><code>cameraName</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -341,7 +406,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>cameraMonitorViewParent</h4>
-<pre>public&nbsp;ViewGroup cameraMonitorViewParent</pre>
+<pre>public&nbsp;android.view.ViewGroup cameraMonitorViewParent</pre>
 <div class="block">The view that will be used as the parent for a live monitor which provides
  feedback as to what the the camera is seeing. If both <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraMonitorViewIdParent"><code>cameraMonitorViewIdParent</code></a>
  and <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraMonitorViewParent"><code>cameraMonitorViewParent</code></a> are specified, <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#cameraMonitorViewParent"><code>cameraMonitorViewParent</code></a> is used
@@ -375,12 +440,31 @@ extends java.lang.Object</pre>
 <a name="activity">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>activity</h4>
-<pre>public&nbsp;Activity activity</pre>
+<pre>public&nbsp;android.app.Activity activity</pre>
 <div class="block">The activity in which the localizer is to run. May be null, in which case
  the contextually current activity will be used.</div>
+</li>
+</ul>
+<a name="webcamCalibrationsResource">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>webcamCalibrationsResource</h4>
+<pre>public&nbsp;int webcamCalibrationsResource</pre>
+</li>
+</ul>
+<a name="secondsUsbPermissionTimeout">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>secondsUsbPermissionTimeout</h4>
+<pre>public&nbsp;int secondsUsbPermissionTimeout</pre>
+<div class="block">How long to wait for USB permissions when connecting to a webcam.</div>
 </li>
 </ul>
 </li>

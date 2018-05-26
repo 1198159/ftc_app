@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -79,7 +80,18 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
      */
     VuforiaLocalizer vuforia;
 
+    /**
+     * This is the webcam we are to use. As with other hardware devices such as motors and
+     * servos, this device is identified using the robot configuration tool in the FTC application.
+     */
+    WebcamName webcamName;
+
     @Override public void runOpMode() {
+
+        /*
+         * Retrieve the camera we are to use.
+         */
+        webcamName = hardwareMap.get(WebcamName.class, "webcam");
 
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
@@ -101,17 +113,17 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
          * random data. As an example, here is a example of a fragment of a valid key:
          *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
          * Once you've obtained a license key, copy the string from the Vuforia web site
-         * and paste it in to your code onthe next line, between the double quotes.
+         * and paste it in to your code on the next line, between the double quotes.
          */
-        parameters.vuforiaLicenseKey = "ATsODcD/////AAAAAVw2lR...d45oGpdljdOh5LuFB9nDNfckoxb8COxKSFX";
+        // WRONG: remove real key before release
+        parameters.vuforiaLicenseKey = "AXcvdAD/////AAADmeAgjY5Fe0yHvh72y9/lFm8S1V6le66U/3YycNiUtC7rJicpxMsf7kzvkk8HOJj6AATgLTLyDIdTcPy/l7fGRAEjmjAqOXzNO4pi4BmTuXRLH3iLFY5w6hby2W9sh6R9HxWtA9Y6zKRTC3aVkWqUs6VBChVoMX7eweMT8YL12S+hKFndrKlQAsqeM66oXJ2MBXNBIt8UXwK+3We6YAKWktsvKo5x6d2X9C7qrgUl83vDHh7jqJUf0/gi9H77mavyT4Ds8cAv6K52SBmZjExOD6cxbYr4nAhreS/kgQHIPPJssUDqj5imYeQeDXRCeHLl5sz7+5+4csLJixo4irUhe27YvRDSfshvcjz0jIsne+YL";
 
-        /*
-         * We also indicate which camera on the RC that we wish to use.
-         * Here we chose the back (HiRes) camera (for greater range), but
-         * for a competition robot, the front camera might be more convenient.
+        /**
+         * We also indicate which camera on the RC we wish to use. For pedagogical purposes,
+         * we use the same logic as in {@link ConceptVuforiaNavigation}.
          */
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        parameters.cameraName = webcamName;
+        this.vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
         /**
          * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
@@ -148,7 +160,7 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
                 /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
                  * it is perhaps unlikely that you will actually need to act on this pose information, but
                  * we illustrate it nevertheless, for completeness. */
-                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
+                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getFtcCameraFromTarget();
                 telemetry.addData("Pose", format(pose));
 
                 /* We further illustrate how to decompose the pose into useful rotational and

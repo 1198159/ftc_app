@@ -46,6 +46,14 @@ See https://developer.android.com/guide/topics/ui/settings.html
   <PreferenceCategory
     android:title="@string/prefcat_configure_robot">
 
+    <ListPreference
+        android:key="@string/pref_pairing_kind"
+        android:title="@string/pairing_kind_title"
+        android:entries="@array/networkTypes"
+        android:entryValues="@array/pref_pairing_kind_values"
+        android:defaultValue="@string/pref_pairing_kind_default"
+        android:summary="%s">
+    </ListPreference>
     <EditTextPreference
         android:title="@string/prefedit_device_name_rc"
         android:summary="@string/prefedit_device_name_summary_rc"
