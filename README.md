@@ -16,8 +16,12 @@ Changes include:
      - A new Vuforia license is required: please see the Vuforia developer website as before.
  * (Preliminary) New, easier-to-use access-point pairing model for use with Control Hubs
      - Wifi Direct is no longer used when pairing with a Control Hub
+     - The Control Hub robot controller now lives at IP address 192.168.43.1 (note the '43', not '49').
  * *Note:* when using this release on a Control Hub, an upgraded version of the Android OS and other software is
    _required_ on the Control Hub; this can be found [at this location](https://www.dropbox.com/sh/p7nhw9ilj7fu32l/AAAJjSq5woVpijobGE-hj_G4a?dl=0).
+     - Wifi debugging is available by default: you no longer need to connect using USB and incant `adb tcpip 5555` in order to then 
+       connect from Android Studio over wifi. Once your workstation is connected to the Control Hub over wifi, just run 
+       `adb connect 192.168.43.1:5555` and you should be good to go.
  * Use of this release on any robot controller requires the use of the corresponding new
    version of the driver station, which can also be found [here](https://www.dropbox.com/sh/p7nhw9ilj7fu32l/AAAJjSq5woVpijobGE-hj_G4a?dl=0).
 
