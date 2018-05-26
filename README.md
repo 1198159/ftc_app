@@ -51,6 +51,7 @@ FTC System Testing Release
 Changes include:
  * (Preliminary) Support for connecting robot controllers to USB webcams
      - Integration of webcam support into Vuforia
+     - An new Vuforia license is required: please see the Vuforia developer website as before.
  * (Preliminary) New, easier-to-use access-point pairing model for use with Control Hubs
      - Wifi Direct is no longer used when pairing with a Control Hub
  * *Note:* when using this release on a Control Hub, an upgraded version of the Android OS and other software is
