@@ -1,5 +1,5 @@
 ## Welcome!
-This GitHub repository contains the SDK source code used in testing new features of the FTC Control System. It mirrors the familiar structure of the SDK releases published by FIRST from time to time. You wouldn’t go wrong to conceptualize this a form of alpha or beta FTC SDK release, just hosted from a different git repository.
+This GitHub repository contains the SDK source code used in testing new features of the FTC Control System. It mirrors the familiar structure of the SDK releases published by FIRST from time to time. You wouldn’t go wrong to conceptualize this as a form of alpha or beta FTC SDK release, just hosted from a different git repository.
 
 Please do not distribute this release beyond those involved in the FTC control system testing process.
 
