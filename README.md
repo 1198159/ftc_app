@@ -7,7 +7,7 @@ Please do not distribute this release beyond those involved in the FTC control s
 # Release Information
 **************************************************************************************
 
-Version 3.8 (built on 18.05.26)
+Version 3.8a (built on 18.05.26)
 FTC System Testing Release
 
 Changes include:
@@ -24,6 +24,8 @@ Changes include:
        `adb connect 192.168.43.1:5555` and you should be good to go.
  * Use of this release on any robot controller requires the use of the corresponding new
    version of the driver station, which can also be found [here](https://www.dropbox.com/sh/p7nhw9ilj7fu32l/AAAJjSq5woVpijobGE-hj_G4a?dl=0).
+ * Note that the Control Hub cannot simultaneously be connected via USB to your PC and to a webcam, as it cannot be a USB host
+   and a slave at the same time.
 
 **************************************************************************************
 # Release Information
