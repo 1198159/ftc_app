@@ -1,2 +1,7 @@
 include ':FtcRobotController'
 include ':TeamCode'
+include ':Team417_2017'
+include ':Team6220_2017'
+include ':Team8923_2017'
+include ':TeamSwerve'
+include ':TeamMentor'

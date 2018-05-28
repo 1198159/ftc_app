@@ -1,0 +1,15 @@
+repositories {
+    maven {
+        url "https://mvnrepository.com/artifact/org.apache.commons/commons-math3"
+    }
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation project(':RobotCore')
+    implementation project(':Hardware')
+    implementation project(':FtcCommon')
+    implementation project(':FtcRobotController')
+    implementation (name:'WirelessP2p-release', ext:'aar')
+}

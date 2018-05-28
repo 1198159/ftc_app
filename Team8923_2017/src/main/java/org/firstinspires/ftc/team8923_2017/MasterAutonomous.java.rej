@@ -1,0 +1,31 @@
+diff a/Team8923_2017/src/main/java/org/firstinspires/ftc/team8923_2017/MasterAutonomous.java b/Team8923_2017/src/main/java/org/firstinspires/ftc/team8923_2017/MasterAutonomous.java	(rejected hunks)
+@@ -724,11 +724,27 @@
+         return vuMark;
+     }
+ 
++    public float countPixel(float colorHsvOut[]) {
++        float hue = colorHsvOut[0];
++
++        if (hue >= 333 && hue <= 20)//Range of Red Hue
++        {
++            numRedPixels ++;//Adds to num of red pixels
++        }
++        else if (hue >= 200 && hue <= 270)//Range of blue hue value
++        {
++            numBluePixels ++;//Adds to num of blue pixels
++        }
++        else//If the pixel value is not red or blue, it is identified as other.
++        {
++            numOtherPixels ++;//Adds to num of other pixels
++        }
++        return hue;
++    }
+ 
+     public float GetAvgJewelColor(int x, int y)
+     {
+-        if (x>=0 && x<1280-32 && y>=0 && y<720-32)
+-        {
++        if (x>=0 && x<1280-32 && y>=0 && y<720-32) {
+             HsvSum[0] = 0;
+             for (int j = y - 32; j < y + 32; j++) // "Draws" the columns
+             {
