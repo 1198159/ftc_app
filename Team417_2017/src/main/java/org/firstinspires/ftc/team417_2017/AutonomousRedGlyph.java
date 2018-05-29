@@ -18,6 +18,11 @@ public class AutonomousRedGlyph extends MasterAutonomous
     {
         // Initialize hardware and other important things
         autoInitializeRobot();
+
+        // specify camera name for Vuforia
+        // camera name was set in MasterOpMode, and is used in initVuforia() method
+        VuforiaDetect.webcamName = webcamName;
+
         VuforiaDetect.initVuforia(); // initialize Vuforia
         telemetry.addData("Done: ", "initializing");
         telemetry.update();

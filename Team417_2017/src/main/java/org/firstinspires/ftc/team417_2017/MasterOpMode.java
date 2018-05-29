@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team417_2017;
 
 import android.graphics.Color;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -38,6 +40,12 @@ abstract public class MasterOpMode extends LinearOpMode
     BNO055IMU imu; // inertial measurement unit (located within the REV Hub)
     //ColorSensor sensorColorLeft; // port 1
     //ColorSensor sensorColorRight; // port 2
+
+    /**
+     * This is the webcam we are to use. As with other hardware devices such as motors and
+     * servos, this device is identified using the robot configuration tool in the FTC application.
+     */
+    WebcamName webcamName;
 
     // Declare constants
     static final double COUNTS_PER_MOTOR_REV = 1120;
@@ -156,6 +164,11 @@ abstract public class MasterOpMode extends LinearOpMode
         // and named "imu".
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+
+        /*
+         * Retrieve the camera we are to use.
+         */
+        webcamName = hardwareMap.get(WebcamName.class, "webcam");
 
         telemetry.log().setCapacity(8);
 

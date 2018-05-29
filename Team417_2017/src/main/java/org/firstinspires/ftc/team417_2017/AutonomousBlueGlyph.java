@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.vuforia.CameraDevice;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 @Autonomous(name="Autonomous Blue Glyph", group = "Swerve")
@@ -18,6 +19,11 @@ public class AutonomousBlueGlyph extends MasterAutonomous
     {
         // Initialize hardware and other important things
         autoInitializeRobot();
+
+        // specify camera name for Vuforia
+        // camera name was set in MasterOpMode, and is used in initVuforia() method
+        VuforiaDetect.webcamName = webcamName;
+
         VuforiaDetect.initVuforia(); // initialize Vuforia
         telemetry.addData("Done: ", "initializing");
         telemetry.update();

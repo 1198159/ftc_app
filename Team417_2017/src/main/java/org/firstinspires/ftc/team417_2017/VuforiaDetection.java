@@ -14,6 +14,7 @@ import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -95,6 +96,7 @@ public class VuforiaDetection
      */
     VuforiaLocalizer vuforia;
 
+    WebcamName webcamName;
 
     public float GetAvgJewelColor(int x, int y)
     {
@@ -377,16 +379,15 @@ public class VuforiaDetection
         // OR...  Do Not Activate the Camera Monitor View, to save power
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
-        //This licence key belongs to Steve Geffner
-        parameters.vuforiaLicenseKey = "ATJf0AL/////AAAAGQZ9xp9L+k5UkmHj3LjxcoQwNTTBJqjO9LYsbkWQArRpYKQmt7vqe680RCQSS9HatStn1XZVi7rgA8T7qrJz/KYI748M4ZjlKv4Z11gryemJCRA9+WWkQ51D3TuYJbQC46+LDeMfbvcJQoQ79jtXr7xdFhfJl1mRxf+wMVoPWfN6Dhr8q3XVxFwOE/pM3gXWQ0kacbcGR/vy3NAsbOhf02DEe5WoV5PNZTF34LWN3dWURu7NJsnbFzkpzXdogeVAdiQ3QUWDvuhEwvSJY4W+fCTb15t6T/c/GJ/vqptsVKqavXk6MQobnUsVFpFP+5OSuRQe7EgvWuOxn7xn5YlC+CWAYh9LrXDpktwCwBAiX3Gx";
+        //This licence key belongs to Bob Atkinson
+        parameters.vuforiaLicenseKey = "AXcvdAD/////AAADmeAgjY5Fe0yHvh72y9/lFm8S1V6le66U/3YycNiUtC7rJicpxMsf7kzvkk8HOJj6AATgLTLyDIdTcPy/l7fGRAEjmjAqOXzNO4pi4BmTuXRLH3iLFY5w6hby2W9sh6R9HxWtA9Y6zKRTC3aVkWqUs6VBChVoMX7eweMT8YL12S+hKFndrKlQAsqeM66oXJ2MBXNBIt8UXwK+3We6YAKWktsvKo5x6d2X9C7qrgUl83vDHh7jqJUf0/gi9H77mavyT4Ds8cAv6K52SBmZjExOD6cxbYr4nAhreS/kgQHIPPJssUDqj5imYeQeDXRCeHLl5sz7+5+4csLJixo4irUhe27YvRDSfshvcjz0jIsne+YL";
 
-        /*
-         * We also indicate which camera on the RC that we wish to use.
-         * Here we chose the back (HiRes) camera (for greater range), but
-         * for a competition robot, the front camera might be more convenient.
+        /**
+         * We also indicate which camera on the RC we wish to use.
          */
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        parameters.cameraName = webcamName;
+        parameters.useExtendedTracking = false;
+        this.vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
         // set phone location
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
