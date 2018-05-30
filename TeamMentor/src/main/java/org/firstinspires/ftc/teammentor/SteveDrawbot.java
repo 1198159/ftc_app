@@ -68,6 +68,10 @@ public class SteveDrawbot extends LinearOpMode
     double DEFAULT_ANGLE_ALPHA = 0.0;
     double DEFAULT_ANGLE_BETA = 0.0;
 
+    // some variables to turn the pen on and off
+    boolean PEN_DRAW = true;
+    boolean PEN_NOT_DRAW = false;
+    boolean penState = PEN_NOT_DRAW;
 
 
     @Override public void runOpMode() throws InterruptedException
@@ -89,8 +93,11 @@ public class SteveDrawbot extends LinearOpMode
         }
     }
 
-    private void initializeServoAngles()
+    private void initializeServos()
     {
+        servo1 = hardwareMap.servo.get("servo1");
+        servo2 = hardwareMap.servo.get("servo2");
+
         angleAlpha = DEFAULT_ANGLE_ALPHA;
         angleBeta = DEFAULT_ANGLE_BETA;
 
@@ -100,21 +107,69 @@ public class SteveDrawbot extends LinearOpMode
 
     private void initializeRobot()
     {
-        servo1 = hardwareMap.servo.get("servo1");
-        servo2 = hardwareMap.servo.get("servo2");
-
-        initializeServoAngles();
+        initializeServos();
 
         // Set up telemetry data
         //configureDashboard();
     }
-    
+
 
     private void updateServoPositions()
     {
         servo1.setPosition(angleAlpha);
         servo2.setPosition(angleBeta);
     }
+
+    //put the pen in a state in which it does not draw lines
+    private void setPenState(boolean desiredPenState)
+    {
+        penState = desiredPenState;
+    }
+
+    private void calculateServoAnglesForPoint(double x, double y)
+    {
+        //cribbing heavily from:
+        // https://math.stackexchange.com/questions/1423467/calculating-angles-neccessary-to-reach-a-position-on-a-2d-plane-for-two-robot-ar
+
+        //c is the distance from the origin to the target location (x,y).
+        //The formula for the distance between two points is  Math.sqrt( (x2 - x1)^2 + (y2 - y1)^2 )
+        //Luckily, the origin is conveniently (0,0), which simplifies the formula for us.
+        double c = Math.sqrt( (x * x) + (y * y) );
+
+        angleBeta = Math.acos(
+                        (len_a * len_a) + (len_b * len_b) - (c * c) /
+                                (2 * len_a * len_b)
+        );
+
+
+        double g = Math.atan2(x, y);
+        double t = Math.acos(
+                        (len_a * len_a) + (c * c) - (len_b * len_b)  /
+                               (2 * len_a * c)
+        );
+
+        angleAlpha = g + t;
+
+    }
+
+    private void moveTo(double x, double y)
+    {
+        setPenState(PEN_NOT_DRAW);
+
+        calculateServoAnglesForPoint(x, y);
+
+        updateServoPositions();
+    }
+
+    private void drawTo(double x, double y)
+    {
+        setPenState(PEN_DRAW);
+
+        calculateServoAnglesForPoint(x, y);
+
+        updateServoPositions();
+    }
+
 
 
     private void configureDashboard()
