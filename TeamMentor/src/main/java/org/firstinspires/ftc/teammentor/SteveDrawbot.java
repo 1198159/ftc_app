@@ -73,6 +73,8 @@ public class SteveDrawbot extends LinearOpMode
     boolean PEN_NOT_DRAW = false;
     boolean penState = PEN_NOT_DRAW;
 
+    boolean RUN_WITHOUT_HARDWARE = true;
+
 
     @Override public void runOpMode() throws InterruptedException
     {
@@ -116,8 +118,14 @@ public class SteveDrawbot extends LinearOpMode
 
     private void updateServoPositions()
     {
-        servo1.setPosition(angleAlpha);
-        servo2.setPosition(angleBeta);
+        if (RUN_WITHOUT_HARDWARE) {
+            telemetry.addLine().addData("alpha", angleAlpha).
+                                addData("beta", angleBeta);
+        }
+        else {
+            servo1.setPosition(angleAlpha);
+            servo2.setPosition(angleBeta);
+        }
     }
 
     //put the pen in a state in which it does not draw lines
