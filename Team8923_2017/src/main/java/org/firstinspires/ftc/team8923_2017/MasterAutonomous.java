@@ -26,6 +26,7 @@ import com.vuforia.Vec3F;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -164,6 +165,8 @@ public abstract class MasterAutonomous extends Master
 
     // bLedOn represents the state of the LED.
     boolean bLedOn = true;
+    CameraName LGWebcam;
+
 
     // values is a reference to the hsvValues array.
     //final float values[] = hsvValues;
@@ -260,6 +263,7 @@ public abstract class MasterAutonomous extends Master
         sensorTopRight = hardwareMap.get(ColorSensor.class, "sensorTopRight");
         sensorTopLeft = hardwareMap.get(ColorSensor.class, "sensorTopLeft");
         sensorBottomRight = hardwareMap.get(ColorSensor.class, "sensorBottomRight");
+        LGWebcam = hardwareMap.get(CameraName.class, "LGWebcam");
         GGZero = motorGG.getCurrentPosition();
     }
 
@@ -1071,20 +1075,26 @@ public abstract class MasterAutonomous extends Master
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         //This licence key belongs to Steve Geffner
-        parameters.vuforiaLicenseKey = "ATJf0AL/////AAAAGQZ9xp9L+k5UkmHj3LjxcoQwNTTBJqjO9LYsbkWQ" +
-                "ArRpYKQmt7vqe680RCQSS9HatStn1XZVi7rgA8T7qrJz/KYI748M4ZjlKv4Z11gryemJCRA9+WWkQ51" +
-                "D3TuYJbQC46+LDeMfbvcJQoQ79jtXr7xdFhfJl1mRxf+wMVoPWfN6Dhr8q3XVxFwOE/pM3gXWQ0kacb" +
-                "cGR/vy3NAsbOhf02DEe5WoV5PNZTF34LWN3dWURu7NJsnbFzkpzXdogeVAdiQ3QUWDvuhEwvSJY4W+f" +
-                "CTb15t6T/c/GJ/vqptsVKqavXk6MQobnUsVFpFP+5OSuRQe7EgvWuOxn7xn5YlC+CWAYh9LrXDpktwC" +
-                "wBAiX3Gx";
+        parameters.vuforiaLicenseKey = "AV3Kj2L/////AAABGdvZ3ZFdpEA5pF7l2tbDR7oSKN1TJVnKGZ1UenRk8" +
+                "BdMubO9NBK6NQk24rYjFGVKIePvSYUfJdtsokcAskdKRssev3GXM4PSQ3ao3WHjachSNiv/UdIembXo+" +
+                "4sASbnMb63LF5peV1rjTIPzBFcNpbFnXFsbii1hGx1Ufn81EyAOGmuLIVcSX1i4xe7NC7RHegsXs7HDK" +
+                "/sDxzkdKAh/DAIrQJ1z8lu4DKntmR+eIGnlOR+RHBJi/VrZ+hpegSBn5fWcxRO3zY0Y5oHIkL7YKQEKU" +
+                "4Q2w8fpm/U6y8YdumbIFvqze/5OAGfyLx60Ptfs/UtAViRPNKLaTfekwiRWZn17lxujI4leJdzWYPYI5" +
+                "k+O";
 
         /*
          * We also indicate which camera on the RC that we wish to use.
          * Here we chose the back (HiRes) camera (for greater range), but
          * for a competition robot, the front camera might be more convenient.
          */
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        //parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        //this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        //parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        parameters.cameraName = LGWebcam;
+        this.vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        //this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        CameraName LGWebcam;
+
 
         // set phone location
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
