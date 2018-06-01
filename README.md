@@ -40,6 +40,7 @@ Changes include:
  * Fix DS <-> RC auto reconnection issues
  * Substantial progress towards USB resiliancy for webcams
  * Miscellaneous bug fixes
+ * Pro tip: if you've forgotten the name of the network which your Control Hub RC is hosting (which is also the name of RC itself), you can connect to it via USB and incant `adb shell getprop persist.ftc.accesspoint.ssid` to find out.
 
 **************************************************************************************
 # Release Information
