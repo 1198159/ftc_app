@@ -7,6 +7,17 @@ Please do not distribute this release beyond those involved in the FTC control s
 # Release Information
 **************************************************************************************
 
+Version 3.8c (built on 18.06.01)
+FTC System Testing Release
+
+Changes include:
+  * WebcamNames handle USB connection & disconnection better
+  * General webcam robustness and improved error handling
+  * Enabled calibrations for Logitech C920 and some other cameras
+  * Additional Blocks work, including Java code generation
+  * Optional per-match log generation.
+  
+
 Version 3.8b (built on 18.05.30)
 FTC System Testing Release
 
