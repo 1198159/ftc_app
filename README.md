@@ -7,7 +7,18 @@ Please do not distribute this release beyond those involved in the FTC control s
 # Release Information
 **************************************************************************************
 
-Version 3.8a (built on 18.05.26)
+Version 3.8c (built on 18.06.01)
+FTC System Testing Release
+
+Changes include:
+  * WebcamNames handle USB connection & disconnection better
+  * General webcam robustness and improved error handling
+  * Enabled calibrations for Logitech C920 and some other cameras
+  * Additional Blocks work, including Java code generation
+  * Optional per-match log generation.
+  
+
+Version 3.8b (built on 18.05.30)
 FTC System Testing Release
 
 Changes include:
@@ -26,6 +37,10 @@ Changes include:
    version of the driver station, which can also be found [here](https://www.dropbox.com/sh/p7nhw9ilj7fu32l/AAAJjSq5woVpijobGE-hj_G4a?dl=0).
  * Note that the Control Hub cannot simultaneously be connected via USB to your PC and to a webcam, as it cannot be a USB host
    and a slave at the same time.
+ * Fix DS <-> RC auto reconnection issues
+ * Substantial progress towards USB resiliancy for webcams
+ * Miscellaneous bug fixes
+ * Pro tip: if you've forgotten the name of the network which your Control Hub RC is hosting (which is also the name of RC itself), you can connect to it via USB and incant `adb shell getprop persist.ftc.accesspoint.ssid` to find out.
 
 **************************************************************************************
 # Release Information
