@@ -57,7 +57,7 @@ public class SteveDrawbot extends LinearOpMode
     Servo servo1, servo2;
 
     Double len_a = 10.0; //length of bar from servo1 to servo2
-    Double len_b = 5.0;  //length of bar from servo2 to pen
+    Double len_b = 10.0;  //length of bar from servo2 to pen
     double len_c = 0.0;  //length from servo1 to pen. This will be calculated as needed for each point of the drawing.
 
     //     Let alpha be the angle of servo servo1 relative to a baseline
@@ -84,6 +84,15 @@ public class SteveDrawbot extends LinearOpMode
         // Wait until start button has been pressed
         waitForStart();
 
+        moveTo(3, 3);
+        moveTo(4, 4);
+        moveTo(5, 5);
+        moveTo(6, 6);
+
+
+
+
+
         // Main loop
         while(opModeIsActive())
         {
@@ -97,8 +106,10 @@ public class SteveDrawbot extends LinearOpMode
 
     private void initializeServos()
     {
-        servo1 = hardwareMap.servo.get("servo1");
-        servo2 = hardwareMap.servo.get("servo2");
+        if (!RUN_WITHOUT_HARDWARE) {
+            servo1 = hardwareMap.servo.get("servo1");
+            servo2 = hardwareMap.servo.get("servo2");
+        }
 
         angleAlpha = DEFAULT_ANGLE_ALPHA;
         angleBeta = DEFAULT_ANGLE_BETA;
@@ -118,14 +129,12 @@ public class SteveDrawbot extends LinearOpMode
 
     private void updateServoPositions()
     {
-        if (RUN_WITHOUT_HARDWARE) {
-            telemetry.addLine().addData("alpha", angleAlpha).
-                                addData("beta", angleBeta);
-        }
-        else {
+        if (!RUN_WITHOUT_HARDWARE) {
             servo1.setPosition(angleAlpha);
             servo2.setPosition(angleBeta);
         }
+
+        telemetry.log().add("alpha " + angleAlpha + ", beta " + angleBeta);
     }
 
     //put the pen in a state in which it does not draw lines
@@ -144,31 +153,47 @@ public class SteveDrawbot extends LinearOpMode
         //Luckily, the origin is conveniently (0,0), which simplifies the formula for us.
         double c = Math.sqrt( (x * x) + (y * y) );
 
-        angleBeta = Math.acos(
-                        (len_a * len_a) + (len_b * len_b) - (c * c) /
+        double betaInRadians = Math.acos(
+                ((len_a * len_a) + (len_b * len_b) - (c * c)) /
                                 (2 * len_a * len_b)
         );
 
 
         double g = Math.atan2(x, y);
         double t = Math.acos(
-                        (len_a * len_a) + (c * c) - (len_b * len_b)  /
+                ((len_a * len_a) + (c * c) - (len_b * len_b))  /
                                (2 * len_a * c)
         );
 
-        angleAlpha = g + t;
+        double alphaInRadians = g + t;
 
+        angleAlpha = convertRadiansToServoRange(alphaInRadians);
+        angleBeta = convertRadiansToServoRange(betaInRadians);
+
+    }
+
+    private double convertRadiansToServoRange(double rads)
+    {
+        //convert radians to degrees
+        double degrees = rads * (180.0 / Math.PI);
+
+        //these servos turn 180 degrees; map degrees to a value from 0..1
+        return degrees / 180.00;
     }
 
     private void moveTo(double x, double y)
     {
         setPenState(PEN_NOT_DRAW);
 
+        telemetry.log().add("x " + x + ", y " + y);
+
         calculateServoAnglesForPoint(x, y);
 
         updateServoPositions();
     }
 
+
+    //note that this may draw a curving line as the servos move to their new positions
     private void drawTo(double x, double y)
     {
         setPenState(PEN_DRAW);
