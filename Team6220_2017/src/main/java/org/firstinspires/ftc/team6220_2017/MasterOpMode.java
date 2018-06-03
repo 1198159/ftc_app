@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +68,7 @@ abstract public class MasterOpMode extends LinearOpMode
     // Declare hardware devices---------------------------------------
     BNO055IMU imu;
 
-    CameraName webcamName;
+    WebcamName webcamName;
 
     // Motors----------------------
     DcMotor motorFL;
@@ -256,7 +257,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
 
         // Set up camera
-        webcamName = hardwareMap.get(CameraName.class, "webcam");
+        webcamName = hardwareMap.get(WebcamName.class, "webcam");
 
 
         // Initialize PID filters

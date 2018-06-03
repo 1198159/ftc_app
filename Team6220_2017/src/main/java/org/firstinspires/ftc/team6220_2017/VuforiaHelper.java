@@ -14,6 +14,7 @@ import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -99,11 +100,12 @@ public class VuforiaHelper
     Image image = null;
     int imageFormat;
 
-    public void setupVuforia(CameraName webcamName)
+    public void setupVuforia(WebcamName webcamName)
     {
         // Set parameters for VuforiaLocalizer (an interface supporting localization through visual
         // means) and create it
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId);
+
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.useExtendedTracking = false;
         parameters.cameraName = webcamName;
