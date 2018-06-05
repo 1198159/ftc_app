@@ -7,6 +7,18 @@ Please do not distribute this release beyond those involved in the FTC control s
 # Release Information
 **************************************************************************************
 
+Version 3.8d (built on 18.06.05)
+FTC System Testing Release
+
+Changes include:
+  * RC sounds now remoted to DS
+  * Support for USB cameras that lack serial numbers
+  * Robustness in camera shutdown logic
+  * 'Restart Robot Complete' toast now shows only when restart actually is complete
+  * Bug fixes, including DS 'white screen' issue
+  * Note: robocol change: corresponding updated DS required
+
+
 Version 3.8c (built on 18.06.01)
 FTC System Testing Release
 

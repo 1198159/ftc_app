@@ -280,8 +280,9 @@ implements <a href="../../../com/qualcomm/robotcore/eventloop/opmode/EventLoopMa
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/FtcRobotControllerService.html#setupRobot-com.qualcomm.robotcore.eventloop.EventLoop-com.qualcomm.robotcore.eventloop.EventLoop-">setupRobot</a></span>(<a href="../../../com/qualcomm/robotcore/eventloop/EventLoop.html" title="interface in com.qualcomm.robotcore.eventloop">EventLoop</a>&nbsp;eventLoop,
-          <a href="../../../com/qualcomm/robotcore/eventloop/EventLoop.html" title="interface in com.qualcomm.robotcore.eventloop">EventLoop</a>&nbsp;idleEventLoop)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/FtcRobotControllerService.html#setupRobot-com.qualcomm.robotcore.eventloop.EventLoop-com.qualcomm.robotcore.eventloop.EventLoop-java.lang.Runnable-">setupRobot</a></span>(<a href="../../../com/qualcomm/robotcore/eventloop/EventLoop.html" title="interface in com.qualcomm.robotcore.eventloop">EventLoop</a>&nbsp;eventLoop,
+          <a href="../../../com/qualcomm/robotcore/eventloop/EventLoop.html" title="interface in com.qualcomm.robotcore.eventloop">EventLoop</a>&nbsp;idleEventLoop,
+          java.lang.Runnable&nbsp;runOnComplete)</code>&nbsp;</td>
 </tr>
 <tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -529,14 +530,15 @@ implements <a href="../../../com/qualcomm/robotcore/eventloop/opmode/EventLoopMa
 <pre>public&nbsp;void&nbsp;setCallback(<a href="../../../com/qualcomm/ftccommon/UpdateUI.Callback.html" title="class in com.qualcomm.ftccommon">UpdateUI.Callback</a>&nbsp;callback)</pre>
 </li>
 </ul>
-<a name="setupRobot-com.qualcomm.robotcore.eventloop.EventLoop-com.qualcomm.robotcore.eventloop.EventLoop-">
+<a name="setupRobot-com.qualcomm.robotcore.eventloop.EventLoop-com.qualcomm.robotcore.eventloop.EventLoop-java.lang.Runnable-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>setupRobot</h4>
 <pre>public&nbsp;void&nbsp;setupRobot(<a href="../../../com/qualcomm/robotcore/eventloop/EventLoop.html" title="interface in com.qualcomm.robotcore.eventloop">EventLoop</a>&nbsp;eventLoop,
-                       <a href="../../../com/qualcomm/robotcore/eventloop/EventLoop.html" title="interface in com.qualcomm.robotcore.eventloop">EventLoop</a>&nbsp;idleEventLoop)</pre>
+                       <a href="../../../com/qualcomm/robotcore/eventloop/EventLoop.html" title="interface in com.qualcomm.robotcore.eventloop">EventLoop</a>&nbsp;idleEventLoop,
+                       java.lang.Runnable&nbsp;runOnComplete)</pre>
 </li>
 </ul>
 <a name="shutdownRobot--">

@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":9,"i3":42,"i4":10,"i5":10,"i6":9,"i7":10,"i8":9,"i9":10,"i10":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var methods = {"i0":10,"i1":10,"i2":9,"i3":9,"i4":9,"i5":9,"i6":10,"i7":10,"i8":10,"i9":9,"i10":10,"i11":10,"i12":9,"i13":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -171,11 +171,6 @@ implements java.io.Serializable</pre>
 <div class="block">Constructs a new unique, fake serial number</div>
 </td>
 </tr>
-<tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#SerialNumber-java.lang.String-">SerialNumber</a></span>(java.lang.String&nbsp;initializer)</code>
-<div class="block">Constructs a serial number using the supplied initialization string.</div>
-</td>
-</tr>
 </table>
 </li>
 </ul>
@@ -186,7 +181,7 @@ implements java.io.Serializable</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -200,52 +195,63 @@ implements java.io.Serializable</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#equals-java.lang.String-">equals</a></span>(java.lang.String&nbsp;string)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>static <a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#fromString-java.lang.String-">fromString</a></span>(java.lang.String&nbsp;serialNumberString)</code>&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#fromStringOrNull-java.lang.String-">fromStringOrNull</a></span>(java.lang.String&nbsp;serialNumberString)</code>&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>static <a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#fromVidPid-int-int-">fromVidPid</a></span>(int&nbsp;vid,
+          int&nbsp;pid)</code>
+<div class="block">Makes up a serial-number-like-thing for USB devices that internally lack a serial number.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#getDeviceDisplayName-com.qualcomm.robotcore.util.SerialNumber-">getDeviceDisplayName</a></span>(<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;serialNumber)</code>&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#getSerialNumber--">getSerialNumber</a></span>()</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">no need to use; use toString() if string form is sought</span></div>
-</div>
-</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#getString--">getString</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#hashCode--">hashCode</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#isFake--">isFake</a></span>()</code>
 <div class="block">Returns whether or not this serial number is a fake one or not</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#isLegacyFake-java.lang.String-">isLegacyFake</a></span>(java.lang.String&nbsp;initializer)</code>
 <div class="block">Returns whether the indicated serial number initialization string is one of the legacy
  fake serial number forms or not.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#isReal--">isReal</a></span>()</code>
 <div class="block">Returns whether or not this serial number is a real one or not</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#isVidPid--">isVidPid</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#noteSerialNumberType-com.qualcomm.robotcore.util.SerialNumber-java.lang.String-">noteSerialNumberType</a></span>(<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;serialNumber,
                     java.lang.String&nbsp;typeName)</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#toString--">toString</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#toUserString--">toUserString</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -289,26 +295,11 @@ implements java.io.Serializable</pre>
 <a name="SerialNumber--">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>SerialNumber</h4>
 <pre>public&nbsp;SerialNumber()</pre>
 <div class="block">Constructs a new unique, fake serial number</div>
-</li>
-</ul>
-<a name="SerialNumber-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>SerialNumber</h4>
-<pre>public&nbsp;SerialNumber(java.lang.String&nbsp;initializer)</pre>
-<div class="block">Constructs a serial number using the supplied initialization string. If the initialization
- string is a legacy form of fake serial number, a unique fake serial number is created.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>initializer</code> - the initialization string for the serial number.</dd>
-</dl>
 </li>
 </ul>
 </li>
@@ -319,6 +310,44 @@ implements java.io.Serializable</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="fromString-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>fromString</h4>
+<pre>public static&nbsp;<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;fromString(java.lang.String&nbsp;serialNumberString)</pre>
+</li>
+</ul>
+<a name="fromStringOrNull-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>fromStringOrNull</h4>
+<pre>public static&nbsp;<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;fromStringOrNull(java.lang.String&nbsp;serialNumberString)</pre>
+</li>
+</ul>
+<a name="fromVidPid-int-int-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>fromVidPid</h4>
+<pre>public static&nbsp;<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;fromVidPid(int&nbsp;vid,
+                                      int&nbsp;pid)</pre>
+<div class="block">Makes up a serial-number-like-thing for USB devices that internally lack a serial number.</div>
+</li>
+</ul>
+<a name="isVidPid--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isVidPid</h4>
+<pre>public&nbsp;boolean&nbsp;isVidPid()</pre>
+</li>
+</ul>
 <a name="isFake--">
 <!--   -->
 </a>
@@ -364,6 +393,28 @@ implements java.io.Serializable</pre>
 </dl>
 </li>
 </ul>
+<a name="getString--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getString</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getString()</pre>
+</li>
+</ul>
+<a name="toString--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toString</h4>
+<pre>public&nbsp;java.lang.String&nbsp;toString()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+</dl>
+</li>
+</ul>
 <a name="equals-java.lang.Object-">
 <!--   -->
 </a>
@@ -397,39 +448,6 @@ implements java.io.Serializable</pre>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>hashCode</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
 </dl>
-</li>
-</ul>
-<a name="toString--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>toString</h4>
-<pre>public&nbsp;java.lang.String&nbsp;toString()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
-</dl>
-</li>
-</ul>
-<a name="toUserString--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>toUserString</h4>
-<pre>public&nbsp;java.lang.String&nbsp;toUserString()</pre>
-</li>
-</ul>
-<a name="getSerialNumber--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getSerialNumber</h4>
-<pre>@Deprecated
-public&nbsp;java.lang.String&nbsp;getSerialNumber()</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">no need to use; use toString() if string form is sought</span></div>
 </li>
 </ul>
 <a name="noteSerialNumberType-com.qualcomm.robotcore.util.SerialNumber-java.lang.String-">
