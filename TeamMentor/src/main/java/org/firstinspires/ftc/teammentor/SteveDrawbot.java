@@ -1,13 +1,9 @@
 package org.firstinspires.ftc.teammentor;
 
-import android.graphics.Point;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.Func;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 /**
@@ -56,8 +52,20 @@ public class SteveDrawbot extends LinearOpMode
 
     Servo servo1, servo2;
 
-    Double len_a = 10.0; //length of bar from servo1 to servo2
-    Double len_b = 10.0;  //length of bar from servo2 to pen
+    //the hardware may not allow the servos to be perfectly aligned with where they should be,
+    //... so let's add some adjustments and limits in case we need them
+    final private double SERVO_1_OFFSET = 0.0;
+    final private double SERVO_1_MIN = 0;
+    final private double SERVO_1_MAX = 1.0;
+    final private double SERVO_2_OFFSET = 0.1;
+    final private double SERVO_2_MIN = 0.1;
+    final private double SERVO_2_MAX = 1.0;
+
+
+    //with these lengths 0,0 and 9,10 (or 10,9) are not reachable, but most coords in between are.
+    //however, some coords will result in the hardware hitting itself, which I haven't protected against yet.
+    Double len_a = 7.0; //length of bar from servo1 to servo2
+    Double len_b = 6.0;  //length of bar from servo2 to pen
     double len_c = 0.0;  //length from servo1 to pen. This will be calculated as needed for each point of the drawing.
 
     //     Let alpha be the angle of servo servo1 relative to a baseline
@@ -69,11 +77,11 @@ public class SteveDrawbot extends LinearOpMode
     double DEFAULT_ANGLE_BETA = 0.0;
 
     // some variables to turn the pen on and off
-    boolean PEN_DRAW = true;
-    boolean PEN_NOT_DRAW = false;
+    final boolean PEN_DRAW = true;
+    final boolean PEN_NOT_DRAW = false;
     boolean penState = PEN_NOT_DRAW;
 
-    boolean RUN_WITHOUT_HARDWARE = true;
+    final private boolean RUN_WITH_HARDWARE = true;
 
 
     @Override public void runOpMode() throws InterruptedException
@@ -84,13 +92,7 @@ public class SteveDrawbot extends LinearOpMode
         // Wait until start button has been pressed
         waitForStart();
 
-        moveTo(3, 3);
-        moveTo(4, 4);
-        moveTo(5, 5);
-        moveTo(6, 6);
-
-
-
+        drawSquare();
 
 
         // Main loop
@@ -104,9 +106,43 @@ public class SteveDrawbot extends LinearOpMode
         }
     }
 
+    private void moveWithWait(double x, double y)
+    {
+        moveTo(x, y);
+        waitMS(5000);
+    }
+
+
+    private void testPatternOne() {
+        moveWithWait(3, 3);
+        moveWithWait(4, 4);
+        moveWithWait(5, 5);
+        moveWithWait(6, 6);
+    }
+
+    private void drawSquare()
+    {
+        moveWithWait(4, 4);
+        moveWithWait(4, 7);
+        moveWithWait(7, 7);
+        moveWithWait(7, 4);
+        moveWithWait(4, 4);
+    }
+
+    private void testLimits()
+    {
+        //This method is best run with RUN_WITH_HARDWARE = false.
+        //We're counting on error handling in other methods to tell us what coords are out of range
+        //for the given magnitudes of len_a and len_b
+        for (int x = 0; x<11; x++)
+            for (int y=0; y<11; y++)
+                moveTo(x,y);
+    }
+
+
     private void initializeServos()
     {
-        if (!RUN_WITHOUT_HARDWARE) {
+        if (RUN_WITH_HARDWARE) {
             servo1 = hardwareMap.servo.get("servo1");
             servo2 = hardwareMap.servo.get("servo2");
         }
@@ -123,18 +159,43 @@ public class SteveDrawbot extends LinearOpMode
         initializeServos();
 
         // Set up telemetry data
-        //configureDashboard();
+        telemetry.log().setCapacity(400);
     }
 
 
+    private boolean validServo1Position(double pos)
+    {
+        if ( (pos >= SERVO_1_MIN) && (pos <=SERVO_1_MAX)) return true;
+        else return false;
+    }
+
+    private boolean validServo2Position(double pos)
+    {
+        if ( (pos >= SERVO_2_MIN) && (pos <=SERVO_2_MAX)) return true;
+        else return false;
+    }
+
     private void updateServoPositions()
     {
-        if (!RUN_WITHOUT_HARDWARE) {
-            servo1.setPosition(angleAlpha);
-            servo2.setPosition(angleBeta);
+        //adjust for hardware orientation
+        double s1AdjustedPosition = (1 - angleAlpha) + SERVO_1_OFFSET;
+        double s2AdjustedPosition = angleBeta + SERVO_2_OFFSET;
+
+        if (validServo1Position(s1AdjustedPosition)  && validServo2Position(s2AdjustedPosition) )
+        {
+            if (RUN_WITH_HARDWARE)
+            {
+                servo1.setPosition(s1AdjustedPosition);
+                servo2.setPosition(s2AdjustedPosition);
+            }
+            telemetry.log().add("alpha " + formatNumber(angleAlpha) + ", beta " + formatNumber(angleBeta));
+        }
+        else
+        {
+            telemetry.log().add("Out of Range: " + formatNumber(s1AdjustedPosition) + ", " + formatNumber(s2AdjustedPosition));
+            telemetry.update();
         }
 
-        telemetry.log().add("alpha " + angleAlpha + ", beta " + angleBeta);
     }
 
     //put the pen in a state in which it does not draw lines
@@ -203,34 +264,18 @@ public class SteveDrawbot extends LinearOpMode
         updateServoPositions();
     }
 
-
-
-    private void configureDashboard()
+    void waitMS(double millisecondsToWait)
     {
-        /*
-        telemetry.addLine()
-                .addData("Power | 1: ", new Func<String>() {
-                    @Override public String value() {
-                        return formatNumber(motor1.getPower());
-                    }
-                })
-                .addData("2: ", new Func<String>() {
-                    @Override public String value() {
-                        return formatNumber(motor2.getPower());
-                    }
-                })
-                .addData("3: ", new Func<String>() {
-                    @Override public String value() {
-                        return formatNumber(motor3.getPower());
-                    }
-                })
-                .addData("4: ", new Func<String>() {
-                    @Override public String value() {
-                        return formatNumber(motor4.getPower());
-                    }
-                });
-                */
+        ElapsedTime timer = new ElapsedTime();
+
+        while(opModeIsActive() && (timer.milliseconds() < millisecondsToWait))
+        {
+            telemetry.addData("Countdown (ms):", millisecondsToWait - timer.milliseconds());
+            telemetry.update();
+            idle();
+        }
     }
+
 
     private String formatNumber(double d)
     {
