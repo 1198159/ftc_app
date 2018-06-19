@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6};
+var methods = {"i0":6,"i1":6,"i2":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -128,11 +128,17 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html#addTrackable-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-">addTrackable</a></span>(<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation">VuforiaTrackable</a>&nbsp;trackable)</code>
+<div class="block">Adds a trackable on which this <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation"><code>VuforiaTrackable.Listener</code></a> is listening.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html#onNotTracked--">onNotTracked</a></span>()</code>
 <div class="block">Called by the system to inform the trackable that it is no longer visible.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html#onTracked-TrackableResult-CameraName-Camera-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-">onTracked</a></span>(TrackableResult&nbsp;trackableResult,
          CameraName&nbsp;cameraName,
@@ -179,11 +185,23 @@ var activeTableTab = "activeTableTab";
 <a name="onNotTracked--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>onNotTracked</h4>
 <pre>void&nbsp;onNotTracked()</pre>
 <div class="block">Called by the system to inform the trackable that it is no longer visible.</div>
+</li>
+</ul>
+<a name="addTrackable-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>addTrackable</h4>
+<pre>void&nbsp;addTrackable(<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation">VuforiaTrackable</a>&nbsp;trackable)</pre>
+<div class="block">Adds a trackable on which this <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation"><code>VuforiaTrackable.Listener</code></a> is listening. May not be
+ called once tracking has begun. If the <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation"><code>VuforiaTrackable.Listener</code></a> is already listening
+ to this trackable, then the call has no effect.</div>
 </li>
 </ul>
 </li>

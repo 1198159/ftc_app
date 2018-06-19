@@ -29,11 +29,17 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
+import android.graphics.Bitmap;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
+import com.qualcomm.robotcore.util.ThreadPool;
+import com.vuforia.Frame;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.function.Consumer;
+import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -45,9 +51,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This 2016-2017 OpMode illustrates the basics of using the Vuforia localizer to determine
@@ -89,6 +100,12 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
     OpenGLMatrix lastLocation = null;
 
     /**
+     * @see #captureFrameToFile()
+     */
+    int captureCounter = 0;
+    File captureDirectory = AppUtil.ROBOT_DATA_DIR;
+
+    /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
      */
@@ -105,7 +122,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
         /*
          * Retrieve the camera we are to use.
          */
-        webcamName = hardwareMap.get(WebcamName.class, "webcam");
+        webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
@@ -136,7 +153,22 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
          * We also indicate which camera on the RC we wish to use.
          */
         parameters.cameraName = webcamName;
-        this.vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        /**
+         * Instantiate the Vuforia engine
+         */
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        /**
+         * Because this opmode processes frames in order to write them to a file, we tell Vuforia
+         * that we want to ensure that certain frame formats are available in the {@link Frame}s we
+         * see.
+         */
+        vuforia.enableConvertFrameToBitmap();
+
+        /** @see #captureFrameToFile() */
+        AppUtil.getInstance().ensureDirectoryExists(captureDirectory);
+
 
         /**
          * Load the data sets that for the trackable objects we wish to track. These particular data
@@ -146,7 +178,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
          * example "StonesAndChips", datasets can be found in in this project in the
          * documentation directory.
          */
-        VuforiaTrackables stonesAndChips = this.vuforia.loadTrackablesFromAsset("StonesAndChips");
+        VuforiaTrackables stonesAndChips = vuforia.loadTrackablesFromAsset("StonesAndChips");
         VuforiaTrackable redTarget = stonesAndChips.get(0);
         redTarget.setName("RedTarget");  // Stones
 
@@ -233,7 +265,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
                         /* First, in the fixed (field) coordinate system, we rotate 90deg in X, then 90 in Z */
                         AxesReference.EXTRINSIC, AxesOrder.XZX,
                         AngleUnit.DEGREES, 90, 90, 0));
-        redTarget.setLocation(redTargetLocationOnField);
+        redTarget.setLocationFtcFieldFromTarget(redTargetLocationOnField);
         RobotLog.ii(TAG, "Red Target=%s", format(redTargetLocationOnField));
 
        /*
@@ -249,7 +281,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
                         /* First, in the fixed (field) coordinate system, we rotate 90deg in X */
                         AxesReference.EXTRINSIC, AxesOrder.XZX,
                         AngleUnit.DEGREES, 90, 0, 0));
-        blueTarget.setLocation(blueTargetLocationOnField);
+        blueTarget.setLocationFtcFieldFromTarget(blueTargetLocationOnField);
         RobotLog.ii(TAG, "Blue Target=%s", format(blueTargetLocationOnField));
 
         /**
@@ -311,25 +343,25 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
          * plane) is then CCW, as one would normally expect from the usual classic 2D geometry.
          */
 
-        OpenGLMatrix cameraLocationOnRobot = OpenGLMatrix
+        OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(mmBotWidth/2,0,0)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.XZY,
                         AngleUnit.DEGREES, 90, 90, 0));
-        RobotLog.ii(TAG, "camera=%s", format(cameraLocationOnRobot));
+        RobotLog.ii(TAG, "camera=%s", format(robotFromCamera));
 
         /**
-         * Let the trackable listeners we care about know where the phone is. We know that each
+         * Let the trackable listeners we care about know where the camera is. We know that each
          * listener is a {@link VuforiaTrackableDefaultListener} and can so safely cast because
          * we have not ourselves installed a listener of a different type.
          */
-        ((VuforiaTrackableDefaultListener)redTarget.getListener()).setCameraLocationOnRobot(parameters.cameraName, cameraLocationOnRobot);
-        ((VuforiaTrackableDefaultListener)blueTarget.getListener()).setCameraLocationOnRobot(parameters.cameraName, cameraLocationOnRobot);
+        ((VuforiaTrackableDefaultListener)redTarget.getListener()).setCameraLocationOnRobot(parameters.cameraName, robotFromCamera);
+        ((VuforiaTrackableDefaultListener)blueTarget.getListener()).setCameraLocationOnRobot(parameters.cameraName, robotFromCamera);
 
         /**
          * A brief tutorial: here's how all the math is going to work:
          *
-         * C = cameraLocationOnRobot    maps   camera coords -> robot coords
+         * C = robotFromCamera          maps   camera coords -> robot coords
          * P = tracker.getPose()        maps   image target coords -> camera coords
          * L = redTargetLocationOnField maps   image target coords -> field coords
          *
@@ -353,7 +385,13 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
         /** Start tracking the data sets we care about. */
         stonesAndChips.activate();
 
+        boolean buttonPressed = false;
         while (opModeIsActive()) {
+
+            if (gamepad1.a && !buttonPressed) {
+                captureFrameToFile();
+                }
+            buttonPressed = gamepad1.a;
 
             for (VuforiaTrackable trackable : allTrackables) {
                 /**
@@ -387,5 +425,37 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
      */
     String format(OpenGLMatrix transformationMatrix) {
         return transformationMatrix.formatAsTransform();
+    }
+
+    /**
+     * Sample one frame from the Vuforia stream and write it to a .PNG image file on the robot
+     * controller in the /sdcard/FIRST/data directory. The images can be downloaded using Android
+     * Studio's Device File Explorer, ADB, or the Media Transfer Protocol (MTP) integration into
+     * Windows Explorer, among other means. The images can be useful during robot design and calibration
+     * in order to get a sense of what the camera is actually seeing and so assist in camera
+     * aiming and alignment.
+     */
+    void captureFrameToFile() {
+        vuforia.getFrameOnce(Continuation.create(ThreadPool.getDefault(), new Consumer<Frame>()
+            {
+            @Override public void accept(Frame frame)
+                {
+                Bitmap bitmap = vuforia.convertFrameToBitmap(frame);
+                if (bitmap != null) {
+                    File file = new File(captureDirectory, String.format(Locale.getDefault(), "VuforiaFrame-%d.png", captureCounter++));
+                    try {
+                        FileOutputStream outputStream = new FileOutputStream(file);
+                        try {
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                        } finally {
+                            outputStream.close();
+                            telemetry.log().add("captured %s", file.getName());
+                        }
+                    } catch (IOException e) {
+                        RobotLog.ee(TAG, e, "exception in captureFrameToFile()");
+                    }
+                }
+            }
+        }));
     }
 }

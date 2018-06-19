@@ -575,11 +575,14 @@ public class FtcRobotControllerActivity extends Activity
     if (controllerService != null) {
       callback.networkConnectionUpdate(controllerService.getNetworkConnectionStatus());
       callback.updateRobotStatus(controllerService.getRobotStatus());
-      requestRobotSetup(new Runnable() {
-        @Override public void run() {
-          showRestartRobotCompleteToast(R.string.toastRobotSetupComplete);
-        }
-      });
+      // Only show this first-time toast on headless systems: what we have now on non-headless suffices
+      requestRobotSetup(LynxConstants.isRevControlHub()
+        ? new Runnable() {
+            @Override public void run() {
+              showRestartRobotCompleteToast(R.string.toastRobotSetupComplete);
+            }
+          }
+        : null);
     }
   }
 

@@ -7,6 +7,15 @@ Please do not distribute this release beyond those involved in the FTC control s
 # Release Information
 **************************************************************************************
 
+Version 3.8e (built on 18.06.19)
+FTC System Testing Release
+
+Changes include
+  * significant improvements to Webcam work (robot configurations will need to be re-created)
+  * various fixes and improvements
+  * Note: robocol change: corresponding updated DS required
+
+
 Version 3.8d (built on 18.06.05)
 FTC System Testing Release
 

@@ -202,6 +202,18 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#maxWebcamAspectRatio">maxWebcamAspectRatio</a></span></code>
+<div class="block">Controls the aspect ratios used with webcams.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#minWebcamAspectRatio">minWebcamAspectRatio</a></span></code>
+<div class="block">Controls the aspect ratios used with webcams.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#secondsUsbPermissionTimeout">secondsUsbPermissionTimeout</a></span></code>
 <div class="block">How long to wait for USB permissions when connecting to a webcam.</div>
@@ -220,8 +232,8 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#webcamCalibrationsResource">webcamCalibrationsResource</a></span></code>&nbsp;</td>
+<td class="colFirst"><code>int[]</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#webcamCalibrationResources">webcamCalibrationResources</a></span></code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -448,13 +460,45 @@ extends java.lang.Object</pre>
  the contextually current activity will be used.</div>
 </li>
 </ul>
-<a name="webcamCalibrationsResource">
+<a name="webcamCalibrationResources">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>webcamCalibrationsResource</h4>
-<pre>public&nbsp;int webcamCalibrationsResource</pre>
+<h4>webcamCalibrationResources</h4>
+<pre>public&nbsp;int[] webcamCalibrationResources</pre>
+</li>
+</ul>
+<a name="maxWebcamAspectRatio">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>maxWebcamAspectRatio</h4>
+<pre>public&nbsp;double maxWebcamAspectRatio</pre>
+<div class="block">Controls the aspect ratios used with webcams. Webcams whose aspect ratio (defined as
+ width / height) is larger than this value will not be used unless no other viable options exist.
+
+ Example values of some utility include 1920.0 / 1080.0, 640.0 / 480.0, and the like.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#minWebcamAspectRatio"><code>minWebcamAspectRatio</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="minWebcamAspectRatio">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>minWebcamAspectRatio</h4>
+<pre>public&nbsp;double minWebcamAspectRatio</pre>
+<div class="block">Controls the aspect ratios used with webcams. Webcams whose aspect ratio (defined as
+ width / height) is smaller than this value will not be used unless no other viable options exist.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#maxWebcamAspectRatio"><code>maxWebcamAspectRatio</code></a></dd>
+</dl>
 </li>
 </ul>
 <a name="secondsUsbPermissionTimeout">

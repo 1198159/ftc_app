@@ -748,23 +748,13 @@ implements java.lang.Iterable&lt;<a href="../../../../com/qualcomm/robotcore/har
 <pre>public&nbsp;&lt;T&gt;&nbsp;T&nbsp;tryGet(java.lang.Class&lt;? extends T&gt;&nbsp;classOrInterface,
                     java.lang.String&nbsp;deviceName)</pre>
 <div class="block">Retrieves the (first) device with the indicated name which is also an instance of the
- indicated class or interface. If no such device is found, null is returned. Example:
-
- <pre>
-    DcMotor motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
-    ColorSensor colorSensor = hardwareMap.get(ColorSensor.class, "myColorSensor");
- </pre></div>
+ indicated class or interface. If no such device is found, null is returned. 
+ 
+ This is not commonly used; <a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#get-java.lang.Class-java.lang.String-"><code>get(java.lang.Class&lt;? extends T&gt;, java.lang.String)</code></a> is the usual method for retreiving items from 
+ the map.</div>
 <dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>classOrInterface</code> - the class or interface indicating the type of the device object to be retrieved</dd>
-<dd><code>deviceName</code> - the name of the device object to be retrieved</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a device with the indicated name which is an instance of the indicated class or interface</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#get-java.lang.String-"><code>get(String)</code></a>, 
-<a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#getAll-java.lang.Class-"><code>getAll(Class)</code></a>, 
-<a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.DeviceMapping.html#get-java.lang.String-"><code>HardwareMap.DeviceMapping.get(String)</code></a>, 
-<a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#get-java.lang.Class-java.lang.String-"><code>get(Class, String)</code></a></dd>
+<dd><a href="../../../../com/qualcomm/robotcore/hardware/HardwareMap.html#get-java.lang.Class-java.lang.String-"><code>get(Class, String)</code></a></dd>
 </dl>
 </li>
 </ul>

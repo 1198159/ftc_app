@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":42,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":42,"i7":10,"i8":42,"i9":10,"i10":42,"i11":10,"i12":42,"i13":42,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":42};
+var methods = {"i0":10,"i1":42,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":42,"i9":10,"i10":42,"i11":10,"i12":42,"i13":10,"i14":42,"i15":42,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":42};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -259,7 +259,13 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#VuforiaTrackableDefaultListener-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-">VuforiaTrackableDefaultListener</a></span>(<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation">VuforiaTrackable</a>&nbsp;trackable)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#VuforiaTrackableDefaultListener--">VuforiaTrackableDefaultListener</a></span>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#VuforiaTrackableDefaultListener-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-">VuforiaTrackableDefaultListener</a></span>(<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation">VuforiaTrackable</a>&nbsp;trackable)</code>
+<div class="block">If a null <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation"><code>VuforiaTrackable</code></a> is provided, then <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#addTrackable-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-"><code>addTrackable(VuforiaTrackable)</code></a>
+ must be called later, before tracking actually begins.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -277,6 +283,12 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#addTrackable-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-">addTrackable</a></span>(<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation">VuforiaTrackable</a>&nbsp;trackable)</code>
+<div class="block">Adds a trackable on which this <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation"><code>VuforiaTrackable.Listener</code></a> is listening.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.CameraDirection</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getCameraDirection--">getCameraDirection</a></span>()</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -284,38 +296,42 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
 </div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getCameraLocationOnRobot-CameraName-">getCameraLocationOnRobot</a></span>(CameraName&nbsp;cameraName)</code>
 <div class="block">Returns information previously set in <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#setCameraLocationOnRobot-CameraName-org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix-"><code>setCameraLocationOnRobot(CameraName, OpenGLMatrix)</code></a></div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>CameraName</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getCameraName--">getCameraName</a></span>()</code>
 <div class="block">Returns the name of the camera most recently tracked, or null if tracking has never occurred.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>protected <a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getFtcCameraFromRobot-CameraName-">getFtcCameraFromRobot</a></span>(CameraName&nbsp;cameraName)</code>&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getFtcCameraFromTarget--">getFtcCameraFromTarget</a></span>()</code>
 <div class="block">Returns the pose of the trackable if it is currently visible.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getFtcFieldFromRobot--">getFtcFieldFromRobot</a></span>()</code>
 <div class="block">Returns the <a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices"><code>OpenGLMatrix</code></a> transform that represents the location of the robot
  on in the FTC Field Coordinate System, or null if that cannot be computed.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getLastTrackedPoseVuforiaCamera--">getLastTrackedPoseVuforiaCamera</a></span>()</code>
 <div class="block">Returns the pose associated with the last known tracked location of this trackable, if any.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getLastTrackedRawPose--">getLastTrackedRawPose</a></span>()</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -323,13 +339,13 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
 </div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>protected <a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPhoneFromVuforiaCamera-org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection-">getPhoneFromVuforiaCamera</a></span>(<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.CameraDirection</a>&nbsp;direction)</code>
 <div class="block">A synonym for <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPoseCorrectionMatrix-org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection-"><code>getPoseCorrectionMatrix(org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection)</code></a>.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPhoneLocationOnRobot--">getPhoneLocationOnRobot</a></span>()</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -337,29 +353,29 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
 </div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPose--">getPose</a></span>()</code>
 <div class="block">A synonym for <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPosePhone--"><code>getPosePhone()</code></a>, the latter being more descriptive of the
  coordinate system of the value returned.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPoseCorrectionMatrix-org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection-">getPoseCorrectionMatrix</a></span>(<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.CameraDirection</a>&nbsp;direction)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">These phone-based matrices are no longer of any particular relevance, as the 
+<div class="block"><span class="deprecationComment">These phone-based matrices are no longer of much relevance, as the
              correct values, when of interest, are fixed and known.</span></div>
 </div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPosePhone--">getPosePhone</a></span>()</code>
 <div class="block">Returns the pose of the trackable if it is currently visible.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getRawPose--">getRawPose</a></span>()</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -367,7 +383,7 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
 </div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getRawUpdatedPose--">getRawUpdatedPose</a></span>()</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -375,52 +391,52 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
 </div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getRobotLocation--">getRobotLocation</a></span>()</code>
 <div class="block">Synonym for <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getFtcFieldFromRobot--"><code>getFtcFieldFromRobot()</code></a></div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getUpdatedRobotLocation--">getUpdatedRobotLocation</a></span>()</code>
 <div class="block">Returns the location of the robot, but only if a new location has been detected since
  the last call to <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getUpdatedRobotLocation--"><code>getUpdatedRobotLocation()</code></a>.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getUpdatedVuforiaCameraFromTarget--">getUpdatedVuforiaCameraFromTarget</a></span>()</code>
 <div class="block">Returns the raw pose of the trackable, but only if a new pose is available since the last call
  to <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getUpdatedVuforiaCameraFromTarget--"><code>getUpdatedVuforiaCameraFromTarget()</code></a>.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getVuforiaCameraFromTarget--">getVuforiaCameraFromTarget</a></span>()</code>
 <div class="block">Returns the raw pose of the trackable as reported by Vuforia.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuMarkInstanceId.html" title="class in org.firstinspires.ftc.robotcore.external.navigation">VuMarkInstanceId</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getVuMarkInstanceId--">getVuMarkInstanceId</a></span>()</code>
 <div class="block">Returns the instance id of the currently visible VuMark associated with this
  VuMark template, if any presently exists.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#isVisible--">isVisible</a></span>()</code>
 <div class="block">Answers whether the associated trackable is currently visible or not</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#onNotTracked--">onNotTracked</a></span>()</code>
 <div class="block">Called by the system to inform the trackable that it is no longer visible.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#onTracked-TrackableResult-CameraName-Camera-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-">onTracked</a></span>(TrackableResult&nbsp;trackableResult,
          CameraName&nbsp;cameraName,
@@ -429,7 +445,7 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
 <div class="block"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#onTracked-TrackableResult-CameraName-Camera-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-"><code>onTracked(TrackableResult, CameraName, Camera, org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable)</code></a> is called by the system to notify the listener that its associated trackable is currently visible.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#setCameraLocationOnRobot-CameraName-org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix-">setCameraLocationOnRobot</a></span>(CameraName&nbsp;cameraName,
                         <a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a>&nbsp;robotFromFtcCamera)</code>
@@ -437,7 +453,7 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
  on the robot.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#setPhoneInformation-org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix-org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection-">setPhoneInformation</a></span>(<a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a>&nbsp;robotFromPhone,
                    <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.CameraDirection</a>&nbsp;cameraDirection)</code>
@@ -445,7 +461,7 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
  the camera being used.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#setPoseCorrectionMatrix-org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection-org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix-">setPoseCorrectionMatrix</a></span>(<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.CameraDirection</a>&nbsp;direction,
                        <a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a>&nbsp;matrix)</code>
@@ -502,7 +518,7 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
 <ul class="blockList">
 <li class="blockList">
 <h4>trackable</h4>
-<pre>protected final&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation">VuforiaTrackable</a> trackable</pre>
+<pre>protected&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation">VuforiaTrackable</a> trackable</pre>
 </li>
 </ul>
 <a name="newPoseAvailable">
@@ -675,6 +691,15 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
+<a name="VuforiaTrackableDefaultListener--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>VuforiaTrackableDefaultListener</h4>
+<pre>public&nbsp;VuforiaTrackableDefaultListener()</pre>
+</li>
+</ul>
 <a name="VuforiaTrackableDefaultListener-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-">
 <!--   -->
 </a>
@@ -682,6 +707,8 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
 <li class="blockList">
 <h4>VuforiaTrackableDefaultListener</h4>
 <pre>public&nbsp;VuforiaTrackableDefaultListener(<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation">VuforiaTrackable</a>&nbsp;trackable)</pre>
+<div class="block">If a null <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation"><code>VuforiaTrackable</code></a> is provided, then <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#addTrackable-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-"><code>addTrackable(VuforiaTrackable)</code></a>
+ must be called later, before tracking actually begins.</div>
 </li>
 </ul>
 </li>
@@ -702,6 +729,7 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
                                 <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.CameraDirection</a>&nbsp;cameraDirection)</pre>
 <div class="block">Informs the listener of the location of the phone on the robot and the identity of
  the camera being used. This information is needed in order to compute the robot location.
+
  Note that this is only applicable and useful when using cameras builtin to a phone.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -723,7 +751,8 @@ implements <a href="../../../../../../org/firstinspires/ftc/robotcore/external/n
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>cameraName</code> - the name of the camera in question</dd>
-<dd><code>robotFromFtcCamera</code> - the location of that camera</dd>
+<dd><code>robotFromFtcCamera</code> - the location of that camera; it transforms FTC camera coordiantes
+                           to robot coordinates</dd>
 </dl>
 </li>
 </ul>
@@ -756,8 +785,17 @@ public&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>cameraName</code> - the camera whose location is sought</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the location previously set, or null if there is no such location</dd>
+<dd>the location previously set, or the identity matrix if there is no such location</dd>
 </dl>
+</li>
+</ul>
+<a name="getFtcCameraFromRobot-CameraName-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getFtcCameraFromRobot</h4>
+<pre>protected&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a>&nbsp;getFtcCameraFromRobot(CameraName&nbsp;cameraName)</pre>
 </li>
 </ul>
 <a name="getCameraDirection--">
@@ -813,7 +851,8 @@ public&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/
 <dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getUpdatedRobotLocation--"><code>getUpdatedRobotLocation()</code></a>, 
 <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPosePhone--"><code>getPosePhone()</code></a>, 
 <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#setPhoneInformation-org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix-org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection-"><code>setPhoneInformation(OpenGLMatrix, VuforiaLocalizer.CameraDirection)</code></a>, 
-<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html#setLocation-org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix-"><code>VuforiaTrackable.setLocation(OpenGLMatrix)</code></a></dd>
+<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html#setLocation-org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix-"><code>VuforiaTrackable.setLocation(OpenGLMatrix)</code></a>, 
+<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getRobotLocation--"><code>getRobotLocation()</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -835,7 +874,7 @@ public&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/
 <h4>getPoseCorrectionMatrix</h4>
 <pre>@Deprecated
 public&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/matrices/OpenGLMatrix.html" title="class in org.firstinspires.ftc.robotcore.external.matrices">OpenGLMatrix</a>&nbsp;getPoseCorrectionMatrix(<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.CameraDirection</a>&nbsp;direction)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">These phone-based matrices are no longer of any particular relevance, as the 
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">These phone-based matrices are no longer of much relevance, as the
              correct values, when of interest, are fixed and known.</span></div>
 <div class="block">The pose correction matrices correct for the different coordinate systems used
  in Vuforia and our phone coordinate system here.</div>
@@ -908,7 +947,8 @@ public&nbsp;void&nbsp;setPoseCorrectionMatrix(<a href="../../../../../../org/fir
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPhoneFromVuforiaCamera-org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection-"><code>getPhoneFromVuforiaCamera(VuforiaLocalizer.CameraDirection)</code></a>, 
 <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getVuforiaCameraFromTarget--"><code>getVuforiaCameraFromTarget()</code></a>, 
-<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#isVisible--"><code>isVisible()</code></a></dd>
+<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#isVisible--"><code>isVisible()</code></a>, 
+<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPose--"><code>getPose()</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -934,6 +974,10 @@ public&nbsp;void&nbsp;setPoseCorrectionMatrix(<a href="../../../../../../org/fir
 <div class="block">Returns the pose of the trackable if it is currently visible. If it is not currently
  visible, null is returned. The pose of the trackable is the location of the trackable
  in the FTC Camera Coordinate System.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPosePhone--"><code>getPosePhone()</code></a></dd>
+</dl>
 </li>
 </ul>
 <a name="getVuforiaCameraFromTarget--">
@@ -950,7 +994,8 @@ public&nbsp;void&nbsp;setPoseCorrectionMatrix(<a href="../../../../../../org/fir
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the raw pose of the trackable as reported by Vuforia</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPhoneFromVuforiaCamera-org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection-"><code>getPhoneFromVuforiaCamera(VuforiaLocalizer.CameraDirection)</code></a></dd>
+<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPhoneFromVuforiaCamera-org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection-"><code>getPhoneFromVuforiaCamera(VuforiaLocalizer.CameraDirection)</code></a>, 
+<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getRawPose--"><code>getRawPose()</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -978,7 +1023,8 @@ public&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the raw pose of the trackable</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getVuforiaCameraFromTarget--"><code>getVuforiaCameraFromTarget()</code></a></dd>
+<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getVuforiaCameraFromTarget--"><code>getVuforiaCameraFromTarget()</code></a>, 
+<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getRawUpdatedPose--"><code>getRawUpdatedPose()</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -1005,7 +1051,7 @@ public&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>whether the associated trackable is currently visible or not</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getPosePhone--"><code>getPosePhone()</code></a></dd>
+<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.html#getVuforiaCameraFromTarget--"><code>getVuforiaCameraFromTarget()</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -1079,7 +1125,7 @@ public&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/
 <a name="onNotTracked--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>onNotTracked</h4>
 <pre>public&nbsp;void&nbsp;onNotTracked()</pre>
@@ -1087,6 +1133,23 @@ public&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html#onNotTracked--">onNotTracked</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation">VuforiaTrackable.Listener</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="addTrackable-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>addTrackable</h4>
+<pre>public&nbsp;void&nbsp;addTrackable(<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation">VuforiaTrackable</a>&nbsp;trackable)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html#addTrackable-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-">VuforiaTrackable.Listener</a></code></span></div>
+<div class="block">Adds a trackable on which this <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation"><code>VuforiaTrackable.Listener</code></a> is listening. May not be
+ called once tracking has begun. If the <a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation"><code>VuforiaTrackable.Listener</code></a> is already listening
+ to this trackable, then the call has no effect.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html#addTrackable-org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable-">addTrackable</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackable.Listener.html" title="interface in org.firstinspires.ftc.robotcore.external.navigation">VuforiaTrackable.Listener</a></code></dd>
 </dl>
 </li>
 </ul>
