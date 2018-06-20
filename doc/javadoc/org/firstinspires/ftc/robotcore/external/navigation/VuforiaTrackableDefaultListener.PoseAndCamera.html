@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10};
+var methods = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -136,7 +136,7 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.PoseAndCamera.html#cameraName">cameraName</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>Matrix34F</code></td>
+<td class="colFirst"><code>VuforiaPoseMatrix</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.PoseAndCamera.html#pose">pose</a></span></code>&nbsp;</td>
 </tr>
 </table>
@@ -154,7 +154,7 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.PoseAndCamera.html#PoseAndCamera-Matrix34F-CameraName-">PoseAndCamera</a></span>(Matrix34F&nbsp;pose,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.PoseAndCamera.html#PoseAndCamera-VuforiaPoseMatrix-CameraName-">PoseAndCamera</a></span>(VuforiaPoseMatrix&nbsp;pose,
              CameraName&nbsp;cameraName)</code>&nbsp;</td>
 </tr>
 </table>
@@ -176,13 +176,17 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.CameraDirection</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.PoseAndCamera.html#getCameraDirection--">getCameraDirection</a></span>()</code>&nbsp;</td>
 </tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaTrackableDefaultListener.PoseAndCamera.html#toString--">toString</a></span>()</code>&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, wait, wait, wait</code></li>
 </ul>
 </li>
 </ul>
@@ -204,7 +208,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>pose</h4>
-<pre>public final&nbsp;Matrix34F pose</pre>
+<pre>public final&nbsp;VuforiaPoseMatrix pose</pre>
 </li>
 </ul>
 <a name="cameraName">
@@ -224,13 +228,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="PoseAndCamera-Matrix34F-CameraName-">
+<a name="PoseAndCamera-VuforiaPoseMatrix-CameraName-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>PoseAndCamera</h4>
-<pre>public&nbsp;PoseAndCamera(Matrix34F&nbsp;pose,
+<pre>public&nbsp;PoseAndCamera(VuforiaPoseMatrix&nbsp;pose,
                      CameraName&nbsp;cameraName)</pre>
 </li>
 </ul>
@@ -245,10 +249,23 @@ extends java.lang.Object</pre>
 <a name="getCameraDirection--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getCameraDirection</h4>
 <pre>public&nbsp;<a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.CameraDirection.html" title="enum in org.firstinspires.ftc.robotcore.external.navigation">VuforiaLocalizer.CameraDirection</a>&nbsp;getCameraDirection()</pre>
+</li>
+</ul>
+<a name="toString--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>toString</h4>
+<pre>public&nbsp;java.lang.String&nbsp;toString()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+</dl>
 </li>
 </ul>
 </li>

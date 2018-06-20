@@ -48,6 +48,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -97,9 +99,7 @@ import org.firstinspires.ftc.ftccommon.external.SoundPlayingRobotMonitor;
 import org.firstinspires.ftc.ftccommon.internal.FtcRobotControllerWatchdogService;
 import org.firstinspires.ftc.ftccommon.internal.ProgramAndManageActivity;
 import org.firstinspires.ftc.robotcore.internal.hardware.DragonboardLynxDragonboardIsPresentPin;
-import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManager;
 import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManagerFactory;
-import org.firstinspires.ftc.robotcore.internal.network.WifiDirectDeviceNameManager;
 import org.firstinspires.ftc.robotcore.internal.network.PreferenceRemoterRC;
 import org.firstinspires.ftc.robotcore.internal.network.StartResult;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
@@ -575,11 +575,18 @@ public class FtcRobotControllerActivity extends Activity
     if (controllerService != null) {
       callback.networkConnectionUpdate(controllerService.getNetworkConnectionStatus());
       callback.updateRobotStatus(controllerService.getRobotStatus());
-      requestRobotSetup();
+      // Only show this first-time toast on headless systems: what we have now on non-headless suffices
+      requestRobotSetup(LynxConstants.isRevControlHub()
+        ? new Runnable() {
+            @Override public void run() {
+              showRestartRobotCompleteToast(R.string.toastRobotSetupComplete);
+            }
+          }
+        : null);
     }
   }
 
-  private void requestRobotSetup() {
+  private void requestRobotSetup(@Nullable Runnable runOnComplete) {
     if (controllerService == null) return;
 
     HardwareFactory factory;
@@ -599,7 +606,7 @@ public class FtcRobotControllerActivity extends Activity
     FtcEventLoopIdle idleLoop = new FtcEventLoopIdle(factory, userOpModeRegister, callback, this, programmingModeController);
 
     controllerService.setCallback(callback);
-    controllerService.setupRobot(eventLoop, idleLoop);
+    controllerService.setupRobot(eventLoop, idleLoop, runOnComplete);
 
     passReceivedUsbAttachmentsToEventLoop();
   }
@@ -616,9 +623,15 @@ public class FtcRobotControllerActivity extends Activity
     AppUtil.getInstance().showToast(UILocation.BOTH, AppUtil.getDefContext().getString(R.string.toastRestartingRobot));
     //
     shutdownRobot();
-    requestRobotSetup();
-    //
-    AppUtil.getInstance().showToast(UILocation.BOTH, AppUtil.getDefContext().getString(R.string.toastRestartRobotComplete));
+    requestRobotSetup(new Runnable() {
+      @Override public void run() {
+        showRestartRobotCompleteToast(R.string.toastRestartRobotComplete);
+        }
+      });
+  }
+
+  private void showRestartRobotCompleteToast(@StringRes int resid) {
+    AppUtil.getInstance().showToast(UILocation.BOTH, AppUtil.getDefContext().getString(resid));
   }
 
   protected void hittingMenuButtonBrightensScreen() {
