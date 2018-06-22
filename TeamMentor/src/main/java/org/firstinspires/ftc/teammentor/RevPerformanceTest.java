@@ -19,7 +19,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
                     0.0038ms     7.8806ms      0.0045ms
                     0.0039ms     1.6442ms      0.0043ms
 
-   Rev Control Hub
+   Rev Control Hub  0.0032ms     1.0332ms     0.0035ms
+   (with moto ds)   0.0032ms     1.5031ms     0.0035ms
+                    0.0032ms     1.7779ms     0.0034ms
 
 
 

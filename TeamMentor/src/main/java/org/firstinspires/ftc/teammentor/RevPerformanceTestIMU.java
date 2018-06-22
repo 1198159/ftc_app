@@ -1,38 +1,36 @@
 package org.firstinspires.ftc.teammentor;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Rev Perf Motor", group = "Autonomous")
+@Autonomous(name = "Rev Perf IMU", group = "Autonomous")
 
 /*
    Observed Data
 
                      median         max        average
-   Moto G Play      3.0065ms      10.3746ms     3.1120ms
-                    3.0126ms      11.5055ms     3.1195ms
-                    3.0014ms       9.9144ms     3.1030ms
+   Moto G Play      18.0505ms     28.2150ms    17.9056ms
+                    18.0230ms     26.6713ms    17.8500ms
+                    18.0544ms     27.4475ms    17.9331ms
 
 
-   ZTE Speed        3.7333ms      21.5240ms     3.9167ms
-                    3.6964ms      35.7192ms     3.8869ms
-                    3.6409ms      18.7912ms     3.8416ms
+   ZTE Speed
 
 
 
-   Rev Control Hub  2.7073ms      19.0841ms     3.0068ms
-   (with Moto ds)   2.7108ms      14.4369ms     3.0065ms
-                    2.7190ms      14.9063ms     3.0044ms
-
+   Rev Control Hub  17.8799ms    147.6815ms    18.0032ms
+   with moto g ds   17.9993ms     36.7189ms    18.1117ms
+                    17.9812ms     37.3044ms    18.0364ms
 
 
  */
 
 
 
-public class RevPerformanceTestMotor extends LinearOpMode
+public class RevPerformanceTestIMU extends LinearOpMode
 {
     @Override
     public void runOpMode() throws InterruptedException
@@ -45,18 +43,23 @@ public class RevPerformanceTestMotor extends LinearOpMode
 
         ElapsedTime time = new ElapsedTime();
 
-        DcMotor motor = hardwareMap.dcMotor.get("motor");
-
-        //use two different motor powers so we're always writing a different value than the last loop
-        double[] motorPower = new double[2];
-        motorPower[0] = 0.5;
-        motorPower[1] = 0.4;
+        //configure the IMU
+        BNO055IMU imu;
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+        double heading = 0.0;
 
         waitForStart();
 
         time.reset();
 
-        motor.setPower(motorPower[0]);
+        heading = imu.getAngularOrientation().firstAngle;
         idle(); //force a loop during which nothing happens for the first measurement
 
         while (opModeIsActive())
@@ -70,13 +73,24 @@ public class RevPerformanceTestMotor extends LinearOpMode
 
                 time.reset(); //reset the timer for the next loop
 
-                motor.setPower(motorPower[loops % 2]);
+                heading = imu.getAngularOrientation().firstAngle;
                 idle();
             }
 
-            motor.setPower(0);
-
             //perform analysis
+
+            /*
+                //output the data to a file before transforming it
+                FileWriter file = new FileWriter("RevPerf.csv");
+
+                for (int i=0; i < NUM_LOOPS; i++)
+                {
+                    file.println(loopTimesMS[i] + "");
+                }
+
+                file.closeFile();
+            */
+
             //sort the array to make calculating stats easier
             java.util.Arrays.sort(loopTimesMS);
             double median = loopTimesMS[NUM_LOOPS/2];
