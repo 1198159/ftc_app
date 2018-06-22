@@ -11,12 +11,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
    Observed Data
 
                      median         max        average
-   Moto G Play
+   Moto G Play      3.0065ms      10.3746ms     3.1120ms
+                    3.0126ms      11.5055ms     3.1195ms
+                    3.0014ms       9.9144ms     3.1030ms
 
 
 
 
-   ZTE Speed
+   ZTE Speed        3.7333ms      21.5240ms     3.9167ms
+                    3.6964ms      35.7192ms     3.8869ms
+                    3.6409ms      18.7912ms     3.8416ms
 
 
 
@@ -34,7 +38,7 @@ public class RevPerformanceTestMotor extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         //we want 100001 measurements to make the calculation of median easy
-        final int NUM_LOOPS = 100001;
+        final int NUM_LOOPS = 10001;
         int loops = NUM_LOOPS;
 
         double[] loopTimesMS = new double[loops];
@@ -69,6 +73,8 @@ public class RevPerformanceTestMotor extends LinearOpMode
                 motor.setPower(motorPower[loops % 2]);
                 idle();
             }
+
+            motor.setPower(0);
 
             //perform analysis
             //sort the array to make calculating stats easier
