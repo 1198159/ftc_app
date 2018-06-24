@@ -13,12 +13,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
                      median         max        average
    Moto G Play      18.0505ms     28.2150ms    17.9056ms
-                    18.0230ms     26.6713ms    17.8500ms
++ expansion hub     18.0230ms     26.6713ms    17.8500ms
                     18.0544ms     27.4475ms    17.9331ms
 
 
-   ZTE Speed
-
+   ZTE Speed        --trial 1 took so long that I eventually cancelled it
++ expansion hub     19.1030ms    214.5130ms    19.2723ms
+                    19.5522ms     43.2745ms    19.5698ms
+                    --trial 4 took so long that I eventually cancelled it
+                    --trial 5 took over 20 minutes so I cancelled it
 
 
    Rev Control Hub  17.8799ms    147.6815ms    18.0032ms
@@ -79,7 +82,7 @@ public class RevPerformanceTestIMU extends LinearOpMode
 
             //perform analysis
 
-            /*
+
                 //output the data to a file before transforming it
                 FileWriter file = new FileWriter("RevPerf.csv");
 
@@ -89,7 +92,7 @@ public class RevPerformanceTestIMU extends LinearOpMode
                 }
 
                 file.closeFile();
-            */
+
 
             //sort the array to make calculating stats easier
             java.util.Arrays.sort(loopTimesMS);

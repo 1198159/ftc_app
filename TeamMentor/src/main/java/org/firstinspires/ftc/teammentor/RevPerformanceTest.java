@@ -11,12 +11,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
                      median         max        average
    Moto G Play      0.0033ms     1.2018ms      0.00367ms
-                    0.0039ms     0.6520ms      0.00429ms
++ expansion hub     0.0039ms     0.6520ms      0.00429ms
                     0.0040ms     2.2790ms      0.00420ms
 
 
    ZTE Speed        0.0038ms     4.0434ms      0.0045ms
-                    0.0038ms     7.8806ms      0.0045ms
++ expansion hub     0.0038ms     7.8806ms      0.0045ms
                     0.0039ms     1.6442ms      0.0043ms
 
    Rev Control Hub  0.0032ms     1.0332ms     0.0035ms
