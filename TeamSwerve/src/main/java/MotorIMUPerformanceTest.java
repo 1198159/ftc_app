@@ -6,12 +6,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 // This class exists for the purpose of testing the length of time required to retrieve imu and
-// encoder values from the REV hub.  Currently, it is set up to use a 4 motor robot for testing.
+// encoder values from a REV hub.  Currently, it is set up to use a 4 motor robot for testing.
 // Many samples are taken over a large number of loops to get more meaningful data.  Retrieval
-// times of encoder values and the z-axis orientation of the imu are measured separately and together.
+// times of encoder values, motor.set/getPower(), and the z-axis orientation of the imu can be
+// measured separately and together.
 
-@Autonomous(name = "Encoder/IMU Perf Test", group = "Autonomous")
-public class ControlHubEncoderIMUPerformanceTest extends LinearOpMode
+@Autonomous(name = "Motor/IMU Perf Test", group = "Autonomous")
+public class MotorIMUPerformanceTest extends LinearOpMode
 {
     @Override
     public void runOpMode() throws InterruptedException
@@ -70,6 +71,10 @@ public class ControlHubEncoderIMUPerformanceTest extends LinearOpMode
                 curEncoderValue2 = motorBackRight.getCurrentPosition();
                 curEncoderValue3 = motorFrontLeft.getCurrentPosition();
                 curEncoderValue4 = motorFrontRight.getCurrentPosition();
+
+                //motorBackLeft.setPower(0.0);
+
+                //motorBackLeft.getPower();
 
                 //heading = imu.getAngularOrientation().firstAngle;
                 //telemetry.addData("Heading: ", heading);
