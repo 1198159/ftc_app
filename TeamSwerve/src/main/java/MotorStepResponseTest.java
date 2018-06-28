@@ -3,6 +3,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.Arrays;
+
 
 // The purpose of this class is to empirically determine the step response of a motor.  This is
 // accomplished by setting 4 motors to full power and sampling the power value of one after
@@ -62,7 +64,7 @@ public class MotorStepResponseTest extends LinearOpMode
         motorFrontRight.setPower(0.0);
 
         // Display the data
-        System.out.println(motorPowers);
+        System.out.println(Arrays.toString(motorPowers));
 
         // Let the program keep running until we stop it
         while (opModeIsActive())
