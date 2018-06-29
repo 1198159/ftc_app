@@ -16,7 +16,7 @@ public class Constants
     // Robot specifications
     public static final float WHEEL_DIAMETER_MM = 4 * MM_PER_INCH;    // 4 inch diameter wheel
     public static final double GEAR_RATIO = 48.0 / 84.0;            // Driven to driving gear
-    // Actually 25.4 ticks / inch
+    // Experimental results yield an actual value of 0.483 mm per tick
     public static final double MM_PER_ANDYMARK_TICK = (Math.PI * WHEEL_DIAMETER_MM) / (ANDYMARK_TICKS_PER_ROTATION * GEAR_RATIO);
 
 

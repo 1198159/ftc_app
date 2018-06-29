@@ -19,6 +19,7 @@ public class MotorStepResponseTest extends LinearOpMode
         final int NUM_LOOPS = 200;
         ElapsedTime loopTime = new ElapsedTime();
         double[] encoderSpeeds = new double[200];
+        double[] encoderFilteredSpeeds = new double[200];
         double sampleTime = 10;     // This number is in milliseconds
 
         // Encoder values that will be stored from last loop
@@ -44,6 +45,11 @@ public class MotorStepResponseTest extends LinearOpMode
         motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
         motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
 
+        motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -58,7 +64,6 @@ public class MotorStepResponseTest extends LinearOpMode
         motorFrontLeft.setPower(-1.0);
         motorFrontRight.setPower(1.0);
 
-        loopTime.reset();
 
         // Go through the specified number of loops while sampling encoders and calculating rotational
         // velocity at set increments
@@ -69,10 +74,23 @@ public class MotorStepResponseTest extends LinearOpMode
             oldEncValBL = newEncValBL;
             newEncValBL = motorBackLeft.getCurrentPosition();
 
-            // Calculate time rate of change of encoder values
+            // Calculate time rate of change of encoder values; sampleTime is converted to seconds
             encoderSpeeds[i] = (-newEncValBL + oldEncValBL) / (0.001 * sampleTime);
             //encoderSpeeds[i] = ((-newEncValBL + newEncValBR - newEncValFL + newEncValFR) / 4
             //        -(-oldEncValBL + oldEncValBR - oldEncValFL + oldEncValFR) / 4) / (0.001 * sampleTime);
+
+            // Filter data using a triangular filter.  We must modify our calculations for the first
+            // 2 values of i due to our method of filtering
+            if (i == 2)
+            {
+                encoderFilteredSpeeds[0] = encoderSpeeds[0];
+                encoderFilteredSpeeds[1] = (encoderSpeeds[0] + 2 * encoderSpeeds[1] + encoderSpeeds[2]) / 4;
+            }
+            else if (i >= 4)
+            {
+                encoderFilteredSpeeds[i - 2] = (encoderSpeeds[i - 4] + 2 * encoderSpeeds[i - 3] +
+                        3 * encoderSpeeds[i - 2] + 2 * encoderSpeeds[i - 1] + encoderSpeeds[i]) / 9;
+            }
 
             while (loopTime.milliseconds() < sampleTime && opModeIsActive())
                 idle();
@@ -84,6 +102,6 @@ public class MotorStepResponseTest extends LinearOpMode
         motorFrontRight.setPower(0.0);
 
         // Display the data
-        System.out.println(Arrays.toString(encoderSpeeds));
+        System.out.println(Arrays.toString(encoderFilteredSpeeds));
     }
 }
