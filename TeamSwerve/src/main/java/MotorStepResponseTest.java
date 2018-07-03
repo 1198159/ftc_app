@@ -18,8 +18,8 @@ public class MotorStepResponseTest extends LinearOpMode
     {
         final int NUM_LOOPS = 200;
         ElapsedTime loopTime = new ElapsedTime();
-        double[] encoderSpeeds = new double[200];
-        double[] encoderFilteredSpeeds = new double[200];
+        double[] encoderSpeeds = new double[NUM_LOOPS];
+        double[] encoderFilteredSpeeds = new double[NUM_LOOPS];
         double sampleTime = 10;     // This number is in milliseconds
 
         // Encoder values that will be stored from last loop
