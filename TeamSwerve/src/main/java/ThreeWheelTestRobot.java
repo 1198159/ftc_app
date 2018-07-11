@@ -16,14 +16,14 @@ public class ThreeWheelTestRobot extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        final int NUM_LOOPS = 200;
+        final int NUM_LOOPS = 250;
         ElapsedTime loopTime = new ElapsedTime();
         // For plotting distance vs. time
         double[] encValues = new double[NUM_LOOPS];
         // For plotting angular velocity vs. time
         double[] encoderSpeeds = new double[NUM_LOOPS];
         double[] encoderFilteredSpeeds = new double[NUM_LOOPS];
-        double sampleTime = 10;     // This number is in milliseconds
+        double sampleTime = 8;     // This number is in milliseconds
         double newEncVal = 0;
         double oldEncVal = 0;
 
@@ -69,7 +69,7 @@ public class ThreeWheelTestRobot extends LinearOpMode
                 encoderFilteredSpeeds[i - 4] = (encoderSpeeds[i - 8] + 2 * encoderSpeeds[i - 7] +
                         3 * encoderSpeeds[i - 6] + 4 * encoderSpeeds[i - 5] + 5 * encoderSpeeds[i - 4] +
                         4 * encoderSpeeds[i - 3] + 3 * encoderSpeeds[i - 2] + 2 * encoderSpeeds[i - 1] +
-                        encoderSpeeds[i]);
+                        encoderSpeeds[i]) / 25;
             }
 
             while (loopTime.milliseconds() < sampleTime && opModeIsActive())
@@ -89,7 +89,7 @@ public class ThreeWheelTestRobot extends LinearOpMode
         motor.setPower(0.0);
 
         // Display the data
-        System.out.println(Arrays.toString(encValues));
+        System.out.println(Arrays.toString(encoderFilteredSpeeds));
     }
 
 }
