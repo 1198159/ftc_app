@@ -13,22 +13,24 @@ import java.util.Arrays;
 @Autonomous(name = "3 Wheel Test Robot", group = "Autonomous")
 public class ThreeWheelTestRobot extends LinearOpMode
 {
+    final int NUM_LOOPS = 250;
+    ElapsedTime loopTime = new ElapsedTime();
+    // For plotting distance vs. time
+    double[] encValues = new double[NUM_LOOPS];
+    // For plotting angular velocity vs. time
+    double[] encoderSpeeds = new double[NUM_LOOPS];
+    double[] encoderFilteredSpeeds = new double[NUM_LOOPS];
+    double sampleTime = 8;     // This number is in milliseconds
+    double newEncVal = 0;
+    double oldEncVal = 0;
+
+    DcMotor motor;
+
+
     @Override
     public void runOpMode() throws InterruptedException
     {
-        final int NUM_LOOPS = 250;
-        ElapsedTime loopTime = new ElapsedTime();
-        // For plotting distance vs. time
-        double[] encValues = new double[NUM_LOOPS];
-        // For plotting angular velocity vs. time
-        double[] encoderSpeeds = new double[NUM_LOOPS];
-        double[] encoderFilteredSpeeds = new double[NUM_LOOPS];
-        double sampleTime = 8;     // This number is in milliseconds
-        double newEncVal = 0;
-        double oldEncVal = 0;
-
         // Initialize drive motor, which powers the front wheel
-        DcMotor motor;
         motor = hardwareMap.dcMotor.get("motor");
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

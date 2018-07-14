@@ -13,33 +13,34 @@ import java.util.Arrays;
 @Autonomous(name = "Motor Step Response Test", group = "Autonomous")
 public class MotorStepResponseTest extends LinearOpMode
 {
+    final int NUM_LOOPS = 200;
+    ElapsedTime loopTime = new ElapsedTime();
+    double[] encoderSpeeds = new double[NUM_LOOPS];
+    double[] encoderFilteredSpeeds = new double[NUM_LOOPS];
+    double sampleTime = 10;     // This number is in milliseconds
+
+    // Encoder values that will be stored from last loop
+    double oldEncValBL = 0;
+    double oldEncValBR = 0;
+    double oldEncValFL = 0;
+    double oldEncValFR = 0;
+
+    // Encoder values that will be retrieved in the current loop and compared to old values
+    double newEncValBL = 0;
+    double newEncValBR = 0;
+    double newEncValFL = 0;
+    double newEncValFR = 0;
+
+    DcMotor motorBackLeft;
+    DcMotor motorBackRight;
+    DcMotor motorFrontLeft;
+    DcMotor motorFrontRight;
+
+
     @Override
     public void runOpMode() throws InterruptedException
     {
-        final int NUM_LOOPS = 200;
-        ElapsedTime loopTime = new ElapsedTime();
-        double[] encoderSpeeds = new double[NUM_LOOPS];
-        double[] encoderFilteredSpeeds = new double[NUM_LOOPS];
-        double sampleTime = 10;     // This number is in milliseconds
-
-        // Encoder values that will be stored from last loop
-        double oldEncValBL = 0;
-        double oldEncValBR = 0;
-        double oldEncValFL = 0;
-        double oldEncValFR = 0;
-
-        // Encoder values that will be retrieved in the current loop and compared to old values
-        double newEncValBL = 0;
-        double newEncValBR = 0;
-        double newEncValFL = 0;
-        double newEncValFR = 0;
-
         // Set up motors in configuration
-        DcMotor motorBackLeft;
-        DcMotor motorBackRight;
-        DcMotor motorFrontLeft;
-        DcMotor motorFrontRight;
-
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
         motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");

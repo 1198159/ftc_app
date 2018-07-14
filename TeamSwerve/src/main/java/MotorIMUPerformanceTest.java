@@ -14,26 +14,29 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name = "Motor/IMU Perf Test", group = "Autonomous")
 public class MotorIMUPerformanceTest extends LinearOpMode
 {
+    final int NUM_LOOPS = 1001;
+    int loops = 0;
+    double curEncoderValue1 = 0;
+    double curEncoderValue2 = 0;
+    double curEncoderValue3 = 0;
+    double curEncoderValue4 = 0;
+    double encoderSum = 0;
+    double[] loopTimesMS = new double[NUM_LOOPS];
+    ElapsedTime loopTime = new ElapsedTime();
+    double heading = 0;
+
+    DcMotor motorBackLeft;
+    DcMotor motorBackRight;
+    DcMotor motorFrontLeft;
+    DcMotor motorFrontRight;
+
+    BNO055IMU imu;
+
+
     @Override
     public void runOpMode() throws InterruptedException
     {
-        final int NUM_LOOPS = 1001;
-        int loops = 0;
-        double curEncoderValue1 = 0;
-        double curEncoderValue2 = 0;
-        double curEncoderValue3 = 0;
-        double curEncoderValue4 = 0;
-        double encoderSum = 0;
-        double[] loopTimesMS = new double[NUM_LOOPS];
-        ElapsedTime loopTime = new ElapsedTime();
-        double heading = 0;
-
-
         // Set up motors in configuration; some motors may or may not be used for measurements
-        DcMotor motorBackLeft;
-        DcMotor motorBackRight;
-        DcMotor motorFrontLeft;
-        DcMotor motorFrontRight;
         motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
         motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
         motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
@@ -47,7 +50,6 @@ public class MotorIMUPerformanceTest extends LinearOpMode
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu". Certain parameters must be specified before using the imu.
-        BNO055IMU imu;
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
