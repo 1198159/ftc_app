@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":10};
+var methods = {"i0":9,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -140,12 +140,24 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html#hashString">hashString</a></span></code>&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html#loopControl">loopControl</a></span></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html#msPresentationTime">msPresentationTime</a></span></code>&nbsp;</td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code>float</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html#rate">rate</a></span></code>&nbsp;</td>
+</tr>
 <tr class="rowColor">
+<td class="colFirst"><code>float</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html#volume">volume</a></span></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html#waitForCurrentSoundToFinish">waitForCurrentSoundToFinish</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html#waitForNonLoopingSoundsToFinish">waitForNonLoopingSoundsToFinish</a></span></code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -162,9 +174,9 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html#CmdPlaySound-long-java.lang.String-boolean-">CmdPlaySound</a></span>(long&nbsp;msPresentationTime,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html#CmdPlaySound-long-java.lang.String-com.qualcomm.ftccommon.SoundPlayer.PlaySoundParams-">CmdPlaySound</a></span>(long&nbsp;msPresentationTime,
             java.lang.String&nbsp;hashString,
-            boolean&nbsp;wait)</code>&nbsp;</td>
+            <a href="../../../com/qualcomm/ftccommon/SoundPlayer.PlaySoundParams.html" title="class in com.qualcomm.ftccommon">SoundPlayer.PlaySoundParams</a>&nbsp;params)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -186,6 +198,10 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html#deserialize-java.lang.String-">deserialize</a></span>(java.lang.String&nbsp;serialized)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code><a href="../../../com/qualcomm/ftccommon/SoundPlayer.PlaySoundParams.html" title="class in com.qualcomm.ftccommon">SoundPlayer.PlaySoundParams</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html#getParams--">getParams</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html#serialize--">serialize</a></span>()</code>&nbsp;</td>
 </tr>
@@ -242,13 +258,40 @@ extends java.lang.Object</pre>
 <pre>public final&nbsp;java.lang.String hashString</pre>
 </li>
 </ul>
-<a name="waitForCurrentSoundToFinish">
+<a name="waitForNonLoopingSoundsToFinish">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>waitForNonLoopingSoundsToFinish</h4>
+<pre>public final&nbsp;boolean waitForNonLoopingSoundsToFinish</pre>
+</li>
+</ul>
+<a name="volume">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>volume</h4>
+<pre>public final&nbsp;float volume</pre>
+</li>
+</ul>
+<a name="loopControl">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>loopControl</h4>
+<pre>public final&nbsp;int loopControl</pre>
+</li>
+</ul>
+<a name="rate">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>waitForCurrentSoundToFinish</h4>
-<pre>public final&nbsp;boolean waitForCurrentSoundToFinish</pre>
+<h4>rate</h4>
+<pre>public final&nbsp;float rate</pre>
 </li>
 </ul>
 </li>
@@ -259,7 +302,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="CmdPlaySound-long-java.lang.String-boolean-">
+<a name="CmdPlaySound-long-java.lang.String-com.qualcomm.ftccommon.SoundPlayer.PlaySoundParams-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -267,7 +310,7 @@ extends java.lang.Object</pre>
 <h4>CmdPlaySound</h4>
 <pre>public&nbsp;CmdPlaySound(long&nbsp;msPresentationTime,
                     java.lang.String&nbsp;hashString,
-                    boolean&nbsp;wait)</pre>
+                    <a href="../../../com/qualcomm/ftccommon/SoundPlayer.PlaySoundParams.html" title="class in com.qualcomm.ftccommon">SoundPlayer.PlaySoundParams</a>&nbsp;params)</pre>
 </li>
 </ul>
 </li>
@@ -290,10 +333,19 @@ extends java.lang.Object</pre>
 <a name="deserialize-java.lang.String-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>deserialize</h4>
 <pre>public static&nbsp;<a href="../../../com/qualcomm/ftccommon/CommandList.CmdPlaySound.html" title="class in com.qualcomm.ftccommon">CommandList.CmdPlaySound</a>&nbsp;deserialize(java.lang.String&nbsp;serialized)</pre>
+</li>
+</ul>
+<a name="getParams--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getParams</h4>
+<pre>public&nbsp;<a href="../../../com/qualcomm/ftccommon/SoundPlayer.PlaySoundParams.html" title="class in com.qualcomm.ftccommon">SoundPlayer.PlaySoundParams</a>&nbsp;getParams()</pre>
 </li>
 </ul>
 </li>

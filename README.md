@@ -7,6 +7,14 @@ Please do not distribute this release beyond those involved in the FTC control s
 # Release Information
 **************************************************************************************
 
+Version 3.8f (built on 18.07.23)
+FTC System Testing Release
+
+Changes include
+  * support for PIDF firmware improvements
+  * miscellaneous other fixes
+
+
 Version 3.8e (built on 18.06.19)
 FTC System Testing Release
 

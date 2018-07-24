@@ -232,8 +232,17 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>java.io.File[]</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#webcamCalibrationFiles">webcamCalibrationFiles</a></span></code>
+<div class="block">Camera calibrations resident in files instead of resources.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>int[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#webcamCalibrationResources">webcamCalibrationResources</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#webcamCalibrationResources">webcamCalibrationResources</a></span></code>
+<div class="block">The resources (if any, may be empty or null) used to provide additional camera calibration data for
+ webcams used with Vuforia.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -467,6 +476,32 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>webcamCalibrationResources</h4>
 <pre>public&nbsp;int[] webcamCalibrationResources</pre>
+<div class="block">The resources (if any, may be empty or null) used to provide additional camera calibration data for
+ webcams used with Vuforia. Using calibrated camera helps increase the accuracy of
+ Vuforia image target tracking. Calibration for several cameras is built into the FTC SDK;
+ the optional resources here provides a means for teams to provide calibrations beyond this
+ built-in set.
+
+ The format required of the XML resource is indicated in the teamwebcamcalibrations
+ resource provided.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#webcamCalibrationFiles"><code>webcamCalibrationFiles</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="webcamCalibrationFiles">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>webcamCalibrationFiles</h4>
+<pre>public&nbsp;java.io.File[] webcamCalibrationFiles</pre>
+<div class="block">Camera calibrations resident in files instead of resources.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../org/firstinspires/ftc/robotcore/external/navigation/VuforiaLocalizer.Parameters.html#webcamCalibrationResources"><code>webcamCalibrationResources</code></a></dd>
+</dl>
 </li>
 </ul>
 <a name="maxWebcamAspectRatio">
