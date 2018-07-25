@@ -3,8 +3,12 @@ package org.firstinspires.ftc.teamswerve; // This software belongs in the Team S
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.Const;
 
 // The name of this test is "DynamomterTests", and it belongs to the group "Swerve".
 @TeleOp(name="DynamomterTests", group = "Swerve")
@@ -12,11 +16,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a subclass of the base class "LinearOpMode".
 {
     DcMotor motor; // We are testing AndyMark NeverRest 20s, 40s, 60s, 3.7s, Matrix, and REV Core Hex motors (three of each) plugged into port 1.
+    DcMotorEx motorEx = null;
     DigitalChannel relay; // Relay circuit, plugged into port 0 of the REV module
     INA219 ina; // INA219 Current Sensor, plugged into port 1 of the REV module.  Here's the link to the data sheet: https://cdn-shop.adafruit.com/datasheets/ina219.pdf
     WeightedMovingAverage filter; // An FIR (Finite Impulse Response) Filter used to reduce the bus voltage data during the data collection process
 
     double motorPower = 0.0; // used as a placeholder value for incremented motor power the method "RampUpMotor" below
+    double ticksPerSec = 0.0;
     int waitTime = 5; // a value (in milliseconds) used for time between each motor power increment in the method "RampUpMotor" below, and in timed samples
     double motorSetPower = 0.4; // the max power the motor power will increment to in the method "RampUpMotor" below
     int numSamples = 4000; // the maximum number of data samples the arrays for time, encoder counts, current, and voltage will store
@@ -49,6 +55,11 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
     double[] shuntVoltage2 = new double[numSamples];
     double[] busVoltage2 = new double[numSamples];
     double[] shuntCurrent2 = new double[numSamples];
+
+    boolean isAPressed;
+    boolean isMotorOn;
+    boolean isDpadUpPushed;
+    boolean isDpadDownPushed;
 
     /*
     This method counts the number of times the encoder count changes, and records the time with
@@ -238,7 +249,7 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
      */
     public void EncoderCountTest()
     {
-        relay.setState(false); // turn the relay off, even though we know we won't run the motor
+        //relay.setState(false); // turn the relay off, even though we know we won't run the motor
         while (opModeIsActive())
         {
             telemetry.addData("EncoderCount", motor.getCurrentPosition()); // read encoder counts to update the count displayed
@@ -288,6 +299,56 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
     }
 
     /*
+    This test runs the DUT under constant speed.  This speed can be adjusted with a Logitech gamepad
+    The motor starts and stops with a toggle button "A".
+     */
+    public void ConstantVelocityTest()
+    {
+        while (opModeIsActive())
+        {
+            // select a motor speed
+            if (gamepad1.dpad_up && !isDpadUpPushed && ticksPerSec<19.999)
+            {
+                isDpadUpPushed = true;
+                ticksPerSec += 1.0;
+                motorEx.setVelocity(ticksPerSec);
+            }
+            isDpadUpPushed = gamepad1.dpad_up;
+
+            if (gamepad1.dpad_down && !isDpadDownPushed && ticksPerSec>0.001)
+            {
+                isDpadDownPushed = true;
+                ticksPerSec -= 1.0;
+                motorEx.setVelocity(ticksPerSec);
+            }
+            isDpadDownPushed = gamepad1.dpad_down;
+
+            // toggle button "A"
+            if (gamepad1.a && !isAPressed)
+            {
+                isAPressed = true;
+                isMotorOn = !isMotorOn;
+            }
+            isAPressed = gamepad1.a;
+
+            if (isMotorOn) // if button "A" is pressed, then set the motor power
+            {
+                motorEx.setVelocity(ticksPerSec);
+                motorEx.setMotorEnable();
+                telemetry.addData("Motor", "is on.");
+            }
+            else
+            {
+                motorEx.setVelocity(0.0);
+                telemetry.addData("Motor", "is off.");
+            }
+
+            telemetry.addData("Motor ticks per sec: ", ticksPerSec);
+            telemetry.update();
+        }
+    }
+
+    /*
     This method initializes the relay circuit.
      */
     public void initializeRelay()
@@ -310,16 +371,33 @@ This is where the OpMode starts, including the initializing process.  The runOpM
         telemetry.addData("Motor", "Initializing");
         telemetry.update();
 
+/*
         motor = hardwareMap.dcMotor.get("motor");
         //motor.setDirection(DcMotor.Direction.REVERSE); // reverse the motor
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // allows the motor to slow down without brakes
         //motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // this mode simply inputs power, so no PID
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // this mode will do its best to run at a targeted velocity
+*/
+
+        this.motorEx = this.hardwareMap.get(DcMotorEx.class, "motorEx");
+        motorEx.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         // Tell the user that the motor is done initializing
         telemetry.addData(">", "Motor done initializing");
+        telemetry.addData("Please select a motor speed using D-Pad (up & down).", "Start/Stop the motor with button 'A'.");
         telemetry.update();
 
+        waitForStart();
+        //ConstantVelocityTest();
+        motorEx.setVelocity(9.0);
+        sleep(5000);
+        motorEx.setVelocity(18.0);
+        sleep(5000);
+        motorEx.setVelocity(1.0);
+        sleep(5000);
+        motorEx.setVelocity(0.0);
+
+        /*
         // Tell the user that the relay is initializing
         telemetry.addData("Relay", "Initializing");
         telemetry.update();
@@ -337,13 +415,11 @@ This is where the OpMode starts, including the initializing process.  The runOpM
         telemetry.addData(">", "INA done initializing"); // write a message to indicate the initialization is done
         telemetry.update(); // update the message to display on the UI (the very bottom of the driver station phone screen)
 
-
 // wait until the start button is pushed
         waitForStart();
 
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // this resets the encoder
         //EncoderCountTest();
-
 
         runtime.reset(); // restart the timer (used when running the motor for seconds)
         relay.setState(true); // turn relay on
@@ -377,5 +453,7 @@ This is where the OpMode starts, including the initializing process.  The runOpM
 
         // for safety, just in case the relay doesn't power off by itself
         relay.setState(false); // turn relay off
+        */
+
     }
 }
