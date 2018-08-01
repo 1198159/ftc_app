@@ -57,6 +57,7 @@ public class AutonomousCompetitionBluePos1 extends MasterAutonomous
             IMUPivot(referenceAngle, -11, 0.3, 0.015);
             RetrieveJJ(); // Raise JJ
             IMUPivot(referenceAngle, 0, 0.3, 0.015); // Pivot back to initial position
+            telemetry.update();
         }
         sleep(700);
         MoveIMU(referenceAngle, 900.0, 0.0, 0.015, 0.35, 2.2);//Go towards parking spot
