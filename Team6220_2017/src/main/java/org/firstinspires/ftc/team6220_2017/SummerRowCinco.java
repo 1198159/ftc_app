@@ -63,6 +63,9 @@ public class SummerRowCinco extends LinearOpMode
     OmniMotor motor2 = null;
     OmniMotor motor3 = null;
     OmniMotor motor4 = null;
+    DcMotor collectorMotor;
+    DcMotor armMotor;
+
 
 
     @Override public void runOpMode() throws InterruptedException
@@ -80,12 +83,34 @@ public class SummerRowCinco extends LinearOpMode
             driveOmniDrive( gamepad1.left_stick_x,    //local x motion power
                     gamepad1.left_stick_y,     //local y motion power
                     -gamepad1.right_stick_x / 2); //divide rotation in half so we don't spin too quickly
-
+            if(gamepad2.dpad_up)
+            {
+                collectorMotor.setPower(0.2);
+            }
+            else if(gamepad2.dpad_down)
+            {
+                collectorMotor.setPower(-0.2);
+            }
+            else if(gamepad2.dpad_left)
+            {
+                collectorMotor.setPower(0);
+            }
+            else if(gamepad2.a)
+            {
+                armMotor.setPower(0.2);
+            }
+            else if(gamepad2.b)
+            {
+                armMotor.setPower(-0.2);
+            }
+            else if(gamepad2.x)
+            {
+                armMotor.setPower(0);
+            }
             telemetry.update();
             idle();
         }
     }
-
 
     public void driveOmniDrive(double x, double y, double rotation)
     {
@@ -129,6 +154,7 @@ public class SummerRowCinco extends LinearOpMode
 
     }
 
+
     public void initializeRobot()
     {
         // Initialize motors to be the hardware motors
@@ -149,6 +175,10 @@ public class SummerRowCinco extends LinearOpMode
             motor3 = new OmniMotor(hardwareMap.dcMotor.get("motor3"), -1,  -1, 135);
             motor4 = new OmniMotor(hardwareMap.dcMotor.get("motor4"), -1,   1, 225);
         }
+
+        collectorMotor = hardwareMap.dcMotor.get("collectorMotor");
+        armMotor = hardwareMap.dcMotor.get("armMotor");
+
         // Set up telemetry data
         configureDashboard();
     }
