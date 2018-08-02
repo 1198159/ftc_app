@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * This file contains an opmode that tests whether an encoder is working.
  */
 
-@TeleOp(name="90", group="Curtis")  // @Autonomous(...) is the other common choice
+@TeleOp(name="08", group="Curtis")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class CurtisSculpture90 extends LinearOpMode {
+public class CurtisSculpture8 extends LinearOpMode {
 
     /* Declare OpMode members. */
     DcMotor motor = null;
@@ -24,7 +24,7 @@ public class CurtisSculpture90 extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        motor.setPower(0.90);
+        motor.setPower(0.08);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
