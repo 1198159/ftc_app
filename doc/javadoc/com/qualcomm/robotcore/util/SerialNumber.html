@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":10,"i3":10,"i4":9,"i5":9,"i6":9,"i7":9,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":9};
+var methods = {"i0":9,"i1":9,"i2":10,"i3":10,"i4":9,"i5":9,"i6":9,"i7":9,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -114,10 +114,15 @@ var activeTableTab = "activeTableTab";
 <pre>public abstract class <span class="typeNameLabel">SerialNumber</span>
 extends java.lang.Object
 implements java.io.Serializable</pre>
-<div class="block">Instances of <a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util"><code>SerialNumber</code></a> represent serial numbers of devices on the USB bus.
+<div class="block">Instances of <a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util"><code>SerialNumber</code></a> represent serial number indentifiers of hardware devices. For
+ USB-attached devices, these are usually the low-level USB serial number (see <code>UsbDevice.getSerialNumber()</code>,
+ but that is not required. Rather, the notion of <a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util"><code>SerialNumber</code></a> is a general purpose one
+ representing a user-visible digital identity for a particular device instance.
+
  'Fake' serial numbers are serial numbers that will *never* appear for a real device; they
  are useful, for example, as the serial number of a <code>ControllerConfiguration</code> that
- has not yet been associated with a actual USB controller device.
+ has not yet been associated with a actual controller device. Fake serial numbers are never
+ shown to users.
 
  Note that *all* serial numbers loaded in memory at any given instant are guaranteed unique and
  different, even the fake ones; this allows code that processes USB-device-bound <code>ControllerConfiguration</code>s to operate easily on unbound ones as well, a significant coding
@@ -161,10 +166,14 @@ implements java.io.Serializable</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#fakePrefix">fakePrefix</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>protected static java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#lynxModulePrefix">lynxModulePrefix</a></span></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>protected java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#serialNumberString">serialNumberString</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#vendorProductPrefix">vendorProductPrefix</a></span></code>&nbsp;</td>
 </tr>
@@ -241,44 +250,51 @@ implements java.io.Serializable</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#getDeviceDisplayName-com.qualcomm.robotcore.util.SerialNumber-">getDeviceDisplayName</a></span>(<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;serialNumber)</code>&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
+<td class="colFirst"><code><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#getScannableDeviceSerialNumber--">getScannableDeviceSerialNumber</a></span>()</code>
+<div class="block">Returns the <a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util"><code>SerialNumber</code></a> of the device associated with this one that would appear
+ in a <a href="../../../../com/qualcomm/robotcore/hardware/ScannedDevices.html" title="class in com.qualcomm.robotcore.hardware"><code>ScannedDevices</code></a>.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#getString--">getString</a></span>()</code>
 <div class="block">Returns the string contents of the serial number.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#hashCode--">hashCode</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#isEmbedded--">isEmbedded</a></span>()</code>
 <div class="block">Returns whether the serial number is the one used for the embedded 
  Expansion Hub inside a Rev Control Hub.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#isFake--">isFake</a></span>()</code>
 <div class="block">Returns whether the indicated serial number is one of the legacy
  fake serial number forms or not.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#isReal--">isReal</a></span>()</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#isUsb--">isUsb</a></span>()</code>
 <div class="block">Returns whether the serial number is one of an actual USB device.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#isVendorProduct--">isVendorProduct</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#matches-java.lang.Object-">matches</a></span>(java.lang.Object&nbsp;pattern)</code>&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html#noteSerialNumberType-com.qualcomm.robotcore.util.SerialNumber-java.lang.String-">noteSerialNumberType</a></span>(<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;serialNumber,
                     java.lang.String&nbsp;typeName)</code>&nbsp;</td>
@@ -328,6 +344,19 @@ implements java.io.Serializable</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#com.qualcomm.robotcore.util.SerialNumber.vendorProductPrefix">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a name="lynxModulePrefix">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>lynxModulePrefix</h4>
+<pre>protected static final&nbsp;java.lang.String lynxModulePrefix</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../constant-values.html#com.qualcomm.robotcore.util.SerialNumber.lynxModulePrefix">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -465,13 +494,13 @@ implements java.io.Serializable</pre>
 </dl>
 </li>
 </ul>
-<a name="isReal--">
+<a name="isUsb--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>isReal</h4>
-<pre>public&nbsp;boolean&nbsp;isReal()</pre>
+<h4>isUsb</h4>
+<pre>public&nbsp;boolean&nbsp;isUsb()</pre>
 <div class="block">Returns whether the serial number is one of an actual USB device.</div>
 </li>
 </ul>
@@ -499,6 +528,17 @@ implements java.io.Serializable</pre>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><code>Object.toString()</code></dd>
 </dl>
+</li>
+</ul>
+<a name="getScannableDeviceSerialNumber--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getScannableDeviceSerialNumber</h4>
+<pre>public&nbsp;<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;getScannableDeviceSerialNumber()</pre>
+<div class="block">Returns the <a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util"><code>SerialNumber</code></a> of the device associated with this one that would appear
+ in a <a href="../../../../com/qualcomm/robotcore/hardware/ScannedDevices.html" title="class in com.qualcomm.robotcore.hardware"><code>ScannedDevices</code></a>.</div>
 </li>
 </ul>
 <a name="matches-java.lang.Object-">

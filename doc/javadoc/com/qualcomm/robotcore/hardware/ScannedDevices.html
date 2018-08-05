@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":9,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var methods = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":9,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -214,35 +214,39 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/ScannedDevices.html#fromSerializationString-java.lang.String-">fromSerializationString</a></span>(java.lang.String&nbsp;string)</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="../../../../com/qualcomm/robotcore/hardware/DeviceManager.DeviceType.html" title="enum in com.qualcomm.robotcore.hardware">DeviceManager.DeviceType</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/ScannedDevices.html#get-com.qualcomm.robotcore.util.SerialNumber-">get</a></span>(<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;serialNumber)</code>&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/ScannedDevices.html#getErrorMessage--">getErrorMessage</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.util.Set&lt;<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/ScannedDevices.html#keySet--">keySet</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>protected static Gson</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/ScannedDevices.html#newGson--">newGson</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../com/qualcomm/robotcore/hardware/DeviceManager.DeviceType.html" title="enum in com.qualcomm.robotcore.hardware">DeviceManager.DeviceType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/ScannedDevices.html#put-com.qualcomm.robotcore.util.SerialNumber-com.qualcomm.robotcore.hardware.DeviceManager.DeviceType-">put</a></span>(<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;serialNumber,
    <a href="../../../../com/qualcomm/robotcore/hardware/DeviceManager.DeviceType.html" title="enum in com.qualcomm.robotcore.hardware">DeviceManager.DeviceType</a>&nbsp;deviceType)</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../../com/qualcomm/robotcore/hardware/DeviceManager.DeviceType.html" title="enum in com.qualcomm.robotcore.hardware">DeviceManager.DeviceType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/ScannedDevices.html#remove-com.qualcomm.robotcore.util.SerialNumber-">remove</a></span>(<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;serialNumber)</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/ScannedDevices.html#setErrorMessage-java.lang.String-">setErrorMessage</a></span>(java.lang.String&nbsp;errorMessage)</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/ScannedDevices.html#size--">size</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/ScannedDevices.html#toSerializationString--">toSerializationString</a></span>()</code>&nbsp;</td>
 </tr>
@@ -377,6 +381,15 @@ extends java.lang.Object</pre>
 <h4>put</h4>
 <pre>public&nbsp;<a href="../../../../com/qualcomm/robotcore/hardware/DeviceManager.DeviceType.html" title="enum in com.qualcomm.robotcore.hardware">DeviceManager.DeviceType</a>&nbsp;put(<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;serialNumber,
                                     <a href="../../../../com/qualcomm/robotcore/hardware/DeviceManager.DeviceType.html" title="enum in com.qualcomm.robotcore.hardware">DeviceManager.DeviceType</a>&nbsp;deviceType)</pre>
+</li>
+</ul>
+<a name="get-com.qualcomm.robotcore.util.SerialNumber-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>get</h4>
+<pre>public&nbsp;<a href="../../../../com/qualcomm/robotcore/hardware/DeviceManager.DeviceType.html" title="enum in com.qualcomm.robotcore.hardware">DeviceManager.DeviceType</a>&nbsp;get(<a href="../../../../com/qualcomm/robotcore/util/SerialNumber.html" title="class in com.qualcomm.robotcore.util">SerialNumber</a>&nbsp;serialNumber)</pre>
 </li>
 </ul>
 <a name="containsKey-com.qualcomm.robotcore.util.SerialNumber-">
