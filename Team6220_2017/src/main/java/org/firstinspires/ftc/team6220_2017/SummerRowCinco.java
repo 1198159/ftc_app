@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.team6220_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 
+@TeleOp(name = "SummerRowCinco", group = "TeleOp")
 public class SummerRowCinco extends LinearOpMode
 {
     // Omnidrive motors have a particular location on the robot.
@@ -14,7 +16,7 @@ public class SummerRowCinco extends LinearOpMode
         DcMotor motor;
         int x, y, rotation;
 
-        public OmniMotor(DcMotor aMotor, int aX, int aY, int aRotation)
+        private OmniMotor(DcMotor aMotor, int aX, int aY, int aRotation)
         {
             motor = aMotor;
             x = aX;
@@ -25,19 +27,19 @@ public class SummerRowCinco extends LinearOpMode
         }
 
 
-        public double calculatePowerOmniXConfiguration(double requestedX, double requestedY, double requestedRotation)
+        double calculatePowerOmniXConfiguration(double requestedX, double requestedY, double requestedRotation)
         {
             return  requestedRotation
                     + Math.signum(y) * requestedX
                     + Math.signum(x) * requestedY;
         }
 
-        public void setPower(double power)
+        private void setPower(double power)
         {
             motor.setPower(power);
         }
 
-        public double getPower()
+        private double getPower()
         {
             return motor.getPower();
         }
@@ -50,10 +52,10 @@ public class SummerRowCinco extends LinearOpMode
     OmniMotor motor3;
     OmniMotor motor4;
     DcMotor collectorMotor;
-    DcMotor armMotor;
+    DcMotor slideMotor;
 
 
-    public void driveOmniDrive(double x, double y, double rotation)
+    private void driveOmniDrive(double x, double y, double rotation)
     {
         double power1 = 0, power2 = 0, power3 = 0, power4 = 0;
 
@@ -87,7 +89,7 @@ public class SummerRowCinco extends LinearOpMode
     }
 
 
-    public void initializeRobot()
+    private void initializeRobot()
     {
         // Initialize motors to be the hardware motors
         // configuration for "X"
@@ -97,15 +99,17 @@ public class SummerRowCinco extends LinearOpMode
         motor3 = new OmniMotor(hardwareMap.dcMotor.get("motor3"), -1,  -1, 135);
         motor4 = new OmniMotor(hardwareMap.dcMotor.get("motor4"), -1,   1, 225);
 
+        // Initialitze motors that operate collector and linear slide
         collectorMotor = hardwareMap.dcMotor.get("collectorMotor");
-        armMotor = hardwareMap.dcMotor.get("armMotor");
+        slideMotor = hardwareMap.dcMotor.get("slideMotor");
 
         // Set up telemetry data
         configureDashboard();
     }
 
 
-    @Override public void runOpMode() throws InterruptedException
+    @Override
+    public void runOpMode() throws InterruptedException
     {
         // Initialize hardware and other important things
         initializeRobot();
@@ -135,15 +139,15 @@ public class SummerRowCinco extends LinearOpMode
             }
             else if(gamepad2.a)
             {
-                armMotor.setPower(0.2);
+                slideMotor.setPower(0.2);
             }
             else if(gamepad2.b)
             {
-                armMotor.setPower(-0.2);
+                slideMotor.setPower(-0.2);
             }
             else if(gamepad2.x)
             {
-                armMotor.setPower(0);
+                slideMotor.setPower(0);
             }
 
             telemetry.update();
@@ -152,7 +156,7 @@ public class SummerRowCinco extends LinearOpMode
     }
 
 
-    public void configureDashboard()
+    private void configureDashboard()
     {
         telemetry.addLine()
                 .addData("Power | 1: ", new Func<String>() {
@@ -177,7 +181,7 @@ public class SummerRowCinco extends LinearOpMode
                 });
     }
 
-    public String formatNumber(double d)
+    private String formatNumber(double d)
     {
         return String.format("%.2f", d);
     }
