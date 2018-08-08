@@ -103,6 +103,9 @@ public class SummerRowCinco extends LinearOpMode
         collectorMotor = hardwareMap.dcMotor.get("collectorMotor");
         slideMotor = hardwareMap.dcMotor.get("slideMotor");
 
+        collectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         // Set up telemetry data
         configureDashboard();
     }
@@ -121,33 +124,32 @@ public class SummerRowCinco extends LinearOpMode
         while(opModeIsActive())
         {
 
-            driveOmniDrive( gamepad1.left_stick_x,    // local x motion power
-                    gamepad1.left_stick_y,     // local y motion power
-                    -gamepad1.right_stick_x / 2); // divide rotation in half so we don't spin too quickly
+            driveOmniDrive(gamepad1.right_stick_x,    // local x motion power
+                    gamepad1.right_stick_y,     // local y motion power
+                    -gamepad1.left_stick_x / 2); // divide rotation in half so we don't spin too quickly
 
-            if(gamepad2.dpad_up)
+            // Operate collector
+            if(gamepad1.dpad_up)
             {
                 collectorMotor.setPower(0.2);
             }
-            else if(gamepad2.dpad_down)
+            else if(gamepad1.dpad_down)
             {
                 collectorMotor.setPower(-0.2);
             }
-            else if(gamepad2.dpad_left)
+            else if(gamepad1.dpad_left)
             {
                 collectorMotor.setPower(0);
             }
-            else if(gamepad2.a)
+
+            // Operate linear slide
+            if(gamepad1.right_trigger >= 0.3)
             {
-                slideMotor.setPower(0.2);
+                slideMotor.setPower(gamepad1.right_trigger);
             }
-            else if(gamepad2.b)
+            else if(gamepad1.left_trigger >= 0.3)
             {
-                slideMotor.setPower(-0.2);
-            }
-            else if(gamepad2.x)
-            {
-                slideMotor.setPower(0);
+                slideMotor.setPower(-gamepad1.left_trigger);
             }
 
             telemetry.update();
