@@ -82,7 +82,7 @@ public class SummerRowCinco extends LinearOpMode
         }
 
         //set the powers
-        motor1.setPower(power1);
+        motor1.setPower(-power1);
         motor2.setPower(power2);
         motor3.setPower(power3);
         motor4.setPower(power4);
@@ -100,11 +100,11 @@ public class SummerRowCinco extends LinearOpMode
         motor4 = new OmniMotor(hardwareMap.dcMotor.get("motor4"), -1,   1, 225);
 
         // Initialitze motors that operate collector and linear slide
-        collectorMotor = hardwareMap.dcMotor.get("collectorMotor");
-        slideMotor = hardwareMap.dcMotor.get("slideMotor");
+        //collectorMotor = hardwareMap.dcMotor.get("collectorMotor");
+        //slideMotor = hardwareMap.dcMotor.get("slideMotor");
 
-        collectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //collectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Set up telemetry data
         configureDashboard();
@@ -125,7 +125,7 @@ public class SummerRowCinco extends LinearOpMode
         {
 
             driveOmniDrive(gamepad1.right_stick_x,    // local x motion power
-                    gamepad1.right_stick_y,     // local y motion power
+                    -gamepad1.right_stick_y,     // local y motion power
                     -gamepad1.left_stick_x / 2); // divide rotation in half so we don't spin too quickly
 
             // Operate collector
