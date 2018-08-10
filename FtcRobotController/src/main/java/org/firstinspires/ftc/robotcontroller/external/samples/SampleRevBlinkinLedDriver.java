@@ -33,22 +33,19 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.firstinspires.ftc.robotcontroller.external.samples.SampleRevBlinkinLedDriver.DisplayKind.AUTO;
-
 /*
  * Display patterns of a REV Robotics Blinkin LED Driver.
  * AUTO mode cycles through all of the patterns.
  * MANUAL mode allows the user to manually change patterns using the
  * left and right bumpers of a gamepad.
+ *
+ * Configure the driver on a servo port, and name it "blinkin".
  *
  * Displays the first pattern upon init.
  */
@@ -66,11 +63,6 @@ public class SampleRevBlinkinLedDriver extends OpMode {
      */
     private final static int GAMEPAD_LOCKOUT = 500;
 
-    /*
-     * The servo port, and configured servo, that the Blinkin driver is connected to.
-     */
-    Servo servo;
-
     RevBlinkinLedDriver blinkinLedDriver;
     RevBlinkinLedDriver.BlinkinPattern pattern;
 
@@ -80,7 +72,7 @@ public class SampleRevBlinkinLedDriver extends OpMode {
     Deadline ledCycleDeadline;
     Deadline gamepadRateLimit;
 
-    public enum DisplayKind {
+    protected enum DisplayKind {
         MANUAL,
         AUTO
     }
@@ -88,10 +80,9 @@ public class SampleRevBlinkinLedDriver extends OpMode {
     @Override
     public void init()
     {
-        displayKind = AUTO;
+        displayKind = DisplayKind.AUTO;
 
-        servo = hardwareMap.get(Servo.class, "servo");
-        blinkinLedDriver = new RevBlinkinLedDriver(servo);
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
         blinkinLedDriver.setPattern(pattern);
 
@@ -137,7 +128,7 @@ public class SampleRevBlinkinLedDriver extends OpMode {
             setDisplayKind(DisplayKind.MANUAL);
             gamepadRateLimit.reset();
         } else if (gamepad1.b) {
-            setDisplayKind(AUTO);
+            setDisplayKind(DisplayKind.AUTO);
             gamepadRateLimit.reset();
         } else if ((displayKind == DisplayKind.MANUAL) && (gamepad1.left_bumper)) {
             pattern = pattern.previous();

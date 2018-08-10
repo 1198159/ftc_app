@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6,"i10":6,"i11":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var methods = {"i0":6,"i1":6,"i2":38,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6,"i10":38,"i11":6};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -139,7 +139,7 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -161,13 +161,17 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 <td class="colFirst"><code><a href="../../../../com/qualcomm/robotcore/hardware/PIDCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDCoefficients</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#getPIDCoefficients-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-">getPIDCoefficients</a></span>(int&nbsp;motor,
                   <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode)</code>
-<div class="block">Returns the coefficients used for PID control on the indicated motor when in the indicated mode</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#getPIDFCoefficients-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-"><code>getPIDFCoefficients(int, DcMotor.RunMode)</code></a> instead</span></div>
+</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../com/qualcomm/robotcore/hardware/PIDFCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDFCoefficients</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#getPIDFCoefficients-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-">getPIDFCoefficients</a></span>(int&nbsp;motor,
-                   <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode)</code>&nbsp;</td>
+                   <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode)</code>
+<div class="block">Returns the coefficients used for PIDF control on the indicated motor when in the indicated mode</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -215,14 +219,18 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#setPIDCoefficients-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-com.qualcomm.robotcore.hardware.PIDCoefficients-">setPIDCoefficients</a></span>(int&nbsp;motor,
                   <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode,
                   <a href="../../../../com/qualcomm/robotcore/hardware/PIDCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDCoefficients</a>&nbsp;pidCoefficients)</code>
-<div class="block">Sets the coefficients used for PID control on the indicated motor when in the indicated mode</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#setPIDFCoefficients-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-com.qualcomm.robotcore.hardware.PIDFCoefficients-"><code>setPIDFCoefficients(int, DcMotor.RunMode, PIDFCoefficients)</code></a> instead</span></div>
+</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#setPIDFCoefficients-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-com.qualcomm.robotcore.hardware.PIDFCoefficients-">setPIDFCoefficients</a></span>(int&nbsp;motor,
                    <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode,
-                   <a href="../../../../com/qualcomm/robotcore/hardware/PIDFCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDFCoefficients</a>&nbsp;pidCoefficients)</code>&nbsp;</td>
+                   <a href="../../../../com/qualcomm/robotcore/hardware/PIDFCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDFCoefficients</a>&nbsp;pidfCoefficients)</code>
+<div class="block">Sets the coefficients used for PIDF control on the indicated motor when in the indicated mode</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -230,7 +238,7 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 <!--   -->
 </a>
 <h3>Methods inherited from interface&nbsp;com.qualcomm.robotcore.hardware.<a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html" title="interface in com.qualcomm.robotcore.hardware">DcMotorController</a></h3>
-<code><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorCurrentPosition-int-">getMotorCurrentPosition</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorMode-int-">getMotorMode</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorPower-int-">getMotorPower</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorPowerFloat-int-">getMotorPowerFloat</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorTargetPosition-int-">getMotorTargetPosition</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorType-int-">getMotorType</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorZeroPowerBehavior-int-">getMotorZeroPowerBehavior</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#isBusy-int-">isBusy</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#setMotorMode-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-">setMotorMode</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#setMotorPower-int-double-">setMotorPower</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#setMotorTargetPosition-int-int-">setMotorTargetPosition</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#setMotorType-int-MotorConfigurationType-">setMotorType</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#setMotorZeroPowerBehavior-int-com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior-">setMotorZeroPowerBehavior</a></code></li>
+<code><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorCurrentPosition-int-">getMotorCurrentPosition</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorMode-int-">getMotorMode</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorPower-int-">getMotorPower</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorPowerFloat-int-">getMotorPowerFloat</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorTargetPosition-int-">getMotorTargetPosition</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorType-int-">getMotorType</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#getMotorZeroPowerBehavior-int-">getMotorZeroPowerBehavior</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#isBusy-int-">isBusy</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#resetDeviceConfigurationForOpMode-int-">resetDeviceConfigurationForOpMode</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#setMotorMode-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-">setMotorMode</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#setMotorPower-int-double-">setMotorPower</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#setMotorTargetPosition-int-int-">setMotorTargetPosition</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#setMotorType-int-MotorConfigurationType-">setMotorType</a>, <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.html#setMotorZeroPowerBehavior-int-com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior-">setMotorZeroPowerBehavior</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.com.qualcomm.robotcore.hardware.HardwareDevice">
@@ -382,9 +390,11 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 <ul class="blockList">
 <li class="blockList">
 <h4>setPIDCoefficients</h4>
-<pre>void&nbsp;setPIDCoefficients(int&nbsp;motor,
-                        <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode,
-                        <a href="../../../../com/qualcomm/robotcore/hardware/PIDCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDCoefficients</a>&nbsp;pidCoefficients)</pre>
+<pre>@Deprecated
+void&nbsp;setPIDCoefficients(int&nbsp;motor,
+                                     <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode,
+                                     <a href="../../../../com/qualcomm/robotcore/hardware/PIDCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDCoefficients</a>&nbsp;pidCoefficients)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#setPIDFCoefficients-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-com.qualcomm.robotcore.hardware.PIDFCoefficients-"><code>setPIDFCoefficients(int, DcMotor.RunMode, PIDFCoefficients)</code></a> instead</span></div>
 <div class="block">Sets the coefficients used for PID control on the indicated motor when in the indicated mode</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -405,11 +415,19 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 <h4>setPIDFCoefficients</h4>
 <pre>void&nbsp;setPIDFCoefficients(int&nbsp;motor,
                          <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode,
-                         <a href="../../../../com/qualcomm/robotcore/hardware/PIDFCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDFCoefficients</a>&nbsp;pidCoefficients)
+                         <a href="../../../../com/qualcomm/robotcore/hardware/PIDFCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDFCoefficients</a>&nbsp;pidfCoefficients)
                   throws java.lang.UnsupportedOperationException</pre>
+<div class="block">Sets the coefficients used for PIDF control on the indicated motor when in the indicated mode</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>motor</code> - the motor whose PIDF coefficients are to be set</dd>
+<dd><code>mode</code> - the mode on that motor whose coefficients are to be set</dd>
+<dd><code>pidfCoefficients</code> - the new coefficients to set</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.UnsupportedOperationException</code></dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#setPIDFCoefficients-com.qualcomm.robotcore.hardware.DcMotor.RunMode-com.qualcomm.robotcore.hardware.PIDFCoefficients-"><code>DcMotorEx.setPIDFCoefficients(DcMotor.RunMode, PIDFCoefficients)</code></a>, 
+<a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#getPIDFCoefficients-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-"><code>getPIDFCoefficients(int, DcMotor.RunMode)</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -419,8 +437,10 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 <ul class="blockList">
 <li class="blockList">
 <h4>getPIDCoefficients</h4>
-<pre><a href="../../../../com/qualcomm/robotcore/hardware/PIDCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDCoefficients</a>&nbsp;getPIDCoefficients(int&nbsp;motor,
-                                   <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode)</pre>
+<pre>@Deprecated
+<a href="../../../../com/qualcomm/robotcore/hardware/PIDCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDCoefficients</a>&nbsp;getPIDCoefficients(int&nbsp;motor,
+                                                <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#getPIDFCoefficients-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-"><code>getPIDFCoefficients(int, DcMotor.RunMode)</code></a> instead</span></div>
 <div class="block">Returns the coefficients used for PID control on the indicated motor when in the indicated mode</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -442,6 +462,17 @@ extends <a href="../../../../com/qualcomm/robotcore/hardware/DcMotorController.h
 <h4>getPIDFCoefficients</h4>
 <pre><a href="../../../../com/qualcomm/robotcore/hardware/PIDFCoefficients.html" title="class in com.qualcomm.robotcore.hardware">PIDFCoefficients</a>&nbsp;getPIDFCoefficients(int&nbsp;motor,
                                      <a href="../../../../com/qualcomm/robotcore/hardware/DcMotor.RunMode.html" title="enum in com.qualcomm.robotcore.hardware">DcMotor.RunMode</a>&nbsp;mode)</pre>
+<div class="block">Returns the coefficients used for PIDF control on the indicated motor when in the indicated mode</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>motor</code> - the motor whose PIDF coefficients are desired</dd>
+<dd><code>mode</code> - the mode on that motor whose coefficients are to be queried</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the coefficients used for PIDF control on the indicated motor when in the indicated mode</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../com/qualcomm/robotcore/hardware/DcMotorEx.html#getPIDCoefficients-com.qualcomm.robotcore.hardware.DcMotor.RunMode-"><code>DcMotorEx.getPIDCoefficients(DcMotor.RunMode)</code></a>, 
+<a href="../../../../com/qualcomm/robotcore/hardware/DcMotorControllerEx.html#setPIDFCoefficients-int-com.qualcomm.robotcore.hardware.DcMotor.RunMode-com.qualcomm.robotcore.hardware.PIDFCoefficients-"><code>setPIDFCoefficients(int, DcMotor.RunMode, PIDFCoefficients)</code></a></dd>
+</dl>
 </li>
 </ul>
 <a name="setMotorTargetPosition-int-int-int-">
