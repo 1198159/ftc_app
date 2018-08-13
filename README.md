@@ -7,6 +7,15 @@ Please do not distribute this release beyond those involved in the FTC control s
 # Release Information
 **************************************************************************************
 
+Version 3.8g (built on 18.08.10)
+FTC System Testing Release
+
+Changes include
+  * improved support for PIDF firmware improvements
+  * experimental support for proportional braking
+  * tracking current master build (lots of improvements)
+
+
 Version 3.8f (built on 18.07.23)
 FTC System Testing Release
 

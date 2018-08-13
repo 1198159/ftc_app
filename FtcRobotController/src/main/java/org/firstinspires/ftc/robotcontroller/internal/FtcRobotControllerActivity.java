@@ -57,6 +57,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.google.blocks.ftcrobotcontroller.BlocksActivity;
@@ -98,12 +99,15 @@ import com.qualcomm.robotcore.wifi.NetworkType;
 import org.firstinspires.ftc.ftccommon.external.SoundPlayingRobotMonitor;
 import org.firstinspires.ftc.ftccommon.internal.FtcRobotControllerWatchdogService;
 import org.firstinspires.ftc.ftccommon.internal.ProgramAndManageActivity;
+import org.firstinspires.ftc.robotcore.external.navigation.MotionDetection;
 import org.firstinspires.ftc.robotcore.internal.hardware.DragonboardLynxDragonboardIsPresentPin;
 import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManager;
 import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManagerFactory;
 import org.firstinspires.ftc.robotcore.internal.network.WifiDirectDeviceNameManager;
 import org.firstinspires.ftc.robotcore.internal.network.PreferenceRemoterRC;
 import org.firstinspires.ftc.robotcore.internal.network.StartResult;
+import org.firstinspires.ftc.robotcore.internal.network.WifiMuteEvent;
+import org.firstinspires.ftc.robotcore.internal.network.WifiMuteStateMachine;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.robotcore.internal.system.Assert;
 import org.firstinspires.ftc.robotcore.internal.system.PreferencesHelper;
@@ -159,6 +163,9 @@ public class FtcRobotControllerActivity extends Activity
 
   protected FtcEventLoop eventLoop;
   protected Queue<UsbDevice> receivedUsbAttachmentNotifications;
+
+  protected WifiMuteStateMachine wifiMuteStateMachine;
+  protected MotionDetection motionDetection;
 
   protected class RobotRestarter implements Restarter {
 
@@ -267,7 +274,15 @@ public class FtcRobotControllerActivity extends Activity
     buttonMenu.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        AppUtil.getInstance().openOptionsMenuFor(FtcRobotControllerActivity.this);
+        PopupMenu popupMenu = new PopupMenu(FtcRobotControllerActivity.this, v);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+          @Override
+          public boolean onMenuItemClick(MenuItem item) {
+            return onOptionsItemSelected(item); // Delegate to the handler for the hardware menu button
+          }
+        });
+        popupMenu.inflate(R.menu.ftc_robot_controller);
+        popupMenu.show();
       }
     });
 
@@ -317,6 +332,10 @@ public class FtcRobotControllerActivity extends Activity
     logPackageVersions();
     logDeviceSerialNumber();
     RobotLog.logDeviceInfo();
+
+    if (preferencesHelper.readBoolean(getString(R.string.pref_wifi_automute), false)) {
+      initWifiMute(true);
+    }
   }
 
   protected UpdateUI createUpdateUI() {
@@ -622,6 +641,8 @@ public class FtcRobotControllerActivity extends Activity
   private void requestRobotRestart() {
     AppUtil.getInstance().showToast(UILocation.BOTH, AppUtil.getDefContext().getString(R.string.toastRestartingRobot));
     //
+    RobotLog.clearGlobalErrorMsg();
+    RobotLog.clearGlobalWarningMsg();
     shutdownRobot();
     requestRobotSetup(new Runnable() {
       @Override public void run() {
@@ -652,7 +673,44 @@ public class FtcRobotControllerActivity extends Activity
     @Override public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
       if (key.equals(context.getString(R.string.pref_app_theme))) {
         ThemedActivity.restartForAppThemeChange(getTag(), getString(R.string.appThemeChangeRestartNotifyRC));
+      } else if (key.equals(context.getString(R.string.pref_wifi_automute))) {
+        if (preferencesHelper.readBoolean(context.getString(R.string.pref_wifi_automute), false)) {
+          initWifiMute(true);
+        } else {
+          initWifiMute(false);
+        }
       }
+    }
+  }
+
+  protected void initWifiMute(boolean enable) {
+    if (enable) {
+      wifiMuteStateMachine = new WifiMuteStateMachine();
+      wifiMuteStateMachine.initialize();
+      wifiMuteStateMachine.start();
+
+      motionDetection = new MotionDetection(2.0, 10);
+      motionDetection.startListening();
+      motionDetection.registerListener(new MotionDetection.MotionDetectionListener() {
+        @Override
+        public void onMotionDetected(double vector)
+        {
+          wifiMuteStateMachine.consumeEvent(WifiMuteEvent.USER_ACTIVITY);
+        }
+      });
+    } else {
+      wifiMuteStateMachine.stop();
+      wifiMuteStateMachine = null;
+      motionDetection.stopListening();
+      motionDetection.purgeListeners();
+      motionDetection = null;
+    }
+  }
+
+  @Override
+  public void onUserInteraction() {
+    if (wifiMuteStateMachine != null) {
+      wifiMuteStateMachine.consumeEvent(WifiMuteEvent.USER_ACTIVITY);
     }
   }
 }
