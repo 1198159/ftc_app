@@ -7,6 +7,14 @@ Please do not distribute this release beyond those involved in the FTC control s
 # Release Information
 **************************************************************************************
 
+Version 3.8h (built on 18.08.16)
+FTC System Testing Release
+
+Changes include
+  * improved support for proportional braking
+  * tracking current master build (lots of improvements)
+
+
 Version 3.8g (built on 18.08.10)
 FTC System Testing Release
 
