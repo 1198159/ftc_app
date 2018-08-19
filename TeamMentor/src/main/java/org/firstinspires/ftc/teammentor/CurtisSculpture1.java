@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
- * This file contains an opmode that tests whether an encoder is working.
+ * This file contains an opmode that moves a motor at a constant rate to power a moving sculpture.
  */
 
 @TeleOp(name="01", group="Curtis")  // @Autonomous(...) is the other common choice
