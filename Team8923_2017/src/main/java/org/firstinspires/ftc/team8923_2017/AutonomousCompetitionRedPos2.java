@@ -23,7 +23,7 @@ public class AutonomousCompetitionRedPos2 extends MasterAutonomous
 
         telemetry.addData("InitState:", "InitStarted");
         telemetry.update();
-        telemetry.Update();
+        telemetry.update();
         InitAuto();//Initializes Hardware and sets position based on alliance
         initVuforia();//Initializes Vuforia
         telemetry.addData("InitState:", "InitFinished");
