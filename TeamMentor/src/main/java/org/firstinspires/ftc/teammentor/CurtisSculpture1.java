@@ -24,7 +24,7 @@ public class CurtisSculpture1 extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        motor.setPower(0.01);
+        motor.setPower(0.01); //wow that's slow!
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
