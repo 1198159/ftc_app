@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -21,6 +22,8 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
     DcMotorEx motorEx = null;
     DigitalChannel relay; // Relay circuit, plugged into port 0 of the REV module
     INA219 ina; // INA219 Current Sensor, plugged into port 1 of the REV module.  Here's the link to the data sheet: https://cdn-shop.adafruit.com/datasheets/ina219.pdf
+
+    PIDCoefficients pidCoefficients = new PIDCoefficients();
 
     double motorPower = 0.0; // used as a placeholder value for incremented motor power the method "RampUpMotor" below
     double ticksPerSec = 0.0;
@@ -48,7 +51,6 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
     boolean isMotorOn;
     boolean isDpadUpPushed;
     boolean isDpadDownPushed;
-
 
     /*
     The following two methods follow the same concept as the two methods above.  They both log data
@@ -201,6 +203,9 @@ public class DynamomterProject extends LinearOpMode // "DynamometerProject" is a
             }
 
             telemetry.addData("Set Motor ticks per sec: ", ticksPerSec);
+            telemetry.addData("PID Coefficients:", motorEx.getPIDCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER).p);
+            telemetry.addData("PID Coefficients:", motorEx.getPIDCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER).i);
+            telemetry.addData("PID Coefficients:", motorEx.getPIDCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER).d);
             //telemetry.addData("EncoderCount", motorEx.getCurrentPosition());
             telemetry.addData("Velocity ticks per sec: ", motorEx.getVelocity());
             telemetry.update();
@@ -234,6 +239,12 @@ This is where the OpMode starts, including the initializing process.  The runOpM
         motorEx.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorEx.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         motorEx.setDirection(DcMotorEx.Direction.FORWARD);
+
+        pidCoefficients.p = 4.0;
+        pidCoefficients.i = 8.0;
+        pidCoefficients.d = 1.0;
+
+        motorEx.setPIDCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidCoefficients);
 
         // Tell the user that the motor is done initializing
         telemetry.addData(">", "Motor done initializing");
