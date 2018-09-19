@@ -39,7 +39,7 @@ If any of these steps result in a merge conflict, STOP IMMEDIATELY and get help 
 4. Double-click on Teams so it's your current branch.
 5. Right-click on master-swerve and select "Merge master-swerve into Teams"
 6. Assuming all goes ok, commit BUT DO NOT push yet.
-7. Go into Android Studio and Build..Make Project for each of the team folders for this year. The purpose of this step is to see if the New Hampshire release has changed any APIs that have broken our code. If you get build errors, investigate them and fix them.
+7. Go into Android Studio and Build..Make Project so that Android Studio will compile each of the team folders for this year. The purpose of this step is to see if the New Hampshire release has changed any APIs that have broken our code. If you get build errors, investigate them and fix them.
 8. Commit any changes, and push.
 
 You're done!
