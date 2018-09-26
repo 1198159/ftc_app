@@ -69,45 +69,20 @@ public class OpenCVWithVuforia extends LinearOpMode {
 
     @Override public void runOpMode() {
 
-        /*
-         * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
-         * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
-         */
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        initializeVuforia();
 
-        // OR...  Do Not Activate the Camera Monitor View, to save power
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-        
-        //This licence key belongs to Steve Geffner
-        parameters.vuforiaLicenseKey = "ATJf0AL/////AAAAGQZ9xp9L+k5UkmHj3LjxcoQwNTTBJqjO9LYsbkWQArRpYKQmt7vqe680RCQSS9HatStn1XZVi7rgA8T7qrJz/KYI748M4ZjlKv4Z11gryemJCRA9+WWkQ51D3TuYJbQC46+LDeMfbvcJQoQ79jtXr7xdFhfJl1mRxf+wMVoPWfN6Dhr8q3XVxFwOE/pM3gXWQ0kacbcGR/vy3NAsbOhf02DEe5WoV5PNZTF34LWN3dWURu7NJsnbFzkpzXdogeVAdiQ3QUWDvuhEwvSJY4W+fCTb15t6T/c/GJ/vqptsVKqavXk6MQobnUsVFpFP+5OSuRQe7EgvWuOxn7xn5YlC+CWAYh9LrXDpktwCwBAiX3Gx";
-
-        /*
-         * We also indicate which camera on the RC that we wish to use.
-         * Here we chose the back (HiRes) camera (for greater range), but
-         * for a competition robot, the front camera might be more convenient.
-         */
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-        // Setup for getting pixel information
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
-        // Make sure that vuforia doesn't begin racking up unnecessary frames
-        vuforia.setFrameQueueCapacity(1);
-
-        telemetry.addData(">", "Press Play to start");
+        telemetry.addData(">", "Wait for Vuforia to start then Press Play");
         telemetry.update();
 
         waitForStart();
 
-        boolean xButtonAlreadyDown = false;
-
         while (opModeIsActive()) {
 
-            if (gamepad1.x & !xButtonAlreadyDown) {
-                xButtonAlreadyDown = true; //debounce the button so this code only runs one time per button press
+            if (gamepad1XButtonPressed()) {
 
                 Bitmap bitmap = getBitmapFromVuforia();
                 Mat mat  = getMatFromBitmap(bitmap);
+
                 if (mat != null)
                 {
                     //do opencv operations here
@@ -115,10 +90,7 @@ public class OpenCVWithVuforia extends LinearOpMode {
                 }
 
             }
-            else //reset our debounce variable
-                if (!gamepad1.x & xButtonAlreadyDown) xButtonAlreadyDown = false;
-
-
+            
             telemetry.update();
         }
     }
@@ -175,6 +147,50 @@ public class OpenCVWithVuforia extends LinearOpMode {
         Utils.bitmapToMat(b, tmp);
 
         return tmp;
+    }
+
+    public void initializeVuforia()
+    {
+        /*
+         * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
+         * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
+         */
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        // OR...  Do Not Activate the Camera Monitor View, to save power
+        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        //This licence key belongs to Steve Geffner
+        parameters.vuforiaLicenseKey = "ATJf0AL/////AAAAGQZ9xp9L+k5UkmHj3LjxcoQwNTTBJqjO9LYsbkWQArRpYKQmt7vqe680RCQSS9HatStn1XZVi7rgA8T7qrJz/KYI748M4ZjlKv4Z11gryemJCRA9+WWkQ51D3TuYJbQC46+LDeMfbvcJQoQ79jtXr7xdFhfJl1mRxf+wMVoPWfN6Dhr8q3XVxFwOE/pM3gXWQ0kacbcGR/vy3NAsbOhf02DEe5WoV5PNZTF34LWN3dWURu7NJsnbFzkpzXdogeVAdiQ3QUWDvuhEwvSJY4W+fCTb15t6T/c/GJ/vqptsVKqavXk6MQobnUsVFpFP+5OSuRQe7EgvWuOxn7xn5YlC+CWAYh9LrXDpktwCwBAiX3Gx";
+
+        /*
+         * We also indicate which camera on the RC that we wish to use.
+         * Here we chose the back (HiRes) camera (for greater range), but
+         * for a competition robot, the front camera might be more convenient.
+         */
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        // Setup for getting pixel information
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+        // Make sure that vuforia doesn't begin racking up unnecessary frames
+        vuforia.setFrameQueueCapacity(1);
+    }
+
+
+    /* A function and supporting variable to debounce the X button on the gamepad,
+    *  so that our code only runs one time for each button press */
+    boolean xButtonAlreadyDown = false;  //need a variable to debounce the button press
+    public boolean gamepad1XButtonPressed()
+    {
+        if (gamepad1.x & !xButtonAlreadyDown)
+        {
+            xButtonAlreadyDown = true; //debounce the button so this code only runs one time per button press
+            return true;
+        }
+        else if (!gamepad1.x & xButtonAlreadyDown) xButtonAlreadyDown = false; //clear our debounce flag
+
+        return false;
     }
 
     String format(OpenGLMatrix transformationMatrix) {
