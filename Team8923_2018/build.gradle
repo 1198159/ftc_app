@@ -19,4 +19,6 @@ android {
     }
 }
 dependencies {
+    implementation project(':endercv')
+    implementation project(':openCVLibrary3')
 }
