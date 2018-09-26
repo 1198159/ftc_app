@@ -12,6 +12,37 @@ import org.opencv.imgproc.Imgproc;
 
 */
 
+/*
+     //here is some sample code that will get an image from vuforia and
+     //turn it into an opencv Mat so you can do further processing
+
+     VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take(); //takes the frame at the head of the queue
+     long numImages = frame.getNumImages();
+
+     for (int i = 0; i < numImages; i++) {
+         if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
+             rgb = frame.getImage(i);
+             break;
+         }
+     }
+
+     //rgb is now the Image object that weve used in the video
+     Bitmap bm = Bitmap.createBitmap(rgb.getWidth(), rgb.getHeight(), Bitmap.Config.RGB_565);
+     bm.copyPixelsFromBuffer(rgb.getPixels());
+
+     //put the image into a MAT for OpenCV
+     Mat tmp = new Mat(rgb.getWidth(), rgb.getHeight(), CvType.CV_8UC4);
+     Utils.bitmapToMat(bm, tmp);
+
+     //close the frame, prevents memory leaks and crashing
+     frame.close();
+
+
+*/
+
+
+
+
 public class OpenCVHelloWorld {
 	
 	//Note: this code was written as a standalone java program in Eclipse (not Android Studio),
