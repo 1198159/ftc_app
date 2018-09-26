@@ -48,7 +48,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         // Ensure log can't overflow
         telemetry.log().setCapacity(2);
         telemetry.log().add("Alliance Blue/Red = X/B");
-        telemetry.log().add("Balancing stone Left/Right = Left/Right bumper");
+        //telemetry.log().add("Balancing stone Left/Right = Left/Right bumper");
 
         boolean settingUp = true;
 
