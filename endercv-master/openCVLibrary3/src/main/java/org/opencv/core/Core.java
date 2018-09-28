@@ -17,6 +17,12 @@ import org.opencv.utils.Converters;
 //javadoc: Core
 
 public class Core {
+
+    static
+    {
+        System.loadLibrary("opencv_java3");
+    }
+
     // these constants are wrapped inside functions to prevent inlining
     private static String getVersion() { return "3.4.3"; }
     private static String getNativeLibraryName() { return "opencv_java343"; }

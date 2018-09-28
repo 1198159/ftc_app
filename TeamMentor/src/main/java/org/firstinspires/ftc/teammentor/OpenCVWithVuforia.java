@@ -36,22 +36,10 @@ import com.vuforia.Image;
 import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.ConceptVuforiaNavigation;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.opencv.android.Utils;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
 /**
@@ -76,16 +64,21 @@ public class OpenCVWithVuforia extends LinearOpMode {
 
         waitForStart();
 
+        boolean notCapturedYet = true;
+
         while (opModeIsActive()) {
 
-            if (gamepad1XButtonPressed()) {
-
+            //if (gamepad1XButtonPressed())
+            if (notCapturedYet)
+            {
+                notCapturedYet = false;
                 Bitmap bitmap = getBitmapFromVuforia();
                 Mat mat  = getMatFromBitmap(bitmap);
 
                 if (mat != null)
                 {
                     //do opencv operations here
+                    telemetry.addData("image", "image found");
 
                 }
 
@@ -143,7 +136,7 @@ public class OpenCVWithVuforia extends LinearOpMode {
         if (b==null) return null;
 
         //put the image into a MAT for OpenCV
-        Mat tmp = new Mat(b.getWidth(), b.getHeight(), CvType.CV_8UC4);
+        Mat tmp = new Mat(); //b.getWidth(), b.getHeight, CvType.CV_8UC4
         Utils.bitmapToMat(b, tmp);
 
         return tmp;

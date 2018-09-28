@@ -6,6 +6,11 @@ import java.nio.ByteBuffer;
 //javadoc: Mat
 public class Mat {
 
+    static
+    {
+        System.loadLibrary("opencv_java3");
+    }
+
     public final long nativeObj;
 
     public Mat(long addr)
