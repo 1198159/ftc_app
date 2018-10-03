@@ -57,7 +57,10 @@ public class OpenCVWithVuforia extends LinearOpMode {
 
     @Override public void runOpMode() {
 
-        initializeVuforia();
+        final boolean SHOW_PREVIEW_IMAGE = true;
+        final boolean HIDE_PREVIEW_IMAGE = false;
+
+        initializeVuforia(SHOW_PREVIEW_IMAGE);
 
         telemetry.addData(">", "Wait for Vuforia to start then Press Play");
         telemetry.update();
@@ -142,17 +145,21 @@ public class OpenCVWithVuforia extends LinearOpMode {
         return tmp;
     }
 
-    public void initializeVuforia()
+    public void initializeVuforia(boolean showPreviewImage)
     {
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
          * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
          */
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        // OR...  Do Not Activate the Camera Monitor View, to save power
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        VuforiaLocalizer.Parameters parameters;
+
+        if (showPreviewImage) {
+            int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+            parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        }
+        else parameters = new VuforiaLocalizer.Parameters(); //no preview image
+
 
         //This licence key belongs to Steve Geffner
         parameters.vuforiaLicenseKey = "ATJf0AL/////AAAAGQZ9xp9L+k5UkmHj3LjxcoQwNTTBJqjO9LYsbkWQArRpYKQmt7vqe680RCQSS9HatStn1XZVi7rgA8T7qrJz/KYI748M4ZjlKv4Z11gryemJCRA9+WWkQ51D3TuYJbQC46+LDeMfbvcJQoQ79jtXr7xdFhfJl1mRxf+wMVoPWfN6Dhr8q3XVxFwOE/pM3gXWQ0kacbcGR/vy3NAsbOhf02DEe5WoV5PNZTF34LWN3dWURu7NJsnbFzkpzXdogeVAdiQ3QUWDvuhEwvSJY4W+fCTb15t6T/c/GJ/vqptsVKqavXk6MQobnUsVFpFP+5OSuRQe7EgvWuOxn7xn5YlC+CWAYh9LrXDpktwCwBAiX3Gx";
