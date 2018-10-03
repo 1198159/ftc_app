@@ -45,6 +45,9 @@ import org.opencv.core.Mat;
 /**
  * This OpMode illustrates the basics of using opencv with an image obtained using Vuforia.
  *
+ * If you are not using vuforia, you're better off using a different starting point,
+ * such as OpenCVWithoutVuforia
+ *
  */
 
 @TeleOp(name="opencv vuforia", group ="opencv")
