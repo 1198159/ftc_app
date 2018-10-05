@@ -30,8 +30,12 @@ public class TeleOpTestBed extends MasterAutonomous
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
+                motorBL.setPower(1);
+                motorBR.setPower(1);
+                motorFL.setPower(1);
+                motorFR.setPower(1);
 
-
+            telemetry.addData("eTime:", eTime);
             updateCallback(eTime);
             telemetry.update();
             idle();

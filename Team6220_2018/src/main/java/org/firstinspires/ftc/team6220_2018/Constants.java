@@ -21,10 +21,10 @@ public class Constants
 
 
     // Drive mode constants
-    public static final double SLOW_MODE_T_FACTOR = 0.35;
-    public static final double SLOW_MODE_R_FACTOR = 0.25;
-    public static final double T_FACTOR = 0.7;
-    public static final double R_FACTOR = 0.72;
+    public static final double SLOW_MODE_T_FACTOR = 0.4;
+    public static final double SLOW_MODE_R_FACTOR = 0.3;
+    public static final double T_FACTOR = 1.0;
+    public static final double R_FACTOR = 1.0;
 
 
     // Tolerances
