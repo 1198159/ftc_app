@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "TeleOp Competition")
 
-class TeleOpCompetition extends MasterTeleOp
+public class TeleOpCompetition extends MasterTeleOp
 {
     @Override
     public void runOpMode()
