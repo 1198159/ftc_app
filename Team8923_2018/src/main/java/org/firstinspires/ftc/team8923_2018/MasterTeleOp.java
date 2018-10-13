@@ -19,19 +19,23 @@ abstract class MasterTeleOp extends Master
         double x = gamepad1.left_stick_x;
         double power = calculateDistance(x, y);
         double turnPower = -gamepad1.right_stick_x; // Fix for clockwise being a negative rotation
-
-        // Hank has asked to just use cardinal directions
-        if(Math.abs(x) > Math.abs(y))
-            y = 0;
-        else
-            x = 0;
         double angle = Math.toDegrees(Math.atan2(-x, y)); // 0 degrees is forward
 
         driveMecanum(angle, power, turnPower);
+        sendTelemetry();
     }
 
     double calculateDistance(double deltaX, double deltaY)
     {
         return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    }
+
+    void sendTelemetry()
+    {
+        telemetry.addData("left stick x:", gamepad1.left_stick_x);
+        telemetry.addData("left stick y:", gamepad1.left_stick_y);
+        telemetry.addData("right stick x:", gamepad1.right_stick_x);
+        telemetry.addData("right stick y:", gamepad1.right_stick_y);
+        telemetry.update();
     }
 }
