@@ -63,15 +63,45 @@ abstract public class MasterOpMode extends LinearOpMode
 
     public void initializeHardware()
     {
-
+        // Initialize motors to be the hardware motors
+        motorFL = hardwareMap.dcMotor.get("motorFL");
+        motorFR = hardwareMap.dcMotor.get("motorFR");
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorBR = hardwareMap.dcMotor.get("motorBR");
         motorLiftLeft = hardwareMap.dcMotor.get("motorLiftLeft");
-        motorLiftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorLiftRight = hardwareMap.dcMotor.get("motorLiftRight");
-        motorLiftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         motorLiftLeft.setDirection(DcMotor.Direction.REVERSE);
-        motorLiftRight.setDirection(DcMotor.Direction.FORWARD)  ;
+        motorLiftRight.setDirection(DcMotor.Direction.FORWARD);
+
+        motorLiftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLiftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // reverse front and back right motors just for TeleOp
+        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        motorFR.setDirection(DcMotor.Direction.FORWARD);
+        motorBR.setDirection(DcMotor.Direction.FORWARD);
+
+        // set motor power to 0
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+
         motorLiftLeft.setPower(0.0);
         motorLiftRight.setPower(0.0);
+
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
