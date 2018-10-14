@@ -6,49 +6,100 @@ import com.qualcomm.robotcore.util.Range;
 
 abstract public class MasterTeleOp extends MasterOpMode
 {
-    double y = 0;
-    double x = 0;
-    double pivotPower = 0;
+    double ly = 0;
+    double ry = 0;
+    double lx = 0;
+
     final double ADAGIO_POWER = 0.3;
 
     boolean isReverseMode = false;
     boolean isLegatoMode = false;
-    boolean isStraightDrive = false;
-    boolean driveClose = false;
-    boolean driveOpen = false;
 
     boolean isServoLowered;
     boolean isXPushed;
     boolean isLeftBumperPushed;
     boolean isRightBumperPushed;
 
-    int ggOpenState;
-    int ggCloseState;
-    int liftState; // keeps track of the state that GL is in (either -1, 0, 1)
-    int liftLevel = 0; // is either 0, 1, 2, or 3
-    int glyphCounts = 1300; // this is the height of a glyph in encoder count values
-    boolean isLifting = false;
-    boolean isLowering = false;
-
-    // declare variables for the GG (AndyMarkNeveRest 3.7 motor is 44.4 counts per rev)
-    double KGlyph = 1.0f/600.0f; // constant for proportional drive
-    double MINSPEED = 0.05;
-    double MAXSPEED = 0.4;
-
-    double speedGG; // current speed
-    int errorMaxGG; // error for closing grabber
-    int errorMinGG; // error for opening grabber
-    int prevGGError = 0; // error of GG motor in previous loop
-    double shiftGG = 0.0;
-
     int curGLPos;
     int tarGLPos;
-    int tolGL = 20;
-    double speedGL;
-    int curGGPos;
-    int minGGPos = -180; // a bit less than the original starting position of zero (where we start it) (OPEN is more positive)
-    int maxGGPos = -577; // maxGGPos equals the # rev to close/open GG (13 rev) times 44.4 counts per rev (CLOSED is more negative)
-    int maxGLPos = 4000;
+
+    AvgFilter filterJoyStickInput = new AvgFilter();
+
+    void tankDrive()
+    {
+        // hold right trigger for adagio legato mode
+        if (gamepad1.right_trigger > 0.0) isLegatoMode = true;
+        else isLegatoMode = false;
+        // hold left trigger for reverse mode
+        if (gamepad1.left_trigger > 0.0) isReverseMode = true;
+        else isReverseMode = false;
+
+        if (isLegatoMode) // Legato Mode
+        {
+            ly = -Range.clip(gamepad1.left_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
+            ry = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
+            if (isReverseMode) // Reverse Mode and Legato Mode combo
+                ly = Range.clip(gamepad1.left_stick_y, -0.3, 0.3); // Y axis is negative when up
+                ry = Range.clip(gamepad1.right_stick_y, -0.3, 0.3); // Y axis is negative when up
+        }
+        else if (isReverseMode) // Reverse Mode
+        {
+            ly = gamepad1.left_stick_y; // Y axis is negative when up
+            ry = gamepad1.right_stick_y; // Y axis is negative when up
+        }
+        else // Staccato Mode (standard)
+        {
+            ly = -gamepad1.left_stick_y; // Y axis is negative when up
+            ry = -gamepad1.right_stick_y; // Y axis is negative when up
+        }
+
+        filterJoyStickInput.appendInputY(ly, ry);
+
+        ly = filterJoyStickInput.getFilteredLY();
+        ry = filterJoyStickInput.getFilteredRY();
+
+        powerFL = ly;
+        powerFR = ry;
+        powerBL = ly;
+        powerBR = ry;
+    }
+
+    void arcadeDrive()
+    {
+        // hold right trigger for adagio legato mode
+        if (gamepad1.right_trigger > 0.0) isLegatoMode = true;
+        else isLegatoMode = false;
+        // hold left trigger for reverse mode
+        if (gamepad1.left_trigger > 0.0) isReverseMode = true;
+        else isReverseMode = false;
+
+        if (isLegatoMode) // Legato Mode
+        {
+            ry = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
+            lx = Range.clip(gamepad1.left_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
+            if (isReverseMode) // Reverse Mode and Legato Mode combo
+                ry = Range.clip(gamepad1.right_stick_y, -0.3, 0.3); // Y axis is negative when up
+        }
+        else if (isReverseMode) // Reverse Mode
+        {
+            ry = gamepad1.right_stick_y; // Y axis is negative when up
+        }
+        else // Staccato Mode (standard)
+        {
+            ry = -gamepad1.right_stick_y; // Y axis is negative when up
+            lx = Range.clip(gamepad1.left_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
+        }
+
+        filterJoyStickInput.appendInputY(ly, lx);
+
+        ly = filterJoyStickInput.getFilteredLY();
+        lx = filterJoyStickInput.getFilteredRY();
+
+        powerFL = ly - lx;
+        powerFR = ry + lx;
+        powerBL = ly - lx;
+        powerBR = ry + lx;
+    }
 
     void runManualLift()
     {
@@ -72,5 +123,12 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorLiftLeft.setPower(0.0);
             motorLiftRight.setPower(0.0);
         }
+    }
+
+    void updateTelemetry()
+    {
+        telemetry.addData("legato: ", isLegatoMode);
+        telemetry.addData("reverse: ", isReverseMode);
+        telemetry.update();
     }
 }
