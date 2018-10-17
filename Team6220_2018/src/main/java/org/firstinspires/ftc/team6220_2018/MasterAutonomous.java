@@ -31,8 +31,8 @@ abstract public class MasterAutonomous extends MasterOpMode
     {
         initializeRobot();
 
-        vuforiaHelper = new VuforiaHelper();
-        vuforiaHelper.setupVuforia();
+//        vuforiaHelper = new VuforiaHelper();
+//        vuforiaHelper.setupVuforia();
     }
 
     // Note: not currently in use

@@ -12,7 +12,7 @@ public class UsingOpenCV extends MasterAutonomous
 {
     private OpenCVGold OpenCVVision;
     @Override
-    public void runOpMode()
+    public void runOpMode() throws InterruptedException
     {
         OpenCVVision = new OpenCVGold();
 
@@ -21,17 +21,40 @@ public class UsingOpenCV extends MasterAutonomous
 
         OpenCVVision.enable();
 
+        initializeAuto();
+
         waitForStart();
 
         OpenCVVision.setShowCountours(true);
 
-        while (opModeIsActive())
-        {
-            //if it does not see gold rectangle
-            while(OpenCVVision.getGoldRect().x <= 0)
+        //while (opModeIsActive())
+        //{
+//            //if it does not see gold rectangle
+//            while(((OpenCVVision.getGoldRect().y + OpenCVVision.getGoldRect().height) / 2) <= 0)
+//            {
+//                //turn robot until it does
+//                turnTo(currentAngle + 5); //not sure what turn angle I should do
+//            }
+            //gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front)
+            if(((OpenCVVision.getGoldRect().y + OpenCVVision.getGoldRect().height) / 2) <= Constants.GOLD_LEFT_HORIZONTAL)
             {
-                //turn robot until it does
-                turnTo(currentAngle + 5); //not sure what turn angle I should do
+                //turnTo(35);
+                moveRobot(90, 0.7, 0.25);
+                moveRobot(135, 0.7, 1);
+                telemetry.addLine("Left");
+            }
+            //gold is towards right of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
+            else if(((OpenCVVision.getGoldRect().y + OpenCVVision.getGoldRect().height) / 2) >Constants.GOLD_RIGHT_HORIZONTAL)
+            {
+                moveRobot(90, 0.7, 0.25);
+                moveRobot(45, 0.7, 1);
+                telemetry.addLine("Right");
+            }
+            //gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
+            else
+            {
+                moveRobot(90, 0.7, 1.2);
+                telemetry.addLine("Cannot tell");
             }
 
             telemetry.addData("Gold",
@@ -40,7 +63,7 @@ public class UsingOpenCV extends MasterAutonomous
             telemetry.update();
 
 
-        }
+        //}
 
         // stop the vision system
         OpenCVVision.disable();
