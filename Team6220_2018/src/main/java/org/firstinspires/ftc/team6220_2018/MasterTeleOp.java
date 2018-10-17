@@ -53,6 +53,12 @@ abstract public class MasterTeleOp extends MasterOpMode
             driveDirectionShift = true;
 
 
+        if (driver1.getRightTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
+            driveHanger(driver1.getRightTriggerValue());
+        else if (driver1.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
+            driveHanger(-driver1.getLeftTriggerValue());
+
+
         // Drive in direction based on whether driveDirectionShift is true
         if (!driveDirectionShift)
             driveMecanum(angle, drivePower, rotationPower);

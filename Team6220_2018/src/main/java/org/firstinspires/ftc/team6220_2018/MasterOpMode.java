@@ -51,7 +51,9 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
-     //-----------------------------
+
+    DcMotor motorHanger;
+    //-----------------------------
 
      // Servos----------------------
 
@@ -63,6 +65,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     // Booleans that allow us to choose what parts of the robot we are and aren't using in each OpMode
     public boolean isDriveTrainAttached = true;
+    public boolean isHangerAttached = true;
 
     // Create a list of tasks to accomplish in order
     List<ConcurrentOperation> callback = new ArrayList<>();
@@ -116,6 +119,15 @@ abstract public class MasterOpMode extends LinearOpMode
             motorBL.setPower(0);
             motorFR.setPower(0);
             //-------------------------------------------------------------------
+        }
+        if (isHangerAttached)
+        {
+            motorHanger = hardwareMap.dcMotor.get("motorHanger");
+
+            motorHanger.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorHanger.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            motorHanger.setPower(0);
         }
         //--------------------------------------------------------------------------------------------------------------
 
@@ -213,6 +225,13 @@ abstract public class MasterOpMode extends LinearOpMode
         telemetry.addData("vertical power: ", y);
         telemetry.addData("rotational power: ", w);
         telemetry.update();
+    }
+
+
+    void driveHanger (double drivePower)
+    {
+        motorHanger.setPower(drivePower);
+        telemetry.addData("Hanger Power: ", motorHanger.getPower());
     }
 
 
