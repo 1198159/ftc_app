@@ -12,7 +12,7 @@ public class LinearSlideTest extends MasterTeleOp
         waitForStart();
         while (opModeIsActive())
         {
-            runManualLift();
+           // runManualLift();
             telemetry.addData("hi","there");
             telemetry.update();
         }
