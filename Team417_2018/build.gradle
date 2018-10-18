@@ -11,12 +11,17 @@
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 android {
-    buildToolsVersion '27.0.3'
     defaultConfig {
 
     }
     productFlavors {
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    compileSdkVersion 23
+    buildToolsVersion '27.0.3'
 }
 dependencies {
     implementation project(':endercv')

@@ -100,31 +100,31 @@ abstract public class MasterTeleOp extends MasterOpMode
         powerBL = ly - lx;
         powerBR = ry + lx;
     }
-
+/*
     void runManualLift()
     {
-        curGLPos = motorLiftLeft.getCurrentPosition();
+       // curGLPos = motorLiftLeft.getCurrentPosition();
         // Glyph lift up/down
         if(-gamepad2.right_stick_y < 0.0) // down
         {
-            motorLiftLeft.setPower(Range.clip(-gamepad2.right_stick_y, -0.65, -0.2));
-            motorLiftRight.setPower(Range.clip(-gamepad2.right_stick_y, -0.65, -0.2));
+            //motorLiftLeft.setPower(Range.clip(-gamepad2.right_stick_y, -0.65, -0.2));
+            //motorLiftRight.setPower(Range.clip(-gamepad2.right_stick_y, -0.65, -0.2));
         }
         else if(-gamepad2.right_stick_y > 0.0) // up
         {
             tarGLPos = curGLPos;
-            motorLiftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorLiftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorLiftLeft.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 0.65));
-            motorLiftRight.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 0.65));
+            //motorLiftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //motorLiftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //motorLiftLeft.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 0.65));
+            //motorLiftRight.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 0.65));
         }
         else // turn motors off
         {
-            motorLiftLeft.setPower(0.0);
-            motorLiftRight.setPower(0.0);
+            //motorLiftLeft.setPower(0.0);
+            //motorLiftRight.setPower(0.0);
         }
     }
-
+*/
     void updateTelemetry()
     {
         telemetry.addData("legato: ", isLegatoMode);
