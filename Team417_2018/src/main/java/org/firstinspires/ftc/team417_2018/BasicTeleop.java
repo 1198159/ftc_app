@@ -26,8 +26,10 @@ public class BasicTeleop extends LinearOpMode {
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
 
 
-       // motorBL.setDirection(DcMotor.Direction.REVERSE);
-       // motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorBR.setDirection(DcMotor.Direction.REVERSE);
+        motorFR.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
