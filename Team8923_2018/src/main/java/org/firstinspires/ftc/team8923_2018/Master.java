@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 abstract class Master extends LinearOpMode
 {
@@ -108,6 +109,15 @@ abstract class Master extends LinearOpMode
         motorFR.setPower(powerFR);
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
+    }
+
+    boolean buttonsAreReleased(Gamepad pad)
+    {
+        return !(pad.a || pad.b || pad.x || pad.y || pad.left_bumper || pad.right_bumper
+                || pad.dpad_up || pad.dpad_down || pad.dpad_left || pad.dpad_right
+                || pad.left_stick_button || pad.right_stick_button
+                || pad.start || pad.back || pad.guide || pad.left_trigger > 0.35
+                || pad.right_trigger > 0.35);
     }
 
 
