@@ -25,6 +25,22 @@ abstract class MasterTeleOp extends Master
         sendTelemetry();
     }
 
+    void runLift()
+    {
+        if(gamepad1.left_trigger > 0.35)
+        {
+            motorLift.setPower(1.0);
+        }
+        else if(gamepad1.right_trigger > 0.35)
+        {
+            motorLift.setPower(-1.0);
+        }
+        else
+        {
+            motorLift.setPower(0.0);
+        }
+    }
+
     double calculateDistance(double deltaX, double deltaY)
     {
         return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team8923_2018;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 abstract class Master extends LinearOpMode
 {
@@ -10,22 +11,39 @@ abstract class Master extends LinearOpMode
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
+    DcMotor motorLift;
 
     BNO055IMU imu;
 
     double slowModeDivisor = 1.0;
 
-    void InitHardware()
+    // Constants to be used in code. Measurements in millimeters
+    private static final double GEAR_RATIO = 2/3; // Ratio of driven gear to driving gear
+    private static final double TICKS_PER_MOTOR_REVOLUTION = 560.0;
+    private static final double TICKS_PER_WHEEL_REVOLUTION = TICKS_PER_MOTOR_REVOLUTION / GEAR_RATIO;
+    private static final double WHEEL_DIAMETER = 4 * 25.4; // 4 inch diameter
+    private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
+    //private static final double CORRECTION_FACTOR = 0.92;
+    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/;
+
+    public void initHardware()
     {
         motorFL = hardwareMap.get(DcMotor.class, "motorFL");
         motorFR = hardwareMap.get(DcMotor.class, "motorFR");
         motorBL = hardwareMap.get(DcMotor.class, "motorBL");
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
+        motorLift = hardwareMap.get(DcMotor.class, "motorLift");
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
