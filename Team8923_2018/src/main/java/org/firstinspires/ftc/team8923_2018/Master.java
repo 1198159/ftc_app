@@ -24,8 +24,7 @@ abstract class Master extends LinearOpMode
     private static final double TICKS_PER_WHEEL_REVOLUTION = TICKS_PER_MOTOR_REVOLUTION / GEAR_RATIO;
     private static final double WHEEL_DIAMETER = 4 * 25.4; // 4 inch diameter
     private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
-    //private static final double CORRECTION_FACTOR = 0.92;
-    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION/* * CORRECTION_FACTOR*/;
+    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION;
 
     public void initHardware()
     {
@@ -44,6 +43,10 @@ abstract class Master extends LinearOpMode
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
         motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -120,5 +123,21 @@ abstract class Master extends LinearOpMode
                 || pad.right_trigger > 0.35);
     }
 
+    // Used for calculating distances between 2 points
+    double calculateDistance(double deltaX, double deltaY)
+    {
+        return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    }
 
+    // If you subtract 359 degrees from 0, you would get -359 instead of 1. This method handles
+    // cases when one angle is multiple rotations away from the other
+    double subtractAngles(double first, double second)
+    {
+        double delta = first - second;
+        while(delta > 180)
+            delta -= 360;
+        while(delta <= -180)
+            delta += 360;
+        return delta;
+    }
 }
