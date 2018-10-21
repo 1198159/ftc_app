@@ -3,6 +3,8 @@ package org.firstinspires.ftc.team8923_2018;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import java.util.Locale;
+
 abstract class MasterAutonomous extends Master
 {
     // robot's position and angle on the field tracked in these variables
@@ -27,7 +29,8 @@ abstract class MasterAutonomous extends Master
     double TURN_POWER_CONSTANT = 1/35; // start slowing down at 35 degrees away from the target angle;
 
     double MIN_DRIVE_POWER = 0.3; // don't let the robot go slower than this speed
-
+    int TOL = 100;
+    OpenCV openCVVision = new OpenCV();
     enum Alliance
     {
         BLUE,
@@ -83,14 +86,24 @@ abstract class MasterAutonomous extends Master
 
     public void moveLift (int ticks)
     {
-        motorLift.setTargetPosition(motorLift.getCurrentPosition() + ticks);
-        motorLift.setPower((motorLift.getTargetPosition() - motorLift.getCurrentPosition()) * (1 / 1000.0));
-        idle();;
+        while ((ticks - motorLift.getCurrentPosition()) > TOL)
+        {
+            motorLift.setTargetPosition(motorLift.getCurrentPosition() + ticks);
+            motorLift.setPower((motorLift.getTargetPosition() - motorLift.getCurrentPosition()) * (1 / 1000.0));
+            idle();;
+        }
+        stopLift();
     }
     public void stopLift()
     {
         motorLift.setPower(0.0);
         idle();
+    }
+    public void moveJJ(int position)
+    {
+        //1 is completely up
+        //-1 is completely down
+        servoJJ.setPosition(position);
     }
 
     public void configureAutonomous()
@@ -261,5 +274,30 @@ abstract class MasterAutonomous extends Master
         motorBR.setPower(0.0);
     }
 
-    
+    public String getGoldPosition()
+    {
+        openCVVision.setShowCountours(true);
+        String position;
+
+        if(((OpenCV.getGoldRect().y + OpenCV.getGoldRect().height / 2) < 150) && (OpenCV.getGoldRect().y + OpenCV.getGoldRect().height / 2) > 0)
+        {
+            telemetry.addData("Position: ", "Left");
+            position = "Left";
+        }
+        else if((OpenCV.getGoldRect().y + OpenCV.getGoldRect().height / 2) > 250)
+        {
+            telemetry.addData("Position: ", "Center");
+            position = "Center";
+        }
+        else
+        {
+            telemetry.addData("Position", "Right");
+            position = "Right";
+        }
+        telemetry.addData("Gold",
+                String.format(Locale.getDefault(), "(%d, %d)", (OpenCV.getGoldRect().x + OpenCV.getGoldRect().width) / 2, (OpenCV.getGoldRect().y + OpenCV.getGoldRect().height) / 2));
+        telemetry.update();
+
+        return position;
+    }
 }

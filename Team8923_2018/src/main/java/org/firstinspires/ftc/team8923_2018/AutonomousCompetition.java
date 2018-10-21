@@ -32,13 +32,20 @@ public class AutonomousCompetition extends MasterAutonomous
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        moveLift(500);
+        /*
         motorFL.setPower(0.25);
         motorFR.setPower(0.25);
         motorBL.setPower(0.25);
         motorBR.setPower(0.25);
+        */
 
         while (opModeIsActive())
         {
+            telemetry.addData("FL power", motorFL.getPower());
+            telemetry.addData("FR power", motorFR.getPower());
+            telemetry.addData("BL power", motorBL.getPower());
+            telemetry.addData("BR power", motorBR.getPower());
             telemetry.addData("FL encoder", motorFL.getCurrentPosition());
             telemetry.addData("FR encoder", motorFR.getCurrentPosition());
             telemetry.addData("BL encoder", motorBL.getCurrentPosition());

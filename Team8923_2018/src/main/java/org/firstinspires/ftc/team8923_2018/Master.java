@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
 
 abstract class Master extends LinearOpMode
 {
@@ -13,6 +14,8 @@ abstract class Master extends LinearOpMode
     DcMotor motorBL;
     DcMotor motorBR;
     DcMotor motorLift;
+
+    Servo servoJJ;
 
     BNO055IMU imu;
 
@@ -34,6 +37,8 @@ abstract class Master extends LinearOpMode
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
         motorLift = hardwareMap.get(DcMotor.class, "motorLift");
 
+        servoJJ = hardwareMap.get(Servo.class, "servoJJ");
+
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -42,6 +47,7 @@ abstract class Master extends LinearOpMode
 
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
         motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

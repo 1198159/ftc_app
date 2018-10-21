@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
 
+import java.util.Locale;
+
 
 @Autonomous(name="OpenCVAutoTest", group = "Swerve")
 /**
@@ -18,14 +20,16 @@ public class OpenCVAutoTest extends MasterAutonomous
     {
         openCV.init(hardwareMap.appContext, ActivityViewDisplay.getInstance());
         openCV.setShowCountours(false);//wait for start to start program
+        openCV.enable();
         waitForStart();
         openCV.setShowCountours(true);
 
-        if(((OpenCV.getGoldRect().y)) <= 150)
+        if(((OpenCV.getGoldRect().y + OpenCV.getGoldRect().height / 2) < 150) && (OpenCV.getGoldRect().y + OpenCV.getGoldRect().height / 2) > 0
+                )
         {
             telemetry.addData("Position: ", "Left");
         }
-        else if(((OpenCV.getGoldRect().y)) > 90)
+        else if((OpenCV.getGoldRect().y + OpenCV.getGoldRect().height / 2) > 250)
         {
             telemetry.addData("Position: ", "Center");
         }
@@ -33,6 +37,8 @@ public class OpenCVAutoTest extends MasterAutonomous
         {
             telemetry.addData("Position", "Right");
         }
+        telemetry.addData("Gold",
+                String.format(Locale.getDefault(), "(%d, %d)", (OpenCV.getGoldRect().x + OpenCV.getGoldRect().width) / 2, (OpenCV.getGoldRect().y + OpenCV.getGoldRect().height) / 2));
         telemetry.update();
         while (opModeIsActive())
         {
