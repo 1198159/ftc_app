@@ -14,6 +14,7 @@ abstract class Master extends LinearOpMode
     DcMotor motorBL;
     DcMotor motorBR;
     DcMotor motorLift;
+    DcMotor motorDankUnderglow;
 
     Servo servoJJ;
 
@@ -36,7 +37,7 @@ abstract class Master extends LinearOpMode
         motorBL = hardwareMap.get(DcMotor.class, "motorBL");
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
         motorLift = hardwareMap.get(DcMotor.class, "motorLift");
-
+        motorDankUnderglow = hardwareMap.get(DcMotor.class, "motorDankUnderglow");
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -49,11 +50,11 @@ abstract class Master extends LinearOpMode
         motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
         motorLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;

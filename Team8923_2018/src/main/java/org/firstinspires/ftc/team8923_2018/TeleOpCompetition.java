@@ -15,6 +15,7 @@ public class TeleOpCompetition extends MasterTeleOp
 
         while (opModeIsActive())
         {
+            dankUnderglow(1.0);
             driveMecanumTeleOp();
             runLift();
             idle();
