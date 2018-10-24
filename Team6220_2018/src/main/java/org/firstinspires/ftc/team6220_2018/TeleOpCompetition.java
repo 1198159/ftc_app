@@ -29,6 +29,12 @@ public class TeleOpCompetition extends MasterTeleOp
 
             // Drive controls
             driveMecanumWithJoysticks();
+            driveHanger();
+
+            if (driver1.isButtonJustPressed(Button.X))
+                servo.setPosition(1.0);
+            else if (driver1.isButtonJustPressed(Button.B))
+                servo.setPosition(0);
 
 
             // Extra functionalities-------------------------------------------------------

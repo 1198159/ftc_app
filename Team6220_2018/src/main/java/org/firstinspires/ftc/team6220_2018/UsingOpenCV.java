@@ -6,6 +6,10 @@ import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
 
 import java.util.Locale;
 
+/**
+*  This is a test class for scoring the sampling field using OpenCV.
+*/
+
 @Autonomous(name="UsingOpenCV")
 
 public class UsingOpenCV extends MasterAutonomous

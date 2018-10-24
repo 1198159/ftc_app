@@ -3,6 +3,9 @@ package org.firstinspires.ftc.team8923_2018;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
 
 abstract class Master extends LinearOpMode
 {
@@ -10,22 +13,48 @@ abstract class Master extends LinearOpMode
     DcMotor motorFR;
     DcMotor motorBL;
     DcMotor motorBR;
+    DcMotor motorLift;
+    DcMotor motorDankUnderglow;
+
+    Servo servoJJ;
 
     BNO055IMU imu;
 
     double slowModeDivisor = 1.0;
 
-    void InitHardware()
+    // Constants to be used in code. Measurements in millimeters
+    private static final double GEAR_RATIO = 2/3; // Ratio of driven gear to driving gear
+    private static final double TICKS_PER_MOTOR_REVOLUTION = 560.0;
+    private static final double TICKS_PER_WHEEL_REVOLUTION = TICKS_PER_MOTOR_REVOLUTION / GEAR_RATIO;
+    private static final double WHEEL_DIAMETER = 4 * 25.4; // 4 inch diameter
+    private static final double MM_PER_REVOLUTION = Math.PI * WHEEL_DIAMETER;
+    static final double MM_PER_TICK = MM_PER_REVOLUTION / TICKS_PER_WHEEL_REVOLUTION;
+
+    public void initHardware()
     {
         motorFL = hardwareMap.get(DcMotor.class, "motorFL");
         motorFR = hardwareMap.get(DcMotor.class, "motorFR");
         motorBL = hardwareMap.get(DcMotor.class, "motorBL");
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
+        motorLift = hardwareMap.get(DcMotor.class, "motorLift");
+        motorDankUnderglow = hardwareMap.get(DcMotor.class, "motorDankUnderglow");
+        servoJJ = hardwareMap.get(Servo.class, "servoJJ");
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorLift.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -92,5 +121,30 @@ abstract class Master extends LinearOpMode
         motorBR.setPower(powerBR);
     }
 
+    boolean buttonsAreReleased(Gamepad pad)
+    {
+        return !(pad.a || pad.b || pad.x || pad.y || pad.left_bumper || pad.right_bumper
+                || pad.dpad_up || pad.dpad_down || pad.dpad_left || pad.dpad_right
+                || pad.left_stick_button || pad.right_stick_button
+                || pad.start || pad.back || pad.guide || pad.left_trigger > 0.35
+                || pad.right_trigger > 0.35);
+    }
 
+    // Used for calculating distances between 2 points
+    double calculateDistance(double deltaX, double deltaY)
+    {
+        return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    }
+
+    // If you subtract 359 degrees from 0, you would get -359 instead of 1. This method handles
+    // cases when one angle is multiple rotations away from the other
+    double subtractAngles(double first, double second)
+    {
+        double delta = first - second;
+        while(delta > 180)
+            delta -= 360;
+        while(delta <= -180)
+            delta += 360;
+        return delta;
+    }
 }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team8923_2018;
 
 abstract class MasterTeleOp extends Master
 {
+    boolean dankState = true;
     void driveMecanumTeleOp()
     {
         // Reverse drive if desired
@@ -23,6 +24,26 @@ abstract class MasterTeleOp extends Master
 
         driveMecanum(angle, power, turnPower);
         sendTelemetry();
+    }
+
+    void dankUnderglow(double power)
+    {
+        motorDankUnderglow.setPower(power);
+    }
+    void runLift()
+    {
+        if(gamepad1.left_trigger > 0.35)
+        {
+            motorLift.setPower(1.0);
+        }
+        else if(gamepad1.right_trigger > 0.35)
+        {
+            motorLift.setPower(-1.0);
+        }
+        else
+        {
+            motorLift.setPower(0.0);
+        }
     }
 
     double calculateDistance(double deltaX, double deltaY)

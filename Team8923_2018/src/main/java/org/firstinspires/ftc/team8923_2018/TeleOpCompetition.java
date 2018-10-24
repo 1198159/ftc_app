@@ -9,13 +9,16 @@ public class TeleOpCompetition extends MasterTeleOp
     @Override
     public void runOpMode()
     {
-        InitHardware();
+        initHardware();
 
         waitForStart();
 
         while (opModeIsActive())
         {
+            dankUnderglow(1.0);
             driveMecanumTeleOp();
+            runLift();
+            idle();
         }
     }
 }
