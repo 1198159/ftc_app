@@ -43,13 +43,15 @@ public class OpenCVGold extends OpenCVPipeline
         return contours;
     }
 
-    public Rect getGoldRect() {
+    public Rect getGoldRect()
+    {
         return goldRect;
     }
 
     // This is called every camera frame.
     @Override
-    public Mat processFrame(Mat rgba, Mat gray) {
+    public Mat processFrame(Mat rgba, Mat gray)
+    {
 
         rgba.copyTo(displayMat);
         // filter yellow
@@ -57,7 +59,8 @@ public class OpenCVGold extends OpenCVPipeline
         Imgproc.GaussianBlur(rgba, rgba, new Size(3, 3), 0);
         channels = new ArrayList<>();
         Core.split(rgba, channels);
-        if (channels.size() > 0) {
+        if (channels.size() > 0)
+        {
             Imgproc.threshold(channels.get(1), maskYellow, 70, 255, Imgproc.THRESH_BINARY_INV);
         }
 
@@ -75,12 +78,15 @@ public class OpenCVGold extends OpenCVPipeline
 
 
         // Loop through the contours and find the contour with max area
-        for (MatOfPoint cont : contoursYellow) {
-
+        for (MatOfPoint cont : contoursYellow)
+        {
             // Get bounding rect of contour
             rect = Imgproc.boundingRect(cont);
             area = Imgproc.contourArea(cont);
-            if (area > maxArea) {
+
+            // Make sure rectangles that we identify are outside the crater
+            if (area > maxArea && rect.x < Constants.DISCRIMINATION_HEIGHT)
+            {
                 maxArea = area;
                 maxRect = rect;
             }

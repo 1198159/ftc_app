@@ -8,6 +8,8 @@ public class Constants
 {
     public static final int GOLD_LEFT_HORIZONTAL = 100;
     public static final int GOLD_RIGHT_HORIZONTAL = 250;
+    public static final int DISCRIMINATION_HEIGHT = 170;
+
     // Standard conversions
      // This is for an Andymark 40; 20's and 60's are different
     public static final int  ANDYMARK_TICKS_PER_ROTATION = 1120;
