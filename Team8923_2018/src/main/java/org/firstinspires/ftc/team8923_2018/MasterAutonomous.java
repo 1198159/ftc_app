@@ -7,11 +7,29 @@ import java.util.Locale;
 
 abstract class MasterAutonomous extends Master
 {
+    private ElapsedTime runtime = new ElapsedTime();
     // robot's position and angle on the field tracked in these variables
     double robotX;
     double robotY;
     double robotAngle;
     double headingOffset = 0.0;
+
+    double Kmove = 1.0f/1200.0f;
+
+    int newTargetFL;
+    int newTargetFR;
+    int newTargetBL;
+    int newTargetBR;
+
+    double speedFL;
+    double speedFR;
+    double speedBL;
+    double speedBR;
+
+    int errorFL;
+    int errorFR;
+    int errorBL;
+    int errorBR;
 
     // Used to calculate distance traveled between loops
     int lastEncoderFL = 0;
@@ -25,8 +43,9 @@ abstract class MasterAutonomous extends Master
 
     // these values equal to one over the value (in mm for drive power and degrees for turn power)
     // that you want the PID loop to start limiting the speed at
-    double DRIVE_POWER_CONSTANT = 1/250; // start slowing down at 750 millimeters from the target location
-    double TURN_POWER_CONSTANT = 1/35; // start slowing down at 35 degrees away from the target angle;
+    //Have to put double so it divides correctly
+    double DRIVE_POWER_CONSTANT = 1.0/250; // start slowing down at 750 millimeters from the target location
+    double TURN_POWER_CONSTANT = 1.0/35; // start slowing down at 35 degrees away from the target angle;
 
     double MIN_DRIVE_POWER = 0.3; // don't let the robot go slower than this speed
     int TOL = 100;
@@ -86,7 +105,7 @@ abstract class MasterAutonomous extends Master
 
     public void moveLift (int ticks)
     {
-        while ((ticks - motorLift.getCurrentPosition()) > TOL)
+        while ((ticks + motorLift.getCurrentPosition()) > TOL)
         {
             motorLift.setTargetPosition(motorLift.getCurrentPosition() + ticks);
             motorLift.setPower((motorLift.getTargetPosition() - motorLift.getCurrentPosition()) * (1 / 1000.0));
@@ -185,6 +204,53 @@ abstract class MasterAutonomous extends Master
             }
         }
     }
+    void dankUnderglow(double power)
+    {
+        motorDankUnderglow.setPower(power);
+    }
+
+
+    public void moveAuto(double x, double y, double speed, double minSpeed, double timeout) throws InterruptedException
+    {
+        newTargetFL = motorFL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * x) + (int) Math.round(COUNTS_PER_MM * y * 1.15);
+        newTargetFR = motorFR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * x) - (int) Math.round(COUNTS_PER_MM * y * 1.15);
+        newTargetBL = motorBL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * x) - (int) Math.round(COUNTS_PER_MM * y * 1.15);
+        newTargetBR = motorBR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * x) + (int) Math.round(COUNTS_PER_MM * y * 1.15);
+        runtime.reset();
+        do
+        {
+            errorFL = newTargetFL - motorFL.getCurrentPosition();
+            speedFL = Math.abs(errorFL * Kmove);
+            speedFL = Range.clip(speedFL, minSpeed, speed);
+            speedFL = speedFL * Math.signum(errorFL);
+
+            errorFR = newTargetFR - motorFR.getCurrentPosition();
+            speedFR = Math.abs(errorFR * Kmove);
+            speedFR = Range.clip(speedFR, minSpeed, speed);
+            speedFR = speedFR * Math.signum(errorFR);
+
+            errorBL = newTargetBL - motorBL.getCurrentPosition();
+            speedBL = Math.abs(errorBL * Kmove);
+            speedBL = Range.clip(speedBL, minSpeed, speed);
+            speedBL = speedBL * Math.signum(errorBL);
+
+            errorBR = newTargetBR - motorBR.getCurrentPosition();
+            speedBR = Math.abs(errorBR * Kmove);
+            speedBR = Range.clip(speedBR, minSpeed, speed);
+            speedBR = speedBR * Math.signum(errorBR);
+
+            motorFL.setPower(speedFL);
+            motorFR.setPower(speedFR);
+            motorBL.setPower(speedBL);
+            motorBR.setPower(speedBR);
+            idle();
+        }
+        while (opModeIsActive() &&
+                (runtime.seconds() < timeout) &&
+                (Math.abs(errorFL) > TOL || Math.abs(errorFR) > TOL || Math.abs(errorBL) > TOL || Math.abs(errorBR) > TOL));
+
+        stopDriving();
+    }
 
     // Makes robot drive to a point on the field
     void driveToPoint(double targetX, double targetY, double targetAngle, double maxPower) throws InterruptedException
@@ -203,7 +269,7 @@ abstract class MasterAutonomous extends Master
             updateRobotLocation();
 
             // In case robot drifts to the side
-            double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
+            double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - 90 - robotAngle;
 
             // Decrease power as robot approaches target. Ensure it doesn't exceed power limits
             double drivePower = Range.clip(distanceToTarget * DRIVE_POWER_CONSTANT, MIN_DRIVE_POWER, maxPower);

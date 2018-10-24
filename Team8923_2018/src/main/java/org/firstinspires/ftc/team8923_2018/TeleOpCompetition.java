@@ -18,6 +18,8 @@ public class TeleOpCompetition extends MasterTeleOp
             dankUnderglow(1.0);
             driveMecanumTeleOp();
             runLift();
+            telemetry.addData("lift ticks", motorLift.getCurrentPosition());
+            telemetry.update();
             idle();
         }
     }
