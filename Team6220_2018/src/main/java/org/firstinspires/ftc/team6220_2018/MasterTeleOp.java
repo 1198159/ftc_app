@@ -57,9 +57,9 @@ abstract public class MasterTeleOp extends MasterOpMode
         //----------------------------------------------------------------------------------------
 
 
-        if (driver1.getRightTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
+        if (driver1.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
             driveHanger(driver1.getRightTriggerValue());
-        else if (driver1.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
+        else if (driver1.getRightTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
             driveHanger(-driver1.getLeftTriggerValue());
         else
             driveHanger(0.0);
