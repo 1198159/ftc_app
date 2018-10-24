@@ -6,8 +6,8 @@ package org.firstinspires.ftc.team6220_2018;
 abstract public class MasterTeleOp extends MasterOpMode
 {
     boolean slowMode = false;
-    // Tells us whether the robot's direction of movement is shifted or not
-    boolean driveDirectionShift = false;
+    // Allows us to switch front of robot.
+    boolean driveReversed = false;
 
     // Factor that adjusts magnitudes of vertical and horizontal movement.
     double tFactor = Constants.T_FACTOR;
@@ -16,6 +16,17 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     // For using turning and other autonomous functionalities in TeleOp.
     MasterAutonomous masterAutonomous;
+
+    // Takes driver 1 input to run hanger system.
+    void driveHanger()
+    {
+        if (driver1.getRightTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
+            driveHanger(driver1.getRightTriggerValue());
+        else if (driver1.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
+            driveHanger(-driver1.getLeftTriggerValue());
+        else
+            driveHanger(0.0);
+    }
 
 
     // Takes driver 1 stick input and uses it to give power and direction inputs to the drive
@@ -46,23 +57,22 @@ abstract public class MasterTeleOp extends MasterOpMode
         //----------------------------------------------------------------------------------------
 
 
-        // Change drive direction based on driver input
-        if (driver1.isButtonJustPressed(Button.Y))
-            driveDirectionShift = false;
-        else if (driver1.isButtonJustPressed(Button.X))
-            driveDirectionShift = true;
-
-
         if (driver1.getRightTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
             driveHanger(driver1.getRightTriggerValue());
         else if (driver1.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
             driveHanger(-driver1.getLeftTriggerValue());
-        else if (driver1.isButtonPressed(Button.B))
+        else
             driveHanger(0.0);
 
 
+        // Change drive direction based on driver input
+        if (driver1.isButtonJustPressed(Button.Y))
+            driveReversed = false;
+        else if (driver1.isButtonJustPressed(Button.A))
+            driveReversed = true;
+
         // Drive in direction based on whether driveDirectionShift is true
-        if (!driveDirectionShift)
+        if (!driveReversed)
             driveMecanum(angle, drivePower, rotationPower);
         else
             driveMecanum(angle + 180, drivePower, rotationPower);

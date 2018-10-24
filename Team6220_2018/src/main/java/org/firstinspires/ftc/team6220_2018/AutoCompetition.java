@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 // todo Update code
 // todo Reimplement encoder navigation when it is ready
 @Autonomous(name = "AutoCompetition", group = "Autonomous")
-@Disabled
+//@Disabled
 
 public class AutoCompetition extends MasterAutonomous
 {
