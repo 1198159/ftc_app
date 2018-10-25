@@ -53,6 +53,7 @@ abstract class MasterTeleOp extends Master
 
     void sendTelemetry()
     {
+        telemetry.addData("lift ticks", motorLift.getCurrentPosition());
         telemetry.addData("left stick x:", gamepad1.left_stick_x);
         telemetry.addData("left stick y:", gamepad1.left_stick_y);
         telemetry.addData("right stick x:", gamepad1.right_stick_x);

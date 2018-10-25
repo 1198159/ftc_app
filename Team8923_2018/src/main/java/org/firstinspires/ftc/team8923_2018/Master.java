@@ -49,7 +49,9 @@ abstract class Master extends LinearOpMode
 
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorLift.setDirection(DcMotorSimple.Direction.REVERSE);
+        //motorLift.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
