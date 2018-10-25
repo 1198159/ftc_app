@@ -20,12 +20,13 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorFR = null; // port 3
     DcMotor motorBL = null; // port 1
     DcMotor motorBR = null; // port 2
+    DcMotor motorLift = null;
 
-   // DcMotor motorLiftLeft = null;
-   // DcMotor motorLiftRight = null;
+    // DcMotor motorLiftLeft = null;
+    // DcMotor motorLiftRight = null;
 
     // Declare sensors
-  //  BNO055IMU imu; // inertial measurement unit (located within the REV Hub)
+    //BNO055IMU imu; // inertial measurement unit (located within the REV Hub)
     //ColorSensor sensorColorLeft; // port 1
     //ColorSensor sensorColorRight; // port 2
 
@@ -68,14 +69,11 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
-     //   motorLiftLeft = hardwareMap.dcMotor.get("motorLiftLeft");
-      //  motorLiftRight = hardwareMap.dcMotor.get("motorLiftRight");
+        motorLift = hardwareMap.dcMotor.get("motorLift");
 
-       // motorLiftLeft.setDirection(DcMotor.Direction.REVERSE);
-       // motorLiftRight.setDirection(DcMotor.Direction.FORWARD);
+        //motorLift.setDirection(DcMotor.Direction.FORWARD);
 
-        //motorLiftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      //  motorLiftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -99,9 +97,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setPower(0);
         motorBR.setPower(0);
 
-       // motorLiftLeft.setPower(0.0);
-      //  motorLiftRight.setPower(0.0);
-
+        //motorLiftLeft.setPower(0.0);
+        //motorLiftRight.setPower(0.0);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -116,7 +113,7 @@ abstract public class MasterOpMode extends LinearOpMode
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
-       // imu = hardwareMap.get(BNO055IMU.class, "imu");
+        //imu = hardwareMap.get(BNO055IMU.class, "imu");
         //imu.initialize(parameters);
 
         telemetry.log().setCapacity(8);
