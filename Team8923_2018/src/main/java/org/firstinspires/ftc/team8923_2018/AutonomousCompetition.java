@@ -25,11 +25,13 @@ public class AutonomousCompetition extends MasterAutonomous
         //moveLift(500);
 
         telemetry.clear();
-        telemetry.update();
 
         while (opModeIsActive())
         {
-            driveToPoint(0,500, 0, 1.0);
+            driveToPoint(0,500, 0, 0.6);
+            driveToPoint(-500,500, 0, 0.6);
+            driveToPoint(-500,0, 0, 0.6);
+            driveToPoint(0,0, 0, 0.6);
             idle();
         }
 

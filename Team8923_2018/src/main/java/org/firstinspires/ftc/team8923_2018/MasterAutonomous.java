@@ -60,21 +60,21 @@ abstract class MasterAutonomous extends Master
         DEPOT(0),
         CRATER(0),
 
-        RED_DEPOT_START_X(0),
-        RED_DEPOT_START_Y(0),
-        RED_DEPOT_START_ANGLE(0),
+        RED_DEPOT_START_X(-341.25),
+        RED_DEPOT_START_Y(-341.25),
+        RED_DEPOT_START_ANGLE(225.0),
 
-        BLUE_DEPOT_START_X(0),
-        BLUE_DEPOT_START_Y(0),
-        BLUE_DEPOT_START_ANGLE(0),
+        BLUE_DEPOT_START_X(341.25),
+        BLUE_DEPOT_START_Y(341.25),
+        BLUE_DEPOT_START_ANGLE(45.0),
 
-        RED_CRATER_START_X(0),
-        RED_CRATER_START_Y(0),
-        RED_CRATER_START_ANGLE(0),
+        RED_CRATER_START_X(-341.25),
+        RED_CRATER_START_Y(341.25),
+        RED_CRATER_START_ANGLE(135.0),
 
-        BLUE_CRATER_START_X(0),
-        BLUE_CRATER_START_Y(0),
-        BLUE_CRATER_START_ANGLE(0);
+        BLUE_CRATER_START_X(341.25),
+        BLUE_CRATER_START_Y(341.25),
+        BLUE_CRATER_START_ANGLE(315.0);
 
         public final double val;
         StartLocations(double i) {val = i;}
@@ -100,12 +100,12 @@ abstract class MasterAutonomous extends Master
 
         telemetry.clear();
         telemetry.update();
-        telemetry.log().add("Initialized. Ready to start!");
+        telemetry.addLine("Initialized. Ready to start!");
     }
 
     public void moveLift (int ticks)
     {
-        while ((ticks + motorLift.getCurrentPosition()) > TOL)
+        while ((ticks - motorLift.getCurrentPosition()) > TOL)
         {
             motorLift.setTargetPosition(motorLift.getCurrentPosition() + ticks);
             motorLift.setPower((motorLift.getTargetPosition() - motorLift.getCurrentPosition()) * (1 / 1000.0));
@@ -127,10 +127,10 @@ abstract class MasterAutonomous extends Master
 
     public void configureAutonomous()
     {
-        telemetry.log().add("Alliance Blue/Red: X/B");
-        telemetry.log().add("Starting Position Crater/Depot: D-Pad Up/Down");
-        telemetry.log().add("");
-        telemetry.log().add("After routine is complete and robot is on field, press Start");
+        telemetry.addLine("Alliance Blue/Red: X/B");
+        telemetry.addLine("Starting Position Crater/Depot: D-Pad Up/Down");
+        telemetry.addLine("");
+        telemetry.addLine("After routine is complete and robot is on field, press Start");
 
         while(!doneSettingUp)
         {
@@ -158,7 +158,6 @@ abstract class MasterAutonomous extends Master
             while (!buttonsAreReleased(gamepad1))
             {
                 idle();
-                telemetry.update();
             }
 
             telemetry.addData("Alliance", alliance.name());
@@ -169,9 +168,8 @@ abstract class MasterAutonomous extends Master
 
         // We could clear the telemetry at this point, but the drivers may want to see it
         telemetry.clear();
-        telemetry.update();
 
-        telemetry.log().add("Setup complete. Initializing...");
+        telemetry.addLine("Setup complete. Initializing...");
 
         // Set coordinates based on alliance and starting location
         if(startLocation == StartLocations.DEPOT)
@@ -212,10 +210,10 @@ abstract class MasterAutonomous extends Master
 
     public void moveAuto(double x, double y, double speed, double minSpeed, double timeout) throws InterruptedException
     {
-        newTargetFL = motorFL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * x) + (int) Math.round(COUNTS_PER_MM * y * 1.15);
-        newTargetFR = motorFR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * x) - (int) Math.round(COUNTS_PER_MM * y * 1.15);
-        newTargetBL = motorBL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * x) - (int) Math.round(COUNTS_PER_MM * y * 1.15);
-        newTargetBR = motorBR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * x) + (int) Math.round(COUNTS_PER_MM * y * 1.15);
+        newTargetFL = motorFL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) + (int) Math.round(COUNTS_PER_MM * x * 1.15);
+        newTargetFR = motorFR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) - (int) Math.round(COUNTS_PER_MM * x * 1.15);
+        newTargetBL = motorBL.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) - (int) Math.round(COUNTS_PER_MM * x * 1.15);
+        newTargetBR = motorBR.getCurrentPosition() + (int) Math.round(COUNTS_PER_MM * y) + (int) Math.round(COUNTS_PER_MM * x * 1.15);
         runtime.reset();
         do
         {
@@ -284,12 +282,9 @@ abstract class MasterAutonomous extends Master
             // Recalculate distance for next check
             distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
 
-            // Inform drivers of robot location
-            telemetry.addData("X", robotX);
-            telemetry.addData("Y", robotY);
-            telemetry.addData("Robot Angle", robotAngle);
-            telemetry.update();
             idle();
+
+            sendTelemetry();
         }
         stopDriving();
     }
@@ -311,6 +306,9 @@ abstract class MasterAutonomous extends Master
         double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4;
         double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4;
 
+        telemetry.addData("deltaX", deltaX);
+        telemetry.addData("deltaY", deltaY);
+
         // Convert to mm
         deltaX *= MM_PER_TICK;
         deltaY *= MM_PER_TICK;
@@ -321,8 +319,8 @@ abstract class MasterAutonomous extends Master
          * total extrinsic components of displacement. The extrinsic displacement components
          * are then added to the previous position to set the new coordinates
          */
-        robotX += deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
-        robotY += deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
+        robotX += (Math.cos(Math.toRadians(90 + robotAngle)) * deltaY) - (Math.sin(Math.toRadians(robotAngle)) * deltaX);
+        robotY += (Math.sin(Math.toRadians(90 + robotAngle)) * deltaY) - (Math.cos(Math.toRadians(robotAngle)) * deltaX);
 
 
         // Set last encoder values for next loop
@@ -365,5 +363,21 @@ abstract class MasterAutonomous extends Master
         telemetry.update();
 
         return position;
+    }
+
+    public void sendTelemetry()
+    {
+        // Inform drivers of robot location
+        telemetry.addData("X", robotX);
+        telemetry.addData("Y", robotY);
+        telemetry.addData("Robot Angle", robotAngle);
+
+        // Debug info
+        telemetry.addData("FL Encoder", motorFL.getCurrentPosition());
+        telemetry.addData("FR Encoder", motorFR.getCurrentPosition());
+        telemetry.addData("BL Encoder", motorBL.getCurrentPosition());
+        telemetry.addData("BR Encoder", motorBR.getCurrentPosition());
+
+        telemetry.update();
     }
 }
