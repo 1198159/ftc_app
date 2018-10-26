@@ -142,18 +142,23 @@ abstract class MasterAutonomous extends Master
         telemetry.addData("Gold",
                 String.format(Locale.getDefault(), "(%d, %d)", (goldRect.x + goldRect.width / 2), (goldRect.y + goldRect.height / 2) ) );
 
+        //This function assumes that the openCV frame contains the left and center objects only.
+        //goldRect will be (0,0,0,0) if the yellow color is not found in the image; i.e., the gold must be on the right.
 
-        if(((goldRect.y + goldRect.height / 2) < OPENCV_IMAGE_MIDDLE) && (goldRect.y + goldRect.height / 2) > 0)
+        //We are checking Y because our phone is in landscape mode.
+        int midpoint = goldRect.y + goldRect.height / 2;
+
+        if((midpoint > 0) && (midpoint < OPENCV_IMAGE_MIDDLE))
         {
             telemetry.addData("Position: ", "Left");
             gold = GoldLocation.LEFT;
         }
-        else if((goldRect.y + goldRect.height / 2) >= OPENCV_IMAGE_MIDDLE)
+        else if(midpoint >= OPENCV_IMAGE_MIDDLE)
         {
             telemetry.addData("Position: ", "Center");
             gold = GoldLocation.CENTER;
         }
-        else
+        else //the yellow color was not found in the image; gold must be on the right.
         {
             telemetry.addData("Position", "Right");
             gold = GoldLocation.RIGHT;
