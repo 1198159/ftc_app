@@ -71,7 +71,7 @@ public class TruongOpenCVExampleDemo extends LinearOpMode {
 
         while (opModeIsActive()) {
             telemetry.addData("Gold",
-                    String.format(Locale.getDefault(), "(%d, %d)", (TruongVision.getGoldRect().x + TruongVision.getGoldRect().width) / 2, (TruongVision.getGoldRect().y + TruongVision.getGoldRect().height) / 2));
+                    String.format(Locale.getDefault(), "(%d, %d)", (TruongVision.getGoldRect().x + TruongVision.getGoldRect().width / 2), (TruongVision.getGoldRect().y + TruongVision.getGoldRect().height / 2) ) );
             telemetry.update();
 
 
