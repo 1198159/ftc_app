@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team8923_2018;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
 import org.opencv.core.Rect;
 
 import java.util.Locale;
@@ -49,11 +50,9 @@ abstract class MasterAutonomous extends Master
     double DRIVE_POWER_CONSTANT = 1.0/250; // start slowing down at 750 millimeters from the target location
     double TURN_POWER_CONSTANT = 1.0/35; // start slowing down at 35 degrees away from the target angle;
 
-    int IMAGE_MIDDLE = 212;
-
     double MIN_DRIVE_POWER = 0.3; // don't let the robot go slower than this speed
     int TOL = 100;
-    OpenCV openCVVision = new OpenCV();
+
     enum Alliance
     {
         BLUE,
@@ -84,6 +83,18 @@ abstract class MasterAutonomous extends Master
         StartLocations(double i) {val = i;}
     }
 
+    //openCV variables
+    //We are using openCV to detect the location of the gold object.
+    private int OPENCV_IMAGE_MIDDLE = 212; //the halfway point in the image, in y coords (since our phone is in landscape mode).
+    OpenCV openCV;
+    enum GoldLocation
+    {
+        LEFT,
+        CENTER,
+        RIGHT
+    }
+
+
     public void initAuto()
     {
         telemetry.addData("Init State", "Init Started");
@@ -98,13 +109,56 @@ abstract class MasterAutonomous extends Master
         lastEncoderBL = motorBL.getCurrentPosition();
         lastEncoderBR = motorBR.getCurrentPosition();
 
-
         // Set IMU heading offset
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
+
+        //initialize our openCV image processing pipeline
+        openCVInit();
 
         telemetry.clear();
         telemetry.update();
         telemetry.addLine("Initialized. Ready to start!");
+    }
+
+    public void openCVInit()
+    {
+        openCV = new OpenCV();
+        openCV.init(hardwareMap.appContext, ActivityViewDisplay.getInstance());
+        openCV.enable();
+        openCV.setShowCountours(true);
+    }
+
+    public void openCVShowContours(boolean show)
+    {
+        openCV.setShowCountours(show);
+    }
+
+    public GoldLocation openCVLocateGold()
+    {
+        openCV.enable(); //make sure our openCV image pipeline is active
+
+        Rect goldRect = openCV.getGoldRect();
+        GoldLocation gold;
+
+        if(((goldRect.y + goldRect.height / 2) < OPENCV_IMAGE_MIDDLE) && (goldRect.y + goldRect.height / 2) > 0)
+        {
+            telemetry.addData("Position: ", "Left");
+            gold = GoldLocation.LEFT;
+        }
+        else if((goldRect.y + goldRect.height / 2) >= OPENCV_IMAGE_MIDDLE)
+        {
+            telemetry.addData("Position: ", "Center");
+            gold = GoldLocation.CENTER;
+        }
+        else
+        {
+            telemetry.addData("Position", "Right");
+            gold = GoldLocation.RIGHT;
+        }
+
+        openCV.disable(); //no need to keep processing openCV frames.
+
+        return gold;
     }
 
     public void moveLift (int ticks)
@@ -374,10 +428,10 @@ abstract class MasterAutonomous extends Master
         motorBR.setPower(0.0);
     }
 
-    public int landAndDetectMineral() throws InterruptedException
+    public GoldLocation landAndDetectMineral() throws InterruptedException
     {
         moveLift(4375);
-        int position = getGoldPosition();
+        GoldLocation position = openCVLocateGold();
         sleep(1000);
         switch (alliance)
         {
@@ -405,36 +459,6 @@ abstract class MasterAutonomous extends Master
         return position;
     }
 
-    public int getGoldPosition()
-    {
-        openCVVision.setShowCountours(true);
-        int position;
-
-        Rect goldLocation = openCVVision.getGoldRect();
-
-        if(((goldLocation.y + goldLocation.height / 2) < IMAGE_MIDDLE) && (goldLocation.y + goldLocation.height / 2) > 0)
-        {
-            telemetry.addData("Position: ", "Left");
-            position = -1;
-        }
-        else if((goldLocation.y + goldLocation.height / 2) >= IMAGE_MIDDLE)
-        {
-            telemetry.addData("Position: ", "Center");
-            position = 0;
-        }
-        else // no rect was found, so the object must be on the right
-        {
-            telemetry.addData("Position", "Right");
-            position = 1;
-        }
-        telemetry.addData("Gold",
-                String.format(Locale.getDefault(), "(%d, %d)", (goldLocation.x + goldLocation.width) / 2, (goldLocation.y + goldLocation.height) / 2));
-        telemetry.update();
-
-        openCVVision.disable();//stop processing images
-
-        return position;
-    }
 
     public void knockOffLeftMineral() throws InterruptedException
     {

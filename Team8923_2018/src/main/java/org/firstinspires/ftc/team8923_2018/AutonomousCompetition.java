@@ -26,16 +26,16 @@ public class AutonomousCompetition extends MasterAutonomous
 
         while (opModeIsActive())
         {
-            int position = landAndDetectMineral();
+            GoldLocation position = landAndDetectMineral();
             switch (position)
             {
-                case -1:
+                case LEFT:
                     knockOffLeftMineral();
                     break;
-                case 0:
+                case CENTER:
                     knockOffCenterMineral();
                     break;
-                case 1:
+                case RIGHT:
                     knockOffRightMineral();
                     break;
             }
