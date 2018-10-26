@@ -6,8 +6,8 @@ package org.firstinspires.ftc.team6220_2018;
 
 public class Constants
 {
-    public static final int GOLD_LEFT_HORIZONTAL = 100;
-    public static final int GOLD_RIGHT_HORIZONTAL = 250;
+    public static final int GOLD_LEFT_HORIZONTAL = 100;//192
+    public static final int GOLD_RIGHT_HORIZONTAL = 250; //144
     public static final int DISCRIMINATION_HEIGHT = 170;
 
     // Standard conversions

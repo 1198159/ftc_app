@@ -223,9 +223,11 @@ abstract public class MasterOpMode extends LinearOpMode
 
         // todo How to make this telemetry not interfere with that of other classes?
         // Telemetry for debugging motor power inputs
+        /*
         telemetry.addData("translation power: ", x);
         telemetry.addData("vertical power: ", y);
         telemetry.addData("rotational power: ", w);
+        */
         telemetry.update();
     }
 
@@ -233,7 +235,7 @@ abstract public class MasterOpMode extends LinearOpMode
     void driveHanger (double drivePower)
     {
         motorHanger.setPower(drivePower);
-        telemetry.addData("Hanger Power: ", motorHanger.getPower());
+        //telemetry.addData("Hanger Power: ", motorHanger.getPower());
     }
 
 

@@ -54,6 +54,11 @@ public class OpenCVGold extends OpenCVPipeline
     {
 
         rgba.copyTo(displayMat);
+
+        int maxY = rgba.rows();
+        int maxX = rgba.cols();
+
+        int integer = maxX + maxY;
         // filter yellow
         Imgproc.cvtColor(rgba, rgba, Imgproc.COLOR_RGB2YUV);
         Imgproc.GaussianBlur(rgba, rgba, new Size(3, 3), 0);
@@ -85,7 +90,7 @@ public class OpenCVGold extends OpenCVPipeline
             area = Imgproc.contourArea(cont);
 
             // Make sure rectangles that we identify are outside the crater
-            if (area > maxArea && rect.x < Constants.DISCRIMINATION_HEIGHT)
+            if (area > maxArea/* && rect.x < Constants.DISCRIMINATION_HEIGHT*/)
             {
                 maxArea = area;
                 maxRect = rect;

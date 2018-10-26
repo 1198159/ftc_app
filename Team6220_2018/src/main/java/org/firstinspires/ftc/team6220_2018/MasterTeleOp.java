@@ -21,11 +21,13 @@ abstract public class MasterTeleOp extends MasterOpMode
     void driveHanger()
     {
         if (driver1.getRightTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
-            driveHanger(driver1.getRightTriggerValue());
+            driveHanger(1.0);
         else if (driver1.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
-            driveHanger(-driver1.getLeftTriggerValue());
+            driveHanger(-1.0);
         else
             driveHanger(0.0);
+        telemetry.addData("Trigger val Right: ", driver1.getRightTriggerValue());
+        telemetry.addData("Trigger val Left: ", driver1.getLeftTriggerValue());
     }
 
 
