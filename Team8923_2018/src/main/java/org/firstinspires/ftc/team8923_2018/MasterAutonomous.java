@@ -85,8 +85,8 @@ abstract class MasterAutonomous extends Master
 
     //openCV variables
     //We are using openCV to detect the location of the gold object.
-    private int OPENCV_IMAGE_MIDDLE = 212; //the halfway point in the image, in y coords (since our phone is in landscape mode).
-    OpenCV openCV;
+    private int OPENCV_IMAGE_MIDDLE = 360; //the halfway point in the image, in y coords (since our phone is in landscape mode).
+    OpenCV openCV; //the opencv image processing pipeline
     enum GoldLocation
     {
         LEFT,
@@ -128,17 +128,20 @@ abstract class MasterAutonomous extends Master
         openCV.setShowCountours(true);
     }
 
-    public void openCVShowContours(boolean show)
+    public void openCVDisable()
     {
-        openCV.setShowCountours(show);
+        openCV.disable(); //no need to keep processing openCV frames.
     }
 
     public GoldLocation openCVLocateGold()
     {
-        openCV.enable(); //make sure our openCV image pipeline is active
+        GoldLocation gold;
 
         Rect goldRect = openCV.getGoldRect();
-        GoldLocation gold;
+
+        telemetry.addData("Gold",
+                String.format(Locale.getDefault(), "(%d, %d)", (goldRect.x + goldRect.width / 2), (goldRect.y + goldRect.height / 2) ) );
+
 
         if(((goldRect.y + goldRect.height / 2) < OPENCV_IMAGE_MIDDLE) && (goldRect.y + goldRect.height / 2) > 0)
         {
@@ -155,8 +158,6 @@ abstract class MasterAutonomous extends Master
             telemetry.addData("Position", "Right");
             gold = GoldLocation.RIGHT;
         }
-
-        openCV.disable(); //no need to keep processing openCV frames.
 
         return gold;
     }
@@ -431,7 +432,10 @@ abstract class MasterAutonomous extends Master
     public GoldLocation landAndDetectMineral() throws InterruptedException
     {
         moveLift(4375);
+
+        //!!! should we be locating the gold AFTER we finish the move that we do below??
         GoldLocation position = openCVLocateGold();
+        openCVDisable(); //stop openCV processing since we don't need it anymore.
         sleep(1000);
         switch (alliance)
         {

@@ -19,15 +19,12 @@ public class OpenCVAutoTest extends MasterAutonomous
     {
         openCVInit();
 
-        openCVShowContours(true);
-
         waitForStart();
-
-        openCVLocateGold();
-
 
         while (opModeIsActive())
         {
+            openCVLocateGold();
+
             telemetry.update();
             idle();
         }
