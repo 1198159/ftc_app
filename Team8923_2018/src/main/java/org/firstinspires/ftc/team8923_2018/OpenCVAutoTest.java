@@ -28,7 +28,7 @@ public class OpenCVAutoTest extends MasterAutonomous
             telemetry.update();
             idle();
         }
-        
+
         openCVDisable();
 
     }

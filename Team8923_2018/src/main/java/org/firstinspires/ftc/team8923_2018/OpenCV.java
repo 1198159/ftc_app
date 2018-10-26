@@ -21,10 +21,6 @@ public class OpenCV extends OpenCVPipeline
     private boolean showContours = true;
     // To keep it such that we don't have to instantiate a new Mat every call to processFrame,
     // we declare the Mats up here and reuse them. This is easier on the garbage collector.
-    private Mat hsv = new Mat();
-    private Mat thresholded = new Mat();
-    private Mat blurred = new Mat();
-    public Mat detectedEdges = new Mat();
 
     private List<Mat> channels = new ArrayList<>();
     private Mat maskYellow = new Mat();  // Yellow Mask returned by color filter
@@ -65,13 +61,12 @@ public class OpenCV extends OpenCVPipeline
 
         List<MatOfPoint> contoursYellow = new ArrayList<>();
         Imgproc.findContours(maskYellow, contoursYellow, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        Imgproc.drawContours(displayMat,contoursYellow,-1,new Scalar(230,70,70),2);
+        if (showContours) Imgproc.drawContours(displayMat,contoursYellow,-1,new Scalar(230,70,70),2);
 
         double area;
         double maxArea = 0.0;
         Rect rect;
         Rect maxRect = new Rect(0, 0, 0, 0);   // Rect with max area
-        Rect temp = null;
 
         // Loop through the contours and find the contour with max area
         for(MatOfPoint cont : contoursYellow){
@@ -89,17 +84,6 @@ public class OpenCV extends OpenCVPipeline
         Imgproc.rectangle(displayMat, maxRect.tl(), maxRect.br(), new Scalar(0,0,255),2); // Draw rect
         // Draw Current X
         Imgproc.putText(displayMat, "Gold", maxRect.tl(),0,1,new Scalar(255,255,255));
-
-        // Debug: display bitmap
-        Bitmap bmp = null;
-        int rows = displayMat.rows();
-        int cols = displayMat.cols();
-        // create a new 4 channel Mat because bitmap is ARGB
-        Mat tmp = new Mat (displayMat.rows(), displayMat.cols(), CvType.CV_8U, new Scalar(4));
-        // Initialize bitmap
-        bmp = Bitmap.createBitmap(cols, rows, Bitmap.Config.ARGB_8888);
-        // convert Mat to bitmap
-        Utils.matToBitmap(tmp, bmp);
 
         return displayMat;
     }
