@@ -22,6 +22,8 @@ abstract class Master extends LinearOpMode
 
     double slowModeDivisor = 1.0;
 
+    boolean reverseDrive = false;
+
     // Constants to be used in code. Measurements in millimeters
     private static final double GEAR_RATIO = 2.0/3.0; // Ratio of driven gear to driving gear
     private static final double TICKS_PER_MOTOR_REVOLUTION = 560.0;
@@ -117,11 +119,23 @@ abstract class Master extends LinearOpMode
             return;
         }*/
 
-        // Drive forwards
-        motorFL.setPower(powerFL);
-        motorFR.setPower(powerFR);
-        motorBL.setPower(powerBL);
-        motorBR.setPower(powerBR);
+        if (!reverseDrive)
+        {
+            // Drive forwards
+            motorFL.setPower(powerFL);
+            motorFR.setPower(powerFR);
+            motorBL.setPower(powerBL);
+            motorBR.setPower(powerBR);
+        }
+        else
+        {
+            // Drive forwards
+            motorFL.setPower(-powerFL);
+            motorFR.setPower(-powerFR);
+            motorBL.setPower(-powerBL);
+            motorBR.setPower(-powerBR);
+        }
+
     }
 
     boolean buttonsAreReleased(Gamepad pad)

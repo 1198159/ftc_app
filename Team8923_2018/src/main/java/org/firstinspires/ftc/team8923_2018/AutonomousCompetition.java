@@ -22,16 +22,23 @@ public class AutonomousCompetition extends MasterAutonomous
 
         waitForStart();
 
-        //moveLift(500);
-
         telemetry.clear();
 
         while (opModeIsActive())
         {
-            driveToPoint(0,500, 0, 0.6);
-            driveToPoint(-500,500, 0, 0.6);
-            driveToPoint(-500,0, 0, 0.6);
-            driveToPoint(0,0, 0, 0.6);
+            int position = landAndDetectMineral();
+            switch (position)
+            {
+                case -1:
+                    knockOffLeftMineral();
+                    break;
+                case 0:
+                    knockOffCenterMineral();
+                    break;
+                case 1:
+                    knockOffRightMineral();
+                    break;
+            }
             idle();
         }
 

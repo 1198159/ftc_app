@@ -109,7 +109,8 @@ abstract class MasterAutonomous extends Master
         {
             motorLift.setTargetPosition(motorLift.getCurrentPosition() + ticks);
             motorLift.setPower((motorLift.getTargetPosition() - motorLift.getCurrentPosition()) * (1 / 1000.0));
-            idle();;
+            sendTelemetry();
+            idle();
         }
         stopLift();
     }
@@ -127,13 +128,13 @@ abstract class MasterAutonomous extends Master
 
     public void configureAutonomous()
     {
-        telemetry.addLine("Alliance Blue/Red: X/B");
-        telemetry.addLine("Starting Position Crater/Depot: D-Pad Up/Down");
-        telemetry.addLine("");
-        telemetry.addLine("After routine is complete and robot is on field, press Start");
-
         while(!doneSettingUp)
         {
+            telemetry.addLine("Alliance Blue/Red: X/B");
+            telemetry.addLine("Starting Position Crater/Depot: D-Pad Up/Down");
+            telemetry.addLine("");
+            telemetry.addLine("After routine is complete and robot is on field, press Start");
+
             if(gamepad1.x)
                 alliance = Alliance.BLUE;
                 //means we are blue alliance
@@ -178,13 +179,13 @@ abstract class MasterAutonomous extends Master
             {
                 robotX = StartLocations.RED_DEPOT_START_X.val;
                 robotY = StartLocations.RED_DEPOT_START_Y.val;
-                robotAngle = StartLocations.RED_DEPOT_START_ANGLE.val;
+                headingOffset = StartLocations.RED_DEPOT_START_ANGLE.val;
             }
             else if(alliance == Alliance.BLUE)
             {
                 robotX = StartLocations.BLUE_DEPOT_START_X.val;
                 robotY = StartLocations.BLUE_DEPOT_START_Y.val;
-                robotAngle = StartLocations.BLUE_DEPOT_START_ANGLE.val;
+                headingOffset = StartLocations.BLUE_DEPOT_START_ANGLE.val;
             }
         }
         else if(startLocation == StartLocations.CRATER)
@@ -193,12 +194,12 @@ abstract class MasterAutonomous extends Master
             {
                 robotX = StartLocations.RED_CRATER_START_X.val;
                 robotY = StartLocations.RED_CRATER_START_Y.val;
-                robotAngle = StartLocations.RED_CRATER_START_ANGLE.val;
+                headingOffset = StartLocations.RED_CRATER_START_ANGLE.val;
             } else if (alliance == Alliance.BLUE)
             {
                 robotX = StartLocations.BLUE_CRATER_START_X.val;
                 robotY = StartLocations.BLUE_CRATER_START_Y.val;
-                robotAngle = StartLocations.BLUE_CRATER_START_ANGLE.val;
+                headingOffset = StartLocations.BLUE_CRATER_START_ANGLE.val;
             }
         }
     }
@@ -289,11 +290,42 @@ abstract class MasterAutonomous extends Master
         stopDriving();
     }
 
+    void turnToAngle(double targetAngle) throws InterruptedException
+    {
+        updateRobotLocation();
+
+        double deltaAngle = subtractAngles(targetAngle, robotAngle);
+        double ANGLE_TOLERANCE = 5.0; // In degrees
+
+        while(Math.abs(deltaAngle) > ANGLE_TOLERANCE && opModeIsActive())
+        {
+            updateRobotLocation();
+
+            // Recalculate how far away we are
+            deltaAngle = subtractAngles(targetAngle, robotAngle);
+
+            // Slow down as we approach target
+            double turnPower = Range.clip(deltaAngle * TURN_POWER_CONSTANT, -1.0, 1.0);
+
+            // Make sure turn power doesn't go below minimum power
+            if(turnPower > 0 && turnPower < MIN_DRIVE_POWER)
+                turnPower = MIN_DRIVE_POWER;
+            else if(turnPower < 0 && turnPower > -MIN_DRIVE_POWER)
+                turnPower = -MIN_DRIVE_POWER;
+
+            // Set drive motor power
+            driveMecanum(0.0, 0.0, turnPower);
+            sendTelemetry();
+            idle();
+        }
+        stopDriving();
+    }
+
     // Updates robot's coordinates and angle
     void updateRobotLocation()
     {
         // Update robot angle
-        robotAngle = imu.getAngularOrientation().firstAngle - headingOffset;
+        robotAngle = headingOffset + imu.getAngularOrientation().firstAngle;
 
         // Calculate how far each motor has turned since last time
         int deltaFL = motorFL.getCurrentPosition() - lastEncoderFL;
@@ -303,8 +335,8 @@ abstract class MasterAutonomous extends Master
 
         // Take average of encoder ticks to find translational x and y components. FR and BL are
         // negative because of the direction at which they turn when going sideways
-        double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4;
-        double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4;
+        double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4.0;
+        double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4.0;
 
         telemetry.addData("deltaX", deltaX);
         telemetry.addData("deltaY", deltaY);
@@ -338,31 +370,131 @@ abstract class MasterAutonomous extends Master
         motorBR.setPower(0.0);
     }
 
-    public String getGoldPosition()
+    public int landAndDetectMineral() throws InterruptedException
+    {
+        moveLift(4375);
+        int position = getGoldPosition();
+        sleep(1000);
+        switch (alliance)
+        {
+            case RED:
+                switch (startLocation)
+                {
+                    case DEPOT:
+                        driveToPoint(robotX - 10, robotY + 10, headingOffset, 0.5);
+                        break;
+                    case CRATER:
+                        driveToPoint(robotX, robotY, headingOffset, 0.5);
+                        break;
+                }
+            case BLUE:
+                switch (startLocation)
+                {
+                    case DEPOT:
+                        driveToPoint(robotX - 10, robotY + 10, headingOffset, 0.5);
+                        break;
+                    case CRATER:
+                        driveToPoint(robotX, robotY, headingOffset, 0.5);
+                        break;
+                }
+        }
+        return position;
+    }
+
+    public int getGoldPosition()
     {
         openCVVision.setShowCountours(true);
-        String position;
+        int position;
 
         if(((OpenCV.getGoldRect().y + OpenCV.getGoldRect().height / 2) < 150) && (OpenCV.getGoldRect().y + OpenCV.getGoldRect().height / 2) > 0)
         {
             telemetry.addData("Position: ", "Left");
-            position = "Left";
+            position = -1;
         }
         else if((OpenCV.getGoldRect().y + OpenCV.getGoldRect().height / 2) > 250)
         {
             telemetry.addData("Position: ", "Center");
-            position = "Center";
+            position = 0;
         }
         else
         {
             telemetry.addData("Position", "Right");
-            position = "Right";
+            position = 1;
         }
         telemetry.addData("Gold",
                 String.format(Locale.getDefault(), "(%d, %d)", (OpenCV.getGoldRect().x + OpenCV.getGoldRect().width) / 2, (OpenCV.getGoldRect().y + OpenCV.getGoldRect().height) / 2));
         telemetry.update();
 
         return position;
+    }
+
+    public void knockOffLeftMineral() throws InterruptedException
+    {
+        switch (alliance)
+        {
+            case RED:
+                switch (startLocation)
+                {
+                    case DEPOT:
+                        driveToPoint(-698.3, -1130.5, 215, 0.5);
+                    case CRATER:
+                        driveToPoint(-698.3, 1130.5, 135, 0.5);
+                }
+            case BLUE:
+                switch (startLocation)
+                {
+                    case DEPOT:
+                        driveToPoint(698.3, 1130.5, 215, 0.5);
+                    case CRATER:
+                        driveToPoint(698.3, -1130.5, 135, 0.5);
+                }
+        }
+    }
+
+    public void knockOffCenterMineral() throws InterruptedException
+    {
+        switch (alliance)
+        {
+            case RED:
+                switch (startLocation)
+                {
+                    case DEPOT:
+                        driveToPoint(-958.8, -870, 215, 0.5);
+                    case CRATER:
+                        driveToPoint(-958.8, 870, 135, 0.5);
+                }
+            case BLUE:
+                switch (startLocation)
+                {
+                    case DEPOT:
+                        driveToPoint(958.8, 870, 215, 0.5);
+                    case CRATER:
+                        driveToPoint(958.8, -870, 135, 0.5);
+                }
+        }
+    }
+
+    public void knockOffRightMineral() throws InterruptedException
+    {
+        switch (alliance)
+        {
+            case RED:
+                switch (startLocation)
+                {
+                    case DEPOT:
+                        driveToPoint(-1219.2, -609.6, 215, 0.5);
+                    case CRATER:
+                        driveToPoint(-1219.2, 609.6, 135, 0.5);
+                }
+            case BLUE:
+                switch (startLocation)
+                {
+                    case DEPOT:
+                        driveToPoint(1219.2, 609.6, 215, 0.5);
+                    case CRATER:
+                        driveToPoint(1219.2, -609.6, 135, 0.5);
+                }
+        }
     }
 
     public void sendTelemetry()
@@ -372,11 +504,13 @@ abstract class MasterAutonomous extends Master
         telemetry.addData("Y", robotY);
         telemetry.addData("Robot Angle", robotAngle);
 
+        telemetry.addData("Lift Encoder", motorLift.getCurrentPosition());
+
         // Debug info
-        telemetry.addData("FL Encoder", motorFL.getCurrentPosition());
+        /*telemetry.addData("FL Encoder", motorFL.getCurrentPosition());
         telemetry.addData("FR Encoder", motorFR.getCurrentPosition());
         telemetry.addData("BL Encoder", motorBL.getCurrentPosition());
-        telemetry.addData("BR Encoder", motorBR.getCurrentPosition());
+        telemetry.addData("BR Encoder", motorBR.getCurrentPosition());*/
 
         telemetry.update();
     }
