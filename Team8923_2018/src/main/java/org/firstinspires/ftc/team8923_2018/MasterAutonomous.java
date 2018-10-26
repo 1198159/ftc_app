@@ -3,6 +3,8 @@ package org.firstinspires.ftc.team8923_2018;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.opencv.core.Rect;
+
 import java.util.Locale;
 
 abstract class MasterAutonomous extends Master
@@ -46,6 +48,8 @@ abstract class MasterAutonomous extends Master
     //Have to put double so it divides correctly
     double DRIVE_POWER_CONSTANT = 1.0/250; // start slowing down at 750 millimeters from the target location
     double TURN_POWER_CONSTANT = 1.0/35; // start slowing down at 35 degrees away from the target angle;
+
+    int IMAGE_MIDDLE = 212;
 
     double MIN_DRIVE_POWER = 0.3; // don't let the robot go slower than this speed
     int TOL = 100;
@@ -406,24 +410,28 @@ abstract class MasterAutonomous extends Master
         openCVVision.setShowCountours(true);
         int position;
 
-        if(((OpenCV.getGoldRect().y + OpenCV.getGoldRect().height / 2) < 150) && (OpenCV.getGoldRect().y + OpenCV.getGoldRect().height / 2) > 0)
+        Rect goldLocation = openCVVision.getGoldRect();
+
+        if(((goldLocation.y + goldLocation.height / 2) < IMAGE_MIDDLE) && (goldLocation.y + goldLocation.height / 2) > 0)
         {
             telemetry.addData("Position: ", "Left");
             position = -1;
         }
-        else if((OpenCV.getGoldRect().y + OpenCV.getGoldRect().height / 2) > 250)
+        else if((goldLocation.y + goldLocation.height / 2) >= IMAGE_MIDDLE)
         {
             telemetry.addData("Position: ", "Center");
             position = 0;
         }
-        else
+        else // no rect was found, so the object must be on the right
         {
             telemetry.addData("Position", "Right");
             position = 1;
         }
         telemetry.addData("Gold",
-                String.format(Locale.getDefault(), "(%d, %d)", (OpenCV.getGoldRect().x + OpenCV.getGoldRect().width) / 2, (OpenCV.getGoldRect().y + OpenCV.getGoldRect().height) / 2));
+                String.format(Locale.getDefault(), "(%d, %d)", (goldLocation.x + goldLocation.width) / 2, (goldLocation.y + goldLocation.height) / 2));
         telemetry.update();
+
+        openCVVision.disable();//stop processing images
 
         return position;
     }
@@ -444,9 +452,9 @@ abstract class MasterAutonomous extends Master
                 switch (startLocation)
                 {
                     case DEPOT:
-                        driveToPoint(698.3, 1130.5, 215, 0.5);
+                        driveToPoint(698.3, 1130.5, 45, 0.5);
                     case CRATER:
-                        driveToPoint(698.3, -1130.5, 135, 0.5);
+                        driveToPoint(698.3, -1130.5, 315, 0.5);
                 }
         }
     }
@@ -467,9 +475,9 @@ abstract class MasterAutonomous extends Master
                 switch (startLocation)
                 {
                     case DEPOT:
-                        driveToPoint(958.8, 870, 215, 0.5);
+                        driveToPoint(958.8, 870, 45, 0.5);
                     case CRATER:
-                        driveToPoint(958.8, -870, 135, 0.5);
+                        driveToPoint(958.8, -870, 315, 0.5);
                 }
         }
     }
@@ -490,9 +498,9 @@ abstract class MasterAutonomous extends Master
                 switch (startLocation)
                 {
                     case DEPOT:
-                        driveToPoint(1219.2, 609.6, 215, 0.5);
+                        driveToPoint(1219.2, 609.6, 45, 0.5);
                     case CRATER:
-                        driveToPoint(1219.2, -609.6, 135, 0.5);
+                        driveToPoint(1219.2, -609.6, 315, 0.5);
                 }
         }
     }
