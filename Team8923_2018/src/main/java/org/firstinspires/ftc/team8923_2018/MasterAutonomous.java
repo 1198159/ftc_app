@@ -164,6 +164,8 @@ abstract class MasterAutonomous extends Master
             gold = GoldLocation.RIGHT;
         }
 
+        telemetry.update();
+
         return gold;
     }
 
@@ -440,8 +442,11 @@ abstract class MasterAutonomous extends Master
 
         //!!! should we be locating the gold AFTER we finish the move that we do below??
         GoldLocation position = openCVLocateGold();
+
+        sleep(1000); //this can be removed?
+
         openCVDisable(); //stop openCV processing since we don't need it anymore.
-        sleep(1000);
+
         switch (alliance)
         {
             case RED:
