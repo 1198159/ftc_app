@@ -63,6 +63,16 @@ abstract public class MasterTeleOp extends MasterOpMode
         powerBL = ly;
         powerBR = ry;
     }
+    void simpleDrive()
+    {
+        ly = -gamepad1.left_stick_y; // Y axis is negative when up
+        ry = -gamepad1.right_stick_y; // Y axis is negative when up
+
+        powerFL = ly;
+        powerFR = ry;
+        powerBL = ly;
+        powerBR = ry;
+    }
 
     void arcadeDrive()
     {
