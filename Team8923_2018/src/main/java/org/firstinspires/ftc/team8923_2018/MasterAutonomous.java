@@ -112,6 +112,8 @@ abstract class MasterAutonomous extends Master
         // Set IMU heading offset
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
 
+        servoJJ.setPosition(1.0);
+
         //initialize our openCV image processing pipeline
         openCVInit();
 
@@ -169,6 +171,13 @@ abstract class MasterAutonomous extends Master
         return gold;
     }
 
+    public void moveJJ(int position)
+    {
+        //1 is completely up
+        //-1 is completely down
+        servoJJ.setPosition(position);
+    }
+
     public void moveLift (int ticks)
     {
         while ((ticks - motorLift.getCurrentPosition()) > TOL)
@@ -184,12 +193,6 @@ abstract class MasterAutonomous extends Master
     {
         motorLift.setPower(0.0);
         idle();
-    }
-    public void moveJJ(int position)
-    {
-        //1 is completely up
-        //-1 is completely down
-        servoJJ.setPosition(position);
     }
 
     public void configureAutonomous()
@@ -226,7 +229,6 @@ abstract class MasterAutonomous extends Master
             {
                 idle();
             }
-
             telemetry.addData("Alliance", alliance.name());
             telemetry.addData("Side", startLocation.name());
             telemetry.update();
@@ -313,6 +315,56 @@ abstract class MasterAutonomous extends Master
         while (opModeIsActive() &&
                 (runtime.seconds() < timeout) &&
                 (Math.abs(errorFL) > TOL || Math.abs(errorFR) > TOL || Math.abs(errorBL) > TOL || Math.abs(errorBR) > TOL));
+
+        stopDriving();
+    }
+    // normalizing the angle to be between -180 to 180
+    public double adjustAngles(double angle)
+    {
+        while(angle > 180)
+            angle -= 360;
+        while(angle < -180)
+            angle += 360;
+        return angle;
+    }
+    void imuPivot(double referenceAngle, double targetAngle, double MaxSpeed, double kAngle, double timeout)
+    {
+        runtime.reset();
+        //counter-clockwise is positive
+        double pivot;
+        double currentRobotAngle;
+        double angleError;
+
+        targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
+        targetAngle = adjustAngles(targetAngle);
+        do {
+            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
+            targetAngle = adjustAngles(targetAngle);//Makes it so the target angle does not wrap
+            angleError = currentRobotAngle - targetAngle;
+            angleError = adjustAngles(angleError);
+            pivot = angleError * kAngle;
+
+            if (pivot >= 0.0)
+            {
+                pivot = Range.clip(pivot, 0.15, MaxSpeed);
+            }
+            else
+            {
+                pivot = Range.clip(pivot, -MaxSpeed, -0.15);
+            }
+
+            speedFL = pivot;
+            speedFR = -pivot;
+            speedBL = pivot;
+            speedBR = -pivot;
+
+            motorFL.setPower(speedFL);
+            motorFR.setPower(speedFR);
+            motorBL.setPower(speedBL);
+            motorBR.setPower(speedBR);
+            idle();
+        }
+        while ((opModeIsActive() && (Math.abs(angleError) > 3.0)) && (runtime.seconds() < timeout));
 
         stopDriving();
     }
@@ -436,6 +488,9 @@ abstract class MasterAutonomous extends Master
         motorBR.setPower(0.0);
     }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//Autonomous phases
     public GoldLocation landAndDetectMineral() throws InterruptedException
     {
         moveLift(4375);
@@ -443,10 +498,12 @@ abstract class MasterAutonomous extends Master
         //!!! should we be locating the gold AFTER we finish the move that we do below??
         GoldLocation position = openCVLocateGold();
 
-        sleep(1000); //this can be removed?
+        sleep(100); //this can be removed?
+
 
         openCVDisable(); //stop openCV processing since we don't need it anymore.
 
+        /*
         switch (alliance)
         {
             case RED:
@@ -470,76 +527,64 @@ abstract class MasterAutonomous extends Master
                         break;
                 }
         }
+        */
         return position;
     }
 
 
     public void knockOffLeftMineral() throws InterruptedException
     {
-        switch (alliance)
+        switch (startLocation)
         {
-            case RED:
-                switch (startLocation)
-                {
-                    case DEPOT:
-                        driveToPoint(-698.3, -1130.5, 215, 0.5);
-                    case CRATER:
-                        driveToPoint(-698.3, 1130.5, 135, 0.5);
-                }
-            case BLUE:
-                switch (startLocation)
-                {
-                    case DEPOT:
-                        driveToPoint(698.3, 1130.5, 45, 0.5);
-                    case CRATER:
-                        driveToPoint(698.3, -1130.5, 315, 0.5);
-                }
+            case DEPOT:
+            {
+                moveAuto(0, -280, 0.5, 0.3, 3.0);
+                moveAuto(480, 0, 0.5, 0.3, 3.0);
+                moveAuto(0, -660, 0.5, 0.3, 3.0);
+                break;
+                //driveToPoint(698.3, 1130.5, 45, 0.5);
+            }
+            case CRATER:
+            {
+                //driveToPoint(698.3, -1130.5, 315, 0.5);
+
+            }
         }
     }
 
     public void knockOffCenterMineral() throws InterruptedException
     {
-        switch (alliance)
+        switch (startLocation)
         {
-            case RED:
-                switch (startLocation)
-                {
-                    case DEPOT:
-                        driveToPoint(-958.8, -870, 215, 0.5);
-                    case CRATER:
-                        driveToPoint(-958.8, 870, 135, 0.5);
-                }
-            case BLUE:
-                switch (startLocation)
-                {
-                    case DEPOT:
-                        driveToPoint(958.8, 870, 45, 0.5);
-                    case CRATER:
-                        driveToPoint(958.8, -870, 315, 0.5);
-                }
+            case DEPOT:
+            {
+                moveAuto(0, -1270, 0.5, 0.35, 3.0);
+                moveAuto(0, 75, 0.7, 0.35, 3.0);
+                break;
+                //driveToPoint(958.8, 870, 45, 0.5);
+            }
+            case CRATER:
+            {
+                //driveToPoint(958.8, -870, 315, 0.5);
+            }
         }
     }
 
     public void knockOffRightMineral() throws InterruptedException
     {
-        switch (alliance)
+        switch (startLocation)
         {
-            case RED:
-                switch (startLocation)
-                {
-                    case DEPOT:
-                        driveToPoint(-1219.2, -609.6, 215, 0.5);
-                    case CRATER:
-                        driveToPoint(-1219.2, 609.6, 135, 0.5);
-                }
-            case BLUE:
-                switch (startLocation)
-                {
-                    case DEPOT:
-                        driveToPoint(1219.2, 609.6, 45, 0.5);
-                    case CRATER:
-                        driveToPoint(1219.2, -609.6, 315, 0.5);
-                }
+            case DEPOT:
+            {
+                moveAuto(0, -280, 0.5, 0.3, 3.0);
+                moveAuto(-480, 0, 0.5, 0.3, 3.0);
+                moveAuto(0, -660, 0.5, 0.3, 3.0);
+                //driveToPoint(-1219.2, -609.6, 215, 0.5);
+            }
+            case CRATER:
+            {
+                //driveToPoint(-1219.2, 609.6, 135, 0.5);
+            }
         }
     }
 
