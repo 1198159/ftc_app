@@ -37,8 +37,7 @@ abstract public class MasterOpMode extends LinearOpMode
         //ArmMechanism armMechanism;
 
     // todo Implement new framework PID when it becomes available
-    // Declare filters.  We have PID for turning, PID for encoder navigation, PID for moving the----
-    // glyphter, and 3 acceleration-limiting filters (in autonomous and teleOp).
+    // Declare filters.  We currently have PID for turning and encoder navigation.------------------
         PIDFilter rotationFilter;
         PIDFilter translationFilter;
     //----------------------------------------------------------------------------------------------
@@ -229,13 +228,6 @@ abstract public class MasterOpMode extends LinearOpMode
         telemetry.addData("rotational power: ", w);
         */
         telemetry.update();
-    }
-
-
-    void driveHanger (double drivePower)
-    {
-        motorHanger.setPower(drivePower);
-        //telemetry.addData("Hanger Power: ", motorHanger.getPower());
     }
 
 

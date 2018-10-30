@@ -21,11 +21,12 @@ abstract public class MasterTeleOp extends MasterOpMode
     void driveHanger()
     {
         if (driver1.getRightTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
-            driveHanger(1.0);
+            motorHanger.setPower(1.0);
         else if (driver1.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
-            driveHanger(-1.0);
+            motorHanger.setPower(-1.0);
         else
-            driveHanger(0.0);
+            motorHanger.setPower(0.0);
+
         telemetry.addData("Trigger val Right: ", driver1.getRightTriggerValue());
         telemetry.addData("Trigger val Left: ", driver1.getLeftTriggerValue());
     }
@@ -57,14 +58,6 @@ abstract public class MasterTeleOp extends MasterOpMode
 
         double rotationPower = -rFactor * stickCurve.getOuput(gamepad1.left_stick_x);
         //----------------------------------------------------------------------------------------
-
-
-        if (driver1.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
-            driveHanger(driver1.getRightTriggerValue());
-        else if (driver1.getRightTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
-            driveHanger(-driver1.getLeftTriggerValue());
-        else
-            driveHanger(0.0);
 
 
         // Change drive direction based on driver input

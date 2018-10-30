@@ -14,6 +14,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     // Initialize booleans and variables used in runSetup()
     public boolean isBlueSide = true;
+    public boolean isCraterStart = true;
 
     // Stores orientation of robot
     double currentAngle = 0.0;
@@ -48,6 +49,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         // Ensure log can't overflow
         telemetry.log().setCapacity(2);
         telemetry.log().add("Alliance Blue/Red = X/B");
+        telemetry.log().add("Crater Start/Depot Start = D-Pad Down/D-Pad Up");
         //telemetry.log().add("Balancing stone Left/Right = Left/Right bumper");
 
         boolean settingUp = true;
@@ -65,12 +67,19 @@ abstract public class MasterAutonomous extends MasterOpMode
             else if (driver1.isButtonJustPressed(Button.B))
                 isBlueSide = false;
 
+            // Select start position
+            if (driver1.isButtonJustPressed(Button.DPAD_DOWN))
+                isCraterStart = true;
+            else if (driver1.isButtonJustPressed(Button.DPAD_UP))
+                isCraterStart = false;
+
             // If the driver presses start, we exit setup
             else if (driver1.isButtonJustPressed(Button.START))
                 settingUp = false;
 
             // Display the current setup
             telemetry.addData("Is robot on blue alliance: ", isBlueSide);
+            telemetry.addData("Is robot starting by crater: ", isCraterStart);
 
 
             updateCallback(eTime);
@@ -82,54 +91,8 @@ abstract public class MasterAutonomous extends MasterOpMode
         telemetry.log().add("Setup finished.");
     }
 
-
-    // Tell the robot to turn to a specified angle
-    public void turnTo(double targetAngle)
-    {
-        double turningPower;
-        currentAngle = getAngularOrientationWithOffset();
-        double angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
-
-        // Robot only stops turning when it is within angle tolerance
-        while(Math.abs(angleDiff) >= Constants.ANGLE_TOLERANCE_DEG && opModeIsActive())
-        {
-            currentAngle = getAngularOrientationWithOffset();
-
-            // Give robot raw value for turning power
-            angleDiff = normalizeRotationTarget(targetAngle, currentAngle);
-
-            // Send raw turning power through PID filter to adjust range and minimize oscillation
-            rotationFilter.roll(angleDiff);
-            turningPower = rotationFilter.getFilteredValue();
-
-            // Make sure turningPower doesn't go above maximum power
-            if (Math.abs(turningPower) > 1.0)
-            {
-                turningPower = Math.signum(turningPower);
-            }
-
-            // Makes sure turningPower doesn't go below minimum power
-            if(Math.abs(turningPower) < Constants.MINIMUM_TURNING_POWER)
-            {
-                turningPower = Math.signum(turningPower) * Constants.MINIMUM_TURNING_POWER;
-            }
-
-            // Turns robot
-            driveMecanum(0.0, 0.0, turningPower);
-
-            telemetry.addData("angleDiff: ", angleDiff);
-            telemetry.addData("Turning Power: ", turningPower);
-            telemetry.addData("Orientation: ", currentAngle);
-            telemetry.update();
-            idle();
-        }
-
-        stopDriveMotors();
-    }
-
-    // Tell the robot to turn to a specified angle.  This method is different from turnTo in that
-    // we can tell the robot not to turn faster than a given speed
-    public void adjustableTurnTo(double targetAngle, double maxPower)
+    // Tell the robot to turn to a specified angle.  We can also limit the motor power while turning.
+    public void turnTo(double targetAngle, double maxPower)
     {
         double turningPower;
         currentAngle = getAngularOrientationWithOffset();

@@ -6,8 +6,8 @@ package org.firstinspires.ftc.team6220_2018;
 
 public class Constants
 {
-    public static final int GOLD_LEFT_HORIZONTAL = 100;//192
-    public static final int GOLD_RIGHT_HORIZONTAL = 250; //144
+    public static final int GOLD_LEFT_HORIZONTAL = 150;//192
+    public static final int GOLD_RIGHT_HORIZONTAL = 570; //144
     public static final int DISCRIMINATION_HEIGHT = 170;
 
     // Standard conversions
@@ -19,7 +19,7 @@ public class Constants
 
     // Robot specifications
     public static final float WHEEL_DIAMETER_MM = 4 * MM_PER_INCH;    // 4 inch diameter wheel
-    public static final double GEAR_RATIO = 48.0 / 84.0;            // Driven to driving gear
+    public static final double GEAR_RATIO = 24.0 / 32.0;            // Driven to driving gear
     // Actually 25.4 ticks / inch
     public static final double MM_PER_ANDYMARK_TICK = (Math.PI * WHEEL_DIAMETER_MM) / (ANDYMARK_TICKS_PER_ROTATION * GEAR_RATIO);
 

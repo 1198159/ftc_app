@@ -29,7 +29,7 @@ public class TeleOpTestBed extends MasterAutonomous
         {
             if(driver1.isButtonJustPressed(Button.A))
             {
-                turnTo(35);
+                turnTo(35,1.0);
             }
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();

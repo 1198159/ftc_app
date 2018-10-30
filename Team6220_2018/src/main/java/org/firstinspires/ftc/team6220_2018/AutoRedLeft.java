@@ -36,9 +36,11 @@ public class AutoRedLeft extends MasterAutonomous
         OpenCVVision.setShowCountours(true);
         waitForStart();
 
-        while(opModeIsActive()) {
+        while(opModeIsActive())
+        {
             // gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front)
-            if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) <= Constants.GOLD_LEFT_HORIZONTAL)) {
+            if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) <= Constants.GOLD_LEFT_HORIZONTAL))
+            {
                 //goldLocation = AutoRedLeft.sampleFieldLocations.left;
                 /*moveRobot(90, 0.7, 0.25);
                 moveRobot(135, 0.7, 1);
@@ -48,7 +50,8 @@ public class AutoRedLeft extends MasterAutonomous
                 telemetry.addLine("Left");
             }
             // gold is towards right of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
-            else if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))) > Constants.GOLD_RIGHT_HORIZONTAL) {
+            else if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))) > Constants.GOLD_RIGHT_HORIZONTAL)
+            {
                 //goldLocation = AutoRedLeft.sampleFieldLocations.right;
                 /*moveRobot(90, 0.7, 0.25);
                 moveRobot(45, 0.7, 1);
@@ -56,19 +59,18 @@ public class AutoRedLeft extends MasterAutonomous
                 telemetry.addLine("Right");
             }
             // gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
-            else {
+            else
+            {
                 /*moveRobot(90, 0.7, 1.2);
                 turnTo(-45);*/
                 //goldLocation = AutoRedLeft.sampleFieldLocations.center;
                 telemetry.addLine("Center (default)");
             }
+            telemetry.addData("Gold",
+                    String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + (OpenCVVision.getGoldRect().width) / 2), (OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))));
+            telemetry.addData("currentAngle", currentAngle);
+            telemetry.update();
         }
-
-        telemetry.addData("Gold",
-                String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + (OpenCVVision.getGoldRect().width) / 2), (OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))));
-        telemetry.addData("currentAngle", currentAngle);
-        telemetry.update();
-
 
 
         //while (opModeIsActive())
