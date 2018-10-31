@@ -4,11 +4,17 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
+
+import java.util.Locale;
+
 /*
     Contains important methods for use in our autonomous programs
 */
 abstract public class MasterAutonomous extends MasterOpMode
 {
+    OpenCVGold OpenCVVision;
+
     // Necessary for runSetup()
     DriverInput driverInput;
 
@@ -18,6 +24,16 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     // Stores orientation of robot
     double currentAngle = 0.0;
+
+    private enum sampleFieldLocations
+    {
+        left,
+        center,
+        right
+    }
+
+    sampleFieldLocations goldLocation;
+
 
     /*
     // Use for more advanced auto
@@ -32,6 +48,14 @@ abstract public class MasterAutonomous extends MasterOpMode
     {
         initializeRobot();
 
+        motorHanger.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorHanger.setPower(0);
+
+        OpenCVVision = new OpenCVGold();
+
+        OpenCVVision.init(hardwareMap.appContext, ActivityViewDisplay.getInstance());
+        OpenCVVision.setShowCountours(true);
+        OpenCVVision.enable();
 //        vuforiaHelper = new VuforiaHelper();
 //        vuforiaHelper.setupVuforia();
     }
@@ -147,6 +171,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     // todo Add global coordinates (not a priority)
     // Uses encoders to make the robot drive to a specified relative position.  Also makes use of the
     // imu to keep the robot at a constant heading during navigation.
+    // **Note:  initDeltaX/Y are in mm.
     void driveToPosition(double initDeltaX, double initDeltaY, double maxPower) throws InterruptedException
     {
         // Variables set every loop-------------------
@@ -257,5 +282,43 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         telemetry.addData("currentAngle: ", currentAngle);
         telemetry.update();
+    }
+
+    // Uses OpenCV to identify the location of the gold mineral.
+    public void identifyGold ()
+    {
+        // gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front)
+        if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_LEFT_HORIZONTAL))
+        {
+            goldLocation = sampleFieldLocations.left;
+            telemetry.addLine("Left");
+        }
+        // gold is towards right of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
+        else if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))) > Constants.GOLD_RIGHT_HORIZONTAL)
+        {
+            goldLocation = sampleFieldLocations.right;
+            telemetry.addLine("Right");
+        }
+        // gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
+        else
+        {
+            goldLocation = sampleFieldLocations.center;
+            telemetry.addLine("Center (default)");
+        }
+        telemetry.addData("Gold",
+                String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + (OpenCVVision.getGoldRect().width) / 2), (OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))));
+        telemetry.addData("currentAngle", currentAngle);
+        telemetry.update();
+    }
+
+    // Use this method to knock the gold mineral given its location.
+    public void knockGold (sampleFieldLocations goldLocation) throws InterruptedException
+    {
+        if (goldLocation == sampleFieldLocations.left)
+            driveToPosition(-450,750,1.0);
+        else if (goldLocation == sampleFieldLocations.right)
+            driveToPosition(450,750,1.0);
+        else
+            driveToPosition(0,750,1.0);
     }
 }

@@ -55,7 +55,7 @@ abstract public class MasterOpMode extends LinearOpMode
     //-----------------------------
 
      // Servos----------------------
-    Servo servo;
+    Servo servoHanger;
      //------------------------------
     //-----------------------------------------------------------------
 
@@ -124,11 +124,8 @@ abstract public class MasterOpMode extends LinearOpMode
             motorHanger = hardwareMap.dcMotor.get("motorHanger");
 
             motorHanger.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorHanger.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            motorHanger.setPower(0);
-
-            servo = hardwareMap.servo.get("servo");
+            servoHanger = hardwareMap.servo.get("servoHanger");
         }
         //--------------------------------------------------------------------------------------------------------------
 

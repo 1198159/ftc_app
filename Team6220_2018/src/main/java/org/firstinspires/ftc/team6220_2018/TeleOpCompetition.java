@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team6220_2018;
 
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  *  Uses driver input to operate robot during TeleOp period
@@ -15,6 +16,8 @@ public class TeleOpCompetition extends MasterTeleOp
     public void runOpMode() throws InterruptedException
     {
         initializeRobot();
+        motorHanger.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorHanger.setPower(0);
         /*LynxModule myModule = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
         myModule.setDebug(LynxModule.DebugGroup.MOTOR0, LynxModule.DebugVerbosity.HIGH);*/
 
@@ -35,9 +38,11 @@ public class TeleOpCompetition extends MasterTeleOp
             driveHanger();
 
             if (driver1.isButtonJustPressed(Button.X))
-                servo.setPosition(1.0);
+                servoHanger.setPosition(1.0);
             else if (driver1.isButtonJustPressed(Button.B))
-                servo.setPosition(0);
+                servoHanger.setPosition(0);
+
+            telemetry.addData("Hanger Enc: ", motorHanger.getCurrentPosition());
 
 
             // Extra functionalities-------------------------------------------------------

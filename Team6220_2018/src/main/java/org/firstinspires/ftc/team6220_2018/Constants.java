@@ -6,9 +6,9 @@ package org.firstinspires.ftc.team6220_2018;
 
 public class Constants
 {
-    public static final int GOLD_LEFT_HORIZONTAL = 150;//192
-    public static final int GOLD_RIGHT_HORIZONTAL = 570; //144
-    public static final int DISCRIMINATION_HEIGHT = 170;
+    public static final int GOLD_LEFT_HORIZONTAL = 120;//192
+    public static final int GOLD_RIGHT_HORIZONTAL = 600; //144
+    public static final int DISCRIMINATION_HEIGHT = 340;
 
     // Standard conversions
      // This is for an Andymark 40; 20's and 60's are different
@@ -34,7 +34,6 @@ public class Constants
     // Tolerances
     public static final double ANGLE_TOLERANCE_DEG = 2.5;
     public static final double POSITION_TOLERANCE_MM = 15.0;
-    public static final double GLYPHTER_TOLERANCE_TICKS = 15;    // todo Adjust
 
 
     // Movement control constants-----------------------
@@ -43,7 +42,7 @@ public class Constants
     public static final double MINIMUM_GLYPHTER_POWER = 0.1;   // todo Adjust
      // Constants for adjusting powers that are proportional to angle and position differences
     public static final double TURNING_POWER_FACTOR = 0.014;
-    public static final double DRIVE_POWER_FACTOR = 0.0016;
+    public static final double DRIVE_POWER_FACTOR = 0.0025;
     //------------------------------------------------
 
 
@@ -68,7 +67,14 @@ public class Constants
 
 
     // Servo positions--------------------------------
+    public static final double SERVO_HANG_DEPLOYED = 0.7;
+    public static final double SERVO_HANG_RETRACTED = 0.0;
+    //-------------------------------------------------
 
+
+    // Encoder positions-------------------------------
+    public static final int HANG_UNLATCH_POSITION = 100;
+    public static final int HANG_GROUND_UNLATCH = -3150;
     //-------------------------------------------------
 
 
