@@ -17,6 +17,7 @@ abstract class Master extends LinearOpMode
     DcMotor motorDankUnderglow;
 
     Servo servoJJ;
+    Servo servoJJ2;
 
     BNO055IMU imu;
 
@@ -42,6 +43,7 @@ abstract class Master extends LinearOpMode
         motorLift = hardwareMap.get(DcMotor.class, "motorLift");
         motorDankUnderglow = hardwareMap.get(DcMotor.class, "motorDankUnderglow");
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
+        servoJJ2 = hardwareMap.get(Servo.class, "servoJJ2");
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
