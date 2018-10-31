@@ -72,6 +72,11 @@ abstract public class MasterTeleOp extends MasterOpMode
         powerFR = ry;
         powerBL = ly;
         powerBR = ry;
+
+        motorFL.setPower(powerFL);
+        motorBL.setPower(powerBL);
+        motorFR.setPower(powerFR);
+        motorBR.setPower(powerBR);
     }
 
     void arcadeDrive()
@@ -117,21 +122,15 @@ abstract public class MasterTeleOp extends MasterOpMode
         // Glyph lift up/down
         if(-gamepad2.right_stick_y < 0.0) // down
         {
-            motorLift.setPower(Range.clip(-gamepad2.right_stick_y, -0.65, -0.2));
-            //motorLiftRight.setPower(Range.clip(-gamepad2.right_stick_y, -0.65, -0.2));
+            motorLift.setPower(Range.clip(-gamepad2.right_stick_y, -1.0, -0.2));
         }
         else if(-gamepad2.right_stick_y > 0.0) // up
         {
-            tarGLPos = curGLPos;
-            motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            //motorLiftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorLift.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 0.65));
-            //motorLiftRight.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 0.65));
+            motorLift.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 1.0));
         }
         else // turn motors off
         {
             motorLift.setPower(0.0);
-            //motorLiftRight.setPower(0.0);
         }
     }
 
