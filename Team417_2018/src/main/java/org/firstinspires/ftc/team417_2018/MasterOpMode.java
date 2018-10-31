@@ -26,7 +26,7 @@ abstract public class MasterOpMode extends LinearOpMode
     // DcMotor motorLiftRight = null;
 
     // Declare sensors
-    //BNO055IMU imu; // inertial measurement unit (located within the REV Hub)
+    BNO055IMU imu; // inertial measurement unit (located within the REV Hub)
     //ColorSensor sensorColorLeft; // port 1
     //ColorSensor sensorColorRight; // port 2
 
@@ -71,11 +71,12 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorLift = hardwareMap.dcMotor.get("motorLift");
 
-        //motorLift.setDirection(DcMotor.Direction.FORWARD);
+        motorLift.setDirection(DcMotor.Direction.REVERSE);
 
         //motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -90,6 +91,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setDirection(DcMotor.Direction.REVERSE);
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
+
+        //motorFL.setMode();
 
         // set motor power to 0
         motorFL.setPower(0);
@@ -113,8 +116,8 @@ abstract public class MasterOpMode extends LinearOpMode
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
-        //imu = hardwareMap.get(BNO055IMU.class, "imu");
-        //imu.initialize(parameters);
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
 
         telemetry.log().setCapacity(8);
 
