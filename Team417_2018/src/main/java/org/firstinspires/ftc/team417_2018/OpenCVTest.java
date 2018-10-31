@@ -11,6 +11,12 @@ import java.util.Locale;
 public class OpenCVTest extends LinearOpMode
 {
     private OpenCVDetect goldVision;
+    boolean isLeftGold = false;
+    boolean isCenterGold = false;
+    boolean isRightGold = false;
+    float goldX;
+    float goldY;
+
     @Override
     public void runOpMode()
     {
@@ -24,10 +30,42 @@ public class OpenCVTest extends LinearOpMode
         waitForStart();
         goldVision.setShowCountours(true);
 
+        goldX = (goldVision.getGoldRect().x + goldVision.getGoldRect().width) / 2;
+        goldY = (goldVision.getGoldRect().y + goldVision.getGoldRect().height) / 2;
+
+
         while(opModeIsActive())
         {
             telemetry.addData("Gold",
-                    String.format(Locale.getDefault(), "(%d, %d)", (goldVision.getGoldRect().x + goldVision.getGoldRect().width) / 2, (goldVision.getGoldRect().y + goldVision.getGoldRect().height) / 2));
+                    String.format(Locale.getDefault(), "(%d, %d)", (goldX), goldY));
+
+            if(((goldVision.getGoldRect().y + goldVision.getGoldRect().height) / 2) <= 187)
+            {
+                //goldLocation = sampleFieldLocations.left;
+                isLeftGold = true;
+                isCenterGold = false;
+                isRightGold = false;
+                telemetry.addLine("Left");
+            }
+            // gold is towards right of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
+            else if(((goldVision.getGoldRect().y + goldVision.getGoldRect().height) / 2) > 200)
+            {
+                //goldLocation = sampleFieldLocations.right;
+                isRightGold = true;
+                isLeftGold = false;
+                isCenterGold = false;
+                telemetry.addLine("Right");
+            }
+            // gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
+            else
+            {
+                //goldLocation = sampleFieldLocations.center;
+                isCenterGold = true;
+                isRightGold = false;
+                isLeftGold = false;
+                telemetry.addLine("Center (default)");
+            }
+
             telemetry.update();
         }
 
