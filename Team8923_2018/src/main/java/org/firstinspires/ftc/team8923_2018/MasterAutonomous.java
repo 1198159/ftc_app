@@ -113,7 +113,7 @@ abstract class MasterAutonomous extends Master
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
 
         servoJJ.setPosition(1.0);
-        servoJJ.setPosition(0.65);
+        servoJJ2.setPosition(0.65);
 
         //initialize our openCV image processing pipeline
         openCVInit();
@@ -172,11 +172,13 @@ abstract class MasterAutonomous extends Master
         return gold;
     }
 
-    public void moveJJ(int position)
+    public void dropJJ()
     {
         //1 is completely up
         //-1 is completely down
-        servoJJ.setPosition(position);
+        servoJJ.setPosition(-0.5);
+        sleep(800);
+        servoJJ.setPosition(-1.0);
     }
 
     public void moveLift (int ticks)
@@ -280,15 +282,15 @@ abstract class MasterAutonomous extends Master
     void fastFlex()
     {
         dankUnderglow(0.0);
-        sleep(200);
+        sleep(100);
         dankUnderglow(-1.0);
-        sleep(200);
+        sleep(100);
         dankUnderglow(0.0);
-        sleep(200);
+        sleep(100);
         dankUnderglow(-1.0);
-        sleep(200);
+        sleep(100);
         dankUnderglow(0.0);
-        sleep(200);
+        sleep(100);
         dankUnderglow(-1.0);
         idle();
     }
