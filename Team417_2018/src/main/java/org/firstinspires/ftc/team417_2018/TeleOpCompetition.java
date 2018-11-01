@@ -24,7 +24,7 @@ public class TeleOpCompetition extends MasterTeleOp
 
         while (opModeIsActive())
         {
-            simpleDrive();
+            tankDrive();
             runManualLift();
         }
     }

@@ -62,6 +62,11 @@ abstract public class MasterTeleOp extends MasterOpMode
         powerFR = ry;
         powerBL = ly;
         powerBR = ry;
+
+        motorFL.setPower(powerFL);
+        motorBL.setPower(powerBL);
+        motorFR.setPower(powerFR);
+        motorBR.setPower(powerBR);
     }
     void simpleDrive()
     {
