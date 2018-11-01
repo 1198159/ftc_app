@@ -37,7 +37,7 @@ public class OpenCVTest extends LinearOpMode
         while(opModeIsActive())
         {
             telemetry.addData("Gold",
-                    String.format(Locale.getDefault(), "(%d, %d)", (goldX), goldY));
+                    String.format(Locale.getDefault(), "(%d, %d)", ((goldVision.getGoldRect().x + goldVision.getGoldRect().width) / 2), (goldVision.getGoldRect().y + goldVision.getGoldRect().height) / 2));
 
             if(((goldVision.getGoldRect().y + goldVision.getGoldRect().height) / 2) <= 187)
             {
@@ -65,6 +65,9 @@ public class OpenCVTest extends LinearOpMode
                 isLeftGold = false;
                 telemetry.addLine("Center (default)");
             }
+
+            int midpoint = goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2;
+
 
             telemetry.update();
         }

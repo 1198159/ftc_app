@@ -54,7 +54,6 @@ public class OpenCVDetect extends OpenCVPipeline
     @Override
     public Mat processFrame(Mat rgba, Mat gray)
     {
-
         rgba.copyTo(displayMat);
         // filter yellow
         Imgproc.cvtColor(rgba, rgba, Imgproc.COLOR_RGB2YUV);
@@ -67,7 +66,6 @@ public class OpenCVDetect extends OpenCVPipeline
         }
 
         //Find contours of the yellow mask and draw them to the display mat for viewing
-
         List<MatOfPoint> contoursYellow = new ArrayList<>();
         Imgproc.findContours(maskYellow, contoursYellow, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         Imgproc.drawContours(displayMat,contoursYellow,-1,new Scalar(230,70,70),2);
@@ -78,14 +76,13 @@ public class OpenCVDetect extends OpenCVPipeline
         Rect maxRect = new Rect(0, 0, 0, 0);   // Rect with max area
         Rect temp = null;
 
-
         // Loop through the contours and find the contour with max area
         for(MatOfPoint cont : contoursYellow)
         {
             // Get bounding rect of contour
             rect = Imgproc.boundingRect(cont);
             area = Imgproc.contourArea(cont);
-            if (area > maxArea && rect.x < 315)
+            if (area > maxArea  && rect.x < 110)
             {
                 maxArea = area;
                 maxRect = rect;
@@ -112,4 +109,6 @@ public class OpenCVDetect extends OpenCVPipeline
 
         return displayMat;
     }
+
+
 }
