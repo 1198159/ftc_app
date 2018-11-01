@@ -5,11 +5,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.opencv.core.Rect;
+
+import java.util.Locale;
 
 abstract public class MasterAutonomous extends MasterOpMode
 {
     private ElapsedTime runtime = new ElapsedTime();
     public ElapsedTime autoRuntime = new ElapsedTime();
+
+    private Rect goldRect = new Rect(0,0,0,0);
+    private OpenCVDetect goldVision;
+    private int OPENCV_IMAGE_MIDDLE = 360;
 
     boolean isLogging = true;
     boolean isPosLeft;  // are you on starting position one? (if not, you're on position two)
@@ -331,7 +338,48 @@ abstract public class MasterAutonomous extends MasterOpMode
         motorBR.setPower(0);
     }
 
+    enum GoldLocation
+    {
+        LEFT,
+        CENTER,
+        RIGHT
+    }
 
+    public GoldLocation openCVLocateGold()
+    {
+        GoldLocation gold;
+
+        Rect goldRect = goldVision.getGoldRect();
+
+        telemetry.addData("Gold",
+                String.format(Locale.getDefault(), "(%d, %d)", (goldRect.x + goldRect.width / 2), (goldRect.y + goldRect.height / 2) ) );
+
+        //This function assumes that the openCV frame contains the left and center objects only.
+        //goldRect will be (0,0,0,0) if the yellow color is not found in the image; i.e., the gold must be on the right.
+
+        //We are checking Y because our phone is in landscape mode.
+        int midpoint = goldRect.y + goldRect.height / 2;
+
+        if((midpoint > 0) && (midpoint < OPENCV_IMAGE_MIDDLE))
+        {
+            telemetry.addData("Position: ", "Left");
+            gold = GoldLocation.LEFT;
+        }
+        else if(midpoint >= OPENCV_IMAGE_MIDDLE)
+        {
+            telemetry.addData("Position: ", "Center");
+            gold = GoldLocation.CENTER;
+        }
+        else //the yellow color was not found in the image; gold must be on the right.
+        {
+            telemetry.addData("Position", "Right");
+            gold = GoldLocation.RIGHT;
+        }
+
+        telemetry.update();
+
+        return gold;
+    }
 
 
 }
