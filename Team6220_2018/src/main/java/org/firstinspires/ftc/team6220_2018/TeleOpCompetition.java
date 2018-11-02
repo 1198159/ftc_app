@@ -37,14 +37,6 @@ public class TeleOpCompetition extends MasterTeleOp
             driveMecanumWithJoysticks();
             driveHanger();
 
-            if (driver1.isButtonJustPressed(Button.X))
-                servoHanger.setPosition(1.0);
-            else if (driver1.isButtonJustPressed(Button.B))
-                servoHanger.setPosition(0);
-
-            telemetry.addData("Hanger Enc: ", motorHanger.getCurrentPosition());
-
-
             // Extra functionalities-------------------------------------------------------
             /*
              Updates that need to happen each loop

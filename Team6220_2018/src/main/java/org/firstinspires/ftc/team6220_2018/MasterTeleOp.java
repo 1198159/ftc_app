@@ -21,9 +21,9 @@ abstract public class MasterTeleOp extends MasterOpMode
     void driveHanger()
     {
         if (driver1.getRightTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
-            motorHanger.setPower(-1.0);
+            motorHanger.setPower(stickCurve.getOuput(-driver1.getRightTriggerValue()));
         else if (driver1.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
-            motorHanger.setPower(1.0);
+            motorHanger.setPower(stickCurve.getOuput(driver1.getLeftTriggerValue()));
         else
             motorHanger.setPower(0.0);
 
@@ -33,8 +33,9 @@ abstract public class MasterTeleOp extends MasterOpMode
         else if (driver1.isButtonJustPressed(Button.B))
             servoHanger.setPosition(Constants.SERVO_HANG_RETRACTED);
 
-        telemetry.addData("Trigger val Right: ", driver1.getRightTriggerValue());
-        telemetry.addData("Trigger val Left: ", driver1.getLeftTriggerValue());
+        //telemetry.addData("Trigger val Right: ", driver1.getRightTriggerValue());
+        //telemetry.addData("Trigger val Left: ", driver1.getLeftTriggerValue());
+        telemetry.addData("Hanger Enc: ", motorHanger.getCurrentPosition());
     }
 
 
