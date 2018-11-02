@@ -66,6 +66,8 @@ abstract class Master extends LinearOpMode
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
 
+        servoJJ.setPosition(-1.0);
+        servoJJ2.setPosition(0.65);
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
     }

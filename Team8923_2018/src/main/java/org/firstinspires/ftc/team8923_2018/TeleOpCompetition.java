@@ -15,9 +15,10 @@ public class TeleOpCompetition extends MasterTeleOp
 
         while (opModeIsActive())
         {
-            dankUnderglow(1.0);
+            //dankUnderglow(-1.0);
             driveMecanumTeleOp();
             runLift();
+            runButtons();
             telemetry.addData("lift ticks", motorLift.getCurrentPosition());
             telemetry.update();
             idle();

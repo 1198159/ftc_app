@@ -3,6 +3,8 @@ package org.firstinspires.ftc.team8923_2018;
 abstract class MasterTeleOp extends Master
 {
     boolean dankState = true;
+    boolean JJUp = false;
+    boolean JJ2Up = false;
     void driveMecanumTeleOp()
     {
         // Reverse drive if desired
@@ -30,13 +32,54 @@ abstract class MasterTeleOp extends Master
     {
         motorDankUnderglow.setPower(power);
     }
+
+    void runButtons()
+    {
+        if (gamepad1.x)
+        {
+            dankUnderglow(1.0);
+        }
+        else
+        {
+            dankUnderglow(-1.0);
+        }
+
+        if (gamepad1.a)
+        {
+            if (JJUp)
+            {
+                servoJJ.setPosition(-1);
+                JJUp = false;
+            }
+            else
+            {
+                servoJJ.setPosition(1);
+                JJ2Up = true;
+            }
+        }
+
+        if (gamepad1.b)
+        {
+            if (JJ2Up)
+            {
+                servoJJ2.setPosition(-0.65);
+                JJ2Up = false;
+            }
+            else
+            {
+                servoJJ2.setPosition(0.0);
+                JJ2Up = true;
+            }
+        }
+        idle();
+    }
     void runLift()
     {
-        if(gamepad1.left_trigger > 0.35)
+        if(gamepad1.right_trigger > 0.35)
         {
             motorLift.setPower(1.0);
         }
-        else if(gamepad1.right_trigger > 0.35)
+        else if(gamepad1.left_trigger > 0.35)
         {
             motorLift.setPower(-1.0);
         }
