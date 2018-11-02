@@ -18,6 +18,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     private OpenCVDetect goldVision;
     private int OPENCV_IMAGE_MIDDLE = 360;
 
+    private int curLiftPos = 0;
     boolean isLogging = true;
     boolean isPosLeft;  // are you on starting position one? (if not, you're on position two)
 
@@ -343,6 +344,20 @@ abstract public class MasterAutonomous extends MasterOpMode
         LEFT,
         CENTER,
         RIGHT
+    }
+
+    public void land()
+    {
+        curLiftPos = motorLift.getCurrentPosition();
+
+        if(curLiftPos<26000) // down
+        {
+            motorLift.setPower(0.95);
+        }
+        else // turn motors off
+        {
+            motorLift.setPower(0.0);
+        }
     }
 
     public GoldLocation openCVLocateGold()

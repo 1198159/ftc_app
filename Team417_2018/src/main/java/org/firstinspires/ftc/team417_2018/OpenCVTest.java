@@ -39,31 +39,30 @@ public class OpenCVTest extends LinearOpMode
             telemetry.addData("Gold",
                     String.format(Locale.getDefault(), "(%d, %d)", ((goldVision.getGoldRect().x + goldVision.getGoldRect().width) / 2), (goldVision.getGoldRect().y + goldVision.getGoldRect().height) / 2));
 
-            if(((goldVision.getGoldRect().y + goldVision.getGoldRect().height) / 2) <= 187)
-            {
-                //goldLocation = sampleFieldLocations.left;
-                isLeftGold = true;
-                isCenterGold = false;
-                isRightGold = false;
-                telemetry.addLine("Left");
-            }
-            // gold is towards right of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
-            else if(((goldVision.getGoldRect().y + goldVision.getGoldRect().height) / 2) > 200)
+            if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) <= 120) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 140) )
             {
                 //goldLocation = sampleFieldLocations.right;
-                isRightGold = true;
                 isLeftGold = false;
                 isCenterGold = false;
+                isRightGold = true;
                 telemetry.addLine("Right");
             }
-            // gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
-            else
+            else if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) >= 140) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 140))
             {
-                //goldLocation = sampleFieldLocations.center;
+                //goldLocation = sampleFieldLocations.right;
+                isLeftGold = false;
                 isCenterGold = true;
                 isRightGold = false;
-                isLeftGold = false;
-                telemetry.addLine("Center (default)");
+                telemetry.addLine("Center");
+            }
+            // gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
+            else if ( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2)==0) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 140))
+            {
+                //goldLocation = sampleFieldLocations.center;
+                isCenterGold = false;
+                isRightGold = false;
+                isLeftGold = true;
+                telemetry.addLine("Left");
             }
 
             int midpoint = goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2;

@@ -20,7 +20,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isLeftBumperPushed;
     boolean isRightBumperPushed;
 
-    int curGLPos;
+    int curLiftPos;
     int tarGLPos;
 
     AvgFilter filterJoyStickInput = new AvgFilter();
@@ -123,7 +123,7 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     void runManualLift()
     {
-        // curGLPos = motorLiftLeft.getCurrentPosition();
+         curLiftPos = motorLift.getCurrentPosition();
         // Glyph lift up/down
         if(-gamepad2.right_stick_y < 0.0) // down
         {
@@ -141,8 +141,10 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     void updateTelemetry()
     {
+
         telemetry.addData("legato: ", isLegatoMode);
         telemetry.addData("reverse: ", isReverseMode);
+        telemetry.addData("lift motor", curLiftPos);
         telemetry.update();
     }
 }

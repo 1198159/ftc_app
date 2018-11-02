@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team417_2018;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -12,25 +13,19 @@ import java.util.Random;
  *
  */
 
-@TeleOp(name="HelloWorld", group="Swerve")  // @Autonomous(...) is the other common choice
+@Autonomous(name="HelloWorld", group="Swerve")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class HelloWorld extends LinearOpMode {
+public class HelloWorld extends MasterAutonomous
+{
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException
+    {
 
         waitForStart();
+        land();
+        moveTimed(0.2, 200);
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
 
-            telemetry.addData("greeting", "hello world!");
-
-            while (opModeIsActive()) {
-                telemetry.update();
-                idle();
-            }
-
-        }
     }
 }

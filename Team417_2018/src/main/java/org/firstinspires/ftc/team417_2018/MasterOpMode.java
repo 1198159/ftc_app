@@ -73,7 +73,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         motorLift.setDirection(DcMotor.Direction.REVERSE);
 
-        //motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -85,6 +85,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // reverse front and back right motors just for TeleOp
         motorFL.setDirection(DcMotor.Direction.REVERSE);

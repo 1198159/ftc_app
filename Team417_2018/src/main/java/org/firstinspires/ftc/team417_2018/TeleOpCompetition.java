@@ -26,6 +26,7 @@ public class TeleOpCompetition extends MasterTeleOp
         {
             tankDrive();
             runManualLift();
+            updateTelemetry();
         }
     }
 }
