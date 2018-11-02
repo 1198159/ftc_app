@@ -68,10 +68,10 @@ abstract public class MasterTeleOp extends MasterOpMode
 
 
         // Change drive direction based on driver input
-        if (driver1.isButtonJustPressed(Button.Y))
-            driveReversed = false;
-        else if (driver1.isButtonJustPressed(Button.A))
+        if (driver1.isButtonJustPressed(Button.LEFT_BUMPER) && !driveReversed)
             driveReversed = true;
+        else if (driver1.isButtonJustPressed(Button.LEFT_BUMPER) && driveReversed)
+            driveReversed = false;
 
         // Drive in direction based on whether driveDirectionShift is true
         if (!driveReversed)
