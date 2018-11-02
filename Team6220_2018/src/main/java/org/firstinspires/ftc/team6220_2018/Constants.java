@@ -6,9 +6,10 @@ package org.firstinspires.ftc.team6220_2018;
 
 public class Constants
 {
-    public static final int GOLD_LEFT_HORIZONTAL = 120;//192
-    public static final int GOLD_RIGHT_HORIZONTAL = 600; //144
-    public static final int DISCRIMINATION_HEIGHT = 340;
+    //public static final int GOLD_LEFT_HORIZONTAL = 120;
+    //public static final int GOLD_RIGHT_HORIZONTAL = 600;
+    public static final int GOLD_DIVIDING_LINE = 520;
+    public static final int DISCRIMINATION_HEIGHT = 330;
 
     // Standard conversions
      // This is for an Andymark 40; 20's and 60's are different
@@ -34,6 +35,7 @@ public class Constants
     // Tolerances
     public static final double ANGLE_TOLERANCE_DEG = 2.5;
     public static final double POSITION_TOLERANCE_MM = 15.0;
+    public static final double OPENCV_TOLERANCE_PIX = 0.5;
 
 
     // Movement control constants-----------------------

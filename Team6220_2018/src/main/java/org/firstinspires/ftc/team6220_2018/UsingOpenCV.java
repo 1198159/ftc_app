@@ -39,7 +39,7 @@ public class UsingOpenCV extends MasterAutonomous
 
         OpenCVVision.setShowCountours(true);
 
-        // gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front)
+        /*// gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front)
         if(((OpenCVVision.getGoldRect().y + OpenCVVision.getGoldRect().height) / 2) <= Constants.GOLD_LEFT_HORIZONTAL)
         {
             goldLocation = sampleFieldLocations.left;
@@ -56,7 +56,7 @@ public class UsingOpenCV extends MasterAutonomous
         {
             goldLocation = sampleFieldLocations.center;
             telemetry.addLine("Center (default)");
-        }
+        }*/
 
         telemetry.addData("Gold",
                 String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + OpenCVVision.getGoldRect().width) / 2, (OpenCVVision.getGoldRect().y + OpenCVVision.getGoldRect().height) / 2));

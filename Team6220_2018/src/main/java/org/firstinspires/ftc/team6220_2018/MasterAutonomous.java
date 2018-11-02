@@ -156,7 +156,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             telemetry.addData("angleDiff: ", angleDiff);
             telemetry.addData("Turning Power: ", turningPower);
             telemetry.addData("Orientation: ", currentAngle);
-            telemetry.update();
+            //telemetry.update();
             idle();
         }
 
@@ -291,14 +291,16 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Uses OpenCV to identify the location of the gold mineral.
     public void identifyGold ()
     {
+        turnTo(-16.5,0.7);
+        pauseWhileUpdating(2.0);
         // gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front)
-        if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_LEFT_HORIZONTAL))
+        if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE) && (OpenCVVision.getGoldRect().y > Constants.OPENCV_TOLERANCE_PIX))
         {
-            goldLocation = sampleFieldLocations.left;
-            telemetry.addLine("Left");
+            goldLocation = sampleFieldLocations.center;
+            telemetry.addLine("Center");
         }
         // gold is towards right of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
-        else if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))) > Constants.GOLD_RIGHT_HORIZONTAL)
+        else if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))) > Constants.GOLD_DIVIDING_LINE)
         {
             goldLocation = sampleFieldLocations.right;
             telemetry.addLine("Right");
@@ -306,13 +308,14 @@ abstract public class MasterAutonomous extends MasterOpMode
         // gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
         else
         {
-            goldLocation = sampleFieldLocations.center;
-            telemetry.addLine("Center (default)");
+            goldLocation = sampleFieldLocations.left;
+            telemetry.addLine("Left (default)");
         }
+        telemetry.update();
+        turnTo(0,0.7);
         telemetry.addData("Gold",
                 String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + (OpenCVVision.getGoldRect().width) / 2), (OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))));
         telemetry.addData("currentAngle", currentAngle);
-        telemetry.update();
     }
 
     // Use this method to knock the gold mineral given its location.
