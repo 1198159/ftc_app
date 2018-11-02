@@ -68,13 +68,18 @@ public class Constants
 
     // Servo positions--------------------------------
     public static final double SERVO_HANG_DEPLOYED = 0.7;
-    public static final double SERVO_HANG_RETRACTED = 0.0;
+    public static final double SERVO_HANG_RETRACTED = 0.25;
     //-------------------------------------------------
 
 
     // Encoder positions-------------------------------
-    public static final int HANG_UNLATCH_POSITION = 100;
+     // Hanger
+    public static final int HANG_UNLATCH_POSITION = 180;
     public static final int HANG_GROUND_UNLATCH = -3150;
+     // Robot
+    public static final int MINERAL_SHIFT = 450;
+    public static final int MINERAL_FORWARD = 750;
+    public static final int MINERAL_BACKWARD = 300;
     //-------------------------------------------------
 
 

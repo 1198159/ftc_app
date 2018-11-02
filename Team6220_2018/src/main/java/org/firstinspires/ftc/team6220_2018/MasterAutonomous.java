@@ -5,6 +5,7 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
+import org.firstinspires.ftc.robotcore.external.Const;
 
 import java.util.Locale;
 
@@ -25,7 +26,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Stores orientation of robot
     double currentAngle = 0.0;
 
-    private enum sampleFieldLocations
+    enum sampleFieldLocations
     {
         left,
         center,
@@ -33,6 +34,9 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     sampleFieldLocations goldLocation;
+    // Tells us how farther the robot needs to drive forward due to the gold mineral being in
+    // different locations.
+    double mineralShift;
 
 
     /*
@@ -315,10 +319,19 @@ abstract public class MasterAutonomous extends MasterOpMode
     public void knockGold (sampleFieldLocations goldLocation) throws InterruptedException
     {
         if (goldLocation == sampleFieldLocations.left)
-            driveToPosition(-450,750,1.0);
+        {
+            mineralShift = -Constants.MINERAL_SHIFT;
+            driveToPosition(mineralShift, Constants.MINERAL_FORWARD, 1.0);
+        }
         else if (goldLocation == sampleFieldLocations.right)
-            driveToPosition(450,750,1.0);
+        {
+            mineralShift = Constants.MINERAL_SHIFT;
+            driveToPosition(mineralShift, Constants.MINERAL_FORWARD, 1.0);
+        }
         else
-            driveToPosition(0,750,1.0);
+        {
+            mineralShift = 0;
+            driveToPosition(mineralShift, Constants.MINERAL_FORWARD, 1.0);
+        }
     }
 }

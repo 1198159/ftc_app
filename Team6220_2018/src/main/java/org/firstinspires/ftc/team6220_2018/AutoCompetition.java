@@ -34,13 +34,13 @@ public class AutoCompetition extends MasterAutonomous
             // Blue + Crater-----------------------------------------------------------------------
             if (isCraterStart)
             {
-                // Drop robot to ground
+                /*// Drop robot to ground
                 motorHanger.setTargetPosition(Constants.HANG_UNLATCH_POSITION);
                 motorHanger.setPower(1.0);
                 pauseWhileUpdating(0.3);
                 servoHanger.setPosition(Constants.SERVO_HANG_RETRACTED);
                 motorHanger.setPower(0);
-                pauseWhileUpdating(3.0);
+                pauseWhileUpdating(2.0);
                 // Turn while detecting minerals
                 //turnTo(0,0.7);
                 identifyGold();
@@ -51,20 +51,19 @@ public class AutoCompetition extends MasterAutonomous
                 driveToPosition(60,0,0.7);
                 motorHanger.setTargetPosition(0);
                 motorHanger.setPower(1.0);
-                driveToPosition(-60,0,0.7);
+                driveToPosition(-60,0,0.7);*/
 
                 // Drive forward and knock off correct mineral
                 knockGold(goldLocation);
 
                 // Drive backward a small amount
-                driveToPosition(0,-300,0.8);
+                driveToPosition(0,Constants.MINERAL_BACKWARD,0.8);
 
                 // Turn 90 deg ccw
                 turnTo(90,1.0);
 
-                // Drive forward
-                // NOTE: INCREASE DISTANCE
-                driveToPosition(0,810,1.0);
+                // Drive forward; we change this value based on where the gold mineral was
+                driveToPosition(0,1400 + mineralShift,1.0);
 
                 // Turn 45 deg ccw
                 turnTo(135,1.0);
