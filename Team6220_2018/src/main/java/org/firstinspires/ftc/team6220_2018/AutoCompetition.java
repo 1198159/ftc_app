@@ -68,9 +68,8 @@ public class AutoCompetition extends MasterAutonomous
                 // Turn 45 deg ccw
                 turnTo(135,1.0);
 
-                // Align robot with wall now if we do not want to knock our partner's mineral.
-                if (!knockPartnerMineral)
-                    moveRobot(0.0,0.6,0.8);
+                // Align robot with wall
+                moveRobot(0.0,0.6,0.8);
 
                 // Drive forward
                 driveToPosition(0,1100,0.7);
@@ -78,10 +77,6 @@ public class AutoCompetition extends MasterAutonomous
                 // moveRobot forward quickly, moveRobot backward quickly to drop team marker
                 moveRobot(90,1.0,0.2);
                 moveRobot(-90,1.0,0.2);
-
-                // Align robot with wall now if we did knock our partner's mineral.
-                if (knockPartnerMineral)
-                    moveRobot(0.0,0.6,0.8);
 
                 // Drive backward into crater
                 driveToPosition(0,-1850,1.0);
@@ -127,14 +122,8 @@ public class AutoCompetition extends MasterAutonomous
                 // Orient robot with rear toward crater
                 turnTo(-45,1.0);
 
-                // Drive backward out of depot
-                driveToPosition(0,-1000,1.0);
-
-                // Align robot with wall
-                moveRobot(180.0,0.6,0.8);
-
                 // Drive backward into crater
-                driveToPosition(0,-850,1.0);
+                driveToPosition(0,-1850,1.0);
             }
         }
         // Red side-------------------------------------------------------------------------
@@ -177,9 +166,8 @@ public class AutoCompetition extends MasterAutonomous
                 // Turn 45 deg ccw
                 turnTo(135,1.0);
 
-                // Align robot with wall now if we do not want to knock our partner's mineral.
-                if (!knockPartnerMineral)
-                    moveRobot(0.0,0.6,0.8);
+                // Align robot with wall
+                moveRobot(0.0,0.6,0.8);
 
                 // Drive forward
                 driveToPosition(0,1100,0.7);
@@ -187,10 +175,6 @@ public class AutoCompetition extends MasterAutonomous
                 // moveRobot forward quickly, moveRobot backward quickly to drop team marker
                 moveRobot(90,1.0,0.2);
                 moveRobot(-90,1.0,0.2);
-
-                // Align robot with wall now if we did knock our partner's mineral.
-                if (knockPartnerMineral)
-                    moveRobot(0.0,0.6,0.8);
 
                 // Drive backward into crater
                 driveToPosition(0,-1850,1.0);
@@ -236,15 +220,10 @@ public class AutoCompetition extends MasterAutonomous
                 // Orient robot with rear toward crater
                 turnTo(-45,1.0);
 
-                // Drive backward out of depot
-                driveToPosition(0,-1000,1.0);
-
-                // Align robot with wall
-                moveRobot(180.0,0.6,0.8);
-
                 // Drive backward into crater
-                driveToPosition(0,-850,1.0);
+                driveToPosition(0,-1850,1.0);
             }
+
         }
 
         // Stop the vision system.
