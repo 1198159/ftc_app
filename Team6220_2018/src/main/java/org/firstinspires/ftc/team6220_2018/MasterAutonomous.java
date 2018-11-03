@@ -22,6 +22,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Initialize booleans and variables used in runSetup()
     public boolean isBlueSide = true;
     public boolean isCraterStart = true;
+    public boolean knockPartnerMineral = false;
 
     // Stores orientation of robot
     double currentAngle = 0.0;
@@ -75,10 +76,10 @@ abstract public class MasterAutonomous extends MasterOpMode
         lTime = timer.seconds();
 
         // Ensure log can't overflow
-        telemetry.log().setCapacity(2);
+        telemetry.log().setCapacity(6);
         telemetry.log().add("Alliance Blue/Red = X/B");
         telemetry.log().add("Crater Start/Depot Start = D-Pad Down/D-Pad Up");
-        //telemetry.log().add("Balancing stone Left/Right = Left/Right bumper");
+        telemetry.log().add("Knock Partner's mineral Yes/No = Back Button (Toggle)");
 
         boolean settingUp = true;
 
@@ -101,13 +102,21 @@ abstract public class MasterAutonomous extends MasterOpMode
             else if (driver1.isButtonJustPressed(Button.DPAD_UP))
                 isCraterStart = false;
 
+            // Choose whether we want to hit our alliance partner's far mineral off.  We use this
+            // option if our partner does not have an autonomous routine.
+            if (driver1.isButtonJustPressed(Button.BACK) && !knockPartnerMineral)
+                knockPartnerMineral = true;
+            else if (driver1.isButtonJustPressed(Button.BACK) && knockPartnerMineral)
+                knockPartnerMineral = false;
+
             // If the driver presses start, we exit setup
             else if (driver1.isButtonJustPressed(Button.START))
                 settingUp = false;
 
             // Display the current setup
-            telemetry.addData("Is robot on blue alliance: ", isBlueSide);
-            telemetry.addData("Is robot starting by crater: ", isCraterStart);
+            telemetry.log().add("On blue alliance: ", isBlueSide);
+            telemetry.log().add("Starting by crater: ", isCraterStart);
+            telemetry.log().add("Knocking alliance partner's mineral: ", knockPartnerMineral);
 
 
             updateCallback(eTime);
