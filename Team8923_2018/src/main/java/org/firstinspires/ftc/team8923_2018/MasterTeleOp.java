@@ -43,34 +43,6 @@ abstract class MasterTeleOp extends Master
         {
             dankUnderglow(-1.0);
         }
-
-        if (gamepad1.a)
-        {
-            if (JJUp)
-            {
-                servoJJ.setPosition(-1);
-                JJUp = false;
-            }
-            else
-            {
-                servoJJ.setPosition(1);
-                JJ2Up = true;
-            }
-        }
-
-        if (gamepad1.b)
-        {
-            if (JJ2Up)
-            {
-                servoJJ2.setPosition(-0.65);
-                JJ2Up = false;
-            }
-            else
-            {
-                servoJJ2.setPosition(0.0);
-                JJ2Up = true;
-            }
-        }
         idle();
     }
     void runLift()
