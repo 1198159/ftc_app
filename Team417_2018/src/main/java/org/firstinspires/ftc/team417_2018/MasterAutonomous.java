@@ -20,7 +20,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     private int curLiftPos = 0;
     boolean isLogging = true;
-    boolean isPosLeft;  // are you on starting position one? (if not, you're on position two)
+    boolean isPosCrater;
 
     // speed is proportional to error
     double Kmove = 1.0f/1200.0f;
@@ -81,12 +81,14 @@ abstract public class MasterAutonomous extends MasterOpMode
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // run with encoder mode
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //Set up telemetry data
         // We show the log in oldest-to-newest order, as that's better for poetry
@@ -330,7 +332,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             if (isLogging) telemetry.log().add(String.format("StartAngle: %f, CurAngle: %f, error: %f", refAngle, currentAngle, errorAngle));
             idle();
 
-        } while (opModeIsActive() && (Math.abs(errorAngle) > TOL_ANGLE) );
+        } while (opModeIsActive() && (Math.abs(errorAngle) > TOL_ANGLE));
 
         // stop motors
         motorFL.setPower(0);
@@ -348,16 +350,19 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     public void land()
     {
-        curLiftPos = motorLift.getCurrentPosition();
-
-        if(curLiftPos<26000) // down
+        do
         {
+            curLiftPos = motorLift.getCurrentPosition();
             motorLift.setPower(0.95);
         }
-        else // turn motors off
-        {
-            motorLift.setPower(0.0);
-        }
+        while (curLiftPos<27900);
+        motorLift.setPower(0.0);
+    }
+
+    public void marker(boolean isLow)
+    {
+        if (isLow) marker.setPosition(MARKER_LOW);
+        else marker.setPosition(MARKER_HIGH);
     }
 
     public GoldLocation openCVLocateGold()
