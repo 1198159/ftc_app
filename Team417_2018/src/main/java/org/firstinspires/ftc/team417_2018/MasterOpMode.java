@@ -21,6 +21,7 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorBL = null; // port 1
     DcMotor motorBR = null; // port 2
     DcMotor motorLift = null;
+    Servo marker = null; // Hub 2, port 5
 
     // DcMotor motorLiftLeft = null;
     // DcMotor motorLiftRight = null;
@@ -40,13 +41,8 @@ abstract public class MasterOpMode extends LinearOpMode
     final double ROBOT_DIAMETER_MM = 20.5 * 25.4;   // diagonal 20.5 inch FL to BR and FR to BL
 
     // Servo init and low positions
-    static final double JEWEL_INIT = 0.965;
-    static final double JEWEL_LOW = 0.35;
-
-    static final double LEFT_LOW = 0.88;
-    static final double LEFT_HIGH = 0.15;
-    static final double RIGHT_LOW = 0.26;
-    static final double RIGHT_HIGH = 1.0;
+    static final double MARKER_LOW = -0.37;
+    static final double MARKER_HIGH = 1.0;
 
     // declare color sensor variables
     // hsvValues is an array that will hold the hue, saturation, and value information.
@@ -70,13 +66,13 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorLift = hardwareMap.dcMotor.get("motorLift");
+        marker = hardwareMap.servo.get("marker");
 
         motorLift.setDirection(DcMotor.Direction.REVERSE);
 
         motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -102,8 +98,10 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setPower(0);
         motorBR.setPower(0);
 
-        //motorLiftLeft.setPower(0.0);
-        //motorLiftRight.setPower(0.0);
+        marker.setPosition(MARKER_LOW);
+        motorLift.setPower(0.0);
+
+        marker.setPosition(0.0);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually

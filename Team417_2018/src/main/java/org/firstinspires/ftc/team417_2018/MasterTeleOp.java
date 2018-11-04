@@ -139,9 +139,13 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
     }
 
+    void marker()
+    {
+        marker.setPosition(Range.clip((gamepad2.right_trigger), MARKER_LOW, MARKER_HIGH));
+    }
+
     void updateTelemetry()
     {
-
         telemetry.addData("legato: ", isLegatoMode);
         telemetry.addData("reverse: ", isReverseMode);
         telemetry.addData("lift motor", curLiftPos);
