@@ -37,6 +37,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Tells us how farther the robot needs to drive forward due to the gold mineral being in
     // different locations.
     double mineralShift;
+    double turnShift;
 
 
     /*
@@ -291,7 +292,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Uses OpenCV to identify the location of the gold mineral.
     public void identifyGold ()
     {
-        turnTo(-16.5,0.7);
+        turnTo(-16.5,1.0);
         pauseWhileUpdating(2.0);
         // gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front)
         if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE) && (OpenCVVision.getGoldRect().y > Constants.OPENCV_TOLERANCE_PIX))
@@ -311,7 +312,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             goldLocation = sampleFieldLocations.left;
             telemetry.addLine("Left (default)");
         }
-        telemetry.update();
         turnTo(0,0.7);
         telemetry.addData("Gold",
                 String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + (OpenCVVision.getGoldRect().width) / 2), (OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))));
@@ -321,20 +321,23 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Use this method to knock the gold mineral given its location.
     public void knockGold (sampleFieldLocations goldLocation) throws InterruptedException
     {
-        if (goldLocation == sampleFieldLocations.left)
+        if (goldLocation == sampleFieldLocations.center)
         {
-            mineralShift = -Constants.MINERAL_SHIFT;
+            mineralShift = 0;
             driveToPosition(mineralShift, Constants.MINERAL_FORWARD, 1.0);
+            turnShift = 0;
         }
         else if (goldLocation == sampleFieldLocations.right)
         {
             mineralShift = Constants.MINERAL_SHIFT;
             driveToPosition(mineralShift, Constants.MINERAL_FORWARD, 1.0);
+            turnShift = 30;
         }
         else
         {
-            mineralShift = 0;
+            mineralShift = -Constants.MINERAL_SHIFT;
             driveToPosition(mineralShift, Constants.MINERAL_FORWARD, 1.0);
+            turnShift = -30;
         }
     }
 }

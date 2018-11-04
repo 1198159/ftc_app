@@ -301,10 +301,10 @@ abstract public class MasterOpMode extends LinearOpMode
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
             time -= eTime;
-            telemetry.addData("eTime:", eTime);
-            telemetry.addData("Seconds Remaining:", time);
+            //telemetry.addData("eTime:", eTime);
+            //telemetry.addData("Seconds Remaining:", time);
             updateCallback(eTime);
-            telemetry.update();
+            //telemetry.update();
             idle();
         }
     }

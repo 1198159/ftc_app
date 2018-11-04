@@ -77,9 +77,9 @@ public class Constants
     // Encoder positions-------------------------------
      // Hanger
     public static final int HANG_UNLATCH_POSITION = 180;
-    public static final int HANG_GROUND_UNLATCH = -3150;
+    public static final int HANG_GROUND_UNLATCH = -2950;
      // Robot
-    public static final int MINERAL_SHIFT = 450;
+    public static final int MINERAL_SHIFT = /*450*/ 480;
     public static final int MINERAL_FORWARD = 750;
     public static final int MINERAL_BACKWARD = 300;
     //-------------------------------------------------
