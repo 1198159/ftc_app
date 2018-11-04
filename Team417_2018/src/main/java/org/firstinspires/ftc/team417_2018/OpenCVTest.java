@@ -30,14 +30,15 @@ public class OpenCVTest extends LinearOpMode
         waitForStart();
         goldVision.setShowCountours(true);
 
-        goldX = (goldVision.getGoldRect().x + goldVision.getGoldRect().width) / 2;
-        goldY = (goldVision.getGoldRect().y + goldVision.getGoldRect().height) / 2;
+        goldX = (goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2);
+        goldY = (goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2);
 
 
         while(opModeIsActive())
         {
             telemetry.addData("Gold",
-                    String.format(Locale.getDefault(), "(%d, %d)", ((goldVision.getGoldRect().x + goldVision.getGoldRect().width) / 2), (goldVision.getGoldRect().y + goldVision.getGoldRect().height) / 2));
+                    String.format(Locale.getDefault(), "(%d, %d)", (goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2), (goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2))
+            );
 
             if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) <= 120) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 140) )
             {
@@ -55,6 +56,14 @@ public class OpenCVTest extends LinearOpMode
                 isRightGold = false;
                 telemetry.addLine("Center");
             }
+            else
+            {
+                isLeftGold = true;
+                isCenterGold = false;
+                isRightGold = false;
+                telemetry.addLine("Left");
+            }
+            /*
             // gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
             else if ( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2)==0) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 140))
             {
@@ -64,6 +73,7 @@ public class OpenCVTest extends LinearOpMode
                 isLeftGold = true;
                 telemetry.addLine("Left");
             }
+            */
 
             int midpoint = goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2;
 

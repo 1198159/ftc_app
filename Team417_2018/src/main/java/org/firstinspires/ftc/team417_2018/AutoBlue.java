@@ -1,24 +1,14 @@
 package org.firstinspires.ftc.team417_2018;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
 
 import java.util.Locale;
-import java.util.Random;
 
-/**
- * This is a simple "hello world" opmode
- *
- */
-
-@Autonomous(name="HelloWorld", group="Swerve")  // @Autonomous(...) is the other common choice
-//@Disabled
-public class HelloWorld extends MasterAutonomous
+@Autonomous(name="Autonomous Blue", group = "Swerve")
+// @Disabled
+public class AutoBlue extends MasterAutonomous
 {
     private OpenCVDetect goldVision;
     boolean isLeftGold = false;
@@ -27,10 +17,6 @@ public class HelloWorld extends MasterAutonomous
 
     public void runOpMode() throws InterruptedException
     {
-
-        autoInitializeRobot();
-        waitForStart();
-
         autoInitializeRobot();
         goldVision = new OpenCVDetect();
         // can replace with ActivityViewDisplay.getInstance() for fullscreen
@@ -94,41 +80,66 @@ public class HelloWorld extends MasterAutonomous
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
 
-        pivotWithReference(45, refAngle, 0.2,0.5);
-
-        /*
         land();
-        moveTimed(0.2,200);
-        pivotWithReference(0, refAngle, 0.2,0.5, 1);
+        moveTimed(0.2,1200);
+        pivotWithReference(0, refAngle, 0.2,0.5);
 
+        // pivot to face left and right
         if (isLeftGold)
         {
-            pivotWithReference(45, refAngle, 0.2, 0.75, 3);
+            pivotWithReference(45, refAngle, 0.2, 0.75);
         }
         else if (isRightGold)
         {
-            pivotWithReference(-45, refAngle, 0.2, 0.75, 3);
+            pivotWithReference(-45, refAngle, 0.2, 0.75);
         }
 
-        sleep(100);
-        moveTimed(0.55, 1000);
-        sleep(100);
+        if (isPosCrater)
+        {
+            moveTimed(0.55, 1200); // push gold
+            sleep(100);
+            pivotWithReference(0, refAngle, 0.2, 0.75); // face crater
+            sleep(200);
+            moveTimed(0.55, 500); // go into crater / park
+        }
+
+
         //moveTimed(-0.55, 2000);
 
         if (!isPosCrater) // if depot position, then deposit team marker
         {
+            moveTimed(0.55, 1200); // push gold
+            sleep(100);
             if (isLeftGold)
             {
-                pivotWithReference(45, refAngle, 0.2,0.75,3);
+                pivotWithReference(-20, refAngle, 0.2,0.75);
+                sleep(100);
+                moveTimed(0.55, 1300); // go into depot
+                sleep(200);
+                marker.setPosition(MARKER_HIGH); // drop the marker
+                pivotWithReference(51, refAngle, 0.2,0.75);
+                // forwards a little bit
+                moveTimed(-0.55, 750);
+                // pivot so back of robot faces the crater
+                pivotWithReference(41, refAngle, 0.2,0.75);
             }
             else if (isRightGold)
             {
-
+                pivotWithReference(10, refAngle, 0.2,0.75);
+                moveTimed(0.55, 600); // go into depot
+                sleep(200);
+                marker.setPosition(MARKER_HIGH); // drop the marker
             }
+            else if (isCenterGold)
+            {
+                moveTimed(0.55, 500); // go into depot
+                sleep(200);
+                marker.setPosition(MARKER_HIGH); // drop the marker
+            }
+            //moveTimed(-0.55, 700);
+
+            //pivotWithReference(45, refAngle, 0.2,0.75); // turn so back of robot faces the crater
+            //moveTimed(-0.55, 5500); // back up into the crater
         }
-        *
-        */
-
-
     }
 }
