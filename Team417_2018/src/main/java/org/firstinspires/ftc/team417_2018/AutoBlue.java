@@ -6,7 +6,7 @@ import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
 
 import java.util.Locale;
 
-@Autonomous(name="Autonomous Blue", group = "Swerve")
+@Autonomous(name="Autonomous", group = "Swerve")
 // @Disabled
 public class AutoBlue extends MasterAutonomous
 {
@@ -33,8 +33,8 @@ public class AutoBlue extends MasterAutonomous
             if (gamepad1.x) isPosCrater = true;
             if (gamepad1.b) isPosCrater = false;
 
-            if (isPosCrater) telemetry.addData("Alliance: ", "Blue Crater");
-            else telemetry.addData("Alliance: ", "Blue Depot");
+            if (isPosCrater) telemetry.addData("Alliance: ", "Crater");
+            else telemetry.addData("Alliance: ", "Depot");
 
             telemetry.addData("Gold",
                     String.format(Locale.getDefault(), "(%d, %d)", (goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2), (goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2))
@@ -74,7 +74,7 @@ public class AutoBlue extends MasterAutonomous
         autoRuntime.reset();
         goldVision.disable();
         //autoRuntime.reset();
-        telemetry.addData("Auto Blue: ", "Started");
+        telemetry.addData("Auto: ", "Started");
         telemetry.update();
 
         // set the reference angle
@@ -117,16 +117,16 @@ public class AutoBlue extends MasterAutonomous
                 moveTimed(0.55, 1300); // go into depot
                 sleep(200);
                 marker.setPosition(MARKER_HIGH); // drop the marker
-                pivotWithReference(51, refAngle, 0.2,0.75);
+                //pivotWithReference(51, refAngle, 0.2,0.75);
                 // forwards a little bit
-                moveTimed(-0.55, 750);
+                //moveTimed(-0.55, 750);
                 // pivot so back of robot faces the crater
-                pivotWithReference(41, refAngle, 0.2,0.75);
+                //pivotWithReference(41, refAngle, 0.2,0.75);
             }
             else if (isRightGold)
             {
                 pivotWithReference(10, refAngle, 0.2,0.75);
-                moveTimed(0.55, 600); // go into depot
+                moveTimed(0.55, 1200); // go into depot
                 sleep(200);
                 marker.setPosition(MARKER_HIGH); // drop the marker
             }
@@ -136,7 +136,8 @@ public class AutoBlue extends MasterAutonomous
                 sleep(200);
                 marker.setPosition(MARKER_HIGH); // drop the marker
             }
-            //moveTimed(-0.55, 700);
+            sleep(1000);
+            //moveTimed(-0.55, 2000); // move away from the crater
 
             //pivotWithReference(45, refAngle, 0.2,0.75); // turn so back of robot faces the crater
             //moveTimed(-0.55, 5500); // back up into the crater
