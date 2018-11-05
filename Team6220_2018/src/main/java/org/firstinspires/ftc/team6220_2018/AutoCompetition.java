@@ -135,7 +135,7 @@ public class AutoCompetition extends MasterAutonomous
                 turnTo(turnShift, 1.0);
 
                 // Drive forward; we change this value based on where the gold mineral was
-                driveToPosition(0,880 ,0.7);
+                driveToPosition(0,980 ,0.7);
 
                 // Turn 45 deg ccw
                 //turnTo(135,1.0);
@@ -272,7 +272,7 @@ public class AutoCompetition extends MasterAutonomous
                 turnTo(turnShift, 1.0);
 
                 // Drive forward; we change this value based on where the gold mineral was
-                driveToPosition(0,880 ,0.7);
+                driveToPosition(0,980 ,0.7);
 
                 // Turn 45 deg ccw
                 //turnTo(135,1.0);
