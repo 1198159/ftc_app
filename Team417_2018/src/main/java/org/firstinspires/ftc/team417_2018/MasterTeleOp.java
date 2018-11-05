@@ -40,7 +40,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             ry = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
             if (isReverseMode) // Reverse Mode and Legato Mode combo
                 ly = Range.clip(gamepad1.left_stick_y, -0.3, 0.3); // Y axis is negative when up
-                ry = Range.clip(gamepad1.right_stick_y, -0.3, 0.3); // Y axis is negative when up
+                ry = -Range.clip(gamepad1.right_stick_y, -0.3, 0.3); // Y axis is negative when up
         }
         else if (isReverseMode) // Reverse Mode
         {
