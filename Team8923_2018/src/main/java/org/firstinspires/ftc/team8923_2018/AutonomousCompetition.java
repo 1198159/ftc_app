@@ -47,8 +47,8 @@ public class AutonomousCompetition extends MasterAutonomous
                             //End of knock off mineral phase
                             //Other phases to be decided later
                             imuPivot(referenceAngle, -45, 0.5, 0.015, 3.0);
-                            moveAuto(0, -650, 0.5, 0.3, 3.0);
-                            moveAuto(-125, 0, 0.5, 0.3, 3.0);
+                            moveAuto(0, -720, 0.5, 0.3, 3.0);
+                            moveAuto(-125, 0, 0.5, 0.3, 3.0);//was -125
                             dropJJ();
                             sleep(900);
                             moveAuto(0, 500, 1.0, 0.3, 3.0);
