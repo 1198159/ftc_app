@@ -82,6 +82,41 @@ abstract class MasterAutonomous extends Master
         public final double val;
         StartLocations(double i) {val = i;}
     }
+    //
+    enum MineralLocations
+    {
+
+        BLUE_DEPOT_LEFT_MINERAL_X(1219.20),
+        BLUE_DEPOT_LEFT_MINERAL_Y(609.60),
+        BLUE_DEPOT_CENTER_MINERAL_X(967.75),
+        BLUE_DEPOT_CENTER_MINERAL_Y(861.01),
+        BLUE_DEPOT_RIGHT_MINERAL_X(716.31),
+        BLUE_DEPOT_RIGHT_MINERAL_Y(1112.50),
+
+        BLUE_CRATER_LEFT_MINERAL_X(BLUE_DEPOT_LEFT_MINERAL_Y.val),
+        BLUE_CRATER_LEFT_MINERAL_Y(-BLUE_DEPOT_LEFT_MINERAL_X.val),
+        BLUE_CRATER_CENTER_MINERAL_X(BLUE_DEPOT_CENTER_MINERAL_Y.val),
+        BLUE_CRATER_CENTER_MINERAL_Y(-BLUE_DEPOT_CENTER_MINERAL_X.val),
+        BLUE_CRATER_RIGHT_MINERAL_X(BLUE_DEPOT_RIGHT_MINERAL_Y.val),
+        BLUE_CRATER_RIGHT_MINERAL_Y(-BLUE_DEPOT_RIGHT_MINERAL_X.val),
+
+        RED_DEPOT_LEFT_MINERAL_X(-BLUE_DEPOT_LEFT_MINERAL_X.val),
+        RED_DEPOT_LEFT_MINERAL_Y(-BLUE_DEPOT_LEFT_MINERAL_Y.val),
+        RED_DEPOT_CENTER_MINERAL_X(-BLUE_DEPOT_CENTER_MINERAL_X.val),
+        RED_DEPOT_CENTER_MINERAL_Y(-BLUE_DEPOT_CENTER_MINERAL_Y.val),
+        RED_DEPOT_RIGHT_MINERAL_X(-BLUE_DEPOT_RIGHT_MINERAL_X.val),
+        RED_DEPOT_RIGHT_MINERAL_Y(-BLUE_DEPOT_RIGHT_MINERAL_Y.val),
+
+        RED_CRATER_LEFT_MINERAL_X(-BLUE_DEPOT_LEFT_MINERAL_Y.val),
+        RED_CRATER_LEFT_MINERAL_Y(BLUE_DEPOT_LEFT_MINERAL_X.val),
+        RED_CRATER_CENTER_MINERAL_X(-BLUE_DEPOT_CENTER_MINERAL_Y.val),
+        RED_CRATER_CENTER_MINERAL_Y(BLUE_DEPOT_CENTER_MINERAL_X.val),
+        RED_CRATER_RIGHT_MINERAL_X(-BLUE_DEPOT_RIGHT_MINERAL_Y.val),
+        RED_CRATER_RIGHT_MINERAL_Y(BLUE_DEPOT_RIGHT_MINERAL_X.val);
+
+        public final double val;
+        MineralLocations (double i )  {val = i;}
+    }
 
     //openCV variables
     //We are using openCV to detect the location of the gold object.
@@ -202,11 +237,6 @@ abstract class MasterAutonomous extends Master
     {
         while(!doneSettingUp)
         {
-            telemetry.addLine("Alliance Blue/Red: X/B");
-            telemetry.addLine("Starting Position Crater/Depot: D-Pad Up/Down");
-            telemetry.addLine("");
-            telemetry.addLine("After routine is complete and robot is on field, press Start");
-
             if(gamepad1.x)
                 alliance = Alliance.BLUE;
                 //means we are blue alliance
@@ -230,11 +260,21 @@ abstract class MasterAutonomous extends Master
 
             while (!buttonsAreReleased(gamepad1))
             {
+                telemetry.update();
                 idle();
             }
+
+            // input information
+            telemetry.addLine("Alliance Blue/Red: X/B");
+            telemetry.addLine("Starting Position Crater/Depot: D-Pad Up/Down");
+            telemetry.addLine("");
+            telemetry.addLine("After routine is complete and robot is on field, press Start");
+
+            // setup data
             telemetry.addData("Alliance", alliance.name());
             telemetry.addData("Side", startLocation.name());
             telemetry.update();
+
             idle();
         }
 
@@ -522,31 +562,31 @@ abstract class MasterAutonomous extends Master
 
         openCVDisable(); //stop openCV processing since we don't need it anymore.
 
-        /*
-        switch (alliance)
+
+        /*switch (alliance)
         {
             case RED:
                 switch (startLocation)
                 {
                     case DEPOT:
-                        driveToPoint(robotX - 10, robotY + 10, headingOffset, 0.5);
+                        driveToPoint(robotX + 40, robotY - 40, headingOffset, 0.5);
                         break;
                     case CRATER:
-                        driveToPoint(robotX, robotY, headingOffset, 0.5);
+                        driveToPoint(robotX - 40, robotY - 40, headingOffset, 0.5);
                         break;
                 }
             case BLUE:
                 switch (startLocation)
                 {
                     case DEPOT:
-                        driveToPoint(robotX - 10, robotY + 10, headingOffset, 0.5);
+                        driveToPoint(robotX - 40, robotY + 40, headingOffset, 0.5);
                         break;
                     case CRATER:
-                        driveToPoint(robotX, robotY, headingOffset, 0.5);
+                        driveToPoint(robotX + 40, robotY + 40, headingOffset, 0.5);
                         break;
                 }
-        }
-        */
+        }*/
+
         return position;
     }
 
