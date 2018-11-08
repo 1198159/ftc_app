@@ -22,6 +22,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Initialize booleans and variables used in runSetup()
     public boolean isBlueSide = true;
     public boolean isCraterStart = true;
+    public boolean isAllianceCraterFinal = true;
 
     // Stores orientation of robot
     double currentAngle = 0.0;
@@ -76,9 +77,10 @@ abstract public class MasterAutonomous extends MasterOpMode
         lTime = timer.seconds();
 
         // Ensure log can't overflow
-        telemetry.log().setCapacity(2);
+        telemetry.log().setCapacity(3);
         telemetry.log().add("Alliance Blue/Red = X/B");
         telemetry.log().add("Crater Start/Depot Start = D-Pad Down/D-Pad Up");
+        telemetry.log().add("Final Desitination - Alliance Crater/Opposing Alliance Crater = Y/A");
         //telemetry.log().add("Balancing stone Left/Right = Left/Right bumper");
 
         boolean settingUp = true;
@@ -102,6 +104,11 @@ abstract public class MasterAutonomous extends MasterOpMode
             else if (driver1.isButtonJustPressed(Button.DPAD_UP))
                 isCraterStart = false;
 
+            if(driver1.isButtonJustPressed(Button.Y))
+                isAllianceCraterFinal = true;
+            else if (driver1.isButtonJustPressed((Button.A)))
+                isAllianceCraterFinal = false;
+
             // If the driver presses start, we exit setup
             else if (driver1.isButtonJustPressed(Button.START))
                 settingUp = false;
@@ -109,6 +116,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             // Display the current setup
             telemetry.addData("Is robot on blue alliance: ", isBlueSide);
             telemetry.addData("Is robot starting by crater: ", isCraterStart);
+            telemetry.addData("Is robot final destination alliance crater: ", isAllianceCraterFinal);
 
 
             updateCallback(eTime);
