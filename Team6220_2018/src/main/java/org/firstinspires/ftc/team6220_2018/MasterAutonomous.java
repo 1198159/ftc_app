@@ -301,7 +301,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     public void identifyGold ()
     {
         turnTo(-16.5,1.0);
-        pauseWhileUpdating(2.0);
+        pauseWhileUpdating(1.0);
         // gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front)
         if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE) && (OpenCVVision.getGoldRect().y > Constants.OPENCV_TOLERANCE_PIX))
         {
@@ -320,7 +320,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             goldLocation = sampleFieldLocations.left;
             telemetry.addLine("Left (default)");
         }
-        turnTo(0,0.7);
+        turnTo(0,1.0);
         telemetry.addData("Gold",
                 String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + (OpenCVVision.getGoldRect().width) / 2), (OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))));
         telemetry.addData("currentAngle", currentAngle);
