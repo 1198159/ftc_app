@@ -44,13 +44,24 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         else if (isReverseMode) // Reverse Mode
         {
-            ly = gamepad1.left_stick_y; // Y axis is negative when up
-            ry = gamepad1.right_stick_y; // Y axis is negative when up
+            ry = gamepad1.left_stick_y; // Y axis is negative when up
+            ly = gamepad1.right_stick_y; // Y axis is negative when up
         }
         else // Staccato Mode (standard)
         {
             ly = -gamepad1.left_stick_y; // Y axis is negative when up
             ry = -gamepad1.right_stick_y; // Y axis is negative when up
+        }
+
+        if (gamepad1.dpad_down)
+        {
+            ly = -0.3;
+            ry = -0.3;
+        }
+        if (gamepad1.dpad_up)
+        {
+            ly = 0.3;
+            ry = 0.3;
         }
 
         filterJoyStickInput.appendInputY(ly, ry);
