@@ -20,8 +20,11 @@ abstract public class MasterAutonomous extends MasterOpMode
     DriverInput driverInput;
 
     // Initialize booleans and variables used in runSetup()
+     // The side of the field we are on (blue / red)
     public boolean isBlueSide = true;
+     // Whether we start on the crater or depot side of the lander
     public boolean isCraterStart = true;
+     // Whether we park in our crater or our opponents'
     public boolean isAllianceCraterFinal = true;
 
     // Stores orientation of robot
@@ -81,7 +84,6 @@ abstract public class MasterAutonomous extends MasterOpMode
         telemetry.log().add("Alliance Blue/Red = X/B");
         telemetry.log().add("Crater Start/Depot Start = D-Pad Down/D-Pad Up");
         telemetry.log().add("Final Desitination - Alliance Crater/Opposing Alliance Crater = Y/A");
-        //telemetry.log().add("Balancing stone Left/Right = Left/Right bumper");
 
         boolean settingUp = true;
 

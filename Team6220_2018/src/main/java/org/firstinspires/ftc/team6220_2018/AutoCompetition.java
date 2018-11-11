@@ -8,12 +8,10 @@ import org.firstinspires.ftc.robotcore.external.Const;
 import java.util.Locale;
 
 /**
- *  Note:  This program is not currently in use.  It may be useful as a template for the future, however.
- *  This program uses gamepad input prior to initialization to offer different routine options.
+ *  This program is an all-in-one autonomous.  It uses gamepad input prior to initialization to
+ *  offer different routine options.
  */
 
-// todo Update code
-// todo Reimplement encoder navigation when it is ready
 @Autonomous(name = "AutoCompetition", group = "Autonomous")
 //@Disabled
 
