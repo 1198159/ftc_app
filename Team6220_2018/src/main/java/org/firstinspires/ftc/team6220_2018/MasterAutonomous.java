@@ -304,19 +304,19 @@ abstract public class MasterAutonomous extends MasterOpMode
     {
         turnTo(-16.5,1.0);
         pauseWhileUpdating(1.0);
-        // gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front)
+        // Gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front).
         if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE) && (OpenCVVision.getGoldRect().y > Constants.OPENCV_TOLERANCE_PIX))
         {
             goldLocation = sampleFieldLocations.center;
             telemetry.addLine("Center");
         }
-        // gold is towards right of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
+        // Gold is towards right of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front).
         else if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))) > Constants.GOLD_DIVIDING_LINE)
         {
             goldLocation = sampleFieldLocations.right;
             telemetry.addLine("Right");
         }
-        // gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
+        // Gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front).
         else
         {
             goldLocation = sampleFieldLocations.left;

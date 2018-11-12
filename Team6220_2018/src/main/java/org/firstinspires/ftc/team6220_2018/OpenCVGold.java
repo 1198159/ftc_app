@@ -33,7 +33,7 @@ public class OpenCVGold extends OpenCVPipeline
 
     private Rect goldRect = new Rect(0,0,0,0);
 
-    // this is just here so we can expose it later thru getContours.
+    // This is just here so we can expose it later through getContours.
     private List<MatOfPoint> contours = new ArrayList<>();
 
     public synchronized void setShowCountours(boolean enabled) {
@@ -59,7 +59,8 @@ public class OpenCVGold extends OpenCVPipeline
         int maxX = rgba.cols();
 
         int integer = maxX + maxY;
-        // filter yellow
+
+        // Filter yellow
         Imgproc.cvtColor(rgba, rgba, Imgproc.COLOR_RGB2YUV);
         Imgproc.GaussianBlur(rgba, rgba, new Size(3, 3), 0);
         channels = new ArrayList<>();
@@ -69,7 +70,7 @@ public class OpenCVGold extends OpenCVPipeline
             Imgproc.threshold(channels.get(1), maskYellow, 70, 255, Imgproc.THRESH_BINARY_INV);
         }
 
-        //Find contours of the yellow mask and draw them to the display mat for viewing
+        // Find contours of the yellow mask and draw them to the display mat for viewing
 
         List<MatOfPoint> contoursYellow = new ArrayList<>();
         Imgproc.findContours(maskYellow, contoursYellow, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
