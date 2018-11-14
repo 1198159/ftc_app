@@ -24,12 +24,23 @@ public class TestOpenCV extends MasterAutonomous
         OpenCVVision.enable();
         OpenCVVision.setShowCountours(true);
 
+        initializeRobot();
 
         waitForStart();
-
+        // Accounts for delay between initializing the program and starting TeleOp
+        lTime = timer.seconds();
 
         while(opModeIsActive())
         {
+            // Finds the time elapsed each loop
+            double eTime = timer.seconds() - lTime;
+            lTime = timer.seconds();
+
+            if (driver1.isButtonJustPressed(Button.DPAD_UP))
+                OpenCVVision.thresholdVal++;
+            else if (driver1.isButtonJustPressed(Button.DPAD_DOWN))
+                OpenCVVision.thresholdVal--;
+
             // Gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front).
             if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE) && (OpenCVVision.getGoldRect().y > Constants.OPENCV_TOLERANCE_PIX))
             {
@@ -50,7 +61,9 @@ public class TestOpenCV extends MasterAutonomous
             }
             telemetry.addData("Gold",
                     String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + (OpenCVVision.getGoldRect().width) / 2), (OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))));
+            telemetry.addData("ThresholdVal: ", OpenCVVision.thresholdVal);
             telemetry.update();
+            updateCallback(eTime);
             idle();
         }
 
