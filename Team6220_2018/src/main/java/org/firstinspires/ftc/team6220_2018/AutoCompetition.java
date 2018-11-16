@@ -25,11 +25,11 @@ public class AutoCompetition extends MasterAutonomous
         runSetup();
 
         waitForStart();
+        // Wait to start the match for 0-10 seconds, depending on setup input.
+        pauseWhileUpdating(matchDelay);
 
-        // Blue side------------------------------------------------------------------------
-        if (isBlueSide)
-        {
-            // Blue + Crater-----------------------------------------------------------------------
+
+            // Crater-------------------------------------------------------------------------------
             if (isCraterStart)
             {
                 dropRobotAndUnlatch();
@@ -46,87 +46,8 @@ public class AutoCompetition extends MasterAutonomous
                 // Turn 90 deg ccw
                 turnTo(90,1.0);
 
-                if(goldLocation == sampleFieldLocations.right)
-                {
-                    driveToPosition(0,1050 + mineralShift,0.7);
-                    // Turn 45 deg ccw
-                    turnTo(135,1.0);
-                    driveToPosition(80, 1050,0.7);
-                }
-                else
-                {
-                    // Drive forward; we change this value based on where the gold mineral was
-                    driveToPosition(0, 1250 + mineralShift, 0.7);
-                    // Turn 45 deg ccw
-                    turnTo(135,1.0);
-                    // Align robot with wall
-                    moveRobot(0.0,0.6,0.4);
-                    // Drive forward
-                    driveToPosition(0,1050,0.7);
-                }
-
-                if(isAllianceCraterFinal)
-                {
-                    dropOffMarkerandDriveToCrater(0);
-                }
-                else
-                {
-                    turnTo(45, 1.0);
-
-                    dropOffMarkerandDriveToCrater(180);
-                }
-            }
-            // Blue + Depot-----------------------------------------------------------------------
-            else
-            {
-                dropRobotAndUnlatch();
-
-                // Turn and detect minerals
-                identifyGold();
-
-                // Drive forward and knock off correct mineral
-                knockGold(goldLocation);
-
-                turnTo(turnShift, 1.0);
-
-                // Drive forward; we change this value based on where the gold mineral was
-                driveToPosition(0,980 ,0.7);
-
-                if(isAllianceCraterFinal)
-                {
-                    turnTo(45, 1.0);
-
-                    dropOffMarkerandDriveToCrater(0);
-                }
-                else
-                {
-                    turnTo(-45, 1.0);
-
-                    dropOffMarkerandDriveToCrater(180);
-
-                }
-            }
-        }
-        // Red side-------------------------------------------------------------------------
-        else
-        {
-            // Red + Crater-----------------------------------------------------------------------
-            if (isCraterStart)
-            {
-                dropRobotAndUnlatch();
-
-                // Turn and detect minerals
-                identifyGold();
-
-                // Drive forward and knock off correct mineral
-                knockGold(goldLocation);
-
-                // Drive backward a small amount
-                driveToPosition(0,-Constants.MINERAL_BACKWARD,0.5);
-
-                // Turn 90 deg ccw
-                turnTo(90,1.0);
-
+                // Gives us the option to knock off our alliance partner's mineral if it is in the
+                // right position, which is near the path of our robot anyway.
                 if(goldLocation == sampleFieldLocations.right)
                 {
                     driveToPosition(0,1050 + mineralShift,1.0);
@@ -146,6 +67,7 @@ public class AutoCompetition extends MasterAutonomous
                     driveToPosition(0,1050,1.0);
                 }
 
+                // Park in either our alliance or opponents' crater, depending on setup input.
                 if(isAllianceCraterFinal)
                 {
                     dropOffMarkerandDriveToCrater(0);
@@ -157,7 +79,7 @@ public class AutoCompetition extends MasterAutonomous
                     dropOffMarkerandDriveToCrater(180);
                 }
             }
-            // Red + Depot-----------------------------------------------------------------------
+            // Depot--------------------------------------------------------------------------------
             else
             {
                 dropRobotAndUnlatch();
@@ -173,6 +95,7 @@ public class AutoCompetition extends MasterAutonomous
                 // Drive forward; we change this value based on where the gold mineral was
                 driveToPosition(0,980 ,0.7);
 
+                // Park in either our alliance or opponents' crater, depending on setup input.
                 if(isAllianceCraterFinal)
                 {
                     turnTo(45, 1.0);
@@ -187,7 +110,7 @@ public class AutoCompetition extends MasterAutonomous
                     dropOffMarkerandDriveToCrater(180);
                 }
             }
-        }
+            // -------------------------------------------------------------------------------------
 
         // Stop the vision system.
         OpenCVVision.disable();

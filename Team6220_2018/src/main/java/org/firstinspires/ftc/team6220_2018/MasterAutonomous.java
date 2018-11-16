@@ -19,13 +19,14 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Necessary for runSetup()
     DriverInput driverInput;
 
-    // Initialize booleans and variables used in runSetup()
-     // The side of the field we are on (blue / red)
-    public boolean isBlueSide = true;
-     // Whether we start on the crater or depot side of the lander
+    // Initialize booleans and variables used in runSetup().  We do not need to specify our alliance
+    // since the field is rotationally symmetric, halving our autonomous code.
+     // Whether we start on the crater or depot side of the lander.
     public boolean isCraterStart = true;
-     // Whether we park in our crater or our opponents'
+     // Whether we park in our crater or our opponents'.
     public boolean isAllianceCraterFinal = true;
+     // How long we want to wait before we start the match.
+    public int matchDelay = 0;
 
     // Stores orientation of robot
     double currentAngle = 0.0;
@@ -52,8 +53,8 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Use for more advanced auto
     ArrayList<Alliance> routine = new ArrayList<>();
     RoutineOption routineOption = RoutineOption.;
-    int delay = 0;
     */
+
 
     // Used for object initializations only necessary in autonomous
     void initializeAuto() throws InterruptedException
@@ -81,10 +82,9 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         // Ensure log can't overflow
         telemetry.log().setCapacity(3);
-        telemetry.log().add("Alliance Blue/Red = X/B");
-        telemetry.log().add("Crater Start/Depot Start = D-Pad Down/D-Pad Up");
-        telemetry.log().add("Final Destination - Alliance Crater/Opposing Alliance Crater = Y/A");
-        telemetry.log().add("Time Delay Increase/Decrease = X/B");
+        telemetry.log().add("Crater Start/Depot Start = Left Bumper/Right Bumper");
+        telemetry.log().add("Final Destination - Alliance Crater/Opposing Crater = A/B");
+        telemetry.log().add("Time Delay Increase/Decrease = D-Pad Up/D-Pad Down");
 
         boolean settingUp = true;
 
@@ -94,31 +94,32 @@ abstract public class MasterAutonomous extends MasterOpMode
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
-            // Select alliance
-            if (driver1.isButtonJustPressed(Button.X))
-                isBlueSide = true;
-            else if (driver1.isButtonJustPressed(Button.B))
-                isBlueSide = false;
-
-            // Select start position
-            if (driver1.isButtonJustPressed(Button.DPAD_DOWN))
+            // Select start position.
+            if (driver1.isButtonJustPressed(Button.LEFT_BUMPER))
                 isCraterStart = true;
-            else if (driver1.isButtonJustPressed(Button.DPAD_UP))
+            else if (driver1.isButtonJustPressed(Button.RIGHT_BUMPER))
                 isCraterStart = false;
 
-            if(driver1.isButtonJustPressed(Button.Y))
+            // Select parking location at end of match.
+            if(driver1.isButtonJustPressed(Button.A))
                 isAllianceCraterFinal = true;
-            else if (driver1.isButtonJustPressed((Button.A)))
+            else if (driver1.isButtonJustPressed((Button.B)))
                 isAllianceCraterFinal = false;
+
+            // Select alliance.  We restrict our time delay from 0 to 10 seconds.
+            if (driver1.isButtonJustPressed(Button.DPAD_UP) && matchDelay < 10)
+                matchDelay++;
+            else if (driver1.isButtonJustPressed(Button.DPAD_DOWN) && matchDelay > 0)
+                matchDelay--;
 
             // If the driver presses start, we exit setup.
             else if (driver1.isButtonJustPressed(Button.START))
                 settingUp = false;
 
             // Display the current setup
-            telemetry.addData("Is robot on blue alliance: ", isBlueSide);
             telemetry.addData("Is robot starting by crater: ", isCraterStart);
             telemetry.addData("Is robot final destination alliance crater: ", isAllianceCraterFinal);
+            telemetry.addData("Time delay", matchDelay);
 
             updateCallback(eTime);
             telemetry.update();
