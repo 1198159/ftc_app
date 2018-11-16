@@ -37,7 +37,6 @@ public class TeleOpCompetition extends MasterTeleOp
             driveMecanumWithJoysticks();
             driveHanger();
 
-            // Extra functionalities-------------------------------------------------------
             /*
              Updates that need to happen each loop
              Note:  eTime is not currently displayed (it interrupts other telemetry), but it may

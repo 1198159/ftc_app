@@ -30,18 +30,22 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Stores orientation of robot
     double currentAngle = 0.0;
 
+    sampleFieldLocations goldLocation;
+
+     /* Changeable values that tell us how the robot has to adjust during autonomous due to the
+     gold mineral's three different locations.  For instance, if the gold mineral is in the right
+     position, we must turn 30 degrees clockwise to view the mineral and later translate right to
+     score it.  These movements must be compensated for later to make autonomous run consistently. */
+    double mineralShift;
+    double turnShift;
+
+
     enum sampleFieldLocations
     {
         left,
         center,
         right
     }
-
-    sampleFieldLocations goldLocation;
-    // Tells us how farther the robot needs to drive forward due to the gold mineral being in
-    // different locations.
-    double mineralShift;
-    double turnShift;
 
 
     /*
@@ -51,7 +55,6 @@ abstract public class MasterAutonomous extends MasterOpMode
     int delay = 0;
     */
 
-    // todo Implement runSetup()
     // Used for object initializations only necessary in autonomous
     void initializeAuto() throws InterruptedException
     {
@@ -65,34 +68,31 @@ abstract public class MasterAutonomous extends MasterOpMode
         OpenCVVision.init(hardwareMap.appContext, ActivityViewDisplay.getInstance());
         OpenCVVision.setShowCountours(true);
         OpenCVVision.enable();
-//        vuforiaHelper = new VuforiaHelper();
-//        vuforiaHelper.setupVuforia();
+        //vuforiaHelper = new VuforiaHelper();
+        //vuforiaHelper.setupVuforia();
     }
 
-    // Note: not currently in use
-    /*
-     Allows the 1st driver to decide which autonomous routine should be run during the match through
-     gamepad input
-    */
+
+    // Allows the 1st driver to decide which autonomous routine should be run using gamepad input.
     void runSetup()
     {
-        // Accounts for delay between initializing the program and starting TeleOp
+        // Accounts for delay between initializing the program and starting TeleOp.
         lTime = timer.seconds();
 
         // Ensure log can't overflow
         telemetry.log().setCapacity(3);
         telemetry.log().add("Alliance Blue/Red = X/B");
         telemetry.log().add("Crater Start/Depot Start = D-Pad Down/D-Pad Up");
-        telemetry.log().add("Final Desitination - Alliance Crater/Opposing Alliance Crater = Y/A");
+        telemetry.log().add("Final Destination - Alliance Crater/Opposing Alliance Crater = Y/A");
+        telemetry.log().add("Time Delay Increase/Decrease = X/B");
 
         boolean settingUp = true;
 
         while (settingUp)
         {
-            // Finds the time elapsed each loop
+            // Finds the time elapsed each loop.
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
-
 
             // Select alliance
             if (driver1.isButtonJustPressed(Button.X))
@@ -111,7 +111,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             else if (driver1.isButtonJustPressed((Button.A)))
                 isAllianceCraterFinal = false;
 
-            // If the driver presses start, we exit setup
+            // If the driver presses start, we exit setup.
             else if (driver1.isButtonJustPressed(Button.START))
                 settingUp = false;
 
@@ -119,7 +119,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             telemetry.addData("Is robot on blue alliance: ", isBlueSide);
             telemetry.addData("Is robot starting by crater: ", isCraterStart);
             telemetry.addData("Is robot final destination alliance crater: ", isAllianceCraterFinal);
-
 
             updateCallback(eTime);
             telemetry.update();
@@ -164,10 +163,10 @@ abstract public class MasterAutonomous extends MasterOpMode
             // Turns robot
             driveMecanum(0.0, 0.0, turningPower);
 
-            telemetry.addData("angleDiff: ", angleDiff);
+            /*telemetry.addData("angleDiff: ", angleDiff);
             telemetry.addData("Turning Power: ", turningPower);
             telemetry.addData("Orientation: ", currentAngle);
-            //telemetry.update();
+            telemetry.update();*/
             idle();
         }
 
@@ -182,6 +181,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         pauseWhileUpdating(pause);
         stopDriveMotors();
     }
+
 
     // todo Add global coordinates (not a priority)
     // Uses encoders to make the robot drive to a specified relative position.  Also makes use of the
@@ -251,53 +251,18 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             driveMecanum(driveAngle, drivePower, rotationPower);
 
-//            telemetry.addData("Encoder Diff x: ", deltaX);
-//            telemetry.addData("Encoder Diff y: ", deltaY);
-//            telemetry.addData("Drive Power: ", drivePower);
-//            telemetry.addData("Rotation Power: ", rotationPower);
-//            telemetry.update();
+            /*
+            telemetry.addData("Encoder Diff x: ", deltaX);
+            telemetry.addData("Encoder Diff y: ", deltaY);
+            telemetry.addData("Drive Power: ", drivePower);
+            telemetry.addData("Rotation Power: ", rotationPower);
+            telemetry.update();
+            */
             idle();
         }
         stopDriveMotors();
     }
 
-    // todo Implement global coordinates (not a priority)
-    // Updates robot's coordinates and angle
-    public void updateLocation()
-    {
-        currentAngle = getAngularOrientationWithOffset();
-
-        /*
-        // Calculate how much drive motors have turned since last update
-        int deltaFL = motorFL.getCurrentPosition() - lastEncoderFL;
-        int deltaFR = motorFR.getCurrentPosition() - lastEncoderFR;
-        int deltaBL = motorBL.getCurrentPosition() - lastEncoderBL;
-        int deltaBR = motorBR.getCurrentPosition() - lastEncoderBR;
-
-        // Average encoder ticks to find translational x and y components. deltaFR and deltaBL are
-        // negative because they turn differently when translating
-        double deltaX = (deltaFL - deltaFR - deltaBL + deltaBR) / 4;
-        double deltaY = (deltaFL + deltaFR + deltaBL + deltaBR) / 4;
-
-        // Convert to mm
-        deltaX *= Constants.MM_PER_ANDYMARK_TICK;
-        deltaY *= Constants.MM_PER_ANDYMARK_TICK;
-        */
-
-        /*
-         Delta x and y are local values, so they need to be converted to global.
-         Each local component has 2 global components, which are added to find the
-         total global components of displacement. The global displacement components
-         are then added to the previous position to set the new coordinates
-        */
-        /*
-        robotX += deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
-        robotY += deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
-        */
-
-        telemetry.addData("currentAngle: ", currentAngle);
-        telemetry.update();
-    }
 
     // Uses OpenCV to identify the location of the gold mineral.
     public void identifyGold ()
@@ -326,7 +291,9 @@ abstract public class MasterAutonomous extends MasterOpMode
         telemetry.addData("Gold",
                 String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + (OpenCVVision.getGoldRect().width) / 2), (OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))));
         telemetry.addData("currentAngle", currentAngle);
+        telemetry.update();
     }
+
 
     // Use this method to knock the gold mineral given its location.
     public void knockGold (sampleFieldLocations goldLocation) throws InterruptedException

@@ -217,14 +217,14 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
 
-        // todo How to make this telemetry not interfere with that of other classes?
+        // todo How to make this not interfere with other telemetry?
         // Telemetry for debugging motor power inputs
         /*
         telemetry.addData("translation power: ", x);
         telemetry.addData("vertical power: ", y);
         telemetry.addData("rotational power: ", w);
-        */
         telemetry.update();
+        */
     }
 
 
@@ -301,9 +301,10 @@ abstract public class MasterOpMode extends LinearOpMode
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
             time -= eTime;
+
+            updateCallback(eTime);
             //telemetry.addData("eTime:", eTime);
             //telemetry.addData("Seconds Remaining:", time);
-            updateCallback(eTime);
             //telemetry.update();
             idle();
         }

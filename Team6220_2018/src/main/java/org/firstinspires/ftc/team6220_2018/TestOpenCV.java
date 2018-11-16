@@ -36,6 +36,7 @@ public class TestOpenCV extends MasterAutonomous
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
+            // Gives driver ability to adjust yellow color threshold that OpenCV uses.
             if (driver1.isButtonJustPressed(Button.DPAD_UP))
                 OpenCVVision.thresholdVal++;
             else if (driver1.isButtonJustPressed(Button.DPAD_DOWN))

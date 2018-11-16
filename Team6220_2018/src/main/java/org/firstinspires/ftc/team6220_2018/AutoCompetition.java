@@ -32,7 +32,6 @@ public class AutoCompetition extends MasterAutonomous
             // Blue + Crater-----------------------------------------------------------------------
             if (isCraterStart)
             {
-                //drops robot and unlatches
                 dropRobotAndUnlatch();
 
                 // Turn and detect minerals
@@ -80,7 +79,6 @@ public class AutoCompetition extends MasterAutonomous
             // Blue + Depot-----------------------------------------------------------------------
             else
             {
-                //drops robot and unlatches
                 dropRobotAndUnlatch();
 
                 // Turn and detect minerals
@@ -115,7 +113,6 @@ public class AutoCompetition extends MasterAutonomous
             // Red + Crater-----------------------------------------------------------------------
             if (isCraterStart)
             {
-                //drops robot and unlatches
                 dropRobotAndUnlatch();
 
                 // Turn and detect minerals
@@ -163,7 +160,6 @@ public class AutoCompetition extends MasterAutonomous
             // Red + Depot-----------------------------------------------------------------------
             else
             {
-                //drops robot and unlatches
                 dropRobotAndUnlatch();
 
                 // Turn and detect minerals
@@ -189,24 +185,27 @@ public class AutoCompetition extends MasterAutonomous
                     turnTo(-45, 1.0);
 
                     dropOffMarkerandDriveToCrater(180);
-
                 }
             }
         }
+
         // Stop the vision system.
         OpenCVVision.disable();
     }
 
+    // Functions that encapsulate lengthy, frequently used autonomous code.-------------------------
     private void dropRobotAndUnlatch() throws InterruptedException
     {
-        // Drop robot to ground
+        // Drop robot to ground.
         motorHanger.setTargetPosition(Constants.HANG_UNLATCH_POSITION);
         motorHanger.setPower(1.0);
         pauseWhileUpdating(0.3);
         servoHanger.setPosition(Constants.SERVO_HANG_RETRACTED);
         motorHanger.setPower(0);
         pauseWhileUpdating(0.75);
-        // Unlatch from hook while on ground
+
+        // Unlatch from hook while on ground, drive sideways, retract hanger, and return to original
+        // position.
         motorHanger.setTargetPosition(Constants.HANG_GROUND_UNLATCH);
         motorHanger.setPower(1.0);
         driveToPosition(80,0,0.7);
@@ -217,14 +216,12 @@ public class AutoCompetition extends MasterAutonomous
 
     private void dropOffMarkerandDriveToCrater(int driveAngle) throws InterruptedException
     {
-        // moveRobot forward quickly, moveRobot backward quickly
+        // moveRobot forward quickly, moveRobot backward quickly.
         moveRobot(90,1.0,0.2);
         moveRobot(-90,1.0,0.3);
-        //moveRobot(driveAngle,0.6,0.5);
 
-        // Drive backward into crater
+        // Drive backward into crater.
         driveToPosition(15, -1700, 1.0);
-        //moveRobot(driveAngle, 0.6, 0.5);
-        //driveToPosition(-5, -770, 1.0);
     }
+    //----------------------------------------------------------------------------------------------
 }
