@@ -58,6 +58,7 @@ abstract public class MasterOpMode extends LinearOpMode
     Servo servoHanger;
      //------------------------------
     //-----------------------------------------------------------------
+    CRServo motorCollector;
 
     // Servo togglers
         //ServoToggler verticalJewelServoToggler;
@@ -65,6 +66,7 @@ abstract public class MasterOpMode extends LinearOpMode
     // Booleans that allow us to choose what parts of the robot we are and aren't using in each OpMode
     public boolean isDriveTrainAttached = true;
     public boolean isHangerAttached = true;
+    public boolean isCollectorAttached = true;
 
     // Create a list of tasks to accomplish in order
     List<ConcurrentOperation> callback = new ArrayList<>();
@@ -126,6 +128,11 @@ abstract public class MasterOpMode extends LinearOpMode
             motorHanger.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             servoHanger = hardwareMap.servo.get("servoHanger");
+        }
+        if(isCollectorAttached)
+        {
+            motorCollector = hardwareMap.crservo.get("motorCollector");
+            motorCollector.setPower(0);
         }
         //--------------------------------------------------------------------------------------------------------------
 
