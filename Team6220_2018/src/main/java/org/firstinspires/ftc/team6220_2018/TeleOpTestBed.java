@@ -33,11 +33,11 @@ public class TeleOpTestBed extends MasterAutonomous
             }
             if(driver1.isButtonJustPressed(Button.DPAD_UP))
             {
-                motorCollector.setPower(0.4);
+                motorCollector.setPower(0.9);
             }
             if(driver1.isButtonJustPressed(Button.DPAD_DOWN))
             {
-                motorCollector.setPower(-0.4);
+                motorCollector.setPower(-0.9);
             }
             if(driver1.isButtonJustPressed(Button.DPAD_LEFT))
             {

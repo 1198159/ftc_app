@@ -25,6 +25,8 @@ abstract public class MasterAutonomous extends MasterOpMode
     public boolean isCraterStart = true;
      // Whether we park in our crater or our opponents'.
     public boolean isAllianceCraterFinal = true;
+    // Allows us to knock off alliance partner's mineral if they are unable to.
+    public boolean knockPartnerMineral = false;
      // How long we want to wait before we start the match.
     public int matchDelay = 0;
 
@@ -105,6 +107,12 @@ abstract public class MasterAutonomous extends MasterOpMode
                 isAllianceCraterFinal = true;
             else if (driver1.isButtonJustPressed((Button.B)))
                 isAllianceCraterFinal = false;
+
+            // Decide whether we want to knock off partner's mineral.
+            if(driver1.isButtonJustPressed(Button.BACK) && !knockPartnerMineral)
+                knockPartnerMineral = true;
+            else if (driver1.isButtonJustPressed((Button.BACK)) && knockPartnerMineral)
+                knockPartnerMineral = false;
 
             // Select alliance.  We restrict our time delay from 0 to 10 seconds.
             if (driver1.isButtonJustPressed(Button.DPAD_UP) && matchDelay < 10)

@@ -46,37 +46,23 @@ public class AutoCompetition extends MasterAutonomous
                 // Turn 90 deg ccw
                 turnTo(90,1.0);
 
-                // Gives us the option to knock off our alliance partner's mineral if it is in the
-                // right position, which is near the path of our robot anyway.
-                if(goldLocation == sampleFieldLocations.right)
-                {
-                    driveToPosition(0,1050 + mineralShift,1.0);
-                    // Turn 45 deg ccw
-                    turnTo(135,1.0);
-                    driveToPosition(80, 1050,1.0);
-                }
-                else
-                {
-                    // Drive forward; we change this value based on where the gold mineral was
-                    driveToPosition(0, 1250 + mineralShift, 1.0);
-                    // Turn 45 deg ccw
-                    turnTo(135,1.0);
-                    // Align robot with wall
-                    moveRobot(0.0,0.6,0.4);
-                    // Drive forward
-                    driveToPosition(0,1050,1.0);
-                }
+                driveFromMineralsToDepot();
 
                 // Park in either our alliance or opponents' crater, depending on setup input.
                 if(isAllianceCraterFinal)
                 {
-                    dropOffMarkerandDriveToCrater(0);
+                    dropOffMarker(0);
+                    partnerMineral();
+                    // Drive backward into crater.
+                    driveToPosition(15, -1700, 1.0);
                 }
                 else
                 {
+                    dropOffMarker(180);
+                    partnerMineral();
                     turnTo(45, 1.0);
-
-                    dropOffMarkerandDriveToCrater(180);
+                    // Drive backward into crater.
+                    driveToPosition(15, -1700, 1.0);
                 }
             }
             // Depot--------------------------------------------------------------------------------
@@ -100,14 +86,18 @@ public class AutoCompetition extends MasterAutonomous
                 {
                     turnTo(45, 1.0);
 
-                    dropOffMarkerandDriveToCrater(0);
+                    dropOffMarker(0);
+                    // Drive backward into crater.
+                    driveToPosition(15, -1700, 1.0);
 
                 }
                 else
                 {
                     turnTo(-45, 1.0);
 
-                    dropOffMarkerandDriveToCrater(180);
+                    dropOffMarker(180);
+                    // Drive backward into crater.
+                    driveToPosition(15, -1700, 1.0);
                 }
             }
             // -------------------------------------------------------------------------------------
@@ -137,14 +127,60 @@ public class AutoCompetition extends MasterAutonomous
         driveToPosition(-80,0,0.7);
     }
 
-    private void dropOffMarkerandDriveToCrater(int driveAngle) throws InterruptedException
+    private void partnerMineral() throws InterruptedException
+    {
+        if(knockPartnerMineral)
+        {
+            if (goldLocation == sampleFieldLocations.right)
+            {
+                turnTo(-120, 1.0);
+
+                driveToPosition(0, -400, 1.0);
+                driveToPosition(0, 400, 1.0);
+                turnTo(0, 1.0);
+               /* driveToPosition(0, 1050 + mineralShift, 1.0);
+                // Turn 45 deg ccw
+                turnTo(135, 1.0);
+                driveToPosition(80, 1050, 1.0);*/
+            }
+            else if (goldLocation == sampleFieldLocations.left)
+            {
+                turnTo(-60,1.0);
+                driveToPosition(0, -400, 1.0);
+                driveToPosition(0, 400, 1.0);
+                turnTo(0, 1.0);
+            }
+            else if (goldLocation == sampleFieldLocations.center)
+            {
+                turnTo(-90, 1.0);
+                driveToPosition(0, -400, 1.0);
+                driveToPosition(0, 400, 1.0);
+                turnTo(0, 1.0);
+            }
+        }
+    }
+    private void dropOffMarker(int driveAngle) throws InterruptedException
     {
         // moveRobot forward quickly, moveRobot backward quickly.
         moveRobot(90,1.0,0.2);
         moveRobot(-90,1.0,0.3);
 
         // Drive backward into crater.
-        driveToPosition(15, -1700, 1.0);
+        //driveToPosition(15, -1700, 1.0);
+    }
+
+    // Gives us the option to knock off our alliance partner's mineral if it is in the
+    // right position, which is near the path of our robot anyway.
+    private void driveFromMineralsToDepot() throws InterruptedException
+    {
+        // Drive forward; we change this value based on where the gold mineral was
+        driveToPosition(0, 1250 + mineralShift, 1.0);
+        // Turn 45 deg ccw
+        turnTo(135,1.0);
+        // Align robot with wall
+        moveRobot(0.0,0.6,0.4);
+        // Drive forward
+        driveToPosition(0,1050,1.0);
     }
     //----------------------------------------------------------------------------------------------
 }
