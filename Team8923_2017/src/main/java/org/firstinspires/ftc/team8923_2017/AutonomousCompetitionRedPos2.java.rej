@@ -1,0 +1,10 @@
+diff a/Team8923_2017/src/main/java/org/firstinspires/ftc/team8923_2017/AutonomousCompetitionRedPos2.java b/Team8923_2017/src/main/java/org/firstinspires/ftc/team8923_2017/AutonomousCompetitionRedPos2.java	(rejected hunks)
+@@ -23,7 +23,7 @@
+ 
+         telemetry.addData("InitState:", "InitStarted");
+         telemetry.update();
+-        telemetry.Update();
++        telemetry.update();
+         InitAuto();//Initializes Hardware and sets position based on alliance
+         initVuforia();//Initializes Vuforia
+         telemetry.addData("InitState:", "InitFinished");
