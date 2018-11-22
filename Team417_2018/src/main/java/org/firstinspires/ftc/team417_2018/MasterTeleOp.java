@@ -9,6 +9,9 @@ abstract public class MasterTeleOp extends MasterOpMode
     double ly = 0;
     double ry = 0;
     double lx = 0;
+    double x = 0;
+    double y = 0;
+    double pivotPower = 0;
 
     final double ADAGIO_POWER = 0.3;
 
@@ -19,6 +22,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isXPushed;
     boolean isLeftBumperPushed;
     boolean isRightBumperPushed;
+    boolean isStraightDrive;
 
     int curLiftPos;
     int tarGLPos;
@@ -79,6 +83,81 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorFR.setPower(powerFR);
         motorBR.setPower(powerBR);
     }
+
+    void mecanumDrive()
+    {
+        // hold right trigger for adagio legato mode
+        if (gamepad1.right_trigger > 0.0)
+            isLegatoMode = true;
+        else
+            isLegatoMode = false;
+
+        // hold left trigger for straight drive
+        if (gamepad1.left_trigger > 0.0)
+            isStraightDrive = true;
+        else
+            isStraightDrive = false;
+
+        if (isLegatoMode) // Legato Mode
+        {
+            y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
+            x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
+            if (gamepad1.dpad_left) x = -0.3;
+            if (gamepad1.dpad_right) x = 0.3;
+            if (gamepad1.dpad_down) y = -0.3;
+            if (gamepad1.dpad_up) y = 0.3;
+            //pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
+            pivotPower = (gamepad1.left_stick_x) * 0.3;
+            if (isStraightDrive) // Straight drive/Legato Mode combo
+            {
+                y = -Range.clip(gamepad1.right_stick_y, -0.3, 0.3); // Y axis is negative when up
+                x = 0; // X axis removed to drive straight
+                if (gamepad1.dpad_left) x = 0.3;
+                if (gamepad1.dpad_right) x = -0.3;
+                if (gamepad1.dpad_down) y = 0.3;
+                if (gamepad1.dpad_up) y = -0.3;
+                pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
+            }
+        }
+        else if (isStraightDrive) // Straight drive
+        {
+            y = -gamepad1.right_stick_y; // Y axis is negative when up
+            x = 0; // X axis removed to drive straight
+            if (gamepad1.dpad_left) x = -0.75;
+            if (gamepad1.dpad_right) x = 0.75;
+            if (gamepad1.dpad_down) y = -0.75;
+            if (gamepad1.dpad_up) y = 0.75;
+            pivotPower = (gamepad1.left_stick_x) * 0.9;
+        }
+        else // Staccato Mode
+        {
+            y = -gamepad1.right_stick_y; // Y axis is negative when up
+            x = gamepad1.right_stick_x;
+            if (gamepad1.dpad_left) x = -0.75;
+            if (gamepad1.dpad_right) x = 0.75;
+            if (gamepad1.dpad_down) y = -0.75;
+            if (gamepad1.dpad_up) y = 0.75;
+            //pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
+            pivotPower = (gamepad1.left_stick_x) * 0.9;
+        }
+
+        filterJoyStickInput.appendInput(x, y, pivotPower);
+
+        x = filterJoyStickInput.getFilteredX();
+        y = filterJoyStickInput.getFilteredY();
+        pivotPower = filterJoyStickInput.getFilteredP();
+
+        powerFL = -x - y + pivotPower;
+        powerFR = x - y - pivotPower;
+        powerBL = x - y + pivotPower;
+        powerBR = -x - y - pivotPower;
+
+        motorFL.setPower(powerFL);
+        motorBL.setPower(powerBL);
+        motorFR.setPower(powerFR);
+        motorBR.setPower(powerBR);
+    }
+
     void simpleDrive()
     {
         ly = -gamepad1.left_stick_y; // Y axis is negative when up
