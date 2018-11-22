@@ -355,7 +355,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             curLiftPos = motorLift.getCurrentPosition();
             motorLift.setPower(0.95);
         }
-        while (curLiftPos<27900);
+        while (curLiftPos<18500); //27900
         motorLift.setPower(0.0);
     }
 
