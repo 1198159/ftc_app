@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -22,6 +23,8 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorBR = null; // port 2
     DcMotor motorLift = null;
     Servo marker = null; // Hub 2, port 5
+    CRServo vex1 = null; // port 0
+    CRServo vex2 = null;
 
     // DcMotor motorLiftLeft = null;
     // DcMotor motorLiftRight = null;
@@ -67,6 +70,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorLift = hardwareMap.dcMotor.get("motorLift");
         marker = hardwareMap.servo.get("marker");
+        vex1 = hardwareMap.crservo.get("vex1");
+
 
         motorLift.setDirection(DcMotor.Direction.REVERSE);
 
@@ -101,6 +106,7 @@ abstract public class MasterOpMode extends LinearOpMode
         marker.setPosition(MARKER_LOW);
         motorLift.setPower(0.0);
 
+        vex1.setPower(0.5);
         marker.setPosition(0.0);
 
         // Set up the parameters with which we will use our IMU. Note that integration
