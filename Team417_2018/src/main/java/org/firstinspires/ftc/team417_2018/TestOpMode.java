@@ -11,13 +11,20 @@ public class TestOpMode extends MasterAutonomous {
     {
         super.initializeHardware();
 
+        telemetry.addData("Init:", "done");
+        telemetry.update();
         waitForStart();
+        //land();
+        //lower();
+
+        /*
         move(200, 0, 0.3, 0.7, 1.0);
         sleep(200);
         move(0, 200, 0.3, 0.7, 1.0);
         sleep(200);
         move(-200, 0, 0.3, 0.7, 1.0);
         sleep(200);
-        move(0, -200, 0.3, 0.7, 1.0);
+        */
+        move(0, -1300, 0.3, 0.7, 3.0);
     }
 }
