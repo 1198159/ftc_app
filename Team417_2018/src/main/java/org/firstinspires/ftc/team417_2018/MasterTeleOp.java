@@ -92,53 +92,26 @@ abstract public class MasterTeleOp extends MasterOpMode
         else
             isLegatoMode = false;
 
-        // hold left trigger for straight drive
-        if (gamepad1.left_trigger > 0.0)
-            isStraightDrive = true;
-        else
-            isStraightDrive = false;
-
         if (isLegatoMode) // Legato Mode
         {
-            y = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
-            x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
+            y = -Range.clip(-gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
+            x = -Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
             if (gamepad1.dpad_left) x = -0.3;
             if (gamepad1.dpad_right) x = 0.3;
             if (gamepad1.dpad_down) y = -0.3;
             if (gamepad1.dpad_up) y = 0.3;
-            //pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
-            pivotPower = (gamepad1.left_stick_x) * 0.3;
-            if (isStraightDrive) // Straight drive/Legato Mode combo
-            {
-                y = -Range.clip(gamepad1.right_stick_y, -0.3, 0.3); // Y axis is negative when up
-                x = 0; // X axis removed to drive straight
-                if (gamepad1.dpad_left) x = 0.3;
-                if (gamepad1.dpad_right) x = -0.3;
-                if (gamepad1.dpad_down) y = 0.3;
-                if (gamepad1.dpad_up) y = -0.3;
-                pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
-            }
-        }
-        else if (isStraightDrive) // Straight drive
-        {
-            y = -gamepad1.right_stick_y; // Y axis is negative when up
-            x = 0; // X axis removed to drive straight
-            if (gamepad1.dpad_left) x = -0.75;
-            if (gamepad1.dpad_right) x = 0.75;
-            if (gamepad1.dpad_down) y = -0.75;
-            if (gamepad1.dpad_up) y = 0.75;
-            pivotPower = (gamepad1.left_stick_x) * 0.9;
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
         }
         else // Staccato Mode
         {
-            y = -gamepad1.right_stick_y; // Y axis is negative when up
-            x = gamepad1.right_stick_x;
+            y = gamepad1.right_stick_y; // Y axis is negative when up
+            x = -gamepad1.right_stick_x;
             if (gamepad1.dpad_left) x = -0.75;
             if (gamepad1.dpad_right) x = 0.75;
             if (gamepad1.dpad_down) y = -0.75;
             if (gamepad1.dpad_up) y = 0.75;
             //pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
-            pivotPower = (gamepad1.left_stick_x) * 0.9;
+            pivotPower = (gamepad1.left_stick_x) * 0.95;
         }
 
         filterJoyStickInput.appendInput(x, y, pivotPower);
