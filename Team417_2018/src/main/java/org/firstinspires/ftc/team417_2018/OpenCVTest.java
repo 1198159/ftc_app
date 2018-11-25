@@ -40,7 +40,7 @@ public class OpenCVTest extends LinearOpMode
                     String.format(Locale.getDefault(), "(%d, %d)", (goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2), (goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2))
             );
 
-            if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) <= 120) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 140) )
+            if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) <= 140) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 290) )
             {
                 //goldLocation = sampleFieldLocations.right;
                 isLeftGold = false;
@@ -48,7 +48,7 @@ public class OpenCVTest extends LinearOpMode
                 isRightGold = true;
                 telemetry.addLine("Right");
             }
-            else if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) >= 140) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 140))
+            else if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) >= 480) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 290))
             {
                 //goldLocation = sampleFieldLocations.right;
                 isLeftGold = false;
