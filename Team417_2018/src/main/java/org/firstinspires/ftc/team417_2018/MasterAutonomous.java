@@ -359,6 +359,17 @@ abstract public class MasterAutonomous extends MasterOpMode
         motorLift.setPower(0.0);
     }
 
+    public void lower() // only use this after you raise the lift mechanism, or call the land() method
+    {
+        do
+        {
+            curLiftPos = motorLift.getCurrentPosition();
+            motorLift.setPower(-0.95);
+        }
+        while (curLiftPos>500);
+        motorLift.setPower(0.0);
+    }
+
     public void marker(boolean isLow)
     {
         if (isLow) marker.setPosition(MARKER_LOW);
