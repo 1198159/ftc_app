@@ -40,7 +40,7 @@ public class AutoBlue extends MasterAutonomous
                     String.format(Locale.getDefault(), "(%d, %d)", (goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2), (goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2))
             );
 
-            if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) <= 120) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 140) )
+            if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) <= 140) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 290) )
             {
                 //goldLocation = sampleFieldLocations.right;
                 isLeftGold = false;
@@ -48,7 +48,7 @@ public class AutoBlue extends MasterAutonomous
                 isRightGold = true;
                 telemetry.addLine("Right");
             }
-            else if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) >= 140) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 140))
+            else if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) >= 480) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 290))
             {
                 //goldLocation = sampleFieldLocations.right;
                 isLeftGold = false;
@@ -129,6 +129,8 @@ public class AutoBlue extends MasterAutonomous
                 moveTimed(0.55, 1200); // go into depot
                 sleep(200);
                 marker.setPosition(MARKER_HIGH); // drop the marker
+                pivotWithReference(45, refAngle, 0.2,0.75); // face the crater
+                move(0, -1600, 0.3, 0.7, 1.0);
             }
             else if (isCenterGold)
             {
@@ -137,6 +139,7 @@ public class AutoBlue extends MasterAutonomous
                 marker.setPosition(MARKER_HIGH); // drop the marker
             }
             sleep(1000);
+            lower();
             //moveTimed(-0.55, 2000); // move away from the crater
 
             //pivotWithReference(45, refAngle, 0.2,0.75); // turn so back of robot faces the crater
