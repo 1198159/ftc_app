@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-@TeleOp(name="BasicTeleop")
-//@Disabled
+//@TeleOp(name="BasicTeleop")
 public class BasicTeleop extends LinearOpMode {
 
 
