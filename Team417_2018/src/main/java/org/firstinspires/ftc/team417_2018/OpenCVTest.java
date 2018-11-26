@@ -27,6 +27,9 @@ public class OpenCVTest extends LinearOpMode
         // start the vision system
         goldVision.enable();
 
+        telemetry.addData("init", "done");
+        telemetry.update();
+
         waitForStart();
         goldVision.setShowCountours(true);
 
@@ -40,7 +43,14 @@ public class OpenCVTest extends LinearOpMode
                     String.format(Locale.getDefault(), "(%d, %d)", (goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2), (goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2))
             );
 
-            if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) <= 140) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 290) )
+            if ( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) == 0) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) == 0) )
+            {
+                isLeftGold = true;
+                isCenterGold = false;
+                isRightGold = false;
+                telemetry.addLine("Left");
+            }
+            else if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) <= 160) /*&& ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 470)*/ )
             {
                 //goldLocation = sampleFieldLocations.right;
                 isLeftGold = false;
@@ -48,7 +58,7 @@ public class OpenCVTest extends LinearOpMode
                 isRightGold = true;
                 telemetry.addLine("Right");
             }
-            else if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) >= 480) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 290))
+            else if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) >= 400) /*&& ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 470)*/ )
             {
                 //goldLocation = sampleFieldLocations.right;
                 isLeftGold = false;
@@ -56,24 +66,6 @@ public class OpenCVTest extends LinearOpMode
                 isRightGold = false;
                 telemetry.addLine("Center");
             }
-            else
-            {
-                isLeftGold = true;
-                isCenterGold = false;
-                isRightGold = false;
-                telemetry.addLine("Left");
-            }
-            /*
-            // gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front)
-            else if ( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2)==0) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 140))
-            {
-                //goldLocation = sampleFieldLocations.center;
-                isCenterGold = false;
-                isRightGold = false;
-                isLeftGold = true;
-                telemetry.addLine("Left");
-            }
-            */
 
             int midpoint = goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2;
 
