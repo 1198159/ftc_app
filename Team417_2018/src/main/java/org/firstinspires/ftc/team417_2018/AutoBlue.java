@@ -40,7 +40,14 @@ public class AutoBlue extends MasterAutonomous
                     String.format(Locale.getDefault(), "(%d, %d)", (goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2), (goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2))
             );
 
-            if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) <= 140) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 290) )
+            if ( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) == 0) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) == 0) )
+            {
+                isLeftGold = true;
+                isCenterGold = false;
+                isRightGold = false;
+                telemetry.addLine("Left");
+            }
+            else if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) <= 160) /*&& ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 470)*/ )
             {
                 //goldLocation = sampleFieldLocations.right;
                 isLeftGold = false;
@@ -48,20 +55,13 @@ public class AutoBlue extends MasterAutonomous
                 isRightGold = true;
                 telemetry.addLine("Right");
             }
-            else if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) >= 480) && ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 290))
+            else if( ((goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2) >= 400) /*&& ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 470)*/ )
             {
                 //goldLocation = sampleFieldLocations.right;
                 isLeftGold = false;
                 isCenterGold = true;
                 isRightGold = false;
                 telemetry.addLine("Center");
-            }
-            else
-            {
-                isLeftGold = true;
-                isCenterGold = false;
-                isRightGold = false;
-                telemetry.addLine("Left");
             }
 
             telemetry.update();
@@ -91,7 +91,7 @@ public class AutoBlue extends MasterAutonomous
         }
         else if (isRightGold)
         {
-            pivotWithReference(-45, refAngle, 0.2, 0.75);
+            pivotWithReference(-40, refAngle, 0.2, 0.75);
         }
 
         if (isPosCrater)
@@ -108,35 +108,35 @@ public class AutoBlue extends MasterAutonomous
 
         if (!isPosCrater) // if depot position, then deposit team marker
         {
-            moveTimed(0.55, 1200); // push gold
-            sleep(100);
             if (isLeftGold)
             {
+                moveTimed(0.55, 1200); // push gold
+                sleep(100);
                 pivotWithReference(-20, refAngle, 0.2,0.75);
                 sleep(100);
                 moveTimed(0.55, 1300); // go into depot
                 sleep(200);
                 marker.setPosition(MARKER_HIGH); // drop the marker
-                //pivotWithReference(51, refAngle, 0.2,0.75);
-                // forwards a little bit
-                //moveTimed(-0.55, 750);
-                // pivot so back of robot faces the crater
-                //pivotWithReference(41, refAngle, 0.2,0.75);
             }
             else if (isRightGold)
             {
-                pivotWithReference(10, refAngle, 0.2,0.75);
+                moveTimed(0.55, 1200); // push gold
+                sleep(100);
+                pivotWithReference(14, refAngle, 0.2,0.75);
                 moveTimed(0.55, 1200); // go into depot
                 sleep(200);
                 marker.setPosition(MARKER_HIGH); // drop the marker
-                pivotWithReference(45, refAngle, 0.2,0.75); // face the crater
-                move(0, -1600, 0.3, 0.7, 1.0);
+                pivotWithReference(39, refAngle, 0.2,0.75); // face the crater
+                move(0, -1000, 0.3, 0.7, 3.0);
             }
             else if (isCenterGold)
             {
-                moveTimed(0.55, 500); // go into depot
+                move(0, 700, 0.3, 0.7, 2.0); // push gold and go into crater
                 sleep(200);
+                move(50, 0, 0.2, 0.7, 1.0); // go closer to the wall
                 marker.setPosition(MARKER_HIGH); // drop the marker
+                pivotWithReference(42, refAngle, 0.2,0.75); // face the crater
+                move(0, -1000, 0.3, 0.7, 3.0);
             }
             sleep(1000);
             lower();
