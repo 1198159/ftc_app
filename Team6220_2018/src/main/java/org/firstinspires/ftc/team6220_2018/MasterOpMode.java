@@ -52,6 +52,7 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorBR;
 
     DcMotor motorHanger;
+    DcMotor motorArm;
     //-----------------------------
 
      // Servos----------------------
@@ -67,6 +68,7 @@ abstract public class MasterOpMode extends LinearOpMode
     public boolean isDriveTrainAttached = true;
     public boolean isHangerAttached = true;
     public boolean isCollectorAttached = true;
+    public boolean isArmAttached = true;
 
     // Create a list of tasks to accomplish in order
     List<ConcurrentOperation> callback = new ArrayList<>();
@@ -133,6 +135,14 @@ abstract public class MasterOpMode extends LinearOpMode
         {
             motorCollector = hardwareMap.crservo.get("motorCollector");
             motorCollector.setPower(0);
+        }
+        if(isArmAttached)
+        {
+            motorArm = hardwareMap.dcMotor.get("motorCollector");
+            motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorArm.setPower(0);
         }
         //--------------------------------------------------------------------------------------------------------------
 
