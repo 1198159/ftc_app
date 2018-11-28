@@ -50,18 +50,19 @@ public class AutoCompetition extends MasterAutonomous
             // Park in either our alliance or opponents' crater, depending on setup input.
             if(isAllianceCraterFinal)
             {
-                dropOffMarker(0);
+                dropOffMarker();
                 partnerMineral();
                 // Drive backward into crater.
-                driveToPosition(15, -1700, 1.0);
+                driveToPosition(0, -1700, 1.0);
             }
             else
             {
-                dropOffMarker(180);
+                dropOffMarker();
                 partnerMineral();
                 turnTo(45, 1.0);
+
                 // Drive backward into crater.
-                driveToPosition(15, -1700, 1.0);
+                driveToPosition(0, -1700, 1.0);
             }
         }
         // Depot--------------------------------------------------------------------------------
@@ -75,28 +76,28 @@ public class AutoCompetition extends MasterAutonomous
             // Drive forward and knock off correct mineral
             knockGold(goldLocation);
 
+            // Turn toward depot and drive into it; change turn angle based on the location of the gold mineral.
             turnTo(turnShift, 1.0);
-
-            // Drive forward; we change this value based on where the gold mineral was
             driveToPosition(0,980 ,0.7);
 
-            // Park in either our alliance or opponents' crater, depending on setup input.
+            // Park in either our alliance's or opponents' crater, depending on setup input.
             if(isAllianceCraterFinal)
             {
                 turnTo(45, 1.0);
 
-                dropOffMarker(0);
-                // Drive backward into crater.
-                driveToPosition(15, -1700, 1.0);
+                dropOffMarker();
 
+                // Drive backward into crater.
+                driveToPosition(0, -1700, 1.0);
             }
             else
             {
                 turnTo(-45, 1.0);
 
-                dropOffMarker(180);
+                dropOffMarker();
+
                 // Drive backward into crater.
-                driveToPosition(15, -1700, 1.0);
+                driveToPosition(0, -1700, 1.0);
             }
         }
         // -------------------------------------------------------------------------------------
@@ -126,8 +127,10 @@ public class AutoCompetition extends MasterAutonomous
         driveToPosition(-80,0,0.7);
     }
 
+    // Allows us to score alliance partner's mineral.
     private void partnerMineral() throws InterruptedException
     {
+        // Only do this if we have pressed the proper button in autonomous.
         if(knockPartnerMineral)
         {
             if (goldLocation == sampleFieldLocations.right)
@@ -158,15 +161,18 @@ public class AutoCompetition extends MasterAutonomous
             }
         }
     }
-    private void dropOffMarker(int driveAngle) throws InterruptedException
+
+    // Code for spitting team marker out of collector.
+    private void dropOffMarker() throws InterruptedException
     {
         // moveRobot forward quickly, moveRobot backward quickly.
         //moveRobot(90,1.0,0.2);
         //moveRobot(-90,1.0,0.3);
 
-        //todo extend arm
-        //todo shoot out collector
-        //todo bring back in arm slightly
+        //todo bring out collector
+        //todo turn on collector
+        //todo turn off collector
+        //todo retract collector
 
         // Drive backward into crater.
         //driveToPosition(15, -1700, 1.0);
