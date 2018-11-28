@@ -14,8 +14,8 @@ public class TestOpMode extends MasterAutonomous {
         telemetry.addData("Init:", "done");
         telemetry.update();
         waitForStart();
-        //land();
-        //lower();
+        land();
+        lower();
 
         /*
         move(200, 0, 0.3, 0.7, 1.0);
@@ -25,6 +25,6 @@ public class TestOpMode extends MasterAutonomous {
         move(-200, 0, 0.3, 0.7, 1.0);
         sleep(200);
         */
-        move(0, -1000, 0.3, 0.7, 3.0);
+        //move(0, -1000, 0.3, 0.7, 3.0);
     }
 }
