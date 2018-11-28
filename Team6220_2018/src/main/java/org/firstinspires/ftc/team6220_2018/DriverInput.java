@@ -94,6 +94,26 @@ public class DriverInput implements ConcurrentOperation
         return Math.sqrt(Math.pow(controller.right_stick_x, 2) + Math.pow(controller.right_stick_y, 2));
     }
 
+    public double getLeftStickX()
+    {
+        return controller.left_stick_x;
+    }
+
+    public double getLeftStickY()
+    {
+        return controller.left_stick_y;
+    }
+
+    public double getRightStickX()
+    {
+        return controller.right_stick_x;
+    }
+
+    public double getRightStickY()
+    {
+        return controller.right_stick_y;
+    }
+
     // Call at end of loop
     public void update(double eTime)
     {

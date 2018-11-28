@@ -63,16 +63,17 @@ abstract public class MasterAutonomous extends MasterOpMode
     {
         initializeRobot();
 
+        // Use different motor modes for autonomous initialization.
         motorHanger.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorHanger.setPower(0);
+        motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorArm.setPower(0);
 
         OpenCVVision = new OpenCVGold();
 
         OpenCVVision.init(hardwareMap.appContext, ActivityViewDisplay.getInstance());
         OpenCVVision.setShowCountours(true);
         OpenCVVision.enable();
-        //vuforiaHelper = new VuforiaHelper();
-        //vuforiaHelper.setupVuforia();
     }
 
 
@@ -192,7 +193,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
 
-    // todo Add global coordinates (not a priority)
+    // todo Add global coordinates (next year)
     // Uses encoders to make the robot drive to a specified relative position.  Also makes use of the
     // imu to keep the robot at a constant heading during navigation.
     // **Note:  initDeltaX/Y are in mm.
@@ -276,30 +277,34 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Uses OpenCV to identify the location of the gold mineral.
     public void identifyGold ()
     {
-        turnTo(-16.5,1.0);
+        //turnTo(-16.5,1.0);
         pauseWhileUpdating(1.0);
-        // Gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front).
-        if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE) && (OpenCVVision.getGoldRect().y > Constants.OPENCV_TOLERANCE_PIX))
+        // Gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees
+        // looking at it from the front).
+        if ((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE_LEFT)
         {
-            goldLocation = sampleFieldLocations.center;
-            telemetry.addLine("Center");
+            goldLocation = sampleFieldLocations.left;
+            telemetry.addLine("Left");
         }
-        // Gold is towards right of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front).
-        else if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))) > Constants.GOLD_DIVIDING_LINE)
+        // Gold is towards right of phone screen in horizontal position (rotated counter clockwise
+        // 90 degrees looking at it from the front).
+        else if ((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) > Constants.GOLD_DIVIDING_LINE_RIGHT)
         {
             goldLocation = sampleFieldLocations.right;
             telemetry.addLine("Right");
         }
-        // Gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front).
+        // Gold is towards middle of phone screen in horizontal position (rotated counter clockwise
+        // 90 degrees looking at it from the front).  This is the default scoring position if the
+        // code fails.
         else
         {
-            goldLocation = sampleFieldLocations.left;
-            telemetry.addLine("Left (default)");
+            goldLocation = sampleFieldLocations.center;
+            telemetry.addLine("Center (default)");
         }
-        turnTo(0,1.0);
+        //turnTo(0,1.0);
         telemetry.addData("Gold",
                 String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + (OpenCVVision.getGoldRect().width) / 2), (OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))));
-        telemetry.addData("currentAngle", currentAngle);
+        //telemetry.addData("currentAngle", currentAngle);
         telemetry.update();
     }
 
@@ -307,23 +312,22 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Use this method to knock the gold mineral given its location.
     public void knockGold (sampleFieldLocations goldLocation) throws InterruptedException
     {
-        if (goldLocation == sampleFieldLocations.center)
+        if (goldLocation == sampleFieldLocations.left)
         {
-            mineralShift = 0;
-            driveToPosition(mineralShift, Constants.MINERAL_FORWARD, 1.0);
-            turnShift = 0;
+            mineralShift = -Constants.MINERAL_SHIFT;
+            //turnShift = -30;
         }
         else if (goldLocation == sampleFieldLocations.right)
         {
             mineralShift = Constants.MINERAL_SHIFT;
-            driveToPosition(mineralShift, Constants.MINERAL_FORWARD, 1.0);
-            turnShift = 30;
+            //turnShift = 30;
         }
         else
         {
-            mineralShift = -Constants.MINERAL_SHIFT;
-            driveToPosition(mineralShift, Constants.MINERAL_FORWARD, 1.0);
-            turnShift = -30;
+            mineralShift = 0;
+            //turnShift = 0;
         }
+
+        driveToPosition(mineralShift, Constants.MINERAL_FORWARD, 1.0);
     }
 }

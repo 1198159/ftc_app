@@ -6,9 +6,9 @@ package org.firstinspires.ftc.team6220_2018;
 
 public class Constants
 {
-    //public static final int GOLD_LEFT_HORIZONTAL = 120;
-    //public static final int GOLD_RIGHT_HORIZONTAL = 600;
-    public static final int GOLD_DIVIDING_LINE = 520;
+    //public static final int GOLD_DIVIDING_LINE = 520;
+    public static final int GOLD_DIVIDING_LINE_LEFT = 120;
+    public static final int GOLD_DIVIDING_LINE_RIGHT = 600;
     public static final int DISCRIMINATION_HEIGHT = 330;
 
     // Standard conversions
@@ -78,8 +78,8 @@ public class Constants
      // Hanger
     public static final int HANG_UNLATCH_POSITION = 180;
     public static final int HANG_GROUND_UNLATCH = -2950;
-     // Robot
-    public static final int MINERAL_SHIFT = /*450*/ 480;
+     // Drivetrain
+    public static final int MINERAL_SHIFT = 480;
     public static final int MINERAL_FORWARD = 750;
     public static final int MINERAL_BACKWARD = 300;
     //-------------------------------------------------

@@ -42,27 +42,31 @@ public class TestOpenCV extends MasterAutonomous
             else if (driver1.isButtonJustPressed(Button.DPAD_DOWN))
                 OpenCVVision.thresholdVal--;
 
-            // Gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees looking at it from the front).
-            if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE) && (OpenCVVision.getGoldRect().y > Constants.OPENCV_TOLERANCE_PIX))
+            // Gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees
+            // looking at it from the front).
+            if ((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE_LEFT)
             {
-                goldLocation = sampleFieldLocations.center;
-                telemetry.addLine("Center");
+                goldLocation = sampleFieldLocations.left;
+                telemetry.addLine("Left");
             }
-            // Gold is towards right of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front).
-            else if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))) > Constants.GOLD_DIVIDING_LINE)
+            // Gold is towards right of phone screen in horizontal position (rotated counter clockwise
+            // 90 degrees looking at it from the front).
+            else if ((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) > Constants.GOLD_DIVIDING_LINE_RIGHT)
             {
                 goldLocation = sampleFieldLocations.right;
                 telemetry.addLine("Right");
             }
-            // Gold is towards middle of phone screen in horizontal position (rotated counter clockwise 90 degrees looking at it from the front).
+            // Gold is towards middle of phone screen in horizontal position (rotated counter clockwise
+            // 90 degrees looking at it from the front).  This is the default scoring position if the
+            // code fails.
             else
             {
-                goldLocation = sampleFieldLocations.left;
-                telemetry.addLine("Left (default)");
+                goldLocation = sampleFieldLocations.center;
+                telemetry.addLine("Center (default)");
             }
             telemetry.addData("Gold",
                     String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + (OpenCVVision.getGoldRect().width) / 2), (OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))));
-            telemetry.addData("ThresholdVal: ", OpenCVVision.thresholdVal);
+            //telemetry.addData("currentAngle", currentAngle);
             telemetry.update();
             updateCallback(eTime);
             idle();
