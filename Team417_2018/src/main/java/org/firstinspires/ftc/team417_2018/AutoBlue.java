@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team417_2018;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
 
@@ -18,6 +19,7 @@ public class AutoBlue extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
         autoInitializeRobot();
+
         goldVision = new OpenCVDetect();
         // can replace with ActivityViewDisplay.getInstance() for fullscreen
         goldVision.init(hardwareMap.appContext, ActivityViewDisplay.getInstance());
@@ -63,6 +65,10 @@ public class AutoBlue extends MasterAutonomous
                 isRightGold = false;
                 telemetry.addLine("Center");
             }
+            else
+            {
+                telemetry.addLine("Left");
+            }
 
             telemetry.update();
             idle();
@@ -87,7 +93,7 @@ public class AutoBlue extends MasterAutonomous
         // pivot to face left and right
         if (isLeftGold)
         {
-            pivotWithReference(45, refAngle, 0.2, 0.75);
+            pivotWithReference(37, refAngle, 0.2, 0.75);
         }
         else if (isRightGold)
         {
@@ -112,11 +118,15 @@ public class AutoBlue extends MasterAutonomous
             {
                 moveTimed(0.55, 1200); // push gold
                 sleep(100);
-                pivotWithReference(-20, refAngle, 0.2,0.75);
+                pivotWithReference(-25, refAngle, 0.2,0.75);
                 sleep(100);
-                moveTimed(0.55, 1300); // go into depot
+                moveTimed(0.55, 1550); // go into depot
                 sleep(200);
                 marker.setPosition(MARKER_HIGH); // drop the marker
+                pivotWithReference(45, refAngle, 0.2,0.75); // face the crater
+                move(65, 0, 0.2, 0.7, 1.0); // go closer to the wall
+                sleep(100);
+                move(-10, -1000, 0.3, 0.7, 3.0);
             }
             else if (isRightGold)
             {
