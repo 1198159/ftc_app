@@ -16,10 +16,12 @@ public class TeleOpCompetition extends MasterTeleOp
     public void runOpMode() throws InterruptedException
     {
         initializeRobot();
+        // Some motors are initialized here since they require RUN_TO_POSITION mode in autonomous,
+        // but RUN_USING_ENCODER mode in TeleOp.
         motorHanger.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorHanger.setPower(0);
-        /*LynxModule myModule = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
-        myModule.setDebug(LynxModule.DebugGroup.MOTOR0, LynxModule.DebugVerbosity.HIGH);*/
+        motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorArm.setPower(0);
 
         waitForStart();
         // Accounts for delay between initializing the program and starting TeleOp
@@ -33,9 +35,10 @@ public class TeleOpCompetition extends MasterTeleOp
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
 
-            // Drive controls
+            // Drive methods
             driveMecanumWithJoysticks();
             driveHanger();
+            driveCollectorMechanism();
             /*
              Updates that need to happen each loop
              Note:  eTime is not currently displayed (it interrupts other telemetry), but it may

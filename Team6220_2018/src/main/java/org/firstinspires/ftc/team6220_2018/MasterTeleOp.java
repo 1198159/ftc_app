@@ -5,6 +5,9 @@ package org.firstinspires.ftc.team6220_2018;
 */
 abstract public class MasterTeleOp extends MasterOpMode
 {
+    // For using turning and other autonomous functionalities in TeleOp.
+    MasterAutonomous masterAutonomous;
+
     boolean slowMode = false;
     // Allows us to switch front of robot.
     boolean driveReversed = false;
@@ -13,9 +16,6 @@ abstract public class MasterTeleOp extends MasterOpMode
     double tFactor = Constants.T_FACTOR;
     // Factor that adjusts magnitude of rotational movement.
     double rFactor = Constants.R_FACTOR;
-
-    // For using turning and other autonomous functionalities in TeleOp.
-    MasterAutonomous masterAutonomous;
 
     // Takes driver 1 input to run hanger system.
     void driveHanger()
@@ -38,6 +38,22 @@ abstract public class MasterTeleOp extends MasterOpMode
         telemetry.addData("Hanger Enc: ", motorHanger.getCurrentPosition());
     }
 
+    // Uses driver 2 input to drive arm and collector motors.
+    void driveCollectorMechanism()
+    {
+        // Collect and eject minerals.
+        if (driver2.isButtonJustPressed(Button.DPAD_UP))
+            motorCollector.setPower(0.7);
+        else if (driver2.isButtonJustPressed(Button.DPAD_DOWN))
+            motorCollector.setPower(-0.7);
+        else if (driver2.isButtonJustPressed(Button.DPAD_LEFT))
+            motorCollector.setPower(0);
+
+        // Operate arm.
+        motorArm.setPower(stickCurve.getOuput(driver2.getRightStickY()));
+        //telemetry.addData("Arm Position: ", motorArm.getCurrentPosition());
+        //telemetry.update();
+    }
 
     // Takes driver 1 stick input and uses it to give power and direction inputs to the drive
     void driveMecanumWithJoysticks()

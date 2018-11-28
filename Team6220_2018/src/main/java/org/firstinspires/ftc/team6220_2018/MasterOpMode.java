@@ -53,22 +53,20 @@ abstract public class MasterOpMode extends LinearOpMode
 
     DcMotor motorHanger;
     DcMotor motorArm;
-    //-----------------------------
+     //-----------------------------
 
      // Servos----------------------
     Servo servoHanger;
-     //------------------------------
-    //-----------------------------------------------------------------
     CRServo motorCollector;
+     //-----------------------------
+    //-----------------------------------------------------------------
 
     // Servo togglers
-        //ServoToggler verticalJewelServoToggler;
 
     // Booleans that allow us to choose what parts of the robot we are and aren't using in each OpMode
     public boolean isDriveTrainAttached = true;
     public boolean isHangerAttached = true;
-    public boolean isCollectorAttached = true;
-    public boolean isArmAttached = true;
+    public boolean isCollectorMechAttached = true;
 
     // Create a list of tasks to accomplish in order
     List<ConcurrentOperation> callback = new ArrayList<>();
@@ -128,21 +126,19 @@ abstract public class MasterOpMode extends LinearOpMode
             motorHanger = hardwareMap.dcMotor.get("motorHanger");
 
             motorHanger.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            // Rest of initialization is at beginning of TeleOp.
 
             servoHanger = hardwareMap.servo.get("servoHanger");
         }
-        if(isCollectorAttached)
+        if(isCollectorMechAttached)
         {
             motorCollector = hardwareMap.crservo.get("motorCollector");
             motorCollector.setPower(0);
-        }
-        if(isArmAttached)
-        {
-            motorArm = hardwareMap.dcMotor.get("motorCollector");
+
+            motorArm = hardwareMap.dcMotor.get("motorArm");
             motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            motorArm.setPower(0);
+            // Rest of initialization is at beginning of TeleOp.
         }
         //--------------------------------------------------------------------------------------------------------------
 
@@ -245,6 +241,7 @@ abstract public class MasterOpMode extends LinearOpMode
     }
 
 
+    // Note:  not in use
     // Other opmodes must go through this method to prevent others from unnecessarily changing headingOffset
     void setRobotStartingOrientation(double newValue)
     {
