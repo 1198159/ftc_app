@@ -11,30 +11,36 @@ import com.qualcomm.robotcore.hardware.CRServo;
 public class HelloWorld extends LinearOpMode
 {
 
-    CRServo vex1 = null;
+    CRServo vex1 = null; //port 0
+    CRServo vex2 = null; //port1
 
     public void runOpMode()
     {
         vex1 = hardwareMap.crservo.get("vex1");
+        vex2 = hardwareMap.crservo.get("vex2");
         telemetry.addData("init", "done");
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        vex1.setPower(0.5);
+        vex1.setPower(0.0);
+        vex2.setPower(0.0);
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive())
         {
            if(gamepad1.a)
            {
                vex1.setPower(0.79);
+               vex2.setPower(0.79);
            }
            else if (gamepad1.b)
            {
                vex1.setPower(-0.79);
+               vex2.setPower(-0.79);
            }
            else
                {
                vex1.setPower(0);
+               vex2.setPower(0);
            }
 
         }
