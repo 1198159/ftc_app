@@ -107,6 +107,7 @@ public class AutoBlue extends MasterAutonomous
             pivotWithReference(0, refAngle, 0.2, 0.75); // face crater
             sleep(200);
             moveTimed(0.55, 500); // go into crater / park
+            lower();
         }
 
 
