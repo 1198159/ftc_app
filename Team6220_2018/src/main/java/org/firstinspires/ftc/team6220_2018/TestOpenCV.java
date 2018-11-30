@@ -43,15 +43,16 @@ public class TestOpenCV extends MasterAutonomous
                 OpenCVVision.thresholdVal--;
 
             // Gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees
-            // looking at it from the front).
-            if ((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE_LEFT)
+            // looking at it from the front).  Also, if the gold mineral is off the left end of the
+            // screen, we still identify it by checking if the gold mineral's y coordinate is < 0.5.
+            if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) > Constants.GOLD_DIVIDING_LINE_LEFT) || ((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.OPENCV_TOLERANCE_PIX))
             {
                 goldLocation = sampleFieldLocations.left;
                 telemetry.addLine("Left");
             }
             // Gold is towards right of phone screen in horizontal position (rotated counter clockwise
             // 90 degrees looking at it from the front).
-            else if ((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) > Constants.GOLD_DIVIDING_LINE_RIGHT)
+            else if ((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE_RIGHT)
             {
                 goldLocation = sampleFieldLocations.right;
                 telemetry.addLine("Right");
@@ -64,6 +65,7 @@ public class TestOpenCV extends MasterAutonomous
                 goldLocation = sampleFieldLocations.center;
                 telemetry.addLine("Center (default)");
             }
+            //turnTo(0,1.0);
             telemetry.addData("Gold",
                     String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + (OpenCVVision.getGoldRect().width) / 2), (OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))));
             //telemetry.addData("currentAngle", currentAngle);

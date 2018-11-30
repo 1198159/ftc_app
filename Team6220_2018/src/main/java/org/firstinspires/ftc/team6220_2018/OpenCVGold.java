@@ -94,7 +94,7 @@ public class OpenCVGold extends OpenCVPipeline
             area = Imgproc.contourArea(cont);
 
             // Make sure rectangles that we identify are outside the crater
-            if (area > maxArea && rect.x < Constants.DISCRIMINATION_HEIGHT)
+            if (area > maxArea && rect.x > Constants.DISCRIMINATION_HEIGHT)
             {
                 maxArea = area;
                 maxRect = rect;

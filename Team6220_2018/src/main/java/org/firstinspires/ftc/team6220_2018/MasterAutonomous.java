@@ -84,10 +84,12 @@ abstract public class MasterAutonomous extends MasterOpMode
         lTime = timer.seconds();
 
         // Ensure log can't overflow
-        telemetry.log().setCapacity(3);
+        telemetry.log().setCapacity(5);
         telemetry.log().add("Crater Start/Depot Start = Left Bumper/Right Bumper");
-        telemetry.log().add("Final Destination - Alliance Crater/Opposing Crater = A/B");
+        telemetry.log().add("Final Destination Alliance Crater/Opposing Crater = A/B");
         telemetry.log().add("Time Delay Increase/Decrease = D-Pad Up/D-Pad Down");
+        telemetry.log().add("Knocking Partner's Mineral = Back (Toggle)");
+        telemetry.log().add("Press Start to exit setup.");
 
         boolean settingUp = true;
 
@@ -112,7 +114,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             // Decide whether we want to knock off partner's mineral.
             if(driver1.isButtonJustPressed(Button.BACK) && !knockPartnerMineral)
                 knockPartnerMineral = true;
-            else if (driver1.isButtonJustPressed((Button.BACK)) && knockPartnerMineral)
+            else if (driver1.isButtonJustPressed(Button.BACK) && knockPartnerMineral)
                 knockPartnerMineral = false;
 
             // Select alliance.  We restrict our time delay from 0 to 10 seconds.
@@ -128,8 +130,8 @@ abstract public class MasterAutonomous extends MasterOpMode
             // Display the current setup
             telemetry.addData("Is robot starting by crater: ", isCraterStart);
             telemetry.addData("Is robot final destination alliance crater: ", isAllianceCraterFinal);
-            telemetry.addData("Time delay", matchDelay);
-
+            telemetry.addData("Time delay: ", matchDelay);
+            telemetry.addData("Is knocking partner's mineral: ", knockPartnerMineral);
             updateCallback(eTime);
             telemetry.update();
             idle();
@@ -280,15 +282,16 @@ abstract public class MasterAutonomous extends MasterOpMode
         //turnTo(-16.5,1.0);
         pauseWhileUpdating(1.0);
         // Gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees
-        // looking at it from the front).
-        if ((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE_LEFT)
+        // looking at it from the front).  Also, if the gold mineral is off the left end of the
+        // screen, we still identify it by checking if the gold mineral's y coordinate is < 0.5.
+        if (((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) > Constants.GOLD_DIVIDING_LINE_LEFT) || ((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.OPENCV_TOLERANCE_PIX))
         {
             goldLocation = sampleFieldLocations.left;
             telemetry.addLine("Left");
         }
         // Gold is towards right of phone screen in horizontal position (rotated counter clockwise
         // 90 degrees looking at it from the front).
-        else if ((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) > Constants.GOLD_DIVIDING_LINE_RIGHT)
+        else if ((OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2)) < Constants.GOLD_DIVIDING_LINE_RIGHT)
         {
             goldLocation = sampleFieldLocations.right;
             telemetry.addLine("Right");

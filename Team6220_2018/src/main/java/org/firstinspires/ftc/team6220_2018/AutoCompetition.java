@@ -1,11 +1,6 @@
 package org.firstinspires.ftc.team6220_2018;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-
-import org.firstinspires.ftc.robotcore.external.Const;
-
-import java.util.Locale;
 
 /**
  *  This program is an all-in-one autonomous.  It uses gamepad input prior to initialization to
@@ -31,9 +26,9 @@ public class AutoCompetition extends MasterAutonomous
         // Crater-------------------------------------------------------------------------------
         if (isCraterStart)
         {
-            dropRobotAndUnlatch();
+            //dropRobotAndUnlatch();
 
-            // Turn and detect minerals
+            // Detect minerals
             identifyGold();
 
             // Drive forward and knock off correct mineral
@@ -51,26 +46,31 @@ public class AutoCompetition extends MasterAutonomous
             if(isAllianceCraterFinal)
             {
                 dropOffMarker();
-                partnerMineral();
-                // Drive backward into crater.
-                driveToPosition(0, -1700, 1.0);
+                knockPartnerMineral();
+
+                // Drive backward, align with wall, and drive rest of way into crater.
+                driveToPosition(0, -1000, 1.0);
+                moveRobot(0.0,0.6,0.4);
+                driveToPosition(0, -750, 1.0);
             }
             else
             {
                 dropOffMarker();
-                partnerMineral();
+                knockPartnerMineral();
                 turnTo(45, 1.0);
 
-                // Drive backward into crater.
-                driveToPosition(0, -1700, 1.0);
+                // Drive backward, align with wall, and drive rest of way into crater.
+                driveToPosition(0, -1000, 1.0);
+                moveRobot(180.0,0.6,1.0);
+                driveToPosition(0, -900, 1.0);
             }
         }
         // Depot--------------------------------------------------------------------------------
         else
         {
-            dropRobotAndUnlatch();
+            //dropRobotAndUnlatch();
 
-            // Turn and detect minerals
+            // Detect minerals
             identifyGold();
 
             // Drive forward and knock off correct mineral
@@ -84,20 +84,22 @@ public class AutoCompetition extends MasterAutonomous
             if(isAllianceCraterFinal)
             {
                 turnTo(45, 1.0);
-
                 dropOffMarker();
 
-                // Drive backward into crater.
-                driveToPosition(0, -1700, 1.0);
+                // Drive backward, align with wall, and drive rest of way into crater.
+                driveToPosition(0, -1000, 1.0);
+                moveRobot(0.0,0.6,0.4);
+                driveToPosition(0, -750, 1.0);
             }
             else
             {
                 turnTo(-45, 1.0);
-
                 dropOffMarker();
 
-                // Drive backward into crater.
-                driveToPosition(0, -1700, 1.0);
+                // Drive backward, align with wall, and drive rest of way into crater.
+                driveToPosition(0, -1000, 1.0);
+                moveRobot(180.0,0.6,1.0);
+                driveToPosition(0, -900, 1.0);
             }
         }
         // -------------------------------------------------------------------------------------
@@ -128,7 +130,7 @@ public class AutoCompetition extends MasterAutonomous
     }
 
     // Allows us to score alliance partner's mineral.
-    private void partnerMineral() throws InterruptedException
+    private void knockPartnerMineral() throws InterruptedException
     {
         // Only do this if we have pressed the proper button in autonomous.
         if(knockPartnerMineral)
@@ -136,7 +138,6 @@ public class AutoCompetition extends MasterAutonomous
             if (goldLocation == sampleFieldLocations.right)
             {
                 turnTo(-120, 1.0);
-
                 driveToPosition(0, -400, 1.0);
                 driveToPosition(0, 400, 1.0);
                 turnTo(0, 1.0);
@@ -165,6 +166,9 @@ public class AutoCompetition extends MasterAutonomous
     // Code for spitting team marker out of collector.
     private void dropOffMarker() throws InterruptedException
     {
+        servoMarker.setPosition(Constants.SERVO_MARKER_DEPLOYED);
+        pauseWhileUpdating(0.5);
+        servoMarker.setPosition(Constants.SERVO_MARKER_RETRACTED);
         // moveRobot forward quickly, moveRobot backward quickly.
         //moveRobot(90,1.0,0.2);
         //moveRobot(-90,1.0,0.3);

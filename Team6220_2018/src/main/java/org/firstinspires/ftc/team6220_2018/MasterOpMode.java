@@ -22,7 +22,7 @@ abstract public class MasterOpMode extends LinearOpMode
      generally needs more control in the low speed range than the high range.
     */
     //                                             y = 0 + 0.25x + 0 + 0.75x^3
-    Polynomial stickCurve = new Polynomial(new double[]{ 0, 0.25, 0, 0.75});
+    Polynomial stickCurve = new Polynomial(new double[]{ 0, 0.5, 0, 0.5});
 
     // Contains useful vuforia methods
     VuforiaHelper vuforiaHelper;
@@ -58,6 +58,7 @@ abstract public class MasterOpMode extends LinearOpMode
      // Servos----------------------
     Servo servoHanger;
     CRServo motorCollector;
+    Servo servoMarker;
      //-----------------------------
     //-----------------------------------------------------------------
 
@@ -119,6 +120,8 @@ abstract public class MasterOpMode extends LinearOpMode
             motorFR.setPower(0);
             motorBL.setPower(0);
             motorFR.setPower(0);
+
+            servoMarker = hardwareMap.servo.get("servoMarker");
             //-------------------------------------------------------------------
         }
         if (isHangerAttached)

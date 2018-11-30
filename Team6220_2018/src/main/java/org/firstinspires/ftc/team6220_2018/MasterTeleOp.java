@@ -10,7 +10,7 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     boolean slowMode = false;
     // Allows us to switch front of robot.
-    boolean driveReversed = false;
+    boolean driveReversed = true;
 
     // Factor that adjusts magnitudes of vertical and horizontal movement.
     double tFactor = Constants.T_FACTOR;
@@ -41,12 +41,12 @@ abstract public class MasterTeleOp extends MasterOpMode
     // Uses driver 2 input to drive arm and collector motors.
     void driveCollectorMechanism()
     {
-        // Collect and eject minerals.
-        if (driver2.isButtonJustPressed(Button.DPAD_UP))
-            motorCollector.setPower(0.7);
-        else if (driver2.isButtonJustPressed(Button.DPAD_DOWN))
-            motorCollector.setPower(-0.7);
-        else if (driver2.isButtonJustPressed(Button.DPAD_LEFT))
+        // Collect and eject minerals.  Buttons have to be held to power collector.
+        if (driver2.isButtonPressed(Button.DPAD_DOWN))
+            motorCollector.setPower(0.9);
+        else if (driver2.isButtonPressed(Button.DPAD_UP))
+            motorCollector.setPower(-0.9);
+        else
             motorCollector.setPower(0);
 
         // Operate arm.

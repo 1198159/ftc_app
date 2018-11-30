@@ -7,9 +7,9 @@ package org.firstinspires.ftc.team6220_2018;
 public class Constants
 {
     //public static final int GOLD_DIVIDING_LINE = 520;
-    public static final int GOLD_DIVIDING_LINE_LEFT = 120;
-    public static final int GOLD_DIVIDING_LINE_RIGHT = 600;
-    public static final int DISCRIMINATION_HEIGHT = 330;
+    public static final int GOLD_DIVIDING_LINE_LEFT = 550;
+    public static final int GOLD_DIVIDING_LINE_RIGHT = 250;
+    public static final int DISCRIMINATION_HEIGHT = 200;
 
     // Standard conversions
      // This is for an Andymark 40; 20's and 60's are different
@@ -69,8 +69,10 @@ public class Constants
 
 
     // Servo positions--------------------------------
-    public static final double SERVO_HANG_DEPLOYED = 0.7;
+    public static final double SERVO_HANG_DEPLOYED = 0.6;
     public static final double SERVO_HANG_RETRACTED = 0.25;
+    public static final double SERVO_MARKER_DEPLOYED = 1.0;
+    public static final double SERVO_MARKER_RETRACTED = 0;
     //-------------------------------------------------
 
 
