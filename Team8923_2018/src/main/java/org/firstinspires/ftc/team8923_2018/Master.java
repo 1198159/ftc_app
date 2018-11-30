@@ -14,10 +14,14 @@ abstract class Master extends LinearOpMode
     DcMotor motorBL;
     DcMotor motorBR;
     DcMotor motorLift;
-    DcMotor motorDankUnderglow;
+    //DcMotor motorDankUnderglow;
+    DcMotor motorFlip;
+    DcMotor motorSucc;
+    //DcMotor motorFlip2;
 
     Servo servoJJ;
     Servo servoJJ2;
+    Servo servoFlipSuccPush;
 
     BNO055IMU imu;
 
@@ -41,9 +45,13 @@ abstract class Master extends LinearOpMode
         motorBL = hardwareMap.get(DcMotor.class, "motorBL");
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
         motorLift = hardwareMap.get(DcMotor.class, "motorLift");
-        motorDankUnderglow = hardwareMap.get(DcMotor.class, "motorDankUnderglow");
+        //motorDankUnderglow = hardwareMap.get(DcMotor.class, "motorDankUnderglow");
+        motorFlip = hardwareMap.get(DcMotor.class, "motorFlip");
+        motorSucc = hardwareMap.get(DcMotor.class, "motorSucc");
+        //motorFlip2 = hardwareMap.get(DcMotor.class, "motorFlip2");
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
         servoJJ2 = hardwareMap.get(Servo.class, "servoJJ2");
+        servoFlipSuccPush = hardwareMap.get(Servo.class, "servoFlipSuccPush");
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -53,15 +61,21 @@ abstract class Master extends LinearOpMode
 
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
-        //motorLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
         motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFlip.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //motorFlip2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFlip.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorSucc.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //motorFlip2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        motorFlip.setTargetPosition(motorFlip.getCurrentPosition());
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
