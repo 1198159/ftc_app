@@ -86,11 +86,13 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     void mecanumDrive()
     {
-        // hold right trigger for adagio legato mode
-        if (gamepad1.right_trigger > 0.0)
-            isLegatoMode = true;
-        else
-            isLegatoMode = false;
+        // hold right bumper for adagio legato mode
+        if (gamepad1.right_trigger>0) isLegatoMode = true;
+        else isLegatoMode = false;
+        // hold left bumper for reverse mode
+        if (gamepad1.left_trigger>0) isReverseMode = true;
+        else isReverseMode = false;
+
 
         if (isLegatoMode) // Legato Mode
         {
@@ -100,6 +102,27 @@ abstract public class MasterTeleOp extends MasterOpMode
             if (gamepad1.dpad_right) x = 0.3;
             if (gamepad1.dpad_down) y = -0.3;
             if (gamepad1.dpad_up) y = 0.3;
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
+
+            if (isReverseMode) // if both legato and reverse mode
+            {
+                y = Range.clip(-gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
+                x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
+                if (gamepad1.dpad_left) x = -0.3;
+                if (gamepad1.dpad_right) x = 0.3;
+                if (gamepad1.dpad_down) y = -0.3;
+                if (gamepad1.dpad_up) y = 0.3;
+                pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
+            }
+        }
+        else if (isReverseMode)
+        {
+            y = Range.clip(-gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
+            x = Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
+            if (gamepad1.dpad_left) x = -0.75;
+            if (gamepad1.dpad_right) x = 0.75;
+            if (gamepad1.dpad_down) y = -0.75;
+            if (gamepad1.dpad_up) y = 0.75;
             pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
         }
         else // Staccato Mode
@@ -147,54 +170,19 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorBR.setPower(powerBR);
     }
 
-    void arcadeDrive()
-    {
-        // hold right trigger for adagio legato mode
-        if (gamepad1.right_trigger > 0.0) isLegatoMode = true;
-        else isLegatoMode = false;
-        // hold left trigger for reverse mode
-        if (gamepad1.left_trigger > 0.0) isReverseMode = true;
-        else isReverseMode = false;
-
-        if (isLegatoMode) // Legato Mode
-        {
-            ry = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
-            lx = Range.clip(gamepad1.left_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
-            if (isReverseMode) // Reverse Mode and Legato Mode combo
-                ry = Range.clip(gamepad1.right_stick_y, -0.3, 0.3); // Y axis is negative when up
-        }
-        else if (isReverseMode) // Reverse Mode
-        {
-            ry = gamepad1.right_stick_y; // Y axis is negative when up
-        }
-        else // Staccato Mode (standard)
-        {
-            ry = -gamepad1.right_stick_y; // Y axis is negative when up
-            lx = Range.clip(gamepad1.left_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
-        }
-
-        filterJoyStickInput.appendInputY(ly, lx);
-
-        ly = filterJoyStickInput.getFilteredLY();
-        lx = filterJoyStickInput.getFilteredRY();
-
-        powerFL = ly - lx;
-        powerFR = ry + lx;
-        powerBL = ly - lx;
-        powerBR = ry + lx;
-    }
-
     void runManualLift()
     {
          curLiftPos = motorLift.getCurrentPosition();
         // Glyph lift up/down
-        if(-gamepad2.right_stick_y < 0.0) // down
+        if(/*-gamepad2.right_stick_y < 0.0*/ gamepad1.left_bumper) // down
         {
-            motorLift.setPower(Range.clip(-gamepad2.right_stick_y, -1.0, -0.2));
+            //motorLift.setPower(Range.clip(-gamepad2.right_stick_y, -1.0, -0.2));
+            motorLift.setPower(-1.0);
         }
-        else if(-gamepad2.right_stick_y > 0.0) // up
+        else if(/*-gamepad2.right_stick_y > 0.0*/gamepad1.right_bumper) // up
         {
-            motorLift.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 1.0));
+            //motorLift.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 1.0));
+            motorLift.setPower(1.0);
         }
         else // turn motors off
         {
