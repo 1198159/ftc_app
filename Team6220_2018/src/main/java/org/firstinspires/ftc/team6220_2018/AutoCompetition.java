@@ -137,10 +137,10 @@ public class AutoCompetition extends MasterAutonomous
         {
             if (goldLocation == sampleFieldLocations.right)
             {
-                turnTo(-120, 1.0);
-                driveToPosition(0, -400, 1.0);
-                driveToPosition(0, 400, 1.0);
-                turnTo(0, 1.0);
+                turnTo(90, 1.0);
+                driveToPosition(0, -950, 1.0);
+                driveToPosition(0, 950, 1.0);
+                turnTo(135, 1.0);
                /* driveToPosition(0, 1050 + mineralShift, 1.0);
                 // Turn 45 deg ccw
                 turnTo(135, 1.0);
@@ -148,17 +148,17 @@ public class AutoCompetition extends MasterAutonomous
             }
             else if (goldLocation == sampleFieldLocations.left)
             {
-                turnTo(-60,1.0);
-                driveToPosition(0, -400, 1.0);
-                driveToPosition(0, 400, 1.0);
-                turnTo(0, 1.0);
+                turnTo(50,1.0);
+                driveToPosition(0, -950, 1.0);
+                driveToPosition(0, 950, 1.0);
+                turnTo(135, 1.0);
             }
             else if (goldLocation == sampleFieldLocations.center)
             {
-                turnTo(-90, 1.0);
-                driveToPosition(0, -400, 1.0);
-                driveToPosition(0, 400, 1.0);
-                turnTo(0, 1.0);
+                turnTo(70, 1.0);
+                driveToPosition(0, -950, 1.0);
+                driveToPosition(0, 950, 1.0);
+                turnTo(135, 1.0);
             }
         }
     }

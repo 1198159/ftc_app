@@ -88,7 +88,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         telemetry.log().add("Crater Start/Depot Start = Left Bumper/Right Bumper");
         telemetry.log().add("Final Destination Alliance Crater/Opposing Crater = A/B");
         telemetry.log().add("Time Delay Increase/Decrease = D-Pad Up/D-Pad Down");
-        telemetry.log().add("Knocking Partner's Mineral = Back (Toggle)");
+        telemetry.log().add("Knocking Partner's Mineral = X/Y");
         telemetry.log().add("Press Start to exit setup.");
 
         boolean settingUp = true;
@@ -112,9 +112,9 @@ abstract public class MasterAutonomous extends MasterOpMode
                 isAllianceCraterFinal = false;
 
             // Decide whether we want to knock off partner's mineral.
-            if(driver1.isButtonJustPressed(Button.BACK) && !knockPartnerMineral)
+            if(driver1.isButtonJustPressed(Button.X))
                 knockPartnerMineral = true;
-            else if (driver1.isButtonJustPressed(Button.BACK) && knockPartnerMineral)
+            else if (driver1.isButtonJustPressed(Button.Y))
                 knockPartnerMineral = false;
 
             // Select alliance.  We restrict our time delay from 0 to 10 seconds.

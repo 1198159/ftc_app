@@ -43,6 +43,12 @@ public class TeleOpTestBed extends MasterAutonomous
             {
                 motorCollector.setPower(0.0);
             }
+            if(driver1.isButtonJustPressed(Button.B))
+            {
+                servoMarker.setPosition(Constants.SERVO_MARKER_DEPLOYED);
+                pauseWhileUpdating(0.5);
+                servoMarker.setPosition(Constants.SERVO_MARKER_RETRACTED);
+            }
 
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
