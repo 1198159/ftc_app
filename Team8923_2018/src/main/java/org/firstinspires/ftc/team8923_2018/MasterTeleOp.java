@@ -37,12 +37,12 @@ abstract class MasterTeleOp extends Master
         driveMecanum(angle, power, turnPower);
     }
 
-    /*void dankUnderglow(double power)
+    void dankUnderglow(double power)
     {
         motorDankUnderglow.setPower(power);
     }
 
-    void runButtons()
+    void fastFlex()
     {
         if (gamepad1.x)
         {
@@ -53,7 +53,7 @@ abstract class MasterTeleOp extends Master
             dankUnderglow(-1.0);
         }
         idle();
-    }*/
+    }
 
     void runLift()
     {

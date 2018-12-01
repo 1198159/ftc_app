@@ -147,11 +147,11 @@ abstract class MasterAutonomous extends Master
         // Set IMU heading offset
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
 
-        servoJJ.setPosition(1.0);
+        servoJJ.setPosition(-1.2);
         servoJJ2.setPosition(0.65);
 
         //initialize our openCV image processing pipeline
-        openCVInit();
+        //openCVInit();
 
         telemetry.clear();
         telemetry.update();
@@ -211,8 +211,10 @@ abstract class MasterAutonomous extends Master
     {
         //1 is completely up
         //-1 is completely down
-        servoJJ.setPosition(-0.5);
+        servoJJ.setPosition(0.5);
         sleep(800);
+        servoJJ.setPosition(0.8);
+        sleep(100);
         servoJJ.setPosition(-1.0);
     }
 
@@ -314,6 +316,7 @@ abstract class MasterAutonomous extends Master
             }
         }
     }
+
     void dankUnderglow(double power)
     {
         motorDankUnderglow.setPower(power);

@@ -54,7 +54,7 @@ public class OpenCV extends OpenCVPipeline
         channels = new ArrayList<>();
         Core.split(rgba, channels);
         if(channels.size() > 0){
-            Imgproc.threshold(channels.get(1), maskYellow, 70, 255, Imgproc.THRESH_BINARY_INV);
+            Imgproc.threshold(channels.get(1), maskYellow, 90, 255, Imgproc.THRESH_BINARY_INV);
         }
 
         //Find contours of the yellow mask and draw them to the display mat for viewing

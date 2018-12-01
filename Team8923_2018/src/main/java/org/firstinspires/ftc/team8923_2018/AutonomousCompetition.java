@@ -22,6 +22,7 @@ public class AutonomousCompetition extends MasterAutonomous
         initAuto();
 
         waitForStart();
+        openCVInit();
         telemetry.clear();
 
         while (opModeIsActive())
@@ -53,7 +54,7 @@ public class AutonomousCompetition extends MasterAutonomous
                             sleep(900);
                             moveAuto(0, 500, 1.0, 0.3, 3.0);
                             moveAuto(450, 0, 0.3, 0.3, 3.0);
-                            moveAuto(0, 1350, 1.0, 0.3, 3.0);
+                            moveAuto(0, 1400, 1.0, 0.3, 3.0);
                             break;
 
                         }
@@ -72,7 +73,7 @@ public class AutonomousCompetition extends MasterAutonomous
                             moveAuto(215, 0, 0.6, 0.35, 3.0);
                             moveAuto(0, 975, 1.0, 0.5, 3.0);
                             moveAuto(100, 0, 0.5, 0.5, 3.0);
-                            moveAuto(0, 420, 0.5, 0.5, 3.0);
+                            moveAuto(0, 450, 0.5, 0.5, 3.0);
                             break;
                         }
                         case RIGHT:
@@ -95,7 +96,7 @@ public class AutonomousCompetition extends MasterAutonomous
                             moveAuto(80, 0, 0.5, 0.5, 3.0);
                             moveAuto(0, 975, 1.0, 0.5, 3.0);
                             moveAuto(100, 0, 0.5, 0.5, 3.0);
-                            moveAuto(0, 420, 0.5, 0.5, 3.0);
+                            moveAuto(0, 450, 0.5, 0.5, 3.0);
                             //moveAuto(0, -510, 0.5, 0.5, 3.0);
                             //imuPivot(referenceAngle, 135, 0.5, 0.015, 3.0);
                             //moveAuto(0, -430, 0.5, 0.5, 3.0);
@@ -117,7 +118,7 @@ public class AutonomousCompetition extends MasterAutonomous
                             fastFlex();
                             moveAuto(0, 260, 0.7, 0.3, 3.0);
                             imuPivot(referenceAngle, -90, 0.5, 0.015, 3.0);
-                            moveAuto(0, 500, 0.7, 0.3, 3.0);
+                            moveAuto(0, 610, 0.7, 0.3, 3.0);
                             break;
                         }
                         case CENTER:
@@ -148,8 +149,8 @@ public class AutonomousCompetition extends MasterAutonomous
                     imuPivot(referenceAngle, 45, 0.5, 0.015, 3.0);
                     dropJJ();
                     fastFlex();
-                    moveAuto(-200, -30, 0.3, 0.3, 3.0);
                     imuPivot(referenceAngle, 135, 0.7, 0.015, 3.0);
+                    moveAuto(-200, -30, 0.3, 0.3, 3.0);
                     moveAuto(-280, 0, 0.7, 0.3, 3.0);
                     sleep(100);
                     moveAuto(100, 0, 0.7, 0.3, 3.0);

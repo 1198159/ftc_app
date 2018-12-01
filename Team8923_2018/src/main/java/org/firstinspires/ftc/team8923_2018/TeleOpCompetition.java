@@ -18,7 +18,7 @@ public class TeleOpCompetition extends MasterTeleOp
             //dankUnderglow(-1.0);
             driveMecanumTeleOp();
             runLift();
-            //runButtons();
+            fastFlex();
             runFlipNSuccNPush();
             sendTelemetry();
             idle();

@@ -14,7 +14,7 @@ abstract class Master extends LinearOpMode
     DcMotor motorBL;
     DcMotor motorBR;
     DcMotor motorLift;
-    //DcMotor motorDankUnderglow;
+    DcMotor motorDankUnderglow;
     DcMotor motorFlip;
     DcMotor motorSucc;
     //DcMotor motorFlip2;
@@ -45,7 +45,7 @@ abstract class Master extends LinearOpMode
         motorBL = hardwareMap.get(DcMotor.class, "motorBL");
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
         motorLift = hardwareMap.get(DcMotor.class, "motorLift");
-        //motorDankUnderglow = hardwareMap.get(DcMotor.class, "motorDankUnderglow");
+        motorDankUnderglow = hardwareMap.get(DcMotor.class, "motorDankUnderglow");
         motorFlip = hardwareMap.get(DcMotor.class, "motorFlip");
         motorSucc = hardwareMap.get(DcMotor.class, "motorSucc");
         //motorFlip2 = hardwareMap.get(DcMotor.class, "motorFlip2");
