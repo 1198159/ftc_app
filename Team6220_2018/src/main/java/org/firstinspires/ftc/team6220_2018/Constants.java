@@ -72,7 +72,7 @@ public class Constants
     public static final double SERVO_HANG_DEPLOYED = 0.6;
     public static final double SERVO_HANG_RETRACTED = 0.25;
     public static final double SERVO_MARKER_DEPLOYED = 1.0;
-    public static final double SERVO_MARKER_RETRACTED = 0;
+    public static final double SERVO_MARKER_RETRACTED = 0.17;
     //-------------------------------------------------
 
 
@@ -82,8 +82,8 @@ public class Constants
     public static final int HANG_GROUND_UNLATCH = -2950;
      // Drivetrain
     public static final int MINERAL_SHIFT = 480;
-    public static final int MINERAL_FORWARD = 750;
-    public static final int MINERAL_BACKWARD = 300;
+    public static final int MINERAL_FORWARD = 680;
+    public static final int MINERAL_BACKWARD = 230;
     //-------------------------------------------------
 
 

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team6220_2018;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
 import org.firstinspires.ftc.robotcore.external.Const;
@@ -88,7 +89,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         telemetry.log().add("Crater Start/Depot Start = Left Bumper/Right Bumper");
         telemetry.log().add("Final Destination Alliance Crater/Opposing Crater = A/B");
         telemetry.log().add("Time Delay Increase/Decrease = D-Pad Up/D-Pad Down");
-        telemetry.log().add("Knocking Partner's Mineral = X/Y");
+        telemetry.log().add("Knock Partner's Mineral Yes / No= Y/X");
         telemetry.log().add("Press Start to exit setup.");
 
         boolean settingUp = true;
@@ -112,9 +113,9 @@ abstract public class MasterAutonomous extends MasterOpMode
                 isAllianceCraterFinal = false;
 
             // Decide whether we want to knock off partner's mineral.
-            if(driver1.isButtonJustPressed(Button.X))
+            if(driver1.isButtonJustPressed(Button.Y))
                 knockPartnerMineral = true;
-            else if (driver1.isButtonJustPressed(Button.Y))
+            else if (driver1.isButtonJustPressed(Button.X))
                 knockPartnerMineral = false;
 
             // Select alliance.  We restrict our time delay from 0 to 10 seconds.
@@ -186,11 +187,28 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
 
-    // Specialized method for driving the robot in autonomous
+    // Specialized method for driving the robot in autonomous.  Also uses imu to ensure robot drives straight.
     void moveRobot(double driveAngle, double drivePower, double pause) throws InterruptedException
     {
-        driveMecanum(driveAngle, drivePower, 0.0);
-        pauseWhileUpdating(pause);
+        double headingDiff = 0;
+        double rotationPower;
+        double initHeading = getAngularOrientationWithOffset();
+        ElapsedTime timer = new ElapsedTime();
+
+        while (((timer.seconds() < pause) || (headingDiff > Constants.ANGLE_TOLERANCE_DEG)) && opModeIsActive())
+        {
+            // Calculate how far off robot is from its initial heading
+            headingDiff = normalizeRotationTarget(getAngularOrientationWithOffset(), initHeading);
+            // Additional factor is necessary to ensure turning power is large enough
+            rotationFilter.roll(-1.5 * headingDiff);
+            rotationPower = rotationFilter.getFilteredValue();
+
+            if (timer.seconds() >= pause)
+                drivePower = 0;
+
+            driveMecanum(driveAngle, drivePower, rotationPower);
+        }
+
         stopDriveMotors();
     }
 
@@ -227,7 +245,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Check to see if robot has arrived at destination within tolerances
-        while (((distanceToTarget > Constants.POSITION_TOLERANCE_MM) || (headingDiff > Constants.ANGLE_TOLERANCE_DEG))&& opModeIsActive())
+        while (((distanceToTarget > Constants.POSITION_TOLERANCE_MM) || (headingDiff > Constants.ANGLE_TOLERANCE_DEG)) && opModeIsActive())
         {
             deltaX = initDeltaX - Constants.MM_PER_ANDYMARK_TICK * (-motorFL.getCurrentPosition() +
                     motorBL.getCurrentPosition() - motorFR.getCurrentPosition() + motorBR.getCurrentPosition()) / (4 * Math.sqrt(2));

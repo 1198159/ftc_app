@@ -122,6 +122,7 @@ abstract public class MasterOpMode extends LinearOpMode
             motorFR.setPower(0);
 
             servoMarker = hardwareMap.servo.get("servoMarker");
+            servoMarker.setPosition(Constants.SERVO_MARKER_RETRACTED);
             //-------------------------------------------------------------------
         }
         if (isHangerAttached)

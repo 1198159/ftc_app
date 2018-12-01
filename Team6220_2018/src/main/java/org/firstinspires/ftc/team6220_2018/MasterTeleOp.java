@@ -50,7 +50,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorCollector.setPower(0);
 
         // Operate arm.
-        motorArm.setPower(stickCurve.getOuput(driver2.getRightStickY()));
+        motorArm.setPower(-stickCurve.getOuput(driver2.getRightStickY()));
         //telemetry.addData("Arm Position: ", motorArm.getCurrentPosition());
         //telemetry.update();
     }
