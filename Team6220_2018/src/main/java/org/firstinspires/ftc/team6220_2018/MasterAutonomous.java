@@ -195,7 +195,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         double initHeading = getAngularOrientationWithOffset();
         ElapsedTime timer = new ElapsedTime();
 
-        while (((timer.seconds() < pause) || (headingDiff > Constants.ANGLE_TOLERANCE_DEG)) && opModeIsActive())
+        while (((timer.seconds() < pause) || (headingDiff > 2*Constants.ANGLE_TOLERANCE_DEG)) && opModeIsActive())
         {
             // Calculate how far off robot is from its initial heading
             headingDiff = normalizeRotationTarget(getAngularOrientationWithOffset(), initHeading);
@@ -336,17 +336,17 @@ abstract public class MasterAutonomous extends MasterOpMode
         if (goldLocation == sampleFieldLocations.left)
         {
             mineralShift = -Constants.MINERAL_SHIFT;
-            //turnShift = -30;
+            turnShift = -30;
         }
         else if (goldLocation == sampleFieldLocations.right)
         {
             mineralShift = Constants.MINERAL_SHIFT;
-            //turnShift = 30;
+            turnShift = 30;
         }
         else
         {
             mineralShift = 0;
-            //turnShift = 0;
+            turnShift = 0;
         }
 
         driveToPosition(mineralShift, Constants.MINERAL_FORWARD, 1.0);

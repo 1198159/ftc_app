@@ -11,6 +11,8 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean slowMode = false;
     // Allows us to switch front of robot.
     boolean driveReversed = true;
+    // Allows us to switch front of robot.
+    boolean hangServoDeployed = false;
 
     // Factor that adjusts magnitudes of vertical and horizontal movement.
     double tFactor = Constants.T_FACTOR;
@@ -28,10 +30,16 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorHanger.setPower(0.0);
 
         // Toggle hanger servo
-        if (driver1.isButtonJustPressed(Button.X))
+        if (driver1.isButtonJustPressed(Button.B) && !hangServoDeployed)
+        {
             servoHanger.setPosition(Constants.SERVO_HANG_DEPLOYED);
-        else if (driver1.isButtonJustPressed(Button.B))
+            hangServoDeployed = true;
+        }
+        else if (driver1.isButtonJustPressed(Button.B) && hangServoDeployed)
+        {
             servoHanger.setPosition(Constants.SERVO_HANG_RETRACTED);
+            hangServoDeployed = false;
+        }
 
         //telemetry.addData("Trigger val Right: ", driver1.getRightTriggerValue());
         //telemetry.addData("Trigger val Left: ", driver1.getLeftTriggerValue());
@@ -45,12 +53,12 @@ abstract public class MasterTeleOp extends MasterOpMode
         if (driver2.isButtonPressed(Button.DPAD_DOWN))
             motorCollector.setPower(0.9);
         else if (driver2.isButtonPressed(Button.DPAD_UP))
-            motorCollector.setPower(-0.9);
+            motorCollector.setPower(-0.6);
         else
             motorCollector.setPower(0);
 
         // Operate arm.
-        motorArm.setPower(-stickCurve.getOuput(driver2.getRightStickY()));
+        motorArm.setPower(-0.2 * stickCurve.getOuput(driver2.getRightStickY()));
         //telemetry.addData("Arm Position: ", motorArm.getCurrentPosition());
         //telemetry.update();
     }

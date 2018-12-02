@@ -26,7 +26,7 @@ public class AutoCompetition extends MasterAutonomous
         // Crater-------------------------------------------------------------------------------
         if (isCraterStart)
         {
-            //dropRobotAndUnlatch();
+            dropRobotAndUnlatch();
 
             // Detect minerals
             identifyGold();
@@ -48,18 +48,37 @@ public class AutoCompetition extends MasterAutonomous
                 knockPartnerMineral();
                 turnTo(135,1.0);
 
-                // Align with wall and drive backward into crater.
-                moveRobot(0.0,0.7,0.7);
-                driveToPosition(0, -1750, 1.0);
+                if(!knockPartnerMineral)
+                {
+                    // Drive backward, align with wall, and drive rest of way into crater.
+                    driveToPosition(0, -400, 1.0);
+                    moveRobot(0.0,0.6,1.0);
+                    driveToPosition(0, -1550, 1.0);
+                }
+                else
+                {
+                    moveRobot(0.0,0.7,1.6);
+                    driveToPosition(0, -1950, 1.0);
+                }
             }
             else
             {
                 knockPartnerMineral();
                 turnTo(45, 1.0);
 
-                // Align with wall and drive backward into crater.
-                moveRobot(180.0,0.7,0.7);
-                driveToPosition(0, -1900, 1.0);
+                if(!knockPartnerMineral)
+                {
+                    // Drive backward, align with wall, and drive rest of way into crater.
+                    driveToPosition(0, -400, 1.0);
+                    moveRobot(180.0, 0.6, 1.0);
+                    driveToPosition(0, -1550, 1.0);
+                }
+                else
+                {
+                    moveRobot(180.0, 0.7, 1.6);
+                    driveToPosition(0, -1500, 1.0);
+                }
+
             }
         }
         // Depot--------------------------------------------------------------------------------
@@ -75,28 +94,29 @@ public class AutoCompetition extends MasterAutonomous
 
             // Turn toward depot and drive into it; change turn angle based on the location of the gold mineral.
             turnTo(turnShift, 1.0);
-            driveToPosition(0,980 ,0.7);
+            driveToPosition(0,890 ,0.7);
 
             // Park in either our alliance's or opponents' crater, depending on setup input.
             if(isAllianceCraterFinal)
             {
-                turnTo(45, 1.0);
+                //turnTo(0, 1.0);
                 dropOffMarker();
+                turnTo(45,1.0);
 
                 // Drive backward, align with wall, and drive rest of way into crater.
-                driveToPosition(0, -1000, 1.0);
-                moveRobot(0.0,0.6,0.4);
-                driveToPosition(0, -750, 1.0);
+                driveToPosition(0, -450, 1.0);
+                moveRobot(0.0,0.6,1.0);
+                driveToPosition(0, -1500, 1.0);
             }
             else
             {
-                turnTo(-45, 1.0);
                 dropOffMarker();
+                turnTo(-45, 1.0);
 
                 // Drive backward, align with wall, and drive rest of way into crater.
-                driveToPosition(0, -1000, 1.0);
+                driveToPosition(0, -450, 1.0);
                 moveRobot(180.0,0.6,1.0);
-                driveToPosition(0, -900, 1.0);
+                driveToPosition(0, -1500, 1.0);
             }
         }
         // -------------------------------------------------------------------------------------
@@ -134,27 +154,45 @@ public class AutoCompetition extends MasterAutonomous
         {
             if (goldLocation == sampleFieldLocations.right)
             {
-                turnTo(135, 1.0);
+                turnTo(125, 1.0);
                 // Drive forward to hit mineral and return to original position.
-                driveToPosition(0, -500, 1.0);
-                driveToPosition(0, 500, 1.0);
+                driveToPosition(0, -750, 1.0);
+                if(!isAllianceCraterFinal)
+                {
+                    driveToPosition(0, 300, 1.0);
+                }
+                else
+                {
+                    driveToPosition(0, 200, 1.0);
+                }
             }
             else if (goldLocation == sampleFieldLocations.left)
             {
-                turnTo(45, 1.0);
+                turnTo(60, 1.0);
                 // Drive forward to hit mineral and return to original position.
-                driveToPosition(0, -500, 1.0);
-                driveToPosition(0, 500, 1.0);
+                driveToPosition(0, -750, 1.0);
+                if(!isAllianceCraterFinal)
+                {
+                    driveToPosition(0, 300, 1.0);
+                }
+                else
+                {
+                    driveToPosition(0, 200, 1.0);
+                }
             }
             else if (goldLocation == sampleFieldLocations.center)
             {
                 // Drive forward to hit mineral and return to original position.
-                driveToPosition(0, -300, 1.0);
-                driveToPosition(0, 300, 1.0);
+                driveToPosition(0, -720, 1.0);
+                if(!isAllianceCraterFinal)
+                {
+                    driveToPosition(0, 300, 1.0);
+                }
+                else
+                {
+                    driveToPosition(0, 200, 1.0);
+                }
             }
-
-
-
         }
     }
 
@@ -171,15 +209,15 @@ public class AutoCompetition extends MasterAutonomous
     private void driveToDepotDropMarker() throws InterruptedException
     {
         // Drive forward; we change this value based on where the gold mineral was.
-        driveToPosition(0, 1250 + mineralShift, 1.0);
+        driveToPosition(0, 1249 + mineralShift, 1.0);
         turnTo(135,1.0);
         // Align robot with wall.
-        moveRobot(0.0,0.7,0.5);
+        moveRobot(0.0,1.0,0.3);
         // Drive forward.
-        driveToPosition(0,1050,1.0);
+        driveToPosition(0,1200,1.0);
 
         // Move robot away from wall.
-        driveToPosition(-250,0,1.0);
+        driveToPosition(-130,0,1.0);
         // Turn robot toward corner and drop marker.
         turnTo(90,1.0);
         dropOffMarker();
