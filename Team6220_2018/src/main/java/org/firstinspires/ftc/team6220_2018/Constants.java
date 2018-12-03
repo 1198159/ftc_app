@@ -81,9 +81,10 @@ public class Constants
     public static final int HANG_UNLATCH_POSITION = 180;
     public static final int HANG_GROUND_UNLATCH = -2950;
      // Drivetrain
-    public static final int MINERAL_SHIFT = 440;
-    public static final int MINERAL_FORWARD = 750;
-    public static final int MINERAL_BACKWARD = 300;
+    public static final int MINERAL_SHIFT = 520;
+    public static final int CRATER_SHIFT = 150;
+    public static final int MINERAL_FORWARD = 720;
+    public static final int MINERAL_BACKWARD = 350;
     //-------------------------------------------------
 
 

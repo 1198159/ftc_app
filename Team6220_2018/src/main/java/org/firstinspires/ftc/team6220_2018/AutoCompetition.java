@@ -58,9 +58,10 @@ public class AutoCompetition extends MasterAutonomous
                 else
                 {
                     moveRobot(0.0,0.7,1.6);
-                    driveToPosition(0, -1950, 1.0);
+                    driveToPosition(0, -1600 - craterShift, 1.0);
                 }
             }
+            //opposing crater
             else
             {
                 knockPartnerMineral();
@@ -76,7 +77,7 @@ public class AutoCompetition extends MasterAutonomous
                 else
                 {
                     moveRobot(180.0, 0.7, 1.6);
-                    driveToPosition(0, -1500, 1.0);
+                    driveToPosition(0, -1600 + craterShift, 1.0);
                 }
 
             }
@@ -214,7 +215,7 @@ public class AutoCompetition extends MasterAutonomous
         // Align robot with wall.
         moveRobot(0.0,1.0,0.3);
         // Drive forward.
-        driveToPosition(0,1200,1.0);
+        driveToPosition(0,1150,1.0);
 
         // Move robot away from wall.
         driveToPosition(-130,0,1.0);

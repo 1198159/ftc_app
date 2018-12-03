@@ -51,7 +51,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     {
         // Collect and eject minerals.  Buttons have to be held to power collector.
         if (driver2.isButtonPressed(Button.DPAD_DOWN))
-            motorCollector.setPower(0.9);
+            motorCollector.setPower(0.8);
         else if (driver2.isButtonPressed(Button.DPAD_UP))
             motorCollector.setPower(-0.6);
         else

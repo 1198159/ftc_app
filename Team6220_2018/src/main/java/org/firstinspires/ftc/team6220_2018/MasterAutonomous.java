@@ -31,6 +31,8 @@ abstract public class MasterAutonomous extends MasterOpMode
      // How long we want to wait before we start the match.
     public int matchDelay = 0;
 
+    public int craterShift = 0;
+
     // Stores orientation of robot
     double currentAngle = 0.0;
 
@@ -337,11 +339,13 @@ abstract public class MasterAutonomous extends MasterOpMode
         {
             mineralShift = -Constants.MINERAL_SHIFT;
             turnShift = -30;
+            craterShift = Constants.CRATER_SHIFT;
         }
         else if (goldLocation == sampleFieldLocations.right)
         {
             mineralShift = Constants.MINERAL_SHIFT;
             turnShift = 30;
+            craterShift = -Constants.CRATER_SHIFT;
         }
         else
         {
