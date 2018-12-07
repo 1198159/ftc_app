@@ -134,7 +134,12 @@ abstract class MasterTeleOp extends Master
 
         //RUN SUCC
         // inverted because y is inverted on the stick (up is negative)
-        motorSucc.setPower(-gamepad2.right_stick_y);
+        if(Math.abs(gamepad2.right_stick_y) > 0)
+            motorSucc.setPower(-gamepad2.right_stick_y);
+        else if(Math.abs(gamepad2.left_stick_y) > 0)
+            motorSucc.setPower(-gamepad2.left_stick_y * 0.15);
+        else
+            motorSucc.setPower(0.0);
 
         //RUN PUSH
         if(gamepad2.dpad_up)

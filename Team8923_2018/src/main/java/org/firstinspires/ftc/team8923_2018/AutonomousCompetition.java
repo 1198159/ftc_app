@@ -50,11 +50,14 @@ public class AutonomousCompetition extends MasterAutonomous
                             imuPivot(referenceAngle, -45, 0.5, 0.015, 3.0);
                             moveAuto(0, -720, 0.5, 0.3, 3.0);
                             moveAuto(-125, 0, 0.5, 0.3, 3.0);//was -125
+                            imuPivot(referenceAngle, -90, 0.5, 0.015, 3.0);
                             dropJJ();
+                            sleep(500);
+                            imuPivot(referenceAngle, -45, 0.5, 0.015, 3.0);
                             sleep(900);
-                            moveAuto(0, 500, 1.0, 0.3, 3.0);
+                            moveAuto(0, 650, 1.0, 0.3, 3.0);
                             moveAuto(450, 0, 0.3, 0.3, 3.0);
-                            moveAuto(0, 1400, 1.0, 0.3, 3.0);
+                            moveAuto(0, 1250, 1.0, 0.3, 3.0);
                             break;
 
                         }
