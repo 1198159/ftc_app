@@ -20,8 +20,8 @@ public class RevServoTest extends LinearOpMode
     double curExtendPos1 = 0.0;
     double curExtendPos2 = 0.0;
 
-    double rev1pos;
-    double rev2pos;
+    double rev1pos = 0.02;
+    double rev2pos = 0.98;
 
     public void runOpMode()
     {
@@ -104,8 +104,9 @@ public class RevServoTest extends LinearOpMode
                 arm1.setPower(0.0);
                 arm2.setPower(0.0);
             }
-            telemetry.addData("rev1",rev1pos);
-            telemetry.addData("rev2",rev2pos);
+            telemetry.addData("rev1", rev1.getPosition());
+            telemetry.addData("rev2", rev1.getPosition());
+            telemetry.update();
         }
     }
 }
