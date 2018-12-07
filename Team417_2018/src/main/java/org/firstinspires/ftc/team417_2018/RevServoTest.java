@@ -63,22 +63,22 @@ public class RevServoTest extends LinearOpMode
             // control REV smart servos
             if(gamepad1.dpad_up)
             {
-                rev1pos ++;
+                rev1pos += 0.01;
             }
             else if (gamepad1.dpad_down)
             {
-                rev1pos--;
+                rev1pos -= 0.01;
             }
             rev1.setPosition(rev1pos);
             rev2.setPosition(rev2pos);
 
             if(gamepad1.dpad_right)
             {
-                rev2pos ++;
+                rev2pos += 0.01;
             }
             else if (gamepad1.dpad_left)
             {
-                rev2pos--;
+                rev2pos -= 0.01;
             }
 
             // control core hex motors
@@ -104,8 +104,8 @@ public class RevServoTest extends LinearOpMode
                 arm1.setPower(0.0);
                 arm2.setPower(0.0);
             }
-            telemetry.addData("core1",curExtendPos1);
-            telemetry.addData("core2",curExtendPos2);
+            telemetry.addData("rev1",rev1pos);
+            telemetry.addData("rev2",rev2pos);
         }
     }
 }
