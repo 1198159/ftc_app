@@ -205,11 +205,11 @@ abstract public class MasterTeleOp extends MasterOpMode
             arm1.setPower(gamepad2.right_stick_y);
             arm2.setPower(-gamepad2.right_stick_y);
         }
-        /* else if (gamepad2.right_stick_y != 0 && gamepad2.dpad_left)
+        else if (gamepad2.right_stick_y != 0 && gamepad2.dpad_left)
         {
             arm1.setPower(Range.clip(gamepad2.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER));
             arm2.setPower(Range.clip(-gamepad2.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER));
-        } */
+        }
         else
         {
             arm1.setPower(0.0);

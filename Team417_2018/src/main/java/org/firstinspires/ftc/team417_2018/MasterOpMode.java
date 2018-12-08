@@ -73,7 +73,25 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBR = hardwareMap.dcMotor.get("motorBR");
         marker = hardwareMap.servo.get("marker");
 
+        core1 = hardwareMap.dcMotor.get("core1");
+        core2 = hardwareMap.dcMotor.get("core2");
 
+        arm1 = hardwareMap.dcMotor.get("arm1");
+        arm2 = hardwareMap.dcMotor.get("arm2");
+
+        hanger = hardwareMap.crservo.get("hanger");
+
+        core1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        core2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        core1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        core2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        arm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
