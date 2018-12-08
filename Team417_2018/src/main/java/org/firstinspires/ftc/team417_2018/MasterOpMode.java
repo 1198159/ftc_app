@@ -24,8 +24,13 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorLift = null;
     Servo marker = null; // Hub 2, port 5
 
-    // DcMotor motorLiftLeft = null;
-    // DcMotor motorLiftRight = null;
+    CRServo hanger = null; // hub 2 port 5
+
+    DcMotor core1 = null; // hub 1 port 3
+    DcMotor core2 = null; // hub 2 port 3
+
+    DcMotor arm1 = null; // hub 1 port 4
+    DcMotor arm2 = null; // hub 2 port 4
 
     // Declare sensors
     BNO055IMU imu; // inertial measurement unit (located within the REV Hub)
@@ -66,14 +71,9 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorLift = hardwareMap.dcMotor.get("motorLift");
         marker = hardwareMap.servo.get("marker");
 
 
-
-        motorLift.setDirection(DcMotor.Direction.REVERSE);
-
-        motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -90,7 +90,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      //  motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // reverse front and back right motors just for TeleOp
         motorFL.setDirection(DcMotor.Direction.REVERSE);
@@ -106,23 +106,17 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL.setPower(0);
         motorBR.setPower(0);
 
-        marker.setPosition(MARKER_LOW);
-        motorLift.setPower(0.0);
-        marker.setPosition(0.0);
+      //  marker.setPosition(MARKER_LOW);
+      //  motorLift.setPower(0.0);
+      //  marker.setPosition(0.0);
 
-        // Set up the parameters with which we will use our IMU. Note that integration
-        // algorithm here just reports accelerations to the logcat log; it doesn't actually
-        // provide positional information.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit            = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit            = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-
-        parameters.loggingEnabled       = true;
-        parameters.loggingTag           = "IMU";
-
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "Adaf'" +
+                "ruitIMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 

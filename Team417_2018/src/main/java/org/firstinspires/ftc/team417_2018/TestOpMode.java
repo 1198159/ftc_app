@@ -14,8 +14,9 @@ public class TestOpMode extends MasterAutonomous {
         telemetry.addData("Init:", "done");
         telemetry.update();
         waitForStart();
-        land();
-        lower();
+
+        double refAngle = imu.getAngularOrientation().firstAngle;
+        pivotWithReference(90, refAngle, 0.2, 0.8);
 
         /*
         move(200, 0, 0.3, 0.7, 1.0);

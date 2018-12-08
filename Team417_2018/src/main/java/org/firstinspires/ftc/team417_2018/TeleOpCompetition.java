@@ -11,6 +11,25 @@ public class TeleOpCompetition extends MasterTeleOp
     {
 
         super.initializeHardware();
+        core1 = hardwareMap.dcMotor.get("core1");
+        core2 = hardwareMap.dcMotor.get("core2");
+
+        arm1 = hardwareMap.dcMotor.get("arm1");
+        arm2 = hardwareMap.dcMotor.get("arm2");
+
+        hanger = hardwareMap.crservo.get("hanger");
+
+        core1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        core2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        core1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        core2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        arm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -23,12 +42,11 @@ public class TeleOpCompetition extends MasterTeleOp
         waitForStart();
 
         while (opModeIsActive())
-        {
-            //tankDrive();
+
             mecanumDrive();
-            runManualLift();
-            updateTelemetry();
+            collector();
             marker();
+            updateTelemetry();
+            idle();
         }
     }
-}

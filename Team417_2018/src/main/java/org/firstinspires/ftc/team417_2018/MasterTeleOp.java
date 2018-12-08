@@ -13,6 +13,8 @@ abstract public class MasterTeleOp extends MasterOpMode
     double y = 0;
     double pivotPower = 0;
 
+    double core1Power;
+    double core2Power;
     final double ADAGIO_POWER = 0.3;
 
     boolean isReverseMode = false;
@@ -24,7 +26,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isRightBumperPushed;
     boolean isStraightDrive;
 
-    int curLiftPos;
+
     int tarGLPos;
 
     AvgFilter filterJoyStickInput = new AvgFilter();
@@ -170,23 +172,61 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorBR.setPower(powerBR);
     }
 
-    void runManualLift()
+    void collector()
     {
-         curLiftPos = motorLift.getCurrentPosition();
-        // Glyph lift up/down
-        if(/*-gamepad2.right_stick_y < 0.0*/ gamepad1.left_bumper) // down
+        // control core hex motors
+        if (gamepad2.right_trigger > 0) // extend the collector
         {
-            //motorLift.setPower(Range.clip(-gamepad2.right_stick_y, -1.0, -0.2));
-            motorLift.setPower(-1.0);
+            core1Power = -gamepad2.right_trigger;
+            core2Power = -gamepad2.right_trigger;
         }
-        else if(/*-gamepad2.right_stick_y > 0.0*/gamepad1.right_bumper) // up
+        else if (gamepad2.left_trigger > 0) // pull the collector in
         {
-            //motorLift.setPower(Range.clip(-gamepad2.right_stick_y, 0.2, 1.0));
-            motorLift.setPower(1.0);
+            core1Power = gamepad2.left_trigger;
+            core2Power = gamepad2.left_trigger;
         }
-        else // turn motors off
+      /*  if (gamepad2.dpad_left)
         {
-            motorLift.setPower(0.0);
+            core1.setPower(Range.clip(core1Power, -0.2, 0.2));
+            core2.setPower(Range.clip(core1Power, -0.2, 0.2));
+        }
+        */
+        else
+        {
+            core1Power = 0.0;
+            core2Power = 0.0;
+        }
+        core1.setPower(core1Power);
+        core2.setPower(core2Power);
+
+        // control AM 3.7 motors
+        if (gamepad2.right_stick_y != 0)
+        {
+            arm1.setPower(gamepad2.right_stick_y);
+            arm2.setPower(-gamepad2.right_stick_y);
+        }
+        /* else if (gamepad2.right_stick_y != 0 && gamepad2.dpad_left)
+        {
+            arm1.setPower(Range.clip(gamepad2.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER));
+            arm2.setPower(Range.clip(-gamepad2.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER));
+        } */
+        else
+        {
+            arm1.setPower(0.0);
+            arm2.setPower(0.0);
+        }
+        // control hanger
+        if (gamepad2.left_bumper)
+        {
+            hanger.setPower(0.99);
+        }
+        else if (gamepad2.right_bumper)
+        {
+            hanger.setPower(-0.99);
+        }
+        else
+        {
+            hanger.setPower(0.0);
         }
     }
 
@@ -194,12 +234,10 @@ abstract public class MasterTeleOp extends MasterOpMode
     {
         marker.setPosition(Range.clip((gamepad2.right_trigger), MARKER_LOW, MARKER_HIGH));
     }
-
     void updateTelemetry()
     {
         telemetry.addData("legato: ", isLegatoMode);
         telemetry.addData("reverse: ", isReverseMode);
-        telemetry.addData("lift motor", curLiftPos);
         telemetry.update();
     }
 }
