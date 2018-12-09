@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.team8923_2018;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 abstract class MasterTeleOp extends Master
 {
@@ -12,16 +11,13 @@ abstract class MasterTeleOp extends Master
     boolean flipped = false;
     boolean justSwitchedFlipModes = true;
 
-    ElapsedTime positiveManualControlTimer = new ElapsedTime();
-    ElapsedTime negativeManualControlTimer = new ElapsedTime();
-
     void driveMecanumTeleOp()
     {
         // Reverse drive if desired
-        /*if(gamepad1.start)
-            reverseDrive(false);
-        if(gamepad1.back)
-            reverseDrive(true);*/
+        if(gamepad1.a)
+            reverseDrive = false;
+        if(gamepad1.y)
+            reverseDrive = true;
 
         if(gamepad1.dpad_down)
             slowModeDivisor = 3.0;
@@ -135,17 +131,21 @@ abstract class MasterTeleOp extends Master
         //RUN SUCC
         // inverted because y is inverted on the stick (up is negative)
         if(Math.abs(gamepad2.right_stick_y) > 0)
-            motorSucc.setPower(-gamepad2.right_stick_y);
+        {
+            // multiplied by 0.85 to restrict the power to a max of 0.85 b/c Vex Motors are weird (possibly PWM funkiness)
+            motorSucc1.setPower(gamepad2.right_stick_y * 0.85);
+            motorSucc2.setPower(-gamepad2.right_stick_y * 0.85); // inverse of above b/c Vex Motor is rotated 180 degrees
+        }
         else if(Math.abs(gamepad2.left_stick_y) > 0)
-            motorSucc.setPower(-gamepad2.left_stick_y * 0.15);
+        {
+            motorSucc1.setPower(gamepad2.left_stick_y * 0.10);
+            motorSucc2.setPower(-gamepad2.left_stick_y * 0.10); // inverse of above b/c Vex Motor is rotated 180 degrees
+        }
         else
-            motorSucc.setPower(0.0);
-
-        //RUN PUSH
-        if(gamepad2.dpad_up)
-            servoFlipSuccPush.setPosition(0.75);
-        else if(gamepad2.dpad_down)
-            servoFlipSuccPush.setPosition(0.10);
+        {
+            motorSucc1.setPower(0.0);
+            motorSucc2.setPower(0.0);
+        }
     }
 
     double calculateDistance(double deltaX, double deltaY)

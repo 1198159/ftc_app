@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team8923_2018;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -16,12 +17,12 @@ abstract class Master extends LinearOpMode
     DcMotor motorLift;
     DcMotor motorDankUnderglow;
     DcMotor motorFlip;
-    DcMotor motorSucc;
+    CRServo motorSucc1;
+    CRServo motorSucc2;
     //DcMotor motorFlip2;
 
     Servo servoJJ;
     Servo servoJJ2;
-    Servo servoFlipSuccPush;
 
     BNO055IMU imu;
 
@@ -47,11 +48,11 @@ abstract class Master extends LinearOpMode
         motorLift = hardwareMap.get(DcMotor.class, "motorLift");
         motorDankUnderglow = hardwareMap.get(DcMotor.class, "motorDankUnderglow");
         motorFlip = hardwareMap.get(DcMotor.class, "motorFlip");
-        motorSucc = hardwareMap.get(DcMotor.class, "motorSucc");
+        motorSucc1 = hardwareMap.get(CRServo.class, "motorSucc1");
+        motorSucc2 = hardwareMap.get(CRServo.class, "motorSucc2");
         //motorFlip2 = hardwareMap.get(DcMotor.class, "motorFlip2");
         servoJJ = hardwareMap.get(Servo.class, "servoJJ");
         servoJJ2 = hardwareMap.get(Servo.class, "servoJJ2");
-        servoFlipSuccPush = hardwareMap.get(Servo.class, "servoFlipSuccPush");
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -72,7 +73,6 @@ abstract class Master extends LinearOpMode
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFlip.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorSucc.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //motorFlip2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         motorFlip.setTargetPosition(motorFlip.getCurrentPosition());
@@ -125,17 +125,6 @@ abstract class Master extends LinearOpMode
         powerBL /= (scalar * slowModeDivisor);
         powerBR /= (scalar * slowModeDivisor);
 
-        // Set motor powers
-        /*if(reverseDrive)
-        {
-            // Drive backwards
-            motorFL.setPower(powerBR);
-            motorFR.setPower(powerBL);
-            motorBL.setPower(powerFR);
-            motorBR.setPower(powerFL);
-            return;
-        }*/
-
         if (!reverseDrive)
         {
             // Drive forwards
@@ -146,7 +135,7 @@ abstract class Master extends LinearOpMode
         }
         else
         {
-            // Drive forwards
+            // Drive backwards
             motorFL.setPower(-powerFL);
             motorFR.setPower(-powerFR);
             motorBL.setPower(-powerBL);
