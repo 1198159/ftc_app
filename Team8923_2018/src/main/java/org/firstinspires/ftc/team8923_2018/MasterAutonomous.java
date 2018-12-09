@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
 import org.opencv.core.Rect;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 abstract class MasterAutonomous extends Master
@@ -44,13 +45,16 @@ abstract class MasterAutonomous extends Master
     StartLocations startLocation = StartLocations.DEPOT;
     boolean doneSettingUp = false;
 
+    ArrayList<Integer> delays = new ArrayList<>();
+    int numDelays = 0;
+
     // these values equal to one over the value (in mm for drive power and degrees for turn power)
     // that you want the PID loop to start limiting the speed at
     //Have to put double so it divides correctly
-    double DRIVE_POWER_CONSTANT = 1.0/250; // start slowing down at 750 millimeters from the target location
-    double TURN_POWER_CONSTANT = 1.0/35; // start slowing down at 35 degrees away from the target angle;
+    double DRIVE_POWER_CONSTANT = 1.0/1000; // start slowing down at 1 meter from the target location
+    double TURN_POWER_CONSTANT = 1.0/65; // start slowing down at 35 degrees away from the target angle;
 
-    double MIN_DRIVE_POWER = 0.3; // don't let the robot go slower than this speed
+    double MIN_DRIVE_POWER = 0.2; // don't let the robot go slower than this speed
     int TOL = 100;
 
     enum Alliance
@@ -73,11 +77,11 @@ abstract class MasterAutonomous extends Master
 
         RED_CRATER_START_X(-341.25),
         RED_CRATER_START_Y(341.25),
-        RED_CRATER_START_ANGLE(135.0),
+        RED_CRATER_START_ANGLE(315.0),
 
         BLUE_CRATER_START_X(341.25),
         BLUE_CRATER_START_Y(341.25),
-        BLUE_CRATER_START_ANGLE(315.0);
+        BLUE_CRATER_START_ANGLE(135.0);
 
         public final double val;
         StartLocations(double i) {val = i;}
@@ -117,6 +121,7 @@ abstract class MasterAutonomous extends Master
         public final double val;
         MineralLocations (double i )  {val = i;}
     }
+    enum Objectives { PARK, LAND, SAMPLE, DROP_TEAM_MARKER; }
 
     //openCV variables
     //We are using openCV to detect the location of the gold object.
@@ -237,6 +242,8 @@ abstract class MasterAutonomous extends Master
 
     public void configureAutonomous()
     {
+        // waste the zero index because we can't have zero delays
+        delays.add(0);
         while(!doneSettingUp)
         {
             if(gamepad1.x)
@@ -246,16 +253,62 @@ abstract class MasterAutonomous extends Master
                 alliance = Alliance.RED;
                 // means we are red alliance
 
-            if(gamepad1.dpad_up)
+            //means we are crater side
+            if(gamepad1.dpad_left)
             {
                 startLocation = StartLocations.CRATER;
             }
-                //means we are crater side
-            else if (gamepad1.dpad_down)
+            //means we are depot side
+            else if (gamepad1.dpad_right)
             {
                 startLocation = StartLocations.DEPOT;
             }
-                //means we are depot side
+
+            /*if(gamepad1.dpad_up)
+            {
+                numDelays++;
+                delays.add(1);
+                boolean customizingTime = true;
+
+                while (!buttonsAreReleased(gamepad1))
+                {
+                    telemetry.update();
+                    idle();
+                }
+
+                while(customizingTime)
+                {
+                    if(gamepad1.dpad_up)
+                        delays.set(numDelays, delays.get(numDelays) + 1);
+                    else if(gamepad1.dpad_down && delays.get(numDelays) >= 0)
+                        delays.set(numDelays, delays.get(numDelays) - 1);
+                    if(delays.get(numDelays) == 0)
+                    {
+                        delays.remove(numDelays);
+                        numDelays--;
+                        customizingTime = false;
+                    }
+                    if(gamepad1.a)
+                        customizingTime = false;
+                    else if (gamepad1.start)
+                    {
+                        customizingTime = false;
+                        doneSettingUp = true;
+                    }
+
+                    while (!buttonsAreReleased(gamepad1))
+                    {
+                        telemetry.update();
+                        idle();
+                    }
+
+                    telemetry.addData("Delay Number", numDelays);
+                    telemetry.addLine("Delay Increase/Decrease: Dpad Up / Down ");
+                    telemetry.addLine("Press 'A' to confirm");
+                    telemetry.addData("delay time", delays.get(numDelays));
+                    telemetry.update();
+                }
+            }*/
 
             if(gamepad1.start)
                 doneSettingUp = true;
@@ -268,13 +321,18 @@ abstract class MasterAutonomous extends Master
 
             // input information
             telemetry.addLine("Alliance Blue/Red: X/B");
-            telemetry.addLine("Starting Position Crater/Depot: D-Pad Up/Down");
+            telemetry.addLine("Starting Position Crater/Depot: D-Pad Left/Right");
+            //telemetry.addLine("Add a delay: D-Pad Up");
             telemetry.addLine("");
             telemetry.addLine("After routine is complete and robot is on field, press Start");
+            telemetry.addLine();
 
             // setup data
             telemetry.addData("Alliance", alliance.name());
             telemetry.addData("Side", startLocation.name());
+            if(numDelays> 0)
+                for (int i = 1; i < delays.size(); i++)
+                    telemetry.addData("delay " + String.valueOf(i), delays.get(i));
             telemetry.update();
 
             idle();
@@ -432,7 +490,7 @@ abstract class MasterAutonomous extends Master
     }
 
     // Makes robot drive to a point on the field
-    void driveToPoint(double targetX, double targetY, double targetAngle, double maxPower) throws InterruptedException
+    void driveToPoint(double targetX, double targetY, double targetAngle) throws InterruptedException
     {
         updateRobotLocation();
 
@@ -448,14 +506,15 @@ abstract class MasterAutonomous extends Master
             updateRobotLocation();
 
             // In case robot drifts to the side
-            double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - 90 - robotAngle;
+            //TODO: ISSUE IN THIS CALCULATION (BEHAVIOUR: DRIVE ANGLE DRIFTS CONISITENTLY NEGATIVE WHILE RUNNING)
+            double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
 
             // Decrease power as robot approaches target. Ensure it doesn't exceed power limits
-            double drivePower = Range.clip(distanceToTarget * DRIVE_POWER_CONSTANT, MIN_DRIVE_POWER, maxPower);
+            double drivePower = Range.clip(distanceToTarget * DRIVE_POWER_CONSTANT, MIN_DRIVE_POWER, 0.3);
 
             // In case the robot turns while driving
             deltaAngle = subtractAngles(targetAngle, robotAngle);
-            double turnPower = deltaAngle * TURN_POWER_CONSTANT;
+            double turnPower = -deltaAngle * TURN_POWER_CONSTANT;
 
             // Set drive motor powers
             driveMecanum(driveAngle, drivePower, turnPower);
@@ -464,6 +523,10 @@ abstract class MasterAutonomous extends Master
             distanceToTarget = calculateDistance(targetX - robotX, targetY - robotY);
 
             idle();
+
+            telemetry.addData("driveAngle", driveAngle);
+            telemetry.addData("drivePower", drivePower);
+            telemetry.addData("turnPower", turnPower);
 
             sendTelemetry();
         }
@@ -505,7 +568,8 @@ abstract class MasterAutonomous extends Master
     void updateRobotLocation()
     {
         // Update robot angle
-        robotAngle = headingOffset + imu.getAngularOrientation().firstAngle;
+        // subtraction here b/c imu returns a negative rotation when turned to the right
+        robotAngle = headingOffset - imu.getAngularOrientation().firstAngle;
 
         // Calculate how far each motor has turned since last time
         int deltaFL = motorFL.getCurrentPosition() - lastEncoderFL;
@@ -522,6 +586,7 @@ abstract class MasterAutonomous extends Master
         telemetry.addData("deltaY", deltaY);
 
         // Convert to mm
+        //TODO: maybe wrong proportions? something about 70/30 effectiveness mayeb translation to MM is wrong
         deltaX *= MM_PER_TICK;
         deltaY *= MM_PER_TICK;
 
@@ -531,9 +596,9 @@ abstract class MasterAutonomous extends Master
          * total extrinsic components of displacement. The extrinsic displacement components
          * are then added to the previous position to set the new coordinates
          */
-        robotX += (Math.cos(Math.toRadians(90 + robotAngle)) * deltaY) - (Math.sin(Math.toRadians(robotAngle)) * deltaX);
-        robotY += (Math.sin(Math.toRadians(90 + robotAngle)) * deltaY) - (Math.cos(Math.toRadians(robotAngle)) * deltaX);
 
+        robotX += deltaX * Math.sin(Math.toRadians(robotAngle)) + deltaY * Math.cos(Math.toRadians(robotAngle));
+        robotY += deltaX * -Math.cos(Math.toRadians(robotAngle)) + deltaY * Math.sin(Math.toRadians(robotAngle));
 
         // Set last encoder values for next loop
         lastEncoderFL = motorFL.getCurrentPosition();

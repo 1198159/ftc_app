@@ -104,6 +104,9 @@ abstract class Master extends LinearOpMode
          * how the motor powers are set. Turning is like standard tank drive.
          */
         // Set motor powers
+        if(reverseDrive)
+            turnPower = -turnPower;
+
         double powerFL = y + x - turnPower;
         double powerFR = y - x + turnPower;
         double powerBL = y - x - turnPower;
