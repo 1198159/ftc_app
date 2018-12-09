@@ -71,8 +71,12 @@ public class Constants
     // Servo positions--------------------------------
     public static final double SERVO_HANG_DEPLOYED = 0.6;
     public static final double SERVO_HANG_RETRACTED = 0.25;
+
     public static final double SERVO_MARKER_DEPLOYED = 1.0;
     public static final double SERVO_MARKER_RETRACTED = 0.17;
+
+    public static final double MOTOR_COLLECTOR_IN = 0.85;
+    public static final double MOTOR_COLLECTOR_OUT = -0.85;
     //-------------------------------------------------
 
 

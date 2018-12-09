@@ -51,14 +51,14 @@ abstract public class MasterTeleOp extends MasterOpMode
     {
         // Collect and eject minerals.  Buttons have to be held to power collector.
         if (driver2.isButtonPressed(Button.DPAD_DOWN))
-            motorCollector.setPower(0.8);
+            motorCollector.setPower(Constants.MOTOR_COLLECTOR_IN);
         else if (driver2.isButtonPressed(Button.DPAD_UP))
-            motorCollector.setPower(-0.6);
+            motorCollector.setPower(Constants.MOTOR_COLLECTOR_OUT);
         else
             motorCollector.setPower(0);
 
         // Operate arm.
-        motorArm.setPower(-0.2 * stickCurve.getOuput(driver2.getRightStickY()));
+        motorArm.setPower(-0.3 * stickCurve.getOuput(driver2.getRightStickY()));
         //telemetry.addData("Arm Position: ", motorArm.getCurrentPosition());
         //telemetry.update();
     }
