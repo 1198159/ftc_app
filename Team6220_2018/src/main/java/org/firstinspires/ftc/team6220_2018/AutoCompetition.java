@@ -35,7 +35,7 @@ public class AutoCompetition extends MasterAutonomous
             knockGold(goldLocation);
 
             // Drive backward a small amount
-            driveToPosition(0,-Constants.MINERAL_BACKWARD,0.5);
+            driveToPosition(0,-Constants.MINERAL_BACKWARD,1.0);
 
             // Turn 90 deg ccw
             turnTo(90,1.0);
@@ -95,7 +95,7 @@ public class AutoCompetition extends MasterAutonomous
 
             // Turn toward depot and drive into it; change turn angle based on the location of the gold mineral.
             turnTo(turnShift, 1.0);
-            driveToPosition(0,890 ,0.7);
+            driveToPosition(0,890 ,1.0);
 
             // Park in either our alliance's or opponents' crater, depending on setup input.
             if(isAllianceCraterFinal)
@@ -141,10 +141,10 @@ public class AutoCompetition extends MasterAutonomous
         // position.
         motorHanger.setTargetPosition(Constants.HANG_GROUND_UNLATCH);
         motorHanger.setPower(1.0);
-        driveToPosition(80,0,0.7);
+        driveToPosition(80,0,1.0);
         motorHanger.setTargetPosition(0);
         motorHanger.setPower(1.0);
-        driveToPosition(-80,0,0.7);
+        driveToPosition(-80,0,1.0);
     }
 
     // Allows us to score alliance partner's mineral.
