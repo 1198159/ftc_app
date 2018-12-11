@@ -350,18 +350,23 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     public void land()
     {
-        /*
         do
         {
-            curLiftPos = motorLift.getCurrentPosition();
-            motorLift.setPower(0.95);
+            curLiftPos = arm1.getCurrentPosition();
+            arm1.setPower(-0.2);
+            arm2.setPower(0.2);
         }
-        while (curLiftPos<18500); //27900
-        motorLift.setPower(0.0);
-        */
-        motorLift.setPower(0.95);
-        sleep(7800);
-        motorLift.setPower(0.0);
+        while (curLiftPos > -980);
+        arm1.setPower(0.0);
+        arm2.setPower(0.0);
+        hanger.setPower(0.99);
+        sleep(7600);
+        hanger.setPower(0.0);
+    }
+    public void unhook()
+    {
+        hanger.setPower(0.99);
+        sleep(3500);
     }
 
     public void lower() // only use this after you raise the lift mechanism, or call the land() method
