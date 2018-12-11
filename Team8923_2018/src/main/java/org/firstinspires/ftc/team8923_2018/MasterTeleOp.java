@@ -14,9 +14,9 @@ abstract class MasterTeleOp extends Master
     void driveMecanumTeleOp()
     {
         // Reverse drive if desired
-        if(gamepad1.a)
+        if(gamepad1.right_stick_button)
             reverseDrive = false;
-        if(gamepad1.y)
+        if(gamepad1.left_stick_button)
             reverseDrive = true;
 
         if(gamepad1.dpad_down)
@@ -138,8 +138,8 @@ abstract class MasterTeleOp extends Master
         }
         else if(Math.abs(gamepad2.left_stick_y) > 0)
         {
-            motorSucc1.setPower(gamepad2.left_stick_y * 0.10);
-            motorSucc2.setPower(-gamepad2.left_stick_y * 0.10); // inverse of above b/c Vex Motor is rotated 180 degrees
+            motorSucc1.setPower(gamepad2.left_stick_y * 0.425);
+            motorSucc2.setPower(-gamepad2.left_stick_y * 0.425); // inverse of above b/c Vex Motor is rotated 180 degrees
         }
         else
         {
