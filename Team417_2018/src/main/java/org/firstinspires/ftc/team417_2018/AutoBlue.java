@@ -125,9 +125,9 @@ public class AutoBlue extends MasterAutonomous
                 sleep(200);
                 marker.setPosition(MARKER_HIGH); // drop the marker
                 pivotWithReference(45, refAngle, 0.2,0.75); // face the crater
-                move(65, 0, 0.2, 0.7, 1.0); // go closer to the wall
+                move(100, 0, 0.2, 0.7, 1.0); // go closer to the wall
                 sleep(100);
-                move(-10, -1000, 0.3, 0.7, 3.0);
+                move(10, -1000, 0.3, 0.7, 3.0);
             }
             else if (isRightGold)
             {
@@ -137,8 +137,10 @@ public class AutoBlue extends MasterAutonomous
                 moveTimed(0.55, 1200); // go into depot
                 sleep(200);
                 marker.setPosition(MARKER_HIGH); // drop the marker
-                pivotWithReference(39, refAngle, 0.2,0.75); // face the crater
-                move(0, -1000, 0.3, 0.7, 3.0);
+                pivotWithReference(41, refAngle, 0.2,0.75); // face the crater
+                move(100, 0, 0.2, 0.7, 1.0); // go closer to the wall
+                sleep(100);
+                move(10, -1000, 0.3, 0.7, 3.0);
             }
             else if (isCenterGold)
             {
@@ -147,7 +149,9 @@ public class AutoBlue extends MasterAutonomous
                 move(50, 0, 0.2, 0.7, 1.0); // go closer to the wall
                 marker.setPosition(MARKER_HIGH); // drop the marker
                 pivotWithReference(42, refAngle, 0.2,0.75); // face the crater
-                move(0, -1000, 0.3, 0.7, 3.0);
+                move(90, 0, 0.2, 0.7, 1.0); // go closer to the wall
+                sleep(100);
+                move(10, -1000, 0.3, 0.7, 3.0);
             }
             sleep(1000);
             lower();

@@ -26,6 +26,8 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isRightBumperPushed;
     boolean isStraightDrive;
 
+    int arm1pos = 0;
+
 
     int tarGLPos;
 
@@ -175,6 +177,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     void collector()
     {
         // control core hex motors
+        /*
         if (gamepad2.right_trigger > 0) // extend the collector
         {
             core1Power = -gamepad2.right_trigger;
@@ -185,12 +188,6 @@ abstract public class MasterTeleOp extends MasterOpMode
             core1Power = gamepad2.left_trigger;
             core2Power = gamepad2.left_trigger;
         }
-      /*  if (gamepad2.dpad_left)
-        {
-            core1.setPower(Range.clip(core1Power, -0.2, 0.2));
-            core2.setPower(Range.clip(core1Power, -0.2, 0.2));
-        }
-        */
         else
         {
             core1Power = 0.0;
@@ -198,23 +195,21 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         core1.setPower(core1Power);
         core2.setPower(core2Power);
+        */
 
         // control AM 3.7 motors
         if (gamepad2.right_stick_y != 0)
         {
-            arm1.setPower(gamepad2.right_stick_y);
-            arm2.setPower(-gamepad2.right_stick_y);
-        }
-        else if (gamepad2.right_stick_y != 0 && gamepad2.dpad_left)
-        {
-            arm1.setPower(Range.clip(gamepad2.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER));
-            arm2.setPower(Range.clip(-gamepad2.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER));
+            arm1.setPower(Range.clip(gamepad2.right_stick_y, -0.15, 0.15));
+            arm2.setPower(Range.clip(-gamepad2.right_stick_y, -0.15, 0.15));
         }
         else
         {
             arm1.setPower(0.0);
             arm2.setPower(0.0);
         }
+        arm1pos = arm1.getCurrentPosition(); // update arm1 motor position
+
         // control hanger
         if (gamepad2.left_bumper)
         {
@@ -238,6 +233,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     {
         telemetry.addData("legato: ", isLegatoMode);
         telemetry.addData("reverse: ", isReverseMode);
+        telemetry.addData("arm1:", arm1pos);
         telemetry.update();
     }
 }
