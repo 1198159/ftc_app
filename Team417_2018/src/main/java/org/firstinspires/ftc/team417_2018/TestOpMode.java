@@ -3,7 +3,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name = "TestOpMode")
+@Autonomous(name = "BC Autonomous")
 //@Disabled
 public class TestOpMode extends MasterAutonomous {
 
@@ -16,7 +16,10 @@ public class TestOpMode extends MasterAutonomous {
         waitForStart();
 
         double refAngle = imu.getAngularOrientation().firstAngle;
-        pivotWithReference(90, refAngle, 0.2, 0.8);
+        land();
+        move(-150, 0, 0.2, 0.7, 1.0);
+        //unhook();
+      //  pivotWithReference(90, refAngle, 0.2, 0.8);
 
         /*
         move(200, 0, 0.3, 0.7, 1.0);
