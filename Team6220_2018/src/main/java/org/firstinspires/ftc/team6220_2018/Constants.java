@@ -85,11 +85,16 @@ public class Constants
     public static final int HANG_UNLATCH_POSITION = 180;
     public static final int HANG_GROUND_UNLATCH = -2950;
      // Drivetrain
-    public static final int MINERAL_SHIFT = 520;
+    public static final int MINERAL_SHIFT = 550;
     public static final int CRATER_SHIFT = 150;
     public static final int MINERAL_FORWARD = 720;
-    public static final int MINERAL_BACKWARD = 350;
+    public static final int MINERAL_BACKWARD = 330;
     //-------------------------------------------------
+
+    //Arm Positions
+    public static final int ARM_FULLY_DEPLOYED = 5000;
+    public static final int ARM_TOP = 1157;
+    public static final int ARM_START = 0;
 
 
     // Ensure that input isn't used when no commands are given

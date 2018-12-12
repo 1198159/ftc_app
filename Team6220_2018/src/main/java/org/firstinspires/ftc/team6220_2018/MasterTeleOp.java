@@ -57,10 +57,30 @@ abstract public class MasterTeleOp extends MasterOpMode
         else
             motorCollector.setPower(0);
 
-        // Operate arm.
-        motorArm.setPower(-0.3 * stickCurve.getOuput(driver2.getRightStickY()));
-        //telemetry.addData("Arm Position: ", motorArm.getCurrentPosition());
-        //telemetry.update();
+        if (driver2.isButtonJustPressed(Button.A))
+        {
+            motorArm.setTargetPosition(Constants.ARM_FULLY_DEPLOYED);
+            motorArm.setPower(1.0);
+        }
+        else if (driver2.isButtonJustPressed(Button.Y))
+        {
+            motorArm.setTargetPosition(Constants.ARM_TOP);
+            motorArm.setPower(1.0);
+        }
+        else if (driver2.isButtonJustPressed(Button.B))
+        {
+            motorArm.setTargetPosition(Constants.ARM_START);
+            motorArm.setPower(1.0);
+        }
+        else
+        {
+            // Operate arm.
+            motorArm.setPower(-0.3 * stickCurve.getOuput(driver2.getRightStickY()));
+        }
+
+
+        telemetry.addData("Arm Position: ", motorArm.getCurrentPosition());
+        telemetry.update();
     }
 
     // Takes driver 1 stick input and uses it to give power and direction inputs to the drive

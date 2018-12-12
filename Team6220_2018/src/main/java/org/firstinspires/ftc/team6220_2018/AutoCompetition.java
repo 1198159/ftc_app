@@ -201,7 +201,7 @@ public class AutoCompetition extends MasterAutonomous
     private void dropOffMarker() throws InterruptedException
     {
         servoMarker.setPosition(Constants.SERVO_MARKER_DEPLOYED);
-        pauseWhileUpdating(0.5);
+        pauseWhileUpdating(0.3);
         servoMarker.setPosition(Constants.SERVO_MARKER_RETRACTED);
     }
 
