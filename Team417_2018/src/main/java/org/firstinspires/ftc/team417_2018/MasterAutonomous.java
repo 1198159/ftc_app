@@ -81,14 +81,12 @@ abstract public class MasterAutonomous extends MasterOpMode
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // run with encoder mode
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //Set up telemetry data
         // We show the log in oldest-to-newest order, as that's better for poetry
