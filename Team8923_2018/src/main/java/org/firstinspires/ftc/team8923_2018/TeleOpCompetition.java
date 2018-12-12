@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team8923_2018;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name = "TeleOp Competition")
 
@@ -10,6 +11,7 @@ public class TeleOpCompetition extends MasterTeleOp
     public void runOpMode()
     {
         initHardware();
+        motorFlip.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
 

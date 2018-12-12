@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.team8923_2018;
 
+import android.text.method.BaseKeyListener;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -210,6 +213,30 @@ abstract class MasterAutonomous extends Master
         telemetry.update();
 
         return gold;
+    }
+
+    public void deployArm()
+    {
+        motorFlip.setTargetPosition(motorFlip.getCurrentPosition() - 600);
+        while (Math.abs(motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) > 25)
+            motorFlip.setPower(Math.min((motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) * (1.0 / 150), 0.2));
+        motorFlip.setPower(0.0);
+
+        sleep(250);
+
+        motorFlip.setTargetPosition(motorFlip.getCurrentPosition() - 300);
+        while (Math.abs(motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) > 25)
+            motorFlip.setPower(Math.min((motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) * (1.0 / 150), 0.05));
+        motorFlip.setPower(0.0);
+
+        motorFlip.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    }
+    public void deployArmFAST()
+    {
+        motorFlip.setTargetPosition(motorFlip.getCurrentPosition() - 600);
+        while (Math.abs(motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) > 25)
+            motorFlip.setPower(Math.min((motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) * (1.0 / 150), 0.2));
+        motorFlip.setPower(0.0);
     }
 
     public void dropJJ()

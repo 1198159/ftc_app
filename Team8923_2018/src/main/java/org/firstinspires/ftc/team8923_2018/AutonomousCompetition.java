@@ -42,21 +42,22 @@ public class AutonomousCompetition extends MasterAutonomous
                     {
                         case LEFT:
                         {
-                            moveAuto(0, -280, 0.5, 0.3, 3.0);
-                            moveAuto(560, 0, 0.5, 0.3, 3.0);
-                            moveAuto(0, -610, 0.5, 0.3, 3.0);
+                            moveAuto(0, -280, 1.0, 0.3, 3.0);
+                            moveAuto(560, 0, 1.0, 0.3, 3.0);
+                            moveAuto(0, -610, 1.0, 0.3, 3.0);
                             //End of knock off mineral phase
                             //Other phases to be decided later
-                            imuPivot(referenceAngle, -45, 0.5, 0.015, 3.0);
-                            moveAuto(0, -720, 0.5, 0.3, 3.0);
-                            moveAuto(-125, 0, 0.5, 0.3, 3.0);//was -125
-                            imuPivot(referenceAngle, -90, 0.5, 0.015, 3.0);
+                            imuPivot(referenceAngle, -45, 1.0, 0.015, 3.0);
+                            moveAuto(0, -720, 1.0, 0.3, 3.0);
+                            moveAuto(-125, 0, 1.0, 0.3, 3.0);//was -125
+                            imuPivot(referenceAngle, -90, 1.0, 0.015, 3.0);
                             dropJJ();
                             sleep(500);
-                            imuPivot(referenceAngle, -45, 0.5, 0.015, 3.0);
+                            imuPivot(referenceAngle, -45, 1.0, 0.015, 3.0);
                             sleep(900);
+                            moveAuto(200, 0, 1.0, 0.3, 3.0);
                             moveAuto(0, 650, 1.0, 0.3, 3.0);
-                            moveAuto(450, 0, 0.3, 0.3, 3.0);
+                            moveAuto(350, 0, 0.3, 0.3, 3.0);
                             moveAuto(0, 1250, 1.0, 0.3, 3.0);
                             break;
 
@@ -163,6 +164,7 @@ public class AutonomousCompetition extends MasterAutonomous
                 }
                 break;
             }
+            deployArm();
             servoJJ2.setPosition(0.3);
             sleep(1000);
             idle();
