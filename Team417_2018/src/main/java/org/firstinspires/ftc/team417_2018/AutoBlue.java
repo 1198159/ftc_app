@@ -51,8 +51,8 @@ public class AutoBlue extends MasterAutonomous
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
 
         //land();
-        pivotWithReference(-90, refAngle, 0.2,0.5); // turn to face the sampling field
-        move(0, -70, 0.3, 0.7, 2.0);
+//        pivotWithReference(-90, refAngle, 0.2,0.5); // turn to face the sampling field
+  //      move(0, -70, 0.3, 0.7, 2.0);
         // sample the gold mineral
         telemetry.addData("Gold",
                 String.format(Locale.getDefault(), "(%d, %d)", (goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2), (goldVision.getGoldRect().y + goldVision.getGoldRect().height / 2))
@@ -81,32 +81,40 @@ public class AutoBlue extends MasterAutonomous
         }
         telemetry.update();
         idle();
-        sleep(5000);
-        // TODO: write translating when we get the arm motor working
+        sleep(3000);
+        pivotWithReference(87, refAngle, 0.2,0.5); // turn to face the sampling field
 
-        // pivot to face left and right
+        // pivot to face left and right if needed
         if (isLeftGold)
         {
-            pivotWithReference(50, refAngle, 0.2, 0.75);
+            pivotWithReference(-30, refAngle, 0.2, 0.75);
+            move(0, 600, 0.3, 0.7, 3.0); // push the gold mineral
+            pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to align
+            move(0, 200, 0.3, 0.7, 3.0); // push the gold mineral
+            pivotWithReference(50, refAngle, 0.2, 0.75); // turn to align
+            move(-70, 0, 0.3, 0.7, 2.0); // push against the wall
+            // move(2, 0, 0.3, 0.7, 2.0); // push against the wall
+            move(-4, -3000, 0.3, 0.7, 3.0);// park in blue crater
         }
         else if (isRightGold)
         {
-            pivotWithReference(-50, refAngle, 0.2, 0.75);
+            pivotWithReference(40, refAngle, 0.2, 0.75);
+            pivotWithReference(45, refAngle, 0.2, 0.75); // turn to align
+            move(0, 200, 0.3, 0.7, 3.0); // push the gold mineral
+            pivotWithReference(50, refAngle, 0.2, 0.75); // turn to align
+            move(-70, 0, 0.3, 0.7, 2.0); // push against the wall
+            // move(2, 0, 0.3, 0.7, 2.0); // push against the wall
+            move(-4, -3000, 0.3, 0.7, 3.0);// park in blue crater
         }
-        // if center, then don't pivot at all and just go forwards to push the mineral
-
-        move(0, 300, 0.3, 0.7, 2.0); // push the gold mineral
-        pivotWithReference(150, refAngle, 0.2, 0.75); // turn to align
-        move(70, 0, 0.3, 0.7, 2.0); // push against the wall
-        if (isPosCrater)
+        else if (isCenterGold)
         {
-            moveTimed(0.55, 1200); // push gold
-            sleep(100);
-            pivotWithReference(0, refAngle, 0.2, 0.75); // face crater
-            sleep(200);
-            moveTimed(0.55, 500); // go into crater / park
-            lower();
+            move(0, 800, 0.3, 0.7, 3.0); // push the gold mineral
+            pivotWithReference(50, refAngle, 0.2, 0.75); // turn to align
+            move(-180, 0, 0.3, 0.7, 2.0); // push against the wall
+            // move(2, 0, 0.3, 0.7, 2.0); // push against the wall
+            move(-8, -3000, 0.3, 0.7, 3.0);// park in blue crater
         }
+    }
 /*
         if (isPosCrater)
         {
@@ -117,7 +125,6 @@ public class AutoBlue extends MasterAutonomous
             moveTimed(0.55, 500); // go into crater / park
             lower();
         }
-
 
         if (!isPosCrater) // if depot position, then deposit team marker
         {
@@ -146,24 +153,15 @@ public class AutoBlue extends MasterAutonomous
                 sleep(100);
                 move(10, -1000, 0.3, 0.7, 3.0);
             }
-            else if (isCenterGold)
-            {
-                sleep(200);
-                move(50, 0, 0.2, 0.7, 1.0); // go closer to the wall
-                marker.setPosition(MARKER_HIGH); // drop the marker
-                pivotWithReference(42, refAngle, 0.2,0.75); // face the crater
-                move(90, 0, 0.2, 0.7, 1.0); // go closer to the wall
-                sleep(100);
-                move(10, -1000, 0.3, 0.7, 3.0);
+            else if (isCenterGold) {
+                move(0, 80, 0.3, 0.7, 3.0); // push the gold mineral
+                pivotWithReference(50, refAngle, 0.2, 0.75); // turn to align
+                move(-180, 0, 0.3, 0.7, 2.0); // push against the wall
+                // move(2, 0, 0.3, 0.7, 2.0); // push against the wall
+                move(-10, -3000, 0.3, 0.7, 3.0);// park in blue crater
             }
-            sleep(1000);
 
-           // lower();
-            //moveTimed(-0.55, 2000); // move away from the crater
-
-            //pivotWithReference(45, refAngle, 0.2,0.75); // turn so back of robot faces the crater
-            //moveTimed(-0.55, 5500); // back up into the crater
         }
         */
     }
-}
+
