@@ -140,6 +140,7 @@ abstract public class MasterOpMode extends LinearOpMode
             motorCollector.setPower(0);
 
             motorArm = hardwareMap.dcMotor.get("motorArm");
+            //motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             // Rest of initialization is at beginning of TeleOp.

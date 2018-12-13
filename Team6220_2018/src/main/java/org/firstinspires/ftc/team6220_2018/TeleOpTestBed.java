@@ -27,7 +27,7 @@ public class TeleOpTestBed extends MasterAutonomous
         // Main loop
         while(opModeIsActive())
         {
-            if(driver1.isButtonJustPressed(Button.A))
+            /*if(driver1.isButtonJustPressed(Button.A))
             {
                 turnTo(35,1.0);
             }
@@ -48,6 +48,28 @@ public class TeleOpTestBed extends MasterAutonomous
                 servoMarker.setPosition(Constants.SERVO_MARKER_DEPLOYED);
                 pauseWhileUpdating(0.5);
                 servoMarker.setPosition(Constants.SERVO_MARKER_RETRACTED);
+            }*/
+            if (driver1.isButtonJustPressed(Button.A))
+            {
+                //motorArm.setTargetPosition(Constants.ARM_FULLY_DEPLOYED);
+                motorArm.setPower(1.0);
+                pauseWhileUpdating(0.25);
+                motorArm.setPower(0.0);
+            }
+            else if (driver1.isButtonJustPressed(Button.Y))
+            {
+                //motorArm.setTargetPosition(Constants.ARM_TOP);
+                motorArm.setPower(1.0);
+            }
+            else if (driver1.isButtonJustPressed(Button.B))
+            {
+                //motorArm.setTargetPosition(Constants.ARM_START);
+                motorArm.setPower(1.0);
+            }
+            else
+            {
+                // Operate arm.
+                motorArm.setPower(-0.3 * stickCurve.getOuput(driver2.getRightStickY()));
             }
 
             double eTime = timer.seconds() - lTime;

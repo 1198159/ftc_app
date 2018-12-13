@@ -59,16 +59,18 @@ abstract public class MasterTeleOp extends MasterOpMode
 
         if (driver2.isButtonJustPressed(Button.A))
         {
-            motorArm.setTargetPosition(Constants.ARM_FULLY_DEPLOYED);
-            motorArm.setPower(1.0);
+            motorArm.setPower(-0.25);
+            pauseWhileUpdating(0.25);
+            motorArm.setPower(0.0);
         }
         else if (driver2.isButtonJustPressed(Button.Y))
         {
             motorArm.setTargetPosition(Constants.ARM_TOP);
-            motorArm.setPower(1.0);
+            motorArm.setPower(0.25);
         }
         else if (driver2.isButtonJustPressed(Button.B))
         {
+
             motorArm.setTargetPosition(Constants.ARM_START);
             motorArm.setPower(1.0);
         }

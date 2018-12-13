@@ -92,8 +92,8 @@ public class Constants
     //-------------------------------------------------
 
     //Arm Positions
-    public static final int ARM_FULLY_DEPLOYED = 5000;
-    public static final int ARM_TOP = 1157;
+    public static final int ARM_FULLY_DEPLOYED = -2100;
+    public static final int ARM_TOP = -1157;
     public static final int ARM_START = 0;
 
 
