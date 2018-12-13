@@ -22,6 +22,7 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorBL = null; // port 1
     DcMotor motorBR = null; // port 2
     DcMotor motorLift = null;
+
     Servo marker = null; // Hub 2, port 5
 
     CRServo hanger = null; // hub 2 port 5
@@ -71,6 +72,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
+
         marker = hardwareMap.servo.get("marker");
 
         core1 = hardwareMap.dcMotor.get("core1");
