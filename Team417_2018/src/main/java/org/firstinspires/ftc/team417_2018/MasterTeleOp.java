@@ -153,7 +153,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         powerBR = -x - y - pivotPower;
 
         motorFL.setPower(powerFL);
-        motorBL.setPower(powerBL);
+        motorBL.setPower(Range.clip(powerBL,-0.6,0.6));
         motorFR.setPower(powerFR);
         motorBR.setPower(powerBR);
     }
@@ -177,7 +177,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     void collector()
     {
         // control core hex motors
-        /*
+
         if (gamepad2.right_trigger > 0) // extend the collector
         {
             core1Power = -gamepad2.right_trigger;
@@ -195,7 +195,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         core1.setPower(core1Power);
         core2.setPower(core2Power);
-        */
+
 
         // control AM 3.7 motors
         if (gamepad2.right_stick_y != 0)
