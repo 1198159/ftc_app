@@ -22,7 +22,7 @@ public class RevServoTest extends LinearOpMode
     DcMotor arm1 = null; // hub 1 port 4
     DcMotor arm2 = null; // hub 2 port 4
 
-   // CRServo vex1 = null; // port 0
+    CRServo vex1 = null; // port 0
    // CRServo vex2 = null; //port 1
 
     double curExtendPos1 = 0.0;
@@ -44,7 +44,7 @@ public class RevServoTest extends LinearOpMode
         core1 = hardwareMap.dcMotor.get("core1");
         core2 = hardwareMap.dcMotor.get("core2");
 
-        //   vex1 = hardwareMap.crservo.get("vex1");
+        vex1 = hardwareMap.crservo.get("vex1");
         //  vex2 = hardwareMap.crservo.get("vex2");
 
         arm1 = hardwareMap.dcMotor.get("arm1");
@@ -70,7 +70,7 @@ public class RevServoTest extends LinearOpMode
         //rev1.setPosition(0.02);
         //rev2.setPosition(0.98);
 
-        //vex1.setPower(0.0);
+        vex1.setPower(0.0);
         //vex2.setPower(0.0);
 
         waitForStart();
@@ -157,23 +157,21 @@ public class RevServoTest extends LinearOpMode
             {
                 hanger.setPower(0.0);
             }
-/*
+
             if(gamepad2.b)
             {
                 vex1.setPower(0.79);
-                vex2.setPower(0.79);
             }
             else if (gamepad2.x)
             {
                 vex1.setPower(-0.79);
-                vex2.setPower(-0.79);
             }
             else
             {
                 vex1.setPower(0);
-                vex2.setPower(0);
+
             }
-            */
+
             //telemetry.addData("rev1", rev1.getPosition());
             //telemetry.addData("rev2", rev1.getPosition());
             telemetry.update();
