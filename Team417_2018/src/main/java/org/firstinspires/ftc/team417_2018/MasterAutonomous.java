@@ -217,7 +217,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
             motorFL.setPower(speedFL);
             motorFR.setPower(speedFR);
-            motorBL.setPower(speedBL);
+            motorBL.setPower(Range.clip(speedBL,-0.6,0.6));
             motorBR.setPower(speedBR);
 
             avgDistError = (Math.abs(errorFL) + Math.abs(errorFR) + Math.abs(errorBL) + Math.abs(errorBR)) / 4.0;
@@ -265,7 +265,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         // turn on power
         motorFL.setPower(powerFL);
         motorFR.setPower(powerFR);
-        motorBL.setPower(powerBL);
+        motorBL.setPower(Range.clip(powerBL,-0.6,0.6));
         motorBR.setPower(powerBR);
 
         // let it run for x seconds
@@ -306,7 +306,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             // positive angle means CCW rotation
             motorFL.setPower(pivotSpeed);
             motorFR.setPower(-pivotSpeed);
-            motorBL.setPower(pivotSpeed);
+            motorBL.setPower(Range.clip(pivotSpeed,-0.6,0.6));
             motorBR.setPower(-pivotSpeed);
 
             // allow some time for IMU to catch up
