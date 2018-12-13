@@ -217,11 +217,17 @@ abstract class MasterAutonomous extends Master
 
     public void deployArm()
     {
+        /*
         motorFlip.setTargetPosition(motorFlip.getCurrentPosition() - 600);
         while (Math.abs(motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) > 25)
             motorFlip.setPower(Math.min((motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) * (1.0 / 150), 0.2));
         motorFlip.setPower(0.0);
+        */
+        motorFlip.setTargetPosition(motorFlip.getCurrentPosition() - 600);
+        while (Math.abs(motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) > 25)
+            motorFlip.setPower(0.4);
 
+        motorFlip.setPower(0.0);
         sleep(250);
 
         motorFlip.setTargetPosition(motorFlip.getCurrentPosition() - 300);
@@ -234,9 +240,7 @@ abstract class MasterAutonomous extends Master
     public void deployArmFAST()
     {
         motorFlip.setTargetPosition(motorFlip.getCurrentPosition() - 600);
-        while (Math.abs(motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) > 25)
-            motorFlip.setPower(Math.min((motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) * (1.0 / 150), 0.2));
-        motorFlip.setPower(0.0);
+        motorFlip.setPower(Math.min((motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) * (1.0 / 15), 0.3));
     }
 
     public void dropJJ()
@@ -645,6 +649,12 @@ abstract class MasterAutonomous extends Master
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //Autonomous phases
+    public GoldLocation detectMineral() throws InterruptedException
+    {
+        //!!! should we be locating the gold AFTER we finish the move that we do below??
+        GoldLocation position = openCVLocateGold();
+        return position;
+    }
     public GoldLocation landAndDetectMineral() throws InterruptedException
     {
         moveLift(4375);

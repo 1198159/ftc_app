@@ -2,12 +2,12 @@ package org.firstinspires.ftc.team8923_2018;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Move Test", group = "Test")
+@Autonomous(name="OpenCVTest", group = "Test")
 /*
  * Runable shell for Master Autonomous code
  */
 //@Disabled
-public class MoveTest extends MasterAutonomous
+public class OpenCVTest extends MasterAutonomous
 {
     //Declare variables here
     @Override
@@ -21,7 +21,12 @@ public class MoveTest extends MasterAutonomous
         headingOffset = 0;
         //dankUnderglow(-0.5);
         waitForStart();
-        deployArmFAST();
+        openCVInit();
+        sleep(1500);
+        GoldLocation position = detectMineral();
+        telemetry.addData("Position", position);
+        telemetry.update();
+        openCVDisable();
         while (opModeIsActive())
         {
         }

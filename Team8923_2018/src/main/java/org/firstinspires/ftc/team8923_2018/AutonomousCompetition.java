@@ -69,12 +69,12 @@ public class AutonomousCompetition extends MasterAutonomous
                             //End of knock off mineral phase
                             //Other phases to be decided later
                             imuPivot(referenceAngle, -90, 0.5, 0.015, 2.0);//0.5
-                            moveAuto(177, 0, 0.5, 0.35, 3.0);
+                            moveAuto(177, -200, 0.5, 0.35, 3.0);
                             dropJJ();
                             moveAuto(-150, 0, 0.5, 0.35, 3.0);
-                            moveAuto(0, 250, 0.5, 0.35, 3.0);
+                            moveAuto(0, 500, 0.5, 0.35, 3.0);
                             imuPivot(referenceAngle, -225, -0.3, 0.015, 2.0);
-                            moveAuto(215, 0, 0.6, 0.35, 3.0);
+                            moveAuto(300, 0, 0.6, 0.35, 3.0);
                             moveAuto(0, 975, 1.0, 0.5, 3.0);
                             moveAuto(100, 0, 0.5, 0.5, 3.0);
                             moveAuto(0, 450, 0.5, 0.5, 3.0);
@@ -91,16 +91,16 @@ public class AutonomousCompetition extends MasterAutonomous
                             moveAuto(0, -580, 0.5, 0.5, 3.0);
                             moveAuto(0, 130, 0.5, 0.5, 3.0);
                             imuPivot(referenceAngle, -90, 0.5, 0.015, 3.0);
-                            moveAuto(0, 200, 0.5, 0.5, 3.0);
+                            //moveAuto(0, 200, 0.5, 0.5, 3.0);
                             dropJJ();
                             moveAuto(-100, 0, 0.5, 0.5, 3.0);
-                            moveAuto(0, 150, 0.5, 0.5, 3.0);
+                            moveAuto(0, 250, 0.5, 0.5, 3.0);
                             imuPivot(referenceAngle, -45, 0.5, 0.015, 3.0);
                             moveAuto(0, 150, 0.5, 0.5, 3.0);
                             moveAuto(80, 0, 0.5, 0.5, 3.0);
                             moveAuto(0, 975, 1.0, 0.5, 3.0);
                             moveAuto(100, 0, 0.5, 0.5, 3.0);
-                            moveAuto(0, 450, 0.5, 0.5, 3.0);
+                            moveAuto(0, 600, 0.5, 0.5, 3.0);
                             //moveAuto(0, -510, 0.5, 0.5, 3.0);
                             //imuPivot(referenceAngle, 135, 0.5, 0.015, 3.0);
                             //moveAuto(0, -430, 0.5, 0.5, 3.0);
@@ -148,8 +148,8 @@ public class AutonomousCompetition extends MasterAutonomous
                     }
                     imuPivot(referenceAngle, -45, 0.7, 0.015, 3.0);
                     moveAuto(300, 0, 0.4, 0.3, 3.0);
-                    moveAuto(0, 1050, 0.8, 0.3, 3.0);
-                    moveAuto(-100, 0, 0.8, 0.3, 3.0);
+                    moveAuto(0, 1050, 1.0, 0.3, 3.0);
+                    moveAuto(-100, 0, 1.0, 0.3, 3.0);
                     imuPivot(referenceAngle, 45, 0.5, 0.015, 3.0);
                     dropJJ();
                     fastFlex();
@@ -159,14 +159,16 @@ public class AutonomousCompetition extends MasterAutonomous
                     sleep(100);
                     moveAuto(100, 0, 0.7, 0.3, 3.0);
                     moveAuto(0, 550, 1.0, 0.3, 3.0);
-                    moveAuto(-250, 0, 0.7, 0.3, 3.0);
-                    moveAuto(0, 900, 0.7, 0.3, 3.0);
+                    moveAuto(-250, 0, 1.0, 0.3, 3.0);
+                    moveAuto(0, 900, 1.0, 0.3, 3.0);
                 }
                 break;
             }
-            deployArm();
+            deployArmFAST();
+            sleep(800);
             servoJJ2.setPosition(0.3);
-            sleep(1000);
+            sleep(500);
+            moveLift(-4275);
             idle();
             break;
         }

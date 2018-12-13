@@ -74,7 +74,8 @@ public class OpenCV extends OpenCVPipeline
             // Get bounding rect of contour
             rect = Imgproc.boundingRect(cont);
             area = Imgproc.contourArea(cont);
-            if (area > maxArea){
+            if (area > maxArea && rect.x < 80)
+            {
                 maxArea = area;
                 maxRect = rect;
             }
