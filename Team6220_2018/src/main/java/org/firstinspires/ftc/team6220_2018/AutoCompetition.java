@@ -53,12 +53,19 @@ public class AutoCompetition extends MasterAutonomous
                     // Drive backward, align with wall, and drive rest of way into crater.
                     driveToPosition(0, -400, 1.0);
                     moveRobot(0.0,0.6,1.0);
-                    driveToPosition(0, -1550, 1.0);
+                    driveToPosition(0, -1250, 1.0);
                 }
                 else
                 {
                     moveRobot(0.0,0.7,1.6);
-                    driveToPosition(0, -1600 - craterShift, 1.0);
+                    driveToPosition(0, -1300 - craterShift, 1.0);
+                }
+                motorArm.setTargetPosition(Constants.ARM_GROUND);
+                motorArm.setPower(0.4);
+                while(opModeIsActive())
+                {
+                    motorCollector.setPower(Constants.MOTOR_COLLECTOR_IN);
+                    idle();
                 }
             }
             //opposing crater

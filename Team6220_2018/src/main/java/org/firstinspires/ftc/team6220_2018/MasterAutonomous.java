@@ -66,11 +66,9 @@ abstract public class MasterAutonomous extends MasterOpMode
     {
         initializeRobot();
 
-        // Use different motor modes for autonomous initialization.
+        // Use different motor modes for hanger autonomous initialization.
         motorHanger.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorHanger.setPower(0);
-        motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorArm.setPower(0);
 
         OpenCVVision = new OpenCVGold();
 

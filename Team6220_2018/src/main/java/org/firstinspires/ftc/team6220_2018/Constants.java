@@ -41,7 +41,6 @@ public class Constants
     // Movement control constants-----------------------
     public static final double MINIMUM_DRIVE_POWER = 0.15;   // todo Adjust
     public static final double MINIMUM_TURNING_POWER = 0.1;
-    public static final double MINIMUM_GLYPHTER_POWER = 0.1;   // todo Adjust
      // Constants for adjusting powers that are proportional to angle and position differences
     public static final double TURNING_POWER_FACTOR = 0.02;
     public static final double DRIVE_POWER_FACTOR = 0.003;
@@ -91,11 +90,12 @@ public class Constants
     public static final int MINERAL_BACKWARD = 330;
     //-------------------------------------------------
 
-    //Arm Positions
-    public static final int ARM_FULLY_DEPLOYED = -2100;
-    public static final int ARM_TOP = -1157;
+    // Arm Positions
     public static final int ARM_START = 0;
-
+    public static final int ARM_TOP = -1150;
+    public static final int ARM_GROUND = -2300;
+    // Arm powers
+    public static final double MAX_ARM_POWER = 0.4;
 
     // Ensure that input isn't used when no commands are given
     public static final double MINIMUM_JOYSTICK_POWER = 0.05;
