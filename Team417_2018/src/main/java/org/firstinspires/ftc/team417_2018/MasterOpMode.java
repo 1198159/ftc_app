@@ -33,6 +33,9 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor arm1 = null; // hub 1 port 4
     DcMotor arm2 = null; // hub 2 port 4
 
+    Servo rev1 = null; // hub 2 port 0
+    CRServo vex1 = null; // hub 2 port 0
+
     // Declare sensors
     BNO055IMU imu; // inertial measurement unit (located within the REV Hub)
     //ColorSensor sensorColorLeft; // port 1
@@ -81,6 +84,9 @@ abstract public class MasterOpMode extends LinearOpMode
         arm1 = hardwareMap.dcMotor.get("arm1");
         arm2 = hardwareMap.dcMotor.get("arm2");
 
+        rev1 = hardwareMap.servo.get("rev1");
+        vex1 = hardwareMap.crservo.get("vex1");
+
         hanger = hardwareMap.crservo.get("hanger");
 
         core1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -125,6 +131,8 @@ abstract public class MasterOpMode extends LinearOpMode
         motorFR.setPower(0);
         motorBL.setPower(0);
         motorBR.setPower(0);
+
+        vex1.setPower(0.0);
 
       //  marker.setPosition(MARKER_LOW);
       //  motorLift.setPower(0.0);
