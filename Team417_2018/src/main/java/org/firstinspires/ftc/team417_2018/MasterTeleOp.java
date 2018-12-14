@@ -197,6 +197,9 @@ abstract public class MasterTeleOp extends MasterOpMode
         core2.setPower(core2Power);
 
 
+        //rev1.setPosition(Range.clip(-gamepad2.left_stick_y, -1.0, 1.0));
+        rev1.setPosition(gamepad2.left_stick_y);
+
         // control AM 3.7 motors
         if (gamepad2.right_stick_y != 0)
         {
