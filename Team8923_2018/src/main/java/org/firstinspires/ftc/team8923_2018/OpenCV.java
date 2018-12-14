@@ -74,7 +74,7 @@ public class OpenCV extends OpenCVPipeline
             // Get bounding rect of contour
             rect = Imgproc.boundingRect(cont);
             area = Imgproc.contourArea(cont);
-            if (area > maxArea && rect.x < 80)
+            if (area > maxArea && rect.x < 80)//max rect is biggest yellow rectangle
             {
                 maxArea = area;
                 maxRect = rect;

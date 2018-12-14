@@ -46,6 +46,7 @@ abstract class MasterAutonomous extends Master
 
     Alliance alliance = Alliance.BLUE;
     StartLocations startLocation = StartLocations.DEPOT;
+    Assist assist = Assist.NOT_ASSISTING;
     boolean doneSettingUp = false;
 
     ArrayList<Integer> delays = new ArrayList<>();
@@ -89,7 +90,11 @@ abstract class MasterAutonomous extends Master
         public final double val;
         StartLocations(double i) {val = i;}
     }
-    //
+    enum Assist
+    {
+        ASSISTING,
+        NOT_ASSISTING;
+    }
     enum MineralLocations
     {
 
@@ -288,11 +293,21 @@ abstract class MasterAutonomous extends Master
             if(gamepad1.dpad_left)
             {
                 startLocation = StartLocations.CRATER;
+                assist = Assist.NOT_ASSISTING;
             }
             //means we are depot side
             else if (gamepad1.dpad_right)
             {
                 startLocation = StartLocations.DEPOT;
+            }
+
+            if (startLocation == StartLocations.DEPOT && gamepad1.a)
+            {
+                assist = Assist.ASSISTING;
+            }
+            else if (gamepad1.y)
+            {
+                assist = Assist.NOT_ASSISTING;
             }
 
             /*if(gamepad1.dpad_up)
@@ -353,6 +368,7 @@ abstract class MasterAutonomous extends Master
             // input information
             telemetry.addLine("Alliance Blue/Red: X/B");
             telemetry.addLine("Starting Position Crater/Depot: D-Pad Left/Right");
+            telemetry.addLine("Assist Assisting/Not_Assisting: D-Pad Right, A/Y");
             //telemetry.addLine("Add a delay: D-Pad Up");
             telemetry.addLine("");
             telemetry.addLine("After routine is complete and robot is on field, press Start");
@@ -361,6 +377,7 @@ abstract class MasterAutonomous extends Master
             // setup data
             telemetry.addData("Alliance", alliance.name());
             telemetry.addData("Side", startLocation.name());
+            telemetry.addData("Assist?", assist.name());
             if(numDelays> 0)
                 for (int i = 1; i < delays.size(); i++)
                     telemetry.addData("delay " + String.valueOf(i), delays.get(i));
@@ -508,6 +525,47 @@ abstract class MasterAutonomous extends Master
             speedFR = -pivot;
             speedBL = pivot;
             speedBR = -pivot;
+
+            motorFL.setPower(speedFL);
+            motorFR.setPower(speedFR);
+            motorBL.setPower(speedBL);
+            motorBR.setPower(speedBR);
+            idle();
+        }
+        while ((opModeIsActive() && (Math.abs(angleError) > 3.0)) && (runtime.seconds() < timeout));
+
+        stopDriving();
+    }
+    void reverseImuPivot(double referenceAngle, double targetAngle, double MaxSpeed, double kAngle, double timeout)
+    {
+        runtime.reset();
+        //counter-clockwise is positive
+        double pivot;
+        double currentRobotAngle;
+        double angleError;
+
+        targetAngle =  referenceAngle + targetAngle;//Adds the current angle to the target
+        targetAngle = adjustAngles(targetAngle);
+        do {
+            currentRobotAngle = imu.getAngularOrientation().firstAngle;//Sets currentRobotAngle as the current robot angle
+            targetAngle = adjustAngles(targetAngle);//Makes it so the target angle does not wrap
+            angleError = currentRobotAngle - targetAngle;
+            angleError = adjustAngles(angleError);
+            pivot = angleError * kAngle;
+
+            if (pivot >= 0.0)
+            {
+                pivot = Range.clip(pivot, 0.15, MaxSpeed);
+            }
+            else
+            {
+                pivot = Range.clip(pivot, -MaxSpeed, -0.15);
+            }
+
+            speedFL = -pivot;
+            speedFR = pivot;
+            speedBL = -pivot;
+            speedBR = pivot;
 
             motorFL.setPower(speedFL);
             motorFR.setPower(speedFR);
