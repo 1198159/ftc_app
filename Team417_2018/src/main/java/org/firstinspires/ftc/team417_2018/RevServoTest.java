@@ -37,15 +37,10 @@ public class RevServoTest extends LinearOpMode
 
     public void runOpMode()
     {
-        // initialize servos
-        //rev1 = hardwareMap.servo.get("rev1");
-        //rev2 = hardwareMap.servo.get("rev2");
-
         core1 = hardwareMap.dcMotor.get("core1");
         core2 = hardwareMap.dcMotor.get("core2");
 
         vex1 = hardwareMap.crservo.get("vex1");
-        //  vex2 = hardwareMap.crservo.get("vex2");
 
         arm1 = hardwareMap.dcMotor.get("arm1");
         arm2 = hardwareMap.dcMotor.get("arm2");
