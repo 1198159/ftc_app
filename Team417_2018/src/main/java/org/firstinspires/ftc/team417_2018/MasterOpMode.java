@@ -85,6 +85,7 @@ abstract public class MasterOpMode extends LinearOpMode
         arm2 = hardwareMap.dcMotor.get("arm2");
 
         rev1 = hardwareMap.servo.get("rev1");
+
         vex1 = hardwareMap.crservo.get("vex1");
 
         hanger = hardwareMap.crservo.get("hanger");

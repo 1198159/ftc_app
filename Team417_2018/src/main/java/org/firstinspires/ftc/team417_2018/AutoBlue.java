@@ -61,7 +61,7 @@ public class AutoBlue extends MasterAutonomous
             idle();
         }
         telemetry.update();
-
+        marker.setPosition(MARKER_LOW);
         waitForStart();
         autoRuntime.reset();
         goldVision.disable();
@@ -77,18 +77,20 @@ public class AutoBlue extends MasterAutonomous
             if (isRightGold)
             {
                 pivotWithReference(55, refAngle, 0.2, 0.75); // pivot to face the gold mineral
-                sleep(100);
+                sleep(100); // pause 100 milliseconds
                 move(0, 550, 0.3, 0.7, 3.0); // push the gold mineral
-                sleep(100);
+                sleep(100); // pause 100 milliseconds
                 pivotWithReference(135, refAngle, 0.2, 0.75); // turn to align
-                sleep(100);
+                sleep(100); // pause 100 milliseconds
                 move(0, 400, 0.3, 0.7, 3.0); // push the gold mineral
                 sleep(100);
                 pivotWithReference(50, refAngle, 0.2, 0.75); // turn so pusher is facing the crater
+                marker.setPosition(MARKER_HIGH);
                 sleep(100);
                 move(-170, 0, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
                 move(0, -2700, 0.3, 0.7, 3.0);// park in blue crater
+                marker.setPosition(MARKER_LOW);
             }
             else if (isLeftGold)
             {
@@ -100,11 +102,13 @@ public class AutoBlue extends MasterAutonomous
                 sleep(100);
                 move(0, 500, 0.3, 0.7, 3.0); // push the gold mineral
                 sleep(100);
+                marker.setPosition(MARKER_HIGH);
                 pivotWithReference(50, refAngle, 0.2, 0.75); // turn to align
                 sleep(100);
                 move(-200, 0, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
                 move(0, -2550, 0.3, 0.7, 3.0);// park in blue crater
+                marker.setPosition(MARKER_LOW);
             }
             else if (isCenterGold)
             {
@@ -114,9 +118,11 @@ public class AutoBlue extends MasterAutonomous
                 sleep(100);
                 pivotWithReference(50, refAngle, 0.2, 0.75); // turn to align
                 sleep(100);
+                marker.setPosition(MARKER_HIGH);
                 move(-180, 0, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
                 move(-8, -2600, 0.3, 0.7, 3.0);// park in blue crater
+                marker.setPosition(MARKER_LOW);
             }
         }
 
@@ -149,5 +155,5 @@ public class AutoBlue extends MasterAutonomous
         }
 
     }
-    }
+}
 

@@ -26,6 +26,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isRightBumperPushed;
     boolean isStraightDrive;
 
+
     int arm1pos = 0;
 
 
@@ -176,7 +177,7 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     void collector()
     {
-        // control core hex motors
+        // control core hex motors - driver 2
 
         if (gamepad2.right_trigger > 0) // extend the collector
         {
@@ -196,11 +197,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         core1.setPower(core1Power);
         core2.setPower(core2Power);
 
-
-        //rev1.setPosition(Range.clip(-gamepad2.left_stick_y, -1.0, 1.0));
-        rev1.setPosition(gamepad2.left_stick_y);
-
-        // control AM 3.7 motors
+        // control AM 3.7 motors - driver 2
         if (gamepad2.right_stick_y != 0)
         {
             arm1.setPower(Range.clip(gamepad2.right_stick_y, -0.15, 0.15));
@@ -213,18 +210,34 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         arm1pos = arm1.getCurrentPosition(); // update arm1 motor position
 
-        // control hanger
-        if (gamepad2.left_bumper)
+        // control hanger - driver 1
+        if (gamepad1.left_bumper)
         {
             hanger.setPower(0.99);
         }
-        else if (gamepad2.right_bumper)
+        else if (gamepad1.right_bumper)
         {
             hanger.setPower(-0.99);
         }
         else
         {
             hanger.setPower(0.0);
+        }
+        // control rev servo
+        rev1.setPosition(Range.clip(gamepad2.left_stick_y, -0.7,0.7));
+        // control vex servo
+        if(gamepad2.b)
+        {
+            vex1.setPower(0.79);
+        }
+        else if (gamepad2.x)
+        {
+            vex1.setPower(-0.79);
+        }
+        else
+        {
+            vex1.setPower(0);
+
         }
     }
 
