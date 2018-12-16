@@ -16,7 +16,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     // Allows us to switch front of robot.
     boolean hangServoDeployed = false;
     // Determines whether arm is in RUN_TO_POSITION or RUN_USING_ENCODER.
-    boolean armRunModePosition = true;
+    boolean armRunModePosition = false;
 
     // Factor that adjusts magnitudes of vertical and horizontal movement.
     double tFactor = Constants.T_FACTOR;
@@ -62,13 +62,13 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorCollector.setPower(0);
 
 
-        // Toggle arm run mode boolean using start button.
-        if(driver2.isButtonJustPressed(Button.START) && armRunModePosition)
+        /*// Toggle arm run mode boolean using start button.
+        if(driver2.isButtonJustPressed(Button.A) && armRunModePosition)
         {
             motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             armRunModePosition = false;
         }
-        else if(driver2.isButtonJustPressed(Button.START) && !armRunModePosition)
+        else if(driver2.isButtonJustPressed(Button.A) && !armRunModePosition)
         {
             motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armRunModePosition = true;
@@ -77,10 +77,10 @@ abstract public class MasterTeleOp extends MasterOpMode
         // Run arm in position or power mode, depending on the boolean value.
         if(armRunModePosition)
         {
-            if (driver2.isButtonPressed(Button.A))
+            if (driver2.isButtonPressed(Button.X))
             {
                 motorArm.setTargetPosition(Constants.ARM_GROUND);
-                motorArm.setPower(Constants.MAX_ARM_POWER);
+                motorArm.setPower(0.3);
             }
             else if (driver2.isButtonPressed(Button.Y))
             {
@@ -90,13 +90,14 @@ abstract public class MasterTeleOp extends MasterOpMode
             else if (driver2.isButtonPressed(Button.B))
             {
                 motorArm.setTargetPosition(Constants.ARM_START);
-                motorArm.setPower(Constants.MAX_ARM_POWER);
+                motorArm.setPower(0.2);
             }
         }
         else if(!armRunModePosition)
-        {
-            motorArm.setPower(-Constants.MAX_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
-        }
+        {*/
+        motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorArm.setPower(-Constants.MAX_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
+        //}
 
 
         telemetry.addData("Arm Position: ", motorArm.getCurrentPosition());

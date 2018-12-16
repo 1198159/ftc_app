@@ -60,13 +60,6 @@ public class AutoCompetition extends MasterAutonomous
                     moveRobot(0.0,0.7,1.6);
                     driveToPosition(0, -1300 - craterShift, 1.0);
                 }
-                motorArm.setTargetPosition(Constants.ARM_GROUND);
-                motorArm.setPower(0.4);
-                while(opModeIsActive())
-                {
-                    motorCollector.setPower(Constants.MOTOR_COLLECTOR_IN);
-                    idle();
-                }
             }
             //opposing crater
             else
@@ -79,15 +72,24 @@ public class AutoCompetition extends MasterAutonomous
                     // Drive backward, align with wall, and drive rest of way into crater.
                     driveToPosition(0, -400, 1.0);
                     moveRobot(180.0, 0.6, 1.0);
-                    driveToPosition(0, -1550, 1.0);
+                    driveToPosition(0, -1250, 1.0);
                 }
                 else
                 {
                     moveRobot(180.0, 0.7, 1.6);
-                    driveToPosition(0, -1600 + craterShift, 1.0);
+                    driveToPosition(0, -1500 - craterShift, 1.0);
                 }
-
             }
+            driveToPosition(-30, 0,1.0);
+            motorArm.setTargetPosition(Constants.ARM_GROUND);
+            motorArm.setPower(0.4);
+            pauseWhileUpdating(1.0);
+            driveToPosition(0, 40, 1.0);
+            /*while(opModeIsActive())
+            {
+                motorCollector.setPower(Constants.MOTOR_COLLECTOR_IN);
+                idle();
+            }*/
         }
         // Depot--------------------------------------------------------------------------------
         else
@@ -109,12 +111,43 @@ public class AutoCompetition extends MasterAutonomous
             {
                 //turnTo(0, 1.0);
                 dropOffMarker();
+                driveToPosition(0, 20, 1.0);
                 turnTo(45,1.0);
-
-                // Drive backward, align with wall, and drive rest of way into crater.
-                driveToPosition(0, -450, 1.0);
-                moveRobot(0.0,0.6,1.0);
-                driveToPosition(0, -1500, 1.0);
+                if(!knockPartnerMineral)
+                {
+                    // Drive backward, align with wall, and drive rest of way into crater.
+                    driveToPosition(0, -400, 1.0);
+                    moveRobot(0.0,0.6,1.0);
+                    driveToPosition(0, -1500, 1.0);
+                }
+                else
+                {
+                    // Drive backward, align with wall, and drive rest of way into crater.
+                    driveToPosition(0, -400, 1.0);
+                    //driveToPosition(craterShift, 0, 1.0);
+                    if((goldLocation == sampleFieldLocations.right))
+                    {
+                        moveRobot(0.0,0.6,0.2);
+                        driveToPosition(0,-600,1.0);
+                    }
+                    else if ((goldLocation == sampleFieldLocations.left))
+                    {
+                        moveRobot(0.0, 0.6, 1.2);
+                        driveToPosition(0,-900,1.0);
+                    }
+                    else if ((goldLocation == sampleFieldLocations.center))
+                    {
+                        moveRobot(0.0, 0.6, 0.7);
+                        driveToPosition(0,-850,1.0);
+                    }
+                    //driveToPosition(-950, -650, 1.0);
+                    driveToPosition(-50, -50, 1.0);
+                    turnTo(90,1.0);
+                    driveToPosition(-1000, 0, 1.0);
+                    knockPartnerMineral();
+                    turnTo(90, 1.0);
+                    driveToPosition(0, 150,1.0);
+                }
             }
             else
             {
@@ -122,10 +155,33 @@ public class AutoCompetition extends MasterAutonomous
                 turnTo(-45, 1.0);
 
                 // Drive backward, align with wall, and drive rest of way into crater.
-                driveToPosition(0, -450, 1.0);
-                moveRobot(180.0,0.6,1.0);
-                driveToPosition(0, -1500, 1.0);
+                driveToPosition(0, -400, 1.0);
+                if((goldLocation == sampleFieldLocations.right))
+                {
+                    moveRobot(180.0,0.6,1.0);
+                    driveToPosition(0, -1500, 1.0);
+                }
+                if((goldLocation == sampleFieldLocations.left))
+                {
+                    moveRobot(180.0,0.6,0.6);
+                    driveToPosition(0, -1300, 1.0);
+                }
+                if((goldLocation == sampleFieldLocations.center))
+                {
+                    moveRobot(180.0,0.6,0.9);
+                    driveToPosition(0, -1400, 1.0);
+                }
             }
+            driveToPosition(-30, 0,1.0);
+            motorArm.setTargetPosition(Constants.ARM_GROUND);
+            motorArm.setPower(0.4);
+            pauseWhileUpdating(1.0);
+            driveToPosition(0, 40, 1.0);
+            /*while(opModeIsActive())
+            {
+                motorCollector.setPower(Constants.MOTOR_COLLECTOR_IN);
+                idle();
+            }*/
         }
         // -------------------------------------------------------------------------------------
 
@@ -162,41 +218,73 @@ public class AutoCompetition extends MasterAutonomous
         {
             if (goldLocation == sampleFieldLocations.right)
             {
-                turnTo(125, 1.0);
-                // Drive forward to hit mineral and return to original position.
-                driveToPosition(0, -750, 1.0);
-                if(!isAllianceCraterFinal)
+                if(isCraterStart)
                 {
-                    driveToPosition(0, 300, 1.0);
+                    turnTo(125, 1.0);
+                    // Drive forward to hit mineral and return to original position.
+                    driveToPosition(0, -750, 1.0);
                 }
                 else
                 {
+                    //turnTo(60, 1.0);
+                    driveToPosition(-400, 0, 0.5);
+                    // Drive forward to hit mineral and return to original position.
+                    driveToPosition(0, -500, 0.5);
+                }
+                if(!isAllianceCraterFinal && isCraterStart)
+                {
+                    turnTo(125, 1.0);
+                    driveToPosition(0, 300, 1.0);
+                }
+                else if (isAllianceCraterFinal && isCraterStart)
+                {
+                    turnTo(125, 1.0);
                     driveToPosition(0, 200, 1.0);
                 }
             }
             else if (goldLocation == sampleFieldLocations.left)
             {
-                turnTo(60, 1.0);
-                // Drive forward to hit mineral and return to original position.
-                driveToPosition(0, -750, 1.0);
-                if(!isAllianceCraterFinal)
+                if(isCraterStart)
                 {
-                    driveToPosition(0, 300, 1.0);
+                    turnTo(60, 1.0);
+                    // Drive forward to hit mineral and return to original position.
+                    driveToPosition(0, -750, 1.0);
                 }
                 else
                 {
+                    //turnTo(125, 1.0);
+                    driveToPosition(400, 0, 1.0);
+                    // Drive forward to hit mineral and return to original position.
+                    driveToPosition(0, -450, 1.0);
+                }
+                if(!isAllianceCraterFinal && isCraterStart)
+                {
+                    turnTo(60, 1.0);
+                    driveToPosition(0, 300, 1.0);
+                }
+                else if (isAllianceCraterFinal && isCraterStart)
+                {
+                    turnTo(60, 1.0);
                     driveToPosition(0, 200, 1.0);
                 }
             }
             else if (goldLocation == sampleFieldLocations.center)
             {
-                // Drive forward to hit mineral and return to original position.
-                driveToPosition(0, -720, 1.0);
-                if(!isAllianceCraterFinal)
+                if(isCraterStart)
+                {
+                    // Drive forward to hit mineral and return to original position.
+                    driveToPosition(0, -750, 1.0);
+                }
+                else
+                {
+                    // Drive forward to hit mineral and return to original position.
+                    driveToPosition(0, -400, 1.0);
+                }
+                if(!isAllianceCraterFinal && isCraterStart)
                 {
                     driveToPosition(0, 300, 1.0);
                 }
-                else
+                else if (isAllianceCraterFinal && isCraterStart)
                 {
                     driveToPosition(0, 200, 1.0);
                 }

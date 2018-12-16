@@ -87,13 +87,13 @@ public class Constants
     public static final int MINERAL_SHIFT = 550;
     public static final int CRATER_SHIFT = 150;
     public static final int MINERAL_FORWARD = 720;
-    public static final int MINERAL_BACKWARD = 330;
+    public static final int MINERAL_BACKWARD = 350;
     //-------------------------------------------------
 
     // Arm Positions
     public static final int ARM_START = 0;
     public static final int ARM_TOP = -1150;
-    public static final int ARM_GROUND = -2300;
+    public static final int ARM_GROUND = -2247;
     // Arm powers
     public static final double MAX_ARM_POWER = 0.4;
 
