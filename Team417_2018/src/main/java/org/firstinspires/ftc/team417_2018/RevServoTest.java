@@ -154,18 +154,18 @@ public class RevServoTest extends LinearOpMode
             }
 
             if(gamepad2.b)
-            {
-                vex1.setPower(0.79);
-            }
-            else if (gamepad2.x)
-            {
-                vex1.setPower(-0.79);
-            }
-            else
-            {
-                vex1.setPower(0);
+        {
+            vex1.setPower(0.79);
+        }
+        else if (gamepad2.x)
+        {
+            vex1.setPower(-0.79);
+        }
+        else
+        {
+            vex1.setPower(0);
 
-            }
+        }
 
             //telemetry.addData("rev1", rev1.getPosition());
             //telemetry.addData("rev2", rev1.getPosition());
