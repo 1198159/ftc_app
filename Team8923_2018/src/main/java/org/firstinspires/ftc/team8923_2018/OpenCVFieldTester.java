@@ -2,7 +2,7 @@ package org.firstinspires.ftc.team8923_2018;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="OpenCVTest", group = "Test")
+@Autonomous(name="OpenCVFieldTester", group = "Test")
 /*
  * Runable shell for Master Autonomous code
  */

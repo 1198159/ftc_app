@@ -1,19 +1,21 @@
 package org.firstinspires.ftc.team8923_2018;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.opencv.core.Rect;
 
 import java.util.Locale;
 
 
-@Autonomous(name="OpenCVAutoTest", group = "Swerve")
+@Autonomous(name="OpenCVLocateGold", group = "Swerve")
+@Disabled
 /**
  * Runable shell for Master Autonomous code
  */
-//@Disabled
 public class OpenCVAutoTest extends MasterAutonomous
 {
+
     @Override
     public void runOpMode() throws InterruptedException
     {

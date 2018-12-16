@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.team8923_2018;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "IMU Test", group = "Test")
+@Disabled
 public class TestIMU extends MasterTeleOp
 {
     BNO055IMU imu;
