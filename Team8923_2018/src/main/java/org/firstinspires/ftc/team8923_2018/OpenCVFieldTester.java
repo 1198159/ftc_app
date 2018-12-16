@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Runable shell for Master Autonomous code
  */
 //@Disabled
-public class OpenCVTest extends MasterAutonomous
+public class OpenCVFieldTester extends MasterAutonomous
 {
     //Declare variables here
     @Override

@@ -13,7 +13,7 @@ import java.util.Locale;
 /**
  * Runable shell for Master Autonomous code
  */
-public class OpenCVAutoTest extends MasterAutonomous
+public class OpenCVLocateGold extends MasterAutonomous
 {
 
     @Override
