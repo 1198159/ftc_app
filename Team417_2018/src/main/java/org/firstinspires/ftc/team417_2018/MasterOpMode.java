@@ -134,6 +134,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBR.setPower(0);
 
         vex1.setPower(0.0);
+        rev1.setPosition(0.5);
 
       //  marker.setPosition(MARKER_LOW);
       //  motorLift.setPower(0.0);

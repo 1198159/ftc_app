@@ -4,22 +4,30 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "VexmotorTest")
+@TeleOp(name = "TestOpMode")
 //@Disabled
-public class TestOpMode extends MasterAutonomous {
+public class TestOpMode extends LinearOpMode
+{
+
+    CRServo vex1 = null; // port 0
+    Servo rev1 = null;
 
     public void runOpMode() throws InterruptedException
     {
-        CRServo vex1 = null; // port 0
+
+
         vex1 = hardwareMap.crservo.get("vex1");
+        rev1 = hardwareMap.servo.get("rev1");
 
         telemetry.addData("Init:", "done");
         telemetry.update();
         waitForStart();
 
         vex1.setPower(0.0);
+        rev1.setPosition(0.0);
 
         waitForStart();
 
@@ -29,15 +37,16 @@ public class TestOpMode extends MasterAutonomous {
             {
                 vex1.setPower(0.79);
             }
-            else if (gamepad2.x)
+            else if (gamepad2.a)
             {
                 vex1.setPower(-0.79);
             }
             else
             {
                 vex1.setPower(0);
+
             }
-            telemetry.update();
+
         }
     }
 }
