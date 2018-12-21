@@ -55,6 +55,9 @@ public class Constants
     public static final double TRANSLATION_P = DRIVE_POWER_FACTOR;
     public static final double TRANSLATION_I = 0.00000002;    // todo Adjust
     public static final double TRANSLATION_D = 0.004;
+    public static final double ARM_P = 0.02;
+    public static final double ARM_I = 0.00000002;
+    public static final double ARM_D = 0.004;
     //---------------------------------------------------
 
 

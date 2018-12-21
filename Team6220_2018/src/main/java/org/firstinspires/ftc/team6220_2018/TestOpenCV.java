@@ -69,6 +69,7 @@ public class TestOpenCV extends MasterAutonomous
             telemetry.addData("Gold",
                     String.format(Locale.getDefault(), "(%d, %d)", (OpenCVVision.getGoldRect().x + (OpenCVVision.getGoldRect().width) / 2), (OpenCVVision.getGoldRect().y + (OpenCVVision.getGoldRect().height / 2))));
             //telemetry.addData("currentAngle", currentAngle);
+            telemetry.addData("Threshold: ", OpenCVVision.thresholdVal);
             telemetry.update();
             updateCallback(eTime);
             idle();

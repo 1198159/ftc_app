@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team6220_2018;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 
 /**
@@ -27,6 +28,34 @@ public class TeleOpTestBed extends MasterAutonomous
         // Main loop
         while(opModeIsActive())
         {
+            if(driver1.isButtonJustPressed(Button.X))
+            {
+                servoMarker.setPosition(Constants.SERVO_MARKER_DEPLOYED);
+            }
+            // Run arm in position or power mode, depending on the boolean value.
+            /*if (driver2.isButtonPressed(Button.X))
+            {
+                motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorArm.setTargetPosition(Constants.ARM_GROUND);
+                motorArm.setPower(0.3);
+            }
+            else if (driver2.isButtonPressed(Button.Y))
+            {
+                motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorArm.setTargetPosition(Constants.ARM_TOP);
+                motorArm.setPower(Constants.MAX_ARM_POWER);
+            }
+            else if (driver2.isButtonPressed(Button.B))
+            {
+                motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorArm.setTargetPosition(Constants.ARM_START);
+                motorArm.setPower(0.2);
+            }
+            else if(stickCurve.getOuput(driver2.getRightStickY()) > Constants.MINIMUM_JOYSTICK_POWER)
+            {
+                motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                motorArm.setPower(-Constants.MAX_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
+            }*/
             /*if(driver1.isButtonJustPressed(Button.A))
             {
                 turnTo(35,1.0);

@@ -246,6 +246,59 @@ abstract public class MasterOpMode extends LinearOpMode
         telemetry.update();
         */
     }
+    /*void driveMecanumWithCurving(double driveAngle, double drivePower, double w, double powerFLMult, double powerFRMult, double powerBLMult, double powerBRMult)
+    {
+        if(!isDriveTrainAttached)
+        {
+            telemetry.addLine("Drive is not attached!");
+            telemetry.update();
+            return;
+        }
+
+        // Convert drive angle and power to x and y components
+        double y = drivePower * Math.sin(Math.toRadians(driveAngle));
+        double x = drivePower * Math.cos(Math.toRadians(driveAngle));
+
+        // Signs for x, y, and w are based on the motor configuration and inherent properties of mecanum drive
+        double powerFL = -x - y + w;
+        double powerFR = -x + y + w;
+        double powerBL = x - y + w;
+        double powerBR = x + y + w;
+
+        // Scale powers-------------------------
+        *//*
+         Motor powers might be set above 1 (e.g., x + y = 1 and w = -0.8), so we must scale all of
+         the powers to ensure they are proportional and within the range {-1.0, 1.0}
+        *//*
+        double powScalar = SequenceUtilities.getLargestMagnitude(new double[]{powerFL, powerFR, powerBL, powerBR});
+        *//*
+         However, powScalar should only be applied if it is greater than 1. Otherwise, we could
+         unintentionally increase powers or even divide by 0
+        *//*
+        if(powScalar < 1)
+            powScalar = 1;
+
+        powerFL /= powScalar;
+        powerFR /= powScalar;
+        powerBL /= powScalar;
+        powerBR /= powScalar;
+        //--------------------------------------
+
+        // Power motors with corrected inputs
+        motorFL.setPower(powerFL / powerFLMult);
+        motorFR.setPower(powerFR / powerFRMult);
+        motorBL.setPower(powerBL / powerBLMult);
+        motorBR.setPower(powerBR / powerBRMult);
+
+        // todo How to make this not interfere with other telemetry?
+        // Telemetry for debugging motor power inputs
+        *//*
+        telemetry.addData("translation power: ", x);
+        telemetry.addData("vertical power: ", y);
+        telemetry.addData("rotational power: ", w);
+        telemetry.update();
+        *//*
+    }*/
 
 
     // Note:  not in use

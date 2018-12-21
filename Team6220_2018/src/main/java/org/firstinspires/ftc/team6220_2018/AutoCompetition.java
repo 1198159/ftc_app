@@ -84,7 +84,7 @@ public class AutoCompetition extends MasterAutonomous
             motorArm.setTargetPosition(Constants.ARM_GROUND);
             motorArm.setPower(0.4);
             pauseWhileUpdating(1.0);
-            driveToPosition(0, 40, 1.0);
+            driveToPosition(0, 55, 1.0);
             /*while(opModeIsActive())
             {
                 motorCollector.setPower(Constants.MOTOR_COLLECTOR_IN);
@@ -176,7 +176,7 @@ public class AutoCompetition extends MasterAutonomous
             motorArm.setTargetPosition(Constants.ARM_GROUND);
             motorArm.setPower(0.4);
             pauseWhileUpdating(1.0);
-            driveToPosition(0, 40, 1.0);
+            driveToPosition(0, 55, 1.0);
             /*while(opModeIsActive())
             {
                 motorCollector.setPower(Constants.MOTOR_COLLECTOR_IN);

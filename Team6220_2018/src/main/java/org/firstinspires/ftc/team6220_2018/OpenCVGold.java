@@ -19,7 +19,7 @@ import java.util.List;
 public class OpenCVGold extends OpenCVPipeline
 {
     // The minimum (or maximum) yellow value that is necessary for OpenCV to detect a gold mineral.
-    int thresholdVal = 90;
+    int thresholdVal = 107;
 
     private boolean showContours = true;
     // To keep it such that we don't have to instantiate a new Mat every call to processFrame,
