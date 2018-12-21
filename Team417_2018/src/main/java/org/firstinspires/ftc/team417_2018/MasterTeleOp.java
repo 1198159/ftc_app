@@ -13,8 +13,12 @@ abstract public class MasterTeleOp extends MasterOpMode
     double y = 0;
     double pivotPower = 0;
 
+    int core1Position;
+    int core2Position;
     double core1Power;
     double core2Power;
+    int core1Pos;
+    int core2Pos;
     final double ADAGIO_POWER = 0.3;
 
     boolean isReverseMode = false;
@@ -24,6 +28,16 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isXPushed;
     boolean isLeftBumperPushed;
     boolean isRightBumperPushed;
+
+    boolean isDpadLeftPushed = false;
+    boolean isCollectorCenter = false;
+
+    boolean isDpadUpPushed = false;
+    boolean isCollectorUp = false;
+
+    boolean isDpadDownPushed = false;
+    boolean isCollectorDown = false; // gamepad joystick up
+
     boolean isStraightDrive;
 
 
@@ -179,6 +193,8 @@ abstract public class MasterTeleOp extends MasterOpMode
     {
         // control core hex motors - driver 2
 
+        core1.getCurrentPosition();
+        core2.getCurrentPosition();
         if (gamepad2.right_trigger > 0) // extend the collector
         {
             core1Power = -gamepad2.right_trigger;
@@ -196,6 +212,15 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         core1.setPower(core1Power);
         core2.setPower(core2Power);
+
+        /*
+
+        core1Position = core1.getCurrentPosition();
+        core2Position = core2.getCurrentPosition();
+
+
+        //core1.setTargetPosition();
+        */
 
         // control AM 3.7 motors - driver 2
         if (gamepad2.right_stick_y != 0)
@@ -225,7 +250,54 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         // control rev servo
         double revPower = (gamepad2.left_stick_y + 1) / 2;
+
+        if (gamepad2.dpad_left && !isDpadLeftPushed)
+        {
+            isDpadLeftPushed = true;
+            isCollectorCenter = !isCollectorCenter;
+        }
+        isDpadLeftPushed = gamepad2.dpad_left;
+        if (isCollectorCenter)
+        {
+            rev1.setPosition(0.5);
+            isCollectorDown = false;
+            isCollectorCenter = false;
+        }
+
+        /*
+        if (gamepad2.dpad_down && !isDpadDownPushed)
+        {
+            isDpadDownPushed = true;
+            isCollectorDown = !isCollectorDown;
+        }
+        isDpadDownPushed = gamepad2.dpad_down;
+        if (isCollectorDown)
+        {
+            rev1.setPosition(0.0);
+            isCollectorUp = false;
+            isCollectorCenter = false;
+        }
+
+        if (gamepad2.dpad_up && !isDpadUpPushed)
+        {
+            isDpadUpPushed = true;
+            isCollectorUp = !isCollectorUp;
+        }
+        isDpadUpPushed = gamepad2.dpad_up;
+        if (isCollectorUp)
+        {
+            rev1.setPosition(1.0);
+            isCollectorCenter = false;
+            isCollectorDown = false;
+        }
+        */
+
+
+        telemetry.addData("legato: ", isLegatoMode);
+        telemetry.update();
+        idle();
         rev1.setPosition(revPower);
+
         // control vex servo
         if(gamepad2.b)
         {
@@ -252,6 +324,8 @@ abstract public class MasterTeleOp extends MasterOpMode
         telemetry.addData("legato: ", isLegatoMode);
         telemetry.addData("reverse: ", isReverseMode);
         telemetry.addData("arm1:", arm1pos);
+        telemetry.addData("core1:", core1Pos);
+        telemetry.addData("core2:", core2Pos);
         telemetry.update();
     }
 }
