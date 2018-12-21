@@ -383,11 +383,13 @@ abstract public class MasterAutonomous extends MasterOpMode
         motorLift.setPower(0.0);
     }
 
+    /*
     public void marker(boolean isLow)
     {
         if (isLow) marker.setPosition(MARKER_LOW);
         else marker.setPosition(MARKER_HIGH);
     }
+    */
 
     public GoldLocation openCVLocateGold()
     {

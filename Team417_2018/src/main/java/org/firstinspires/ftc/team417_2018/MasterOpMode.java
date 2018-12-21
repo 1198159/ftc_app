@@ -23,7 +23,7 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorBR = null; // port 2
     DcMotor motorLift = null;
 
-    Servo marker = null; // Hub 2, port 5
+    //Servo marker = null; // Hub 2, port 5
 
     CRServo hanger = null; // hub 2 port 5
 
@@ -76,7 +76,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
 
-        marker = hardwareMap.servo.get("marker");
+        //marker = hardwareMap.servo.get("marker");
 
         core1 = hardwareMap.dcMotor.get("core1");
         core2 = hardwareMap.dcMotor.get("core2");
@@ -90,14 +90,16 @@ abstract public class MasterOpMode extends LinearOpMode
 
         hanger = hardwareMap.crservo.get("hanger");
 
-        core1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        core2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //core1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //core2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        core1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        core2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        core1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        core2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //core1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //core2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         arm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -135,7 +137,6 @@ abstract public class MasterOpMode extends LinearOpMode
 
         vex1.setPower(0.0);
         rev1.setPosition(0.5);
-
       //  marker.setPosition(MARKER_LOW);
       //  motorLift.setPower(0.0);
       //  marker.setPosition(0.0);
