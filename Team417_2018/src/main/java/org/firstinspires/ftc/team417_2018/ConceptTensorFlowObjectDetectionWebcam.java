@@ -52,7 +52,7 @@ import java.util.List;
  * is explained below.
  */
 @TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
-@Disabled
+//@Disabled
 public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -71,7 +71,10 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
      * Once you've obtained a license key, copy the string from the Vuforia web site
      * and paste it in to your code on the next line, between the double quotes.
      */
-    private static final String VUFORIA_KEY = "ATJf0AL/////AAAAGQZ9xp9L+k5UkmHj3LjxcoQwNTTBJqjO9LYsbkWQArRpYKQmt7vqe680RCQSS9HatStn1XZVi7rgA8T7qrJz/KYI748M4ZjlKv4Z11gryemJCRA9+WWkQ51D3TuYJbQC46+LDeMfbvcJQoQ79jtXr7xdFhfJl1mRxf+wMVoPWfN6Dhr8q3XVxFwOE/pM3gXWQ0kacbcGR/vy3NAsbOhf02DEe5WoV5PNZTF34LWN3dWURu7NJsnbFzkpzXdogeVAdiQ3QUWDvuhEwvSJY4W+fCTb15t6T/c/GJ/vqptsVKqavXk6MQobnUsVFpFP+5OSuRQe7EgvWuOxn7xn5YlC+CWAYh9LrXDpktwCwBAiX3Gx";
+
+
+
+    private static final String VUFORIA_KEY = "Aaa+OuX/////AAABmaxAA+6UCEIsvCpMbJ0pgASBYhUHvxRjyemrCMF5DRWlkeMgBW5D+Ir2OTXZGzT12+WArbBasyovXC3ULyf9X3WF+gYnc5oKuh1e4fpo8b6oX4m8jOnMHG0/pUJohrk8KOrfh5xbrIVzPVe4hGHlfEGp38FQ3EiJBc1fM0J6Ci99Svo32+v7KI083dgUAiGDItjVztARatG7xMoC5it7G6T9Y2eC4uofXdr1KXGRsXVvSbo7VVQ+5X8mlfWyMyOWmPwaXg7c24icJZ5N8FsPnQ5N8wPmakBDcCtfqLbM0sVIojbBkm2gVrmgPNEapR7uWmGd6z3pKKAXFMRv2/IWH5hzTb9AnQKjfbY61F7UenfD\n";
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -160,6 +163,11 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        /**
+         * We also indicate which camera on the RC we wish to use.
+         */
+        parameters.cameraName = webcamName;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
