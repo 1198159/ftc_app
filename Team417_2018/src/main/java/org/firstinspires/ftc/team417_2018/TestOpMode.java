@@ -12,41 +12,23 @@ import com.qualcomm.robotcore.util.Range;
 public class TestOpMode extends LinearOpMode
 {
 
-    CRServo vex1 = null; // port 0
-    Servo rev1 = null;
+    DcMotor core1 = null; // hub 2 port 2
 
     public void runOpMode() throws InterruptedException
     {
-
-
-        vex1 = hardwareMap.crservo.get("vex1");
-        rev1 = hardwareMap.servo.get("rev1");
+        core1 = hardwareMap.dcMotor.get("core1");
 
         telemetry.addData("Init:", "done");
         telemetry.update();
         waitForStart();
 
-        vex1.setPower(0.0);
-        rev1.setPosition(0.0);
+        core1.setPower(0.0);
 
         waitForStart();
 
         while (opModeIsActive())
         {
-            if(gamepad2.b)
-            {
-                vex1.setPower(0.79);
-            }
-            else if (gamepad2.a)
-            {
-                vex1.setPower(-0.79);
-            }
-            else
-            {
-                vex1.setPower(0);
-
-            }
-
+            core1.setPower(-gamepad1.left_stick_y); // if left stick up then slides extend
         }
     }
 }
