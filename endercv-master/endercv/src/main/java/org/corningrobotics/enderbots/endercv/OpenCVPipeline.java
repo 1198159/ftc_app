@@ -1,8 +1,11 @@
+// This file came from the DogeCV library from Wizards.com
+//package com.disnodeteam.dogecv;
 package org.corningrobotics.enderbots.endercv;
 
 import android.app.Activity;
 import android.content.Context;
 import android.view.Surface;
+import android.view.View;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
@@ -51,10 +54,12 @@ public abstract class OpenCVPipeline implements CameraBridgeViewBase.CvCameraVie
         }
     }
     protected JavaCameraView cameraView;
+    protected DrawViewSource rawView;
     private ViewDisplay viewDisplay;
     protected Context context;
     private boolean initStarted = false;
     private boolean inited = false;
+    private boolean isVuforia = false;
 
     /**
      * Initializes the OpenCVPipeline, but implicitly uses the rear camera.
@@ -63,7 +68,7 @@ public abstract class OpenCVPipeline implements CameraBridgeViewBase.CvCameraVie
      *                    in most cases, using CameraViewDisplay.getInstance() as the argument is just fine.
      */
     public void init(Context context, ViewDisplay viewDisplay) {
-        init(context, viewDisplay, 0);
+        init(context, viewDisplay, 0, false);
     }
 
     /**
@@ -73,25 +78,32 @@ public abstract class OpenCVPipeline implements CameraBridgeViewBase.CvCameraVie
      *                    in most cases, using CameraViewDisplay.getInstance() as the argument is just fine.
      * @param cameraIndex The index of the camera to use. On every FTC-legal phone (afaik) 0 is the back camera, and 1 is the front camera.
      */
-    public void init(Context context, ViewDisplay viewDisplay, final int cameraIndex) {
+    public void init(Context context, ViewDisplay viewDisplay, final int cameraIndex, final boolean isVuforia) {
         this.initStarted = true;
         this.viewDisplay = viewDisplay;
         this.context = context;
+        this.isVuforia = isVuforia;
         final Activity activity = (Activity) context;
         final Context finalContext = context;
         final CameraBridgeViewBase.CvCameraViewListener2 self = this;
+
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 // JCVs must be instantiated on a UI thread
-                cameraView = new CustomCameraView(finalContext, cameraIndex);
-                cameraView.setCameraIndex(cameraIndex);
-                cameraView.setCvCameraViewListener(self);
+                if(isVuforia){
+                    rawView = new DrawViewSource(finalContext);
+                }else{
+                    cameraView = new CustomCameraView(finalContext, cameraIndex);
+                    cameraView.setCameraIndex(cameraIndex);
+                    cameraView.setCvCameraViewListener(self);
+                    cameraView.enableFpsMeter();
+
+                }
                 inited = true;
             }
         });
     }
-    //TODO: allow other JavaCameraViews to be used, with the stipulation that they must already be instantiated from a UI thread
 
     /**
      * Attaches the underlying JavaCameraView to the screen and the camera using the set {@link ViewDisplay} to do so, essentially starting OpenCV processing.
@@ -105,9 +117,16 @@ public abstract class OpenCVPipeline implements CameraBridgeViewBase.CvCameraVie
             while (!inited) Thread.sleep(10);
         } catch (InterruptedException e) { return; }
 
-        cameraView.enableView();
-        viewDisplay.setCurrentView(context, getCameraView());
+        if(isVuforia){
+            viewDisplay.setCurrentView(context, rawView);
+
+        }else{
+            cameraView.enableView();
+            viewDisplay.setCurrentView(context, getCameraView());
+        }
     }
+
+
 
     /**
      * Detaches the JavaCameraView from the camera and the screen, stopping OpenCV processing.
@@ -117,7 +136,10 @@ public abstract class OpenCVPipeline implements CameraBridgeViewBase.CvCameraVie
      * because dean kamen help you if something bad happens from that
      */
     public void disable() {
-        cameraView.disableView();
+
+        if(!isVuforia){
+            cameraView.disableView();
+        }
         viewDisplay.removeCurrentView(context);
     }
 
@@ -128,6 +150,8 @@ public abstract class OpenCVPipeline implements CameraBridgeViewBase.CvCameraVie
     public JavaCameraView getCameraView() {
         return cameraView;
     }
+
+    public DrawViewSource getRawView(){return rawView;}
 
     /**
      * This function is called when the camera is started; overriding this may be useful to set the
@@ -157,6 +181,7 @@ public abstract class OpenCVPipeline implements CameraBridgeViewBase.CvCameraVie
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat rgba = new Mat();
         Mat gray = new Mat();
+
         switch (((Activity) context).getWindowManager().getDefaultDisplay().getRotation()) {
             case Surface.ROTATION_0:
                 // this breaks horribly for some reason

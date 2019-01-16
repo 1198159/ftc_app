@@ -67,6 +67,7 @@ public class TruongOpenCVExample extends OpenCVPipeline {
     private Mat displayMat = new Mat(); // Display debug info to the screen (this is what is returned)
 
     private Rect goldRect = new Rect(0,0,0,0);
+    private int threshold = 70;
 
     // this is just here so we can expose it later thru getContours.
     private List<MatOfPoint> contours = new ArrayList<>();
@@ -82,6 +83,11 @@ public class TruongOpenCVExample extends OpenCVPipeline {
         return goldRect;
     }
 
+    public void SetThreshold(int threshold) {
+        this.threshold = threshold;
+    }
+
+
     // This is called every camera frame.
     @Override
     public Mat processFrame(Mat rgba, Mat gray) {
@@ -89,18 +95,56 @@ public class TruongOpenCVExample extends OpenCVPipeline {
         rgba.copyTo(displayMat);
         // filter yellow
         Imgproc.cvtColor(rgba, rgba, Imgproc.COLOR_RGB2YUV);
+        //Imgproc.cvtColor(rgba, rgba, Imgproc.COLOR_RGB2HSV_FULL);
         Imgproc.GaussianBlur(rgba,rgba,new Size(3,3),0);
         channels = new ArrayList<>();
         Core.split(rgba, channels);
         if(channels.size() > 0){
-            Imgproc.threshold(channels.get(1), maskYellow, 70, 255, Imgproc.THRESH_BINARY_INV);
+            Imgproc.threshold(channels.get(1), maskYellow, threshold, 255, Imgproc.THRESH_BINARY_INV);
         }
+
+        int rows = displayMat.rows();
+        int cols = displayMat.cols();
+
+        /*  // test HSV color space for detecting yellow
+        Bitmap bmp0 = Bitmap.createBitmap(cols, rows, Bitmap.Config.ARGB_8888);
+        Bitmap bmp1 = Bitmap.createBitmap(cols, rows, Bitmap.Config.ARGB_8888);
+        Bitmap bmp2 = Bitmap.createBitmap(cols, rows, Bitmap.Config.ARGB_8888);
+        Bitmap bmp3 = Bitmap.createBitmap(cols, rows, Bitmap.Config.ARGB_8888);
+        Bitmap bmCh0 = Bitmap.createBitmap(cols, rows, Bitmap.Config.ARGB_8888);
+        Bitmap bmCh1 = Bitmap.createBitmap(cols, rows, Bitmap.Config.ARGB_8888);
+        Bitmap bmCh2 = Bitmap.createBitmap(cols, rows, Bitmap.Config.ARGB_8888);
+
+        // convert Mat to bitmap to see each step
+        //Utils.matToBitmap(maskYellow, bmp);
+
+        Utils.matToBitmap(channels.get(0), bmCh0);
+        Utils.matToBitmap(channels.get(1), bmCh1);
+        Utils.matToBitmap(channels.get(2), bmCh2);
+
+        // try different HSV ranges
+        // set hue to 22-64 or 31-90 degree
+        // sweep saturation upper limit from 150 to 250
+        Core.inRange(rgba, new Scalar(22,81,143), new Scalar(64, 150, 255), maskYellow);
+        Utils.matToBitmap(maskYellow, bmp0);
+
+        Core.inRange(rgba, new Scalar(22,81,143), new Scalar(64, 170, 255), maskYellow);
+        Utils.matToBitmap(maskYellow, bmp1);
+
+        Core.inRange(rgba, new Scalar(22,81,143), new Scalar(64, 190, 255), maskYellow);
+        Utils.matToBitmap(maskYellow, bmp2);
+
+        Core.inRange(rgba, new Scalar(22,81,143), new Scalar(64, 250, 255), maskYellow);
+        Utils.matToBitmap(maskYellow, bmp3);
+
+        */
 
         //Find contours of the yellow mask and draw them to the display mat for viewing
 
         List<MatOfPoint> contoursYellow = new ArrayList<>();
         Imgproc.findContours(maskYellow, contoursYellow, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        Imgproc.drawContours(displayMat,contoursYellow,-1,new Scalar(230,70,70),2);
+        if (showContours)
+            Imgproc.drawContours(displayMat,contoursYellow,-1,new Scalar(230,70,70),2);
 
         double area;
         double maxArea = 0.0;
@@ -126,18 +170,13 @@ public class TruongOpenCVExample extends OpenCVPipeline {
         // Draw Current X
         Imgproc.putText(displayMat, "Gold", maxRect.tl(),0,1,new Scalar(255,255,255));
 
-        // Debug: display bitmap
-        Bitmap bmp = null;
-        int rows = displayMat.rows();
-        int cols = displayMat.cols();
 // create a new 4 channel Mat because bitmap is ARGB
         Mat tmp = new Mat (displayMat.rows(), displayMat.cols(), CvType.CV_8U, new Scalar(4));
 // convert ROI image from single channel to 4 channel
 //        Imgproc.cvtColor(displayMat, tmp, Imgproc.COLOR_GRAY2RGBA, 4);
+        // Debug: display bitmap
 // Initialize bitmap
-        bmp = Bitmap.createBitmap(cols, rows, Bitmap.Config.ARGB_8888);
-// convert Mat to bitmap
-        Utils.matToBitmap(tmp, bmp);
+
         // First, we change the colorspace from RGBA to HSV, which is usually better for color
         //Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV, 3);
         // Then, we threshold our hsv image so that we get a black/white binary image where white

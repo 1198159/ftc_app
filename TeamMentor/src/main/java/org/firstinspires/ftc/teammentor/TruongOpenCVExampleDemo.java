@@ -57,9 +57,9 @@ public class TruongOpenCVExampleDemo extends LinearOpMode {
     public void runOpMode() {
         TruongVision = new TruongOpenCVExample();
         // can replace with ActivityViewDisplay.getInstance() for fullscreen
-        // TruongVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        TruongVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         // fullscreen display
-        TruongVision.init(hardwareMap.appContext, ActivityViewDisplay.getInstance());
+        //TruongVision.init(hardwareMap.appContext, ActivityViewDisplay.getInstance());
         TruongVision.setShowCountours(false);
 
         // start the vision system
