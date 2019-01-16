@@ -58,7 +58,6 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
     WebcamName webcamName;
-    WebcamName webcamName2;
 
     boolean isApushed = false;
     boolean isCam1 = false;
@@ -171,7 +170,6 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
-        webcamName2 = hardwareMap.get(WebcamName.class, "Webcam 2");
 
         /**
          * We also indicate which camera on the RC we wish to use.
