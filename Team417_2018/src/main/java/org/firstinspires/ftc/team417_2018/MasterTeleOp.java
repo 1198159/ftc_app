@@ -191,38 +191,13 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     void collector()
     {
-        // control core hex motors - driver 2
 
-        core1.getCurrentPosition();
-        core2.getCurrentPosition();
-        if (gamepad2.right_trigger > 0) // extend the collector
-        {
-            core1Power = -gamepad2.right_trigger;
-            core2Power = gamepad2.right_trigger;
-        }
-        else if (gamepad2.left_trigger > 0) // pull the collector in
-        {
-            core1Power = gamepad2.left_trigger;
-            core2Power = -gamepad2.left_trigger;
-        }
-        else
-        {
-            core1Power = 0.0;
-            core2Power = 0.0;
-        }
-        core1.setPower(core1Power);
-        core2.setPower(core2Power);
+// control the extending with G2 right (extend) and left (retract) trigger
+        if (gamepad2.right_trigger != 0) core2.setPower(gamepad2.right_trigger);
+        else if (gamepad2.left_trigger != 0) core2.setPower(-gamepad2.left_trigger);
+        else core2.setPower(0.0);
 
-        /*
-
-        core1Position = core1.getCurrentPosition();
-        core2Position = core2.getCurrentPosition();
-
-
-        //core1.setTargetPosition();
-        */
-
-        // control AM 3.7 motors - driver 2
+// control arm motors with G2 right stick
         if (gamepad2.right_stick_y != 0)
         {
             arm1.setPower(Range.clip(gamepad2.right_stick_y, -0.15, 0.15));
@@ -235,7 +210,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         arm1pos = arm1.getCurrentPosition(); // update arm1 motor position
 
-        // control hanger - driver 1
+// control hanger with G2 left and right bumpers
         if (gamepad2.left_bumper)
         {
             hanger.setPower(0.99);
@@ -248,7 +223,8 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             hanger.setPower(0.0);
         }
-        // control rev servo
+
+// control rev servo with G2 left stick
         double revPower = (gamepad2.left_stick_y + 1) / 2;
 
         if (gamepad2.dpad_left && !isDpadLeftPushed)
@@ -264,61 +240,17 @@ abstract public class MasterTeleOp extends MasterOpMode
             isCollectorCenter = false;
         }
 
-        /*
-        if (gamepad2.dpad_down && !isDpadDownPushed)
-        {
-            isDpadDownPushed = true;
-            isCollectorDown = !isCollectorDown;
-        }
-        isDpadDownPushed = gamepad2.dpad_down;
-        if (isCollectorDown)
-        {
-            rev1.setPosition(0.0);
-            isCollectorUp = false;
-            isCollectorCenter = false;
-        }
-
-        if (gamepad2.dpad_up && !isDpadUpPushed)
-        {
-            isDpadUpPushed = true;
-            isCollectorUp = !isCollectorUp;
-        }
-        isDpadUpPushed = gamepad2.dpad_up;
-        if (isCollectorUp)
-        {
-            rev1.setPosition(1.0);
-            isCollectorCenter = false;
-            isCollectorDown = false;
-        }
-        */
-
-
         telemetry.addData("legato: ", isLegatoMode);
         telemetry.update();
         idle();
         rev1.setPosition(revPower);
 
-        // control vex servo
-        if(gamepad2.b)
-        {
-            vex1.setPower(0.79);
-        }
-        else if (gamepad2.a)
-
-        {
-            vex1.setPower(-0.79);
-        }
-        else
-        {
-            vex1.setPower(0);
-        }
+// control vex servo with G2 B and A
+        if(gamepad2.b) vex1.setPower(0.79);
+        else if (gamepad2.a) vex1.setPower(-0.79);
+        else vex1.setPower(0);
     }
 
-    /* void marker()
-    {
-        marker.setPosition(Range.clip((gamepad2.right_trigger), MARKER_LOW, MARKER_HIGH));
-    }
-    */
     void updateTelemetry()
     {
         telemetry.addData("legato: ", isLegatoMode);

@@ -25,7 +25,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     //Servo marker = null; // Hub 2, port 5
 
-    CRServo hanger = null; // hub 2 port 5
+    DcMotor hanger = null; // hub 2 port 5
 
     DcMotor core1 = null; // hub 1 port 3
     DcMotor core2 = null; // hub 2 port 3
@@ -78,7 +78,6 @@ abstract public class MasterOpMode extends LinearOpMode
 
         //marker = hardwareMap.servo.get("marker");
 
-        core1 = hardwareMap.dcMotor.get("core1");
         core2 = hardwareMap.dcMotor.get("core2");
 
         arm1 = hardwareMap.dcMotor.get("arm1");
@@ -88,18 +87,13 @@ abstract public class MasterOpMode extends LinearOpMode
 
         vex1 = hardwareMap.crservo.get("vex1");
 
-        hanger = hardwareMap.crservo.get("hanger");
+        hanger = hardwareMap.dcMotor.get("hanger");
 
-        //core1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //core2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        core1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        core2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        core2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        //core1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //core2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         arm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -119,8 +113,6 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-      //  motorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         // reverse front and back right motors just for TeleOp
         motorFL.setDirection(DcMotor.Direction.REVERSE);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
@@ -137,9 +129,9 @@ abstract public class MasterOpMode extends LinearOpMode
 
         vex1.setPower(0.0);
         rev1.setPosition(0.5);
-      //  marker.setPosition(MARKER_LOW);
-      //  motorLift.setPower(0.0);
-      //  marker.setPosition(0.0);
+        // marker.setPosition(MARKER_LOW);
+        // motorLift.setPower(0.0);
+        // marker.setPosition(0.0);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
