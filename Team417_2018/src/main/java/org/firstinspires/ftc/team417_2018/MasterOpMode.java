@@ -49,6 +49,8 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4;
     static final double SCALE_OMNI = 1.41;
     final double ROBOT_DIAMETER_MM = 20.5 * 25.4;   // diagonal 20.5 inch FL to BR and FR to BL
+    static final double INIT_REV_POS = 1.0; // the initial position is inside the robot, should happen in init
+    static final double REV_INCREMENT = 0.01; // this is how much the REV servo wrist moves per flick of the joystick
 
     // Servo init and low positions
     static final double MARKER_LOW = -0.37;
@@ -128,7 +130,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBR.setPower(0);
 
         vex1.setPower(0.0);
-        rev1.setPosition(0.5);
+        rev1.setPosition(INIT_REV_POS);
         // marker.setPosition(MARKER_LOW);
         // motorLift.setPower(0.0);
         // marker.setPosition(0.0);
