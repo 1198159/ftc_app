@@ -13,9 +13,9 @@ abstract public class MasterTeleOp extends MasterOpMode
     double y = 0;
     double pivotPower = 0;
 
-    int core1Position;
+    double curRevPos = INIT_REV_POS; // starts in down position
+
     int core2Position;
-    double core1Power;
     double core2Power;
     int core1Pos;
     int core2Pos;
@@ -225,7 +225,17 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
 
 // control rev servo with G2 left stick
-        double revPower = (gamepad2.left_stick_y + 1) / 2;
+        if (-gamepad2.left_stick_y > 0.1) // if the joystick is UP
+        {
+            curRevPos = curRevPos - REV_INCREMENT; // move the collector up
+        }
+        else if (-gamepad2.left_stick_y < -0.1) // if the joystick is DOWN
+        {
+            curRevPos = curRevPos + REV_INCREMENT; // move the collector down
+        }
+        rev1.setPosition(curRevPos); // set the wrist REV servo position
+
+
 
         if (gamepad2.dpad_left && !isDpadLeftPushed)
         {
@@ -243,7 +253,6 @@ abstract public class MasterTeleOp extends MasterOpMode
         telemetry.addData("legato: ", isLegatoMode);
         telemetry.update();
         idle();
-        rev1.setPosition(revPower);
 
 // control vex servo with G2 B and A
         if(gamepad2.b) vex1.setPower(0.79);
