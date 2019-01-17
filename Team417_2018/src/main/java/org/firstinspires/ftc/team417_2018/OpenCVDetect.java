@@ -29,6 +29,8 @@ public class OpenCVDetect extends OpenCVPipeline
     private Mat blurred = new Mat();
     public Mat detectedEdges = new Mat();
 
+    private int threshold = 70;
+
     private List<Mat> channels = new ArrayList<>();
     private Mat maskYellow = new Mat();  // Yellow Mask returned by color filter
     private Mat hierarchy  = new Mat();  // hierarchy used by contours
@@ -50,6 +52,10 @@ public class OpenCVDetect extends OpenCVPipeline
         return goldRect;
     }
 
+    public void setThreshold(int threshold){
+        this.threshold = threshold;
+    }
+
     // This is called every camera frame.
     @Override
     public Mat processFrame(Mat rgba, Mat gray)
@@ -62,13 +68,20 @@ public class OpenCVDetect extends OpenCVPipeline
         Core.split(rgba, channels);
         if(channels.size() > 0)
         {
-            Imgproc.threshold(channels.get(1), maskYellow, 100, 255, Imgproc.THRESH_BINARY_INV);
+            Imgproc.threshold(channels.get(1), maskYellow, threshold, 255, Imgproc.THRESH_BINARY_INV);
         }
 
-        //Find contours of the yellow mask and draw them to the display mat for viewing
+        // Debug: display bitmap
+        Bitmap bmp = null;
+        int rows = displayMat.rows();
+        int cols = displayMat.cols();
+
+
+
         List<MatOfPoint> contoursYellow = new ArrayList<>();
         Imgproc.findContours(maskYellow, contoursYellow, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        Imgproc.drawContours(displayMat,contoursYellow,-1,new Scalar(230,70,70),2);
+        if (showContours)
+            Imgproc.drawContours(displayMat,contoursYellow,-1,new Scalar(230,70,70),2);
 
         double area;
         double maxArea = 0.0;
@@ -76,14 +89,14 @@ public class OpenCVDetect extends OpenCVPipeline
         Rect maxRect = new Rect(0, 0, 0, 0);   // Rect with max area
         Rect temp = null;
 
+
         // Loop through the contours and find the contour with max area
-        for(MatOfPoint cont : contoursYellow)
-        {
+        for(MatOfPoint cont : contoursYellow){
+
             // Get bounding rect of contour
             rect = Imgproc.boundingRect(cont);
             area = Imgproc.contourArea(cont);
-            if (area > maxArea && rect.x < 370)
-            {
+            if (area > maxArea){
                 maxArea = area;
                 maxRect = rect;
             }
@@ -94,18 +107,8 @@ public class OpenCVDetect extends OpenCVPipeline
         // Draw Current X
         Imgproc.putText(displayMat, "Gold", maxRect.tl(),0,1,new Scalar(255,255,255));
 
-        // Debug: display bitmap
-        Bitmap bmp = null;
-        int rows = displayMat.rows();
-        int cols = displayMat.cols();
-        // create a new 4 channel Mat because bitmap is ARGB
+// create a new 4 channel Mat because bitmap is ARGB
         Mat tmp = new Mat (displayMat.rows(), displayMat.cols(), CvType.CV_8U, new Scalar(4));
-        // convert ROI image from single channel to 4 channel
-        // Imgproc.cvtColor(displayMat, tmp, Imgproc.COLOR_GRAY2RGBA, 4);
-        // Initialize bitmap
-        bmp = Bitmap.createBitmap(cols, rows, Bitmap.Config.ARGB_8888);
-        // convert Mat to bitmap
-        Utils.matToBitmap(tmp, bmp);
 
         return displayMat;
     }
