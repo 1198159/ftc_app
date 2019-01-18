@@ -21,9 +21,8 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorFR = null; // port 3
     DcMotor motorBL = null; // port 1
     DcMotor motorBR = null; // port 2
-    DcMotor motorLift = null;
 
-    //Servo marker = null; // Hub 2, port 5
+    Servo marker = null; // hub 2 port 4
 
     DcMotor hanger = null; // hub 2 port 5
 
@@ -38,8 +37,6 @@ abstract public class MasterOpMode extends LinearOpMode
 
     // Declare sensors
     BNO055IMU imu; // inertial measurement unit (located within the REV Hub)
-    //ColorSensor sensorColorLeft; // port 1
-    //ColorSensor sensorColorRight; // port 2
 
     // Declare constants
     static final double COUNTS_PER_MOTOR_REV = 1120;
@@ -54,7 +51,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     // Servo init and low positions
     static final double MARKER_LOW = -0.37;
-    static final double MARKER_HIGH = 1.0;
+    static final double MARKER_HIGH = 0.15;
 
     // declare color sensor variables
     // hsvValues is an array that will hold the hue, saturation, and value information.
@@ -78,7 +75,7 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
 
-        //marker = hardwareMap.servo.get("marker");
+        marker = hardwareMap.servo.get("marker");
 
         core2 = hardwareMap.dcMotor.get("core2");
 
@@ -131,9 +128,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         vex1.setPower(0.0);
         rev1.setPosition(INIT_REV_POS);
-        // marker.setPosition(MARKER_LOW);
-        // motorLift.setPower(0.0);
-        // marker.setPosition(0.0);
+        marker.setPosition(MARKER_LOW);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;

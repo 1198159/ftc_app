@@ -27,6 +27,7 @@ public class TeleOpCompetition extends MasterTeleOp
         {
             mecanumDrive();
             collector();
+            marker();
             updateTelemetry();
             idle();
         }

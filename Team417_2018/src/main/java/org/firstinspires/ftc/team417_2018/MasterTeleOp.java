@@ -38,6 +38,9 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isDpadDownPushed = false;
     boolean isCollectorDown = false; // gamepad joystick up
 
+    boolean isMarkerDown = true;
+    boolean isYButtonPressed = true;
+
     boolean isStraightDrive;
 
 
@@ -225,17 +228,16 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
 
 // control rev servo with G2 left stick
-        if (-gamepad2.left_stick_y > 0.1) // if the joystick is UP
+        if (-gamepad2.left_stick_y > 0.1 && curRevPos > 0.0) // if the joystick is UP
         {
             curRevPos = curRevPos - REV_INCREMENT; // move the collector up
         }
-        else if (-gamepad2.left_stick_y < -0.1) // if the joystick is DOWN
+        else if (-gamepad2.left_stick_y < -0.1 && curRevPos < 1.0) // if the joystick is DOWN
         {
             curRevPos = curRevPos + REV_INCREMENT; // move the collector down
         }
         rev1.setPosition(curRevPos); // set the wrist REV servo position
-
-
+        
 
         if (gamepad2.dpad_left && !isDpadLeftPushed)
         {
@@ -258,6 +260,20 @@ abstract public class MasterTeleOp extends MasterOpMode
         if(gamepad2.b) vex1.setPower(0.79);
         else if (gamepad2.a) vex1.setPower(-0.79);
         else vex1.setPower(0);
+    }
+
+    void marker()
+    {
+        // Press button y to toggle up and down
+        if(isMarkerDown) marker.setPosition(MARKER_LOW);
+        else marker.setPosition(MARKER_HIGH);
+
+        if (gamepad2.y && !isYButtonPressed)
+        {
+            isYButtonPressed = true;
+            isMarkerDown = !isMarkerDown;
+        }
+        isYButtonPressed = gamepad2.y;
     }
 
     void updateTelemetry()

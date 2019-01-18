@@ -20,6 +20,8 @@ abstract public class MasterAutonomous extends MasterOpMode
    // private OpenCVDetect goldVision;
     private int OPENCV_IMAGE_MIDDLE = 360;
 
+    int threshold = 80;
+
     private int curLiftPos = 0;
     boolean isLogging = true;
     boolean isPosCrater;
@@ -99,6 +101,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
     public void InitializeDetection()
     {
         //Set up telemetry data
@@ -121,6 +124,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         // Initialize the OpenCV_detector
         OpenCV_detector = new OpenCVDetect();
     }
+
     public void isGold()
     {
         // right gold was located at (700,380)
@@ -414,11 +418,6 @@ abstract public class MasterAutonomous extends MasterOpMode
         sleep(7600);
         hanger.setPower(0.0);
     }
-    public void unhook()
-    {
-        hanger.setPower(0.99);
-        sleep(3500);
-    }
 
     public void lower() // only use this after you raise the lift mechanism, or call the land() method
     {
@@ -431,54 +430,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         while (curLiftPos>500);
         motorLift.setPower(0.0);
         */
-        motorLift.setPower(-0.95);
         sleep(7700);
-        motorLift.setPower(0.0);
     }
-
-    /*
-    public void marker(boolean isLow)
-    {
-        if (isLow) marker.setPosition(MARKER_LOW);
-        else marker.setPosition(MARKER_HIGH);
-    }
-    */
-
-    /* public GoldLocation openCVLocateGold()
-    {
-        GoldLocation gold;
-
-        Rect goldRect = goldVision.getGoldRect();
-
-        telemetry.addData("Gold",
-                String.format(Locale.getDefault(), "(%d, %d)", (goldRect.x + goldRect.width / 2), (goldRect.y + goldRect.height / 2) ) );
-
-        //This function assumes that the openCV frame contains the left and center objects only.
-        //goldRect will be (0,0,0,0) if the yellow color is not found in the image; i.e., the gold must be on the right.
-
-        //We are checking Y because our phone is in landscape mode.
-        int midpoint = goldRect.y + goldRect.height / 2;
-
-        if((midpoint > 0) && (midpoint < OPENCV_IMAGE_MIDDLE))
-        {
-            telemetry.addData("Position: ", "Left");
-            gold = GoldLocation.LEFT;
-        }
-        else if(midpoint >= OPENCV_IMAGE_MIDDLE)
-        {
-            telemetry.addData("Position: ", "Center");
-            gold = GoldLocation.CENTER;
-        }
-        else //the yellow color was not found in the image; gold must be on the right.
-        {
-            telemetry.addData("Position", "Right");
-            gold = GoldLocation.RIGHT;
-        }
-
-        telemetry.update();
-
-        return gold;
-    }
-*/
 
 }
