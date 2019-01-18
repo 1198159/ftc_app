@@ -38,6 +38,18 @@ public class AutoHang extends MasterAutonomous
                     String.format(Locale.getDefault(), "(%d, %d)", (OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2), (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2) ) );
 
             isGold();
+            if (isRightGold)
+            {
+                telemetry.addLine("Right");
+            }
+            else if (isLeftGold)
+            {
+                telemetry.addLine("Left");
+            }
+            else if (isCenterGold)
+            {
+                telemetry.addLine("Center");
+            }
             telemetry.update();
             idle();
         }
@@ -45,10 +57,10 @@ public class AutoHang extends MasterAutonomous
 
         waitForStart();
         autoRuntime.reset();
-        //autoRuntime.reset();
         telemetry.addData("Auto: ", "Started");
         telemetry.update();
 
+        /*
         land();
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
@@ -64,7 +76,6 @@ public class AutoHang extends MasterAutonomous
         telemetry.update();
         sleep(1000);
 
-        /*
         move(0, 70, 0.2, 0.75, 3.0); // move from sampling position to gold push position
         sleep(50);
 

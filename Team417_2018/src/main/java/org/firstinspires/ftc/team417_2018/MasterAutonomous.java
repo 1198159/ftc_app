@@ -129,7 +129,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             isLeftGold = false;
             isCenterGold = false;
             isRightGold = true;
-            telemetry.addLine("Right");
+           // telemetry.addLine("Right");
         }
         // left gold was located at (110,380)
         else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 200))
@@ -137,14 +137,14 @@ abstract public class MasterAutonomous extends MasterOpMode
             isLeftGold = true;
             isCenterGold = false;
             isRightGold = false;
-            telemetry.addLine("Left");
+           // telemetry.addLine("Left");
         }
         // center gold was located at (420,380)
         else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 350) && ((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 500)) {
             isLeftGold = false;
             isCenterGold = true;
             isRightGold = false;
-            telemetry.addLine("Center");
+           // telemetry.addLine("Center");
         }
     }
 
