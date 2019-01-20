@@ -150,6 +150,20 @@ abstract public class MasterAutonomous extends MasterOpMode
             isRightGold = false;
            // telemetry.addLine("Center");
         }
+        if (isRightGold)
+        {
+            telemetry.addLine("Right");
+        }
+        else if (isLeftGold)
+        {
+            telemetry.addLine("Left");
+        }
+        else if (isCenterGold)
+        {
+            telemetry.addLine("Center");
+        }
+        telemetry.update();
+        idle();
     }
 
     // drive forwards/backwards/horizontal left and right function

@@ -68,9 +68,7 @@ public class AutoHang extends MasterAutonomous
         //   app crashes if screen orientation switches from portrait to landscape
         //   screen goes to sleep, and webcam turns off a few minutes after init, and after play
         //OpenCV_detector.init(hardwareMap.appContext, ActivityViewDisplay.getInstance(), 0, true);
-
-
-        while (!isStarted())
+       while (!isStarted())
         {
             // select position left or right, from drivers facing the field
             if (gamepad1.x) isPosCrater = true;
@@ -103,21 +101,6 @@ public class AutoHang extends MasterAutonomous
                 isRightGold = false;
                 telemetry.addLine("Center");
             }
-
-            if (isRightGold)
-            {
-                telemetry.addLine("Right");
-            }
-            else if (isLeftGold)
-            {
-                telemetry.addLine("Left");
-            }
-            else if (isCenterGold)
-            {
-                telemetry.addLine("Center");
-            }
-            telemetry.update();
-            idle();
         }
         telemetry.update();
 
