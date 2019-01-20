@@ -13,62 +13,12 @@ import java.util.Locale;
 // @Disabled
 public class AutoHang extends MasterAutonomous
 {
-    boolean isLeftGold = false;
-    boolean isCenterGold = false;
-    boolean isRightGold = false;
-
-    Dogeforia vuforia;
-    WebcamName webcamName;
-    //DogeCV OpenCV_detector;
-    OpenCVDetect OpenCV_detector;
-
     public void runOpMode() throws InterruptedException
     {
-        autoInitializeRobot();
+      //  autoInitializeRobot();
+        InitializeDetection();
 
-        // TODO: put openCV init code into MasterAuto
-        // Default webcam name
-        webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
-        // Set up parameters for Vuforia
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        // Vuforia licence key - Truong
-        parameters.vuforiaLicenseKey = "AdTQ1zz/////AAABmcsU0JSsfUAAnZVqALQznloFPRzK4IDs9AKHiU80F9ncKlBHZBPTN3XWUSLbcsKUfy/iW4P/y64OCRHrAiUTE430LhFnx8rGRtKUv8P03XTaE11Xj9gbN5vThAIBcrnk/CovUIBFJjptCseciz/akh2mWHAlNznx5kWdP0QbFRi9i6fZffoHXaBXYERvzyK/wYYxMLuwVL+qBGIuRzJRS4f2b6RZ8cq/SEs6Ulfg5HQgV24KqFA65+T7iGXKCrdQMi0eUN0Oc4DmrKrHKF55bEtA108/jh8cz1tAwsrAvjle6JUX+yUQ4RDX8Zv/GpuWdek3VFGxumvh8EdQAmZqUmaWdcrpHLXMcftKdOjyvyUf";
-        parameters.fillCameraMonitorViewParent = true;
-
-        // Set camera name for Vuforia config
-        parameters.cameraName = webcamName;
-
-        // Create Dogeforia object
-        vuforia = new Dogeforia(parameters);
-        vuforia.enableConvertFrameToBitmap();
-
-        // Initialize the OpenCV_detector
-        OpenCV_detector = new OpenCVDetect();
-
-        // fullscreen display:
-        //   app crashes if screen orientation switches from portrait to landscape
-        //   screen goes to sleep, and webcam turns off a few minutes after init, and after play
-        //OpenCV_detector.init(hardwareMap.appContext, ActivityViewDisplay.getInstance(), 0, true);
-
-        OpenCV_detector.init(hardwareMap.appContext,CameraViewDisplay.getInstance(), 0, true);
-        OpenCV_detector.setThreshold(80);
-        OpenCV_detector.setShowCountours(false);
-        // Set the OpenCV_detector
-        vuforia.setDogeCVDetector(OpenCV_detector);
-        vuforia.enableDogeCV();
-        // don't show Vuforia vuforia.showDebug();
-        vuforia.start();
-
-        telemetry.addData("Done: ", "initializing");
-        telemetry.update();
-
-        // fullscreen display:
-        //   app crashes if screen orientation switches from portrait to landscape
-        //   screen goes to sleep, and webcam turns off a few minutes after init, and after play
-        //OpenCV_detector.init(hardwareMap.appContext, ActivityViewDisplay.getInstance(), 0, true);
-       while (!isStarted())
+        while (!isStarted())
         {
             // select position left or right, from drivers facing the field
             if (gamepad1.x) isPosCrater = true;
@@ -77,39 +27,16 @@ public class AutoHang extends MasterAutonomous
             if (isPosCrater) telemetry.addData("Alliance: ", "Crater");
             else telemetry.addData("Alliance: ", "Depot");
 
-            // display coordinates of the gold ( x and y coordinates are not switched )
             telemetry.addData("Gold",
-                    String.format(Locale.getDefault(), "(%d, %d)", (OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2), (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2) ) );
+                    String.format(Locale.getDefault(), "(%d, %d)", (OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2), (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2)));
+            isGold();
 
-            if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 600))
-            {
-                isLeftGold = false;
-                isCenterGold = false;
-                isRightGold = true;
-                telemetry.addLine("Right");
-            }
-            else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 200))
-            {
-                isLeftGold = true;
-                isCenterGold = false;
-                isRightGold = false;
-                telemetry.addLine("Left");
-            }
-            else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 350) && ((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 500)/*&& ((goldVision.getGoldRect().x + goldVision.getGoldRect().width / 2) >= 470)*/) {
-                isLeftGold = false;
-                isCenterGold = true;
-                isRightGold = false;
-                telemetry.addLine("Center");
-            }
+            telemetry.update();
         }
-        telemetry.update();
-
         waitForStart();
         autoRuntime.reset();
         telemetry.addData("Auto: ", "Started");
-        telemetry.update();
-
-        /*
+       /*
         land();
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
@@ -212,6 +139,6 @@ public class AutoHang extends MasterAutonomous
         }
         */
 
+        }
     }
-}
 

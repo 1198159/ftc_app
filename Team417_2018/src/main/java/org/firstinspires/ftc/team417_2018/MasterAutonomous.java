@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -19,8 +20,6 @@ abstract public class MasterAutonomous extends MasterOpMode
     // private Rect goldRect = new Rect(0,0,0,0);
    // private OpenCVDetect goldVision;
     private int OPENCV_IMAGE_MIDDLE = 360;
-
-    int threshold = 80;
 
     private int curLiftPos = 0;
     boolean isLogging = true;
@@ -43,7 +42,6 @@ abstract public class MasterAutonomous extends MasterOpMode
     Dogeforia vuforia;
     WebcamName webcamName;
     OpenCVDetect OpenCV_detector;
-
 
     // VARIABLES FOR AUTONOMOUS GG
     int curGGPos;
@@ -104,25 +102,45 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     public void InitializeDetection()
     {
-        //Set up telemetry data
-        // We show the log in oldest-to-newest order, as that's better for poetry
-        telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.OLDEST_FIRST);
-        // We can control the number of lines shown in the log
-        telemetry.log().setCapacity(4);
-        webcamName = hardwareMap.get(WebcamName .class, "Webcam 1");
-        // Set up parameters for Vuforia
+        webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
         // Vuforia licence key - Truong
         parameters.vuforiaLicenseKey = "AdTQ1zz/////AAABmcsU0JSsfUAAnZVqALQznloFPRzK4IDs9AKHiU80F9ncKlBHZBPTN3XWUSLbcsKUfy/iW4P/y64OCRHrAiUTE430LhFnx8rGRtKUv8P03XTaE11Xj9gbN5vThAIBcrnk/CovUIBFJjptCseciz/akh2mWHAlNznx5kWdP0QbFRi9i6fZffoHXaBXYERvzyK/wYYxMLuwVL+qBGIuRzJRS4f2b6RZ8cq/SEs6Ulfg5HQgV24KqFA65+T7iGXKCrdQMi0eUN0Oc4DmrKrHKF55bEtA108/jh8cz1tAwsrAvjle6JUX+yUQ4RDX8Zv/GpuWdek3VFGxumvh8EdQAmZqUmaWdcrpHLXMcftKdOjyvyUf";
         parameters.fillCameraMonitorViewParent = true;
+
         // Set camera name for Vuforia config
         parameters.cameraName = webcamName;
+
         // Create Dogeforia object
         vuforia = new Dogeforia(parameters);
         vuforia.enableConvertFrameToBitmap();
+
         // Initialize the OpenCV_detector
         OpenCV_detector = new OpenCVDetect();
+
+        // fullscreen display:
+        //   app crashes if screen orientation switches from portrait to landscape
+        //   screen goes to sleep, and webcam turns off a few minutes after init, and after play
+        //OpenCV_detector.init(hardwareMap.appContext, ActivityViewDisplay.getInstance(), 0, true);
+
+        OpenCV_detector.init(hardwareMap.appContext,CameraViewDisplay.getInstance(), 0, true);
+        OpenCV_detector.setThreshold(80);
+        OpenCV_detector.setShowCountours(false);
+        // Set the OpenCV_detector
+        vuforia.setDogeCVDetector(OpenCV_detector);
+        vuforia.enableDogeCV();
+        // don't show Vuforia vuforia.showDebug();
+        vuforia.start();
+
+        telemetry.addData("Done: ", "initializing");
+        telemetry.update();
+
+        // fullscreen display:
+        //   app crashes if screen orientation switches from portrait to landscape
+        //   screen goes to sleep, and webcam turns off a few minutes after init, and after play
+        //OpenCV_detector.init(hardwareMap.appContext, ActivityViewDisplay.getInstance(), 0, true);
     }
 
     public void isGold()
@@ -133,7 +151,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             isLeftGold = false;
             isCenterGold = false;
             isRightGold = true;
-           // telemetry.addLine("Right");
+            telemetry.addLine("Right");
         }
         // left gold was located at (110,380)
         else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 200))
@@ -141,28 +159,16 @@ abstract public class MasterAutonomous extends MasterOpMode
             isLeftGold = true;
             isCenterGold = false;
             isRightGold = false;
-           // telemetry.addLine("Left");
+            telemetry.addLine("Left");
         }
         // center gold was located at (420,380)
         else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 350) && ((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 500)) {
             isLeftGold = false;
             isCenterGold = true;
             isRightGold = false;
-           // telemetry.addLine("Center");
-        }
-        if (isRightGold)
-        {
-            telemetry.addLine("Right");
-        }
-        else if (isLeftGold)
-        {
-            telemetry.addLine("Left");
-        }
-        else if (isCenterGold)
-        {
             telemetry.addLine("Center");
         }
-        telemetry.update();
+       telemetry.update();
         idle();
     }
 
