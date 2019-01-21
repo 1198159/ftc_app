@@ -214,13 +214,13 @@ abstract public class MasterTeleOp extends MasterOpMode
         arm1pos = arm1.getCurrentPosition(); // update arm1 motor position
 
 // control hanger with G2 left and right bumpers
-        if (gamepad2.left_bumper)
+        if (gamepad2.dpad_up)
         {
-            hanger.setPower(0.99);
+            hanger.setPower(0.99); // extend the hanger
         }
-        else if (gamepad2.right_bumper)
+        else if (gamepad2.dpad_down)
         {
-            hanger.setPower(-0.99);
+            hanger.setPower(-0.99); // retract hanger
         }
         else
         {
@@ -232,12 +232,12 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             curRevPos = curRevPos - REV_INCREMENT; // move the collector up
         }
-        else if (-gamepad2.left_stick_y < -0.1 && curRevPos < 1.0) // if the joystick is DOWN
+        else if (-gamepad2.left_stick_y < -0.1 && curRevPos < 0.9) // if the joystick is DOWN
         {
             curRevPos = curRevPos + REV_INCREMENT; // move the collector down
         }
         rev1.setPosition(curRevPos); // set the wrist REV servo position
-        
+
 
         if (gamepad2.dpad_left && !isDpadLeftPushed)
         {
@@ -257,8 +257,8 @@ abstract public class MasterTeleOp extends MasterOpMode
         idle();
 
 // control vex servo with G2 B and A
-        if(gamepad2.b) vex1.setPower(0.79);
-        else if (gamepad2.a) vex1.setPower(-0.79);
+        if(gamepad2.left_bumper) vex1.setPower(0.79); // drop minerals
+        else if (gamepad2.right_bumper) vex1.setPower(-0.79); // collect minerals
         else vex1.setPower(0);
     }
 
