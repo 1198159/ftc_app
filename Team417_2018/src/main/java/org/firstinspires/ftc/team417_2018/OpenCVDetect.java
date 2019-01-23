@@ -97,6 +97,7 @@ public class OpenCVDetect extends OpenCVPipeline
 
         // create a new Rectangle to prepare to find largest contour which will be the yellow cube
         Rect rect;
+        maxArea = 0.0;
         Rect maxRect = new Rect(0,0,0,0);
         Rect temp = null;
 
