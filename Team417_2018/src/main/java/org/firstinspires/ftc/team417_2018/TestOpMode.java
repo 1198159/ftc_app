@@ -7,28 +7,25 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "TestOpMode")
+@Autonomous(name = "TestOpMode")
 //@Disabled
-public class TestOpMode extends LinearOpMode
+public class TestOpMode extends MasterAutonomous
 {
 
     DcMotor core1 = null; // hub 2 port 2
 
     public void runOpMode() throws InterruptedException
     {
-        core1 = hardwareMap.dcMotor.get("core1");
+
+        autoInitializeRobot();
 
         telemetry.addData("Init:", "done");
         telemetry.update();
         waitForStart();
 
-        core1.setPower(0.0);
+        land();
 
         waitForStart();
 
-        while (opModeIsActive())
-        {
-            core1.setPower(-gamepad1.left_stick_y); // if left stick up then slides extend
-        }
     }
 }
