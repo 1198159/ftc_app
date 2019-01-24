@@ -22,6 +22,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     private int OPENCV_IMAGE_MIDDLE = 360;
 
     private int curLiftPos = 0;
+    private int curHangerPos = 0;
     boolean isLogging = true;
     boolean isPosCrater;
     boolean isLeftGold = false;
@@ -143,33 +144,37 @@ abstract public class MasterAutonomous extends MasterOpMode
         //OpenCV_detector.init(hardwareMap.appContext, ActivityViewDisplay.getInstance(), 0, true);
     }
 
-    public void isGold()
+    public String locateGold()
     {
+        String goldLocation = "";
         // right gold was located at (700,380)
-        if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 600))
+        if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 600) )
         {
             isLeftGold = false;
             isCenterGold = false;
             isRightGold = true;
             telemetry.addLine("Right");
+            goldLocation = "Right";
         }
         // left gold was located at (110,380)
-        else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 200))
+        else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 200) )
         {
             isLeftGold = true;
             isCenterGold = false;
             isRightGold = false;
             telemetry.addLine("Left");
+            goldLocation = "Left";
         }
         // center gold was located at (420,380)
-        else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 350) && ((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 500)) {
+        else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 350) && ((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 500) )
+        {
             isLeftGold = false;
             isCenterGold = true;
             isRightGold = false;
             telemetry.addLine("Center");
+            goldLocation = "Center";
         }
-       telemetry.update();
-        idle();
+        return goldLocation;
     }
 
     // drive forwards/backwards/horizontal left and right function
@@ -425,18 +430,31 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     public void land()
     {
+
         do
         {
             curLiftPos = arm1.getCurrentPosition();
             arm1.setPower(-0.2);
             arm2.setPower(0.2);
         }
-        while (curLiftPos > -980);
+        while (curLiftPos > -1030);
         arm1.setPower(0.0);
         arm2.setPower(0.0);
-        hanger.setPower(0.99);
-        sleep(7600);
+
+        sleep(100);
+        hanger.setPower(0.95);
+        sleep(3100);
         hanger.setPower(0.0);
+        /*
+        int hangerZeroPos = hanger.getCurrentPosition();
+        do
+        {
+            curHangerPos = hanger.getCurrentPosition() - hangerZeroPos;
+            hanger.setPower(0.99);
+        }
+        while (curHangerPos < 650);
+        hanger.setPower(0.0);
+        */
     }
 
     public void lower() // only use this after you raise the lift mechanism, or call the land() method
