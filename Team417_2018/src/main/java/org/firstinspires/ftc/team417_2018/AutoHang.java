@@ -15,7 +15,7 @@ public class AutoHang extends MasterAutonomous
 {
     public void runOpMode() throws InterruptedException
     {
-      //  autoInitializeRobot();
+        autoInitializeRobot();
         InitializeDetection();
 
         while (!isStarted())
@@ -29,32 +29,23 @@ public class AutoHang extends MasterAutonomous
 
             telemetry.addData("Gold",
                     String.format(Locale.getDefault(), "(%d, %d)", (OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2), (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2)));
-            isGold();
+            locateGold();
 
             telemetry.update();
         }
         waitForStart();
         autoRuntime.reset();
         telemetry.addData("Auto: ", "Started");
-       /*
+
         land();
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
 
-        move(-100, 0, 0.2, 0.75, 3.0);
-        sleep(100);
-
-        // pivot so phone faces the sampling field
-        pivotWithReference(-90, refAngle, 0.2, 0.75);
-        sleep(100);
-        move(0, -70, 0.2, 0.75, 3.0); // move to sampling position
-
-        telemetry.update();
-        sleep(1000);
+        move(100, 0, 0.2, 0.75, 3.0); // move robot hanger hanger off the lander hook
+        sleep(50);
 
         move(0, 70, 0.2, 0.75, 3.0); // move from sampling position to gold push position
         sleep(50);
-
 
         if (!isPosCrater)
         {
@@ -114,31 +105,29 @@ public class AutoHang extends MasterAutonomous
         {
             if (isLeftGold)
             {
-                pivotWithReference(115, refAngle, 0.2, 0.75);
+                pivotWithReference(-45, refAngle, 0.2, 0.75); // pivot to face gold mineral
                 sleep(100);
                 move(0, 500, 0.3, 0.7, 2.0); // push the gold mineral
             }
             else if (isRightGold)
             {
-                pivotWithReference(55, refAngle, 0.2, 0.75); // pivot to face the gold mineral
+                pivotWithReference(45, refAngle, 0.2, 0.75); // pivot to face the gold mineral
                 sleep(100);
                 move(0, 500, 0.3, 0.7, 3.0); // push the gold mineral
             }
             else if (isCenterGold)
             {
-                pivotWithReference(87, refAngle, 0.2, 0.5); // turn to face the sampling field
                 sleep(100);
                 move(0, 500, 0.3, 0.7, 3.0); // push the gold mineral
             }
 
-            moveTimed(0.55, 1200); // push gold
             sleep(100);
             pivotWithReference(0, refAngle, 0.2, 0.75); // face crater
             sleep(200);
             moveTimed(0.55, 500); // go into crater / park
         }
-        */
 
+        vuforia.stop();
         }
     }
 
