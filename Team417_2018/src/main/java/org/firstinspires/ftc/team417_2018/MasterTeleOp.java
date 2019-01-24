@@ -51,60 +51,6 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     AvgFilter filterJoyStickInput = new AvgFilter();
 
-    void tankDrive()
-    {
-        // hold right trigger for adagio legato mode
-        if (gamepad1.right_trigger > 0.0) isLegatoMode = true;
-        else isLegatoMode = false;
-        // hold left trigger for reverse mode
-        if (gamepad1.left_trigger > 0.0) isReverseMode = true;
-        else isReverseMode = false;
-
-        if (isLegatoMode) // Legato Mode
-        {
-            ly = -Range.clip(gamepad1.left_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
-            ry = -Range.clip(gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
-            if (isReverseMode) // Reverse Mode and Legato Mode combo
-                ly = Range.clip(gamepad1.left_stick_y, -0.3, 0.3); // Y axis is negative when up
-                ry = -Range.clip(gamepad1.right_stick_y, -0.3, 0.3); // Y axis is negative when up
-        }
-        else if (isReverseMode) // Reverse Mode
-        {
-            ry = gamepad1.left_stick_y; // Y axis is negative when up
-            ly = gamepad1.right_stick_y; // Y axis is negative when up
-        }
-        else // Staccato Mode (standard)
-        {
-            ly = -gamepad1.left_stick_y; // Y axis is negative when up
-            ry = -gamepad1.right_stick_y; // Y axis is negative when up
-        }
-
-        if (gamepad1.dpad_down)
-        {
-            ly = -0.3;
-            ry = -0.3;
-        }
-        if (gamepad1.dpad_up)
-        {
-            ly = 0.3;
-            ry = 0.3;
-        }
-
-        filterJoyStickInput.appendInputY(ly, ry);
-
-        ly = filterJoyStickInput.getFilteredLY();
-        ry = filterJoyStickInput.getFilteredRY();
-
-        powerFL = ly;
-        powerFR = ry;
-        powerBL = ly;
-        powerBR = ry;
-
-        motorFL.setPower(powerFL);
-        motorBL.setPower(powerBL);
-        motorFR.setPower(powerFR);
-        motorBR.setPower(powerBR);
-    }
 
     void mecanumDrive()
     {
@@ -155,6 +101,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             if (gamepad1.dpad_right) x = 0.75;
             if (gamepad1.dpad_down) y = -0.75;
             if (gamepad1.dpad_up) y = 0.75;
+            if (gamepad1.right_stick_y != 0) y = gamepad1.right_stick_y;
             //pivotPower = Range.clip(gamepad1.left_stick_x, -0.9, 0.9);
             pivotPower = (gamepad1.left_stick_x) * 0.95;
         }
@@ -172,22 +119,6 @@ abstract public class MasterTeleOp extends MasterOpMode
 
         motorFL.setPower(powerFL);
         motorBL.setPower(Range.clip(powerBL,-0.6,0.6));
-        motorFR.setPower(powerFR);
-        motorBR.setPower(powerBR);
-    }
-
-    void simpleDrive()
-    {
-        ly = -gamepad1.left_stick_y; // Y axis is negative when up
-        ry = -gamepad1.right_stick_y; // Y axis is negative when up
-
-        powerFL = ly;
-        powerFR = ry;
-        powerBL = ly;
-        powerBR = ry;
-
-        motorFL.setPower(powerFL);
-        motorBL.setPower(powerBL);
         motorFR.setPower(powerFR);
         motorBR.setPower(powerBR);
     }
@@ -280,9 +211,9 @@ abstract public class MasterTeleOp extends MasterOpMode
     {
         telemetry.addData("legato: ", isLegatoMode);
         telemetry.addData("reverse: ", isReverseMode);
-        telemetry.addData("arm1:", arm1pos);
-        telemetry.addData("core1:", core1Pos);
+        telemetry.addData("rev1:", rev1.getPosition());
         telemetry.addData("core2:", core2Pos);
+        telemetry.addData("hanger:", hanger.getCurrentPosition());
         telemetry.update();
     }
 }
