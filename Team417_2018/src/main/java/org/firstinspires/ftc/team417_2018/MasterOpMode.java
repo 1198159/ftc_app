@@ -46,7 +46,7 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4;
     static final double SCALE_OMNI = 1.41;
     final double ROBOT_DIAMETER_MM = 20.5 * 25.4;   // diagonal 20.5 inch FL to BR and FR to BL
-    static final double INIT_REV_POS = 0.9; // the initial position is inside the robot, should happen in init
+    static final double INIT_REV_POS = 0.6; // the initial position is inside the robot, should happen in init
     static final double REV_INCREMENT = 0.005; // this is how much the REV servo wrist moves per flick of the joystick
 
     // Servo init and low positions
@@ -96,6 +96,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         arm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
