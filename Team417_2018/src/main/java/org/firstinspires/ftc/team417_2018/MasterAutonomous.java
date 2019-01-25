@@ -17,8 +17,6 @@ abstract public class MasterAutonomous extends MasterOpMode
     private ElapsedTime runtime = new ElapsedTime();
     public ElapsedTime autoRuntime = new ElapsedTime();
 
-    // private Rect goldRect = new Rect(0,0,0,0);
-   // private OpenCVDetect goldVision;
     private int OPENCV_IMAGE_MIDDLE = 360;
 
     private int curLiftPos = 0;
@@ -144,11 +142,12 @@ abstract public class MasterAutonomous extends MasterOpMode
         //OpenCV_detector.init(hardwareMap.appContext, ActivityViewDisplay.getInstance(), 0, true);
     }
 
+    // won't display Gold position (left, center, right) if gold mineral doesn't meet the vertical cutting at 400 pixels or more
     public String locateGold()
     {
         String goldLocation = "";
         // right gold was located at (700,380)
-        if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 600) )
+        if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 600) &&  (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2) >= 375 )
         {
             isLeftGold = false;
             isCenterGold = false;
@@ -157,7 +156,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             goldLocation = "Right";
         }
         // left gold was located at (110,380)
-        else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 200) )
+        else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 200)  &&  (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2) >= 375 )
         {
             isLeftGold = true;
             isCenterGold = false;
@@ -166,7 +165,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             goldLocation = "Left";
         }
         // center gold was located at (420,380)
-        else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 350) && ((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 500) )
+        else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 350) && ((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 500)  &&  (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2) >= 375 )
         {
             isLeftGold = false;
             isCenterGold = true;
@@ -430,6 +429,9 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     public void land()
     {
+        hanger.setPower(0.95);
+        sleep(300);
+        hanger.setPower(0.0);
 
         do
         {
@@ -443,7 +445,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         sleep(100);
         hanger.setPower(0.95);
-        sleep(3100);
+        sleep(2800);
         hanger.setPower(0.0);
         /*
         int hangerZeroPos = hanger.getCurrentPosition();
@@ -457,18 +459,20 @@ abstract public class MasterAutonomous extends MasterOpMode
         */
     }
 
-    public void lower() // only use this after you raise the lift mechanism, or call the land() method
+    public void reset() // we run this after Auto to reset the hanger and the arm motors
     {
-        /*
+        hanger.setPower(-0.94);
+        sleep(3300);
+        hanger.setPower(0.0);
+
+        // -1030 position
         do
         {
-            curLiftPos = motorLift.getCurrentPosition();
-            motorLift.setPower(-0.95);
+            curLiftPos = arm1.getCurrentPosition();
+            arm1.setPower(0.2);
+            arm2.setPower(-0.2);
         }
-        while (curLiftPos>500);
-        motorLift.setPower(0.0);
-        */
-        sleep(7700);
+        while (curLiftPos < 1050);
     }
 
 }
