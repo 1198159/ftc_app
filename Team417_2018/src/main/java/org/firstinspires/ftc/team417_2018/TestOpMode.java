@@ -7,13 +7,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@Autonomous(name = "TestOpMode")
+@Autonomous(name = "Reset")
 //@Disabled
 public class TestOpMode extends MasterAutonomous
 {
-
-    DcMotor core1 = null; // hub 2 port 2
-
     public void runOpMode() throws InterruptedException
     {
 
@@ -23,9 +20,6 @@ public class TestOpMode extends MasterAutonomous
         telemetry.update();
         waitForStart();
 
-        land();
-
-        waitForStart();
-
+        reset();
     }
 }
