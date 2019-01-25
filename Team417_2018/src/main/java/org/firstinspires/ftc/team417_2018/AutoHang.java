@@ -13,6 +13,7 @@ import java.util.Locale;
 // @Disabled
 public class AutoHang extends MasterAutonomous
 {
+    int threshold = 90;
     public void runOpMode() throws InterruptedException
     {
         autoInitializeRobot();
@@ -24,8 +25,13 @@ public class AutoHang extends MasterAutonomous
             if (gamepad1.x) isPosCrater = true;
             if (gamepad1.b) isPosCrater = false;
 
-            if (isPosCrater) telemetry.addData("Alliance: ", "Crater");
-            else telemetry.addData("Alliance: ", "Depot");
+            if (gamepad1.y) threshold = 80;
+            if (gamepad1.a) threshold = 90;
+            OpenCV_detector.setThreshold(threshold);
+            telemetry.addData("threshold", threshold);
+
+            if (isPosCrater) telemetry.addData("Alliance: ", "CRATER");
+            else telemetry.addData("Alliance: ", "DEPOT");
 
             telemetry.addData("Gold",
                     String.format(Locale.getDefault(), "(%d, %d)", (OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2), (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2)));
@@ -41,37 +47,38 @@ public class AutoHang extends MasterAutonomous
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
 
-        move(100, 0, 0.2, 0.75, 3.0); // move robot hanger hanger off the lander hook
+        move(80, 0, 0.2, 0.75, 3.0); // move robot hanger hanger off the lander hook
         sleep(50);
 
         move(0, 70, 0.2, 0.75, 3.0); // move from sampling position to gold push position
         sleep(50);
 
-        if (!isPosCrater)
+        if (!isPosCrater) // if it's the depot option
         {
-            if (isRightGold)
+            if (isLeftGold)
             {
-                pivotWithReference(-35, refAngle, 0.2, 0.75); // pivot to face the gold mineral
+                pivotWithReference(30, refAngle, 0.2, 0.75); // pivot to face the gold mineral
                 sleep(100); // pause 100 milliseconds
-                move(0, 550, 0.3, 0.7, 3.0); // push the gold mineral
+                move(0, 500, 0.3, 0.7, 3.0); // push the gold mineral
                 sleep(100); // pause 100 milliseconds
-                pivotWithReference(45, refAngle, 0.2, 0.75); // turn to face depot
+                pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to face depot
                 sleep(100); // pause 100 milliseconds
                 move(0, 400, 0.3, 0.7, 3.0); // go towards depot
                 sleep(100);
-                pivotWithReference(-40, refAngle, 0.2, 0.75); // turn so pusher is facing the crater
-                //marker.setPosition(MARKER_HIGH);
+                marker.setPosition(MARKER_HIGH);
+                sleep(100);
+                pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to face depot
                 sleep(100);
                 move(-170, 0, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
                 move(0, -2700, 0.3, 0.7, 3.0);// park in blue crater
-                //marker.setPosition(MARKER_LOW);
+                marker.setPosition(MARKER_LOW);
             }
-            else if (isLeftGold)
+            else if (isRightGold)
             {
-                pivotWithReference(25, refAngle, 0.2, 0.75); // turn to face the gold mineral
+                pivotWithReference(-30, refAngle, 0.2, 0.75); // pivot to face gold mineral
                 sleep(100);
-                move(0, 570, 0.3, 0.7, 2.0); // push the gold mineral
+                move(0, 500, 0.3, 0.7, 2.0); // push the gold mineral
                 sleep(100);
                 pivotWithReference(-45, refAngle, 0.2, 0.75); // turn so pusher is facing the crater
                 sleep(100);
@@ -87,8 +94,6 @@ public class AutoHang extends MasterAutonomous
             }
             else if (isCenterGold)
             {
-                pivotWithReference(-3, refAngle, 0.2, 0.5); // turn to face the sampling field
-                sleep(100);
                 move(0, 800, 0.3, 0.7, 3.0); // push the gold mineral
                 sleep(100);
                 pivotWithReference(-40, refAngle, 0.2, 0.75); // turn to align
@@ -103,15 +108,15 @@ public class AutoHang extends MasterAutonomous
 
         if (isPosCrater)
         {
-            if (isLeftGold)
+            if (isRightGold)
             {
-                pivotWithReference(-45, refAngle, 0.2, 0.75); // pivot to face gold mineral
+                pivotWithReference(-25, refAngle, 0.2, 0.75); // pivot to face gold mineral
                 sleep(100);
                 move(0, 500, 0.3, 0.7, 2.0); // push the gold mineral
             }
-            else if (isRightGold)
+            else if (isLeftGold)
             {
-                pivotWithReference(45, refAngle, 0.2, 0.75); // pivot to face the gold mineral
+                pivotWithReference(30, refAngle, 0.2, 0.75); // pivot to face the gold mineral
                 sleep(100);
                 move(0, 500, 0.3, 0.7, 3.0); // push the gold mineral
             }
