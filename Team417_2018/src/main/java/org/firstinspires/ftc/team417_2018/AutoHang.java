@@ -13,7 +13,6 @@ import java.util.Locale;
 // @Disabled
 public class AutoHang extends MasterAutonomous
 {
-    int threshold = 90;
     public void runOpMode() throws InterruptedException
     {
         autoInitializeRobot();
@@ -57,62 +56,86 @@ public class AutoHang extends MasterAutonomous
         {
             if (isLeftGold)
             {
-                pivotWithReference(30, refAngle, 0.2, 0.75); // pivot to face the gold mineral
+                pivotWithReference(35, refAngle, 0.2, 0.75); // pivot to face the gold mineral
                 sleep(100); // pause 100 milliseconds
-                move(0, 500, 0.3, 0.7, 3.0); // push the gold mineral
+                move(0, 450, 0.3, 0.7, 3.0); // go forward to push the gold mineral
                 sleep(100); // pause 100 milliseconds
                 pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to face depot
-                sleep(100); // pause 100 milliseconds
+                sleep(100); // pause 100 milliseconds\
+                move(-70, 00, 0.3, 0.7, 2.0); // push against the wall
+                sleep(100);
                 move(0, 400, 0.3, 0.7, 3.0); // go towards depot
                 sleep(100);
-                marker.setPosition(MARKER_HIGH);
+                marker.setPosition(MARKER_HIGH); // drop the team marker
                 sleep(100);
-                pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to face depot
+                move(0, -250, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
                 move(-170, 0, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
-                move(0, -2700, 0.3, 0.7, 3.0);// park in blue crater
-                marker.setPosition(MARKER_LOW);
+                move(0, -1200, 0.3, 0.7, 3.0);// park in blue crater
+                marker.setPosition(MARKER_LOW); // lower marker arm
             }
             else if (isRightGold)
             {
                 pivotWithReference(-30, refAngle, 0.2, 0.75); // pivot to face gold mineral
                 sleep(100);
-                move(0, 500, 0.3, 0.7, 2.0); // push the gold mineral
+                move(0, 400, 0.3, 0.7, 2.0); // go forward to push the gold mineral
                 sleep(100);
-                pivotWithReference(-45, refAngle, 0.2, 0.75); // turn so pusher is facing the crater
+                pivotWithReference(45, refAngle, 0.2, 0.75); // turn to face the crater
                 sleep(100);
-                move(0, 500, 0.3, 0.7, 3.0); // go into depot
+                move(100, 0, 0.3, 0.7, 3.0); // drive into depot
                 sleep(100);
-                //marker.setPosition(MARKER_HIGH);
-                pivotWithReference(-40, refAngle, 0.2, 0.75); // turn to align
+                move(0, 400, 0.3, 0.7, 3.0); // drive into depot
                 sleep(100);
-                move(-200, 0, 0.3, 0.7, 2.0); // push against the wall
+                pivotWithReference(10, refAngle, 0.2, 0.75); // turn to face the crater
                 sleep(100);
-                move(0, -2550, 0.3, 0.7, 3.0);// park in blue crater
-                //marker.setPosition(MARKER_LOW);
+                marker.setPosition(MARKER_HIGH); // drop marker in depot
+                sleep(100);
+                pivotWithReference(130, refAngle, 0.2, 0.75); // turn to face crater
+                sleep(100);
+                move(0, 200, 0.3, 0.7, 3.0); // drive into depot
+                sleep(100);
+                move(150, 0, 0.3, 0.7, 2.0); // line up against wall
+                sleep(100);
+                move(0, 1200, 0.3, 0.7, 3.0); // park in blue crater
+                sleep(100);
+                marker.setPosition(MARKER_LOW); // lower marker arm
             }
             else if (isCenterGold)
             {
-                move(0, 800, 0.3, 0.7, 3.0); // push the gold mineral
+                move(0, 700, 0.3, 0.7, 3.0); // push the gold mineral
                 sleep(100);
-                pivotWithReference(-40, refAngle, 0.2, 0.75); // turn to align
+                pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to face crater
                 sleep(100);
-                //marker.setPosition(MARKER_HIGH);
-                move(-180, 0, 0.3, 0.7, 2.0); // push against the wall
+                marker.setPosition(MARKER_HIGH); // drop the marker in the depot
                 sleep(100);
-                move(-8, -2600, 0.3, 0.7, 3.0);// park in blue crater
-                //marker.setPosition(MARKER_LOW);
+                move(0, -100, 0.3, 0.7, 2.0); // push against the wall
+                sleep(100);
+                move(-250, 0, 0.3, 0.7, 2.0); // push against the wall
+                sleep(100);
+                move(0, -800, 0.3, 0.7, 3.0); // park in blue crater
+                sleep(100);
+                marker.setPosition(MARKER_LOW); // lower marker arm
             }
         }
-
         if (isPosCrater)
         {
             if (isRightGold)
             {
                 pivotWithReference(-25, refAngle, 0.2, 0.75); // pivot to face gold mineral
                 sleep(100);
+                move(0, 300, 0.3, 0.7, 2.0); // go forward to push the gold mineral
+                /*sleep(100);
+                move(0, -200, 0.3, 0.7, 2.0); // push the gold mineral
+                sleep(100);
+                pivotWithReference(55, refAngle, 0.2, 0.75); // pivot to face gold mineral
+                sleep(100);
                 move(0, 500, 0.3, 0.7, 2.0); // push the gold mineral
+                sleep(100);
+                pivotWithReference(25, refAngle, 0.2, 0.75); // pivot to face gold mineral
+                sleep(100);
+                move(200,500,0.3,0.72,2.0);
+                */
             }
             else if (isLeftGold)
             {

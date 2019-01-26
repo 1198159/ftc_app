@@ -96,8 +96,8 @@ public class OpenCVDetect extends OpenCVPipeline
             Imgproc.drawContours(displayMat,contoursYellow,-1,new Scalar(230,70,70),2);
 
         // create a new Rectangle to prepare to find largest contour which will be the yellow cube
-        Rect rect;
         maxArea = 0.0;
+        Rect rect ;
         Rect maxRect = new Rect(0,0,0,0);
         Rect temp = null;
 

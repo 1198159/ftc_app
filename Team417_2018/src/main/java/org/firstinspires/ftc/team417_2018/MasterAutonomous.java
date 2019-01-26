@@ -21,11 +21,15 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     private int curLiftPos = 0;
     private int curHangerPos = 0;
+
     boolean isLogging = true;
     boolean isPosCrater;
+
     boolean isLeftGold = false;
     boolean isCenterGold = false;
     boolean isRightGold = false;
+
+    int threshold = 90;
 
     // speed is proportional to error
     double Kmove = 1.0f/1200.0f;
@@ -125,7 +129,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         //OpenCV_detector.init(hardwareMap.appContext, ActivityViewDisplay.getInstance(), 0, true);
 
         OpenCV_detector.init(hardwareMap.appContext,CameraViewDisplay.getInstance(), 0, true);
-        OpenCV_detector.setThreshold(80);
+        OpenCV_detector.setThreshold(threshold);
         OpenCV_detector.setShowCountours(false);
         // Set the OpenCV_detector
         vuforia.setDogeCVDetector(OpenCV_detector);
@@ -430,7 +434,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     public void land()
     {
         hanger.setPower(0.95);
-        sleep(300);
+        sleep(600);
         hanger.setPower(0.0);
 
         do
@@ -444,8 +448,9 @@ abstract public class MasterAutonomous extends MasterOpMode
         arm2.setPower(0.0);
 
         sleep(100);
+
         hanger.setPower(0.95);
-        sleep(2800);
+        sleep(2500);
         hanger.setPower(0.0);
         /*
         int hangerZeroPos = hanger.getCurrentPosition();

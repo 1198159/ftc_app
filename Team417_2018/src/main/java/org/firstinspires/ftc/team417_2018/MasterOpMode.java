@@ -51,7 +51,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     // Servo init and low positions
     static final double MARKER_LOW = -0.37;
-    static final double MARKER_HIGH = 0.15;
+    static final double MARKER_HIGH = 0.3;
 
     // declare color sensor variables
     // hsvValues is an array that will hold the hue, saturation, and value information.
