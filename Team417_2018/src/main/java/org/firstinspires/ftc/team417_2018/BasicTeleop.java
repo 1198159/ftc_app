@@ -19,8 +19,8 @@ public class BasicTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        motorFL  = hardwareMap.get(DcMotor.class, "motorFL");
-        motorFR  = hardwareMap.get(DcMotor.class, "motorFR");
+        motorFL = hardwareMap.get(DcMotor.class, "motorFL");
+        motorFR = hardwareMap.get(DcMotor.class, "motorFR");
         motorBL = hardwareMap.get(DcMotor.class, "motorBL");
         motorBR = hardwareMap.get(DcMotor.class, "motorBR");
 

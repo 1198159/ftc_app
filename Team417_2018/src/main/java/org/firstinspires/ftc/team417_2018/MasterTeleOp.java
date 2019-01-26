@@ -26,8 +26,12 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     boolean isServoLowered;
     boolean isXPushed;
-    boolean isLeftBumperPushed;
-    boolean isRightBumperPushed;
+
+    boolean isLeftBumperPushed = false;
+    boolean isSpittingOut = false;
+    boolean isRightBumperPushed = false;
+    boolean isSuckingIn = false;
+
 
     boolean isDpadLeftPushed = false;
     boolean isCollectorCenter = false;
@@ -66,10 +70,10 @@ abstract public class MasterTeleOp extends MasterOpMode
         {
             y = -Range.clip(-gamepad1.right_stick_y, -ADAGIO_POWER, ADAGIO_POWER); // Y axis is negative when up
             x = -Range.clip(gamepad1.right_stick_x, -ADAGIO_POWER, ADAGIO_POWER);
-            if (gamepad1.dpad_left) x = -0.3;
-            if (gamepad1.dpad_right) x = 0.3;
-            if (gamepad1.dpad_down) y = -0.3;
-            if (gamepad1.dpad_up) y = 0.3;
+            if (gamepad1.dpad_left) x = -0.2;
+            if (gamepad1.dpad_right) x = 0.2;
+            if (gamepad1.dpad_down) y = -0.2;
+            if (gamepad1.dpad_up) y = 0.2;
             pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
 
             if (isReverseMode) // if both legato and reverse mode
@@ -134,8 +138,8 @@ abstract public class MasterTeleOp extends MasterOpMode
 // control arm motors with G2 right stick
         if (gamepad2.right_stick_y != 0)
         {
-            arm1.setPower(Range.clip(gamepad2.right_stick_y, -0.15, 0.15));
-            arm2.setPower(Range.clip(-gamepad2.right_stick_y, -0.15, 0.15));
+            arm1.setPower(Range.clip(gamepad2.right_stick_y, -0.3, 0.3));
+            arm2.setPower(Range.clip(-gamepad2.right_stick_y, -0.3, 0.3));
         }
         else
         {
@@ -187,10 +191,20 @@ abstract public class MasterTeleOp extends MasterOpMode
         telemetry.update();
         idle();
 
-// control vex servo with G2 B and A
-        if(gamepad2.left_bumper) vex1.setPower(0.79); // drop minerals
-        else if (gamepad2.right_bumper) vex1.setPower(-0.79); // collect minerals
-        else vex1.setPower(0);
+        // control vex servo with G2 left and right bumper
+        if(isSuckingIn) vex1.setPower(-0.79);
+        else vex1.setPower(0.0);
+
+        if (gamepad2.left_bumper) vex1.setPower(0.5);
+        else vex1.setPower(0.0);
+
+        if (gamepad2.right_bumper && !isRightBumperPushed)
+        {
+            isRightBumperPushed = true;
+            isSuckingIn = !isSuckingIn;
+        }
+        isRightBumperPushed = gamepad2.right_bumper;
+
     }
 
     void marker()
