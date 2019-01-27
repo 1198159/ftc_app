@@ -191,20 +191,30 @@ abstract public class MasterTeleOp extends MasterOpMode
         telemetry.update();
         idle();
 
-        // control vex servo with G2 left and right bumper
-        if(isSuckingIn) vex1.setPower(-0.79);
-        else vex1.setPower(0.0);
+        // control vex Servo
+        //boolean isRightBumperPushed = false;
+        //boolean isSuckingIn = false;
 
-        if (gamepad2.left_bumper) vex1.setPower(0.5);
-        else vex1.setPower(0.0);
+        // we include is right bumper pushed because this code is an event loop and it is constantly running that means that when
+        //  a person pushes the button once it could run through the loop almost 50 times and update the state inaccurately in a true-false-true-
+        // false way that could leave left_bumper on an incorrect state. By adding isRightBumperPushed we make the state change the first time around
+        // so that it won't register more than once and the condition for changing state will remain false after one run through
 
-        if (gamepad2.right_bumper && !isRightBumperPushed)
+        if (gamepad2.left_bumper)
         {
-            isRightBumperPushed = true;
-            isSuckingIn = !isSuckingIn;
+            isSuckingIn = false; // cancel sucking in
+            vex1.setPower(0.79); // if you press the left bumper release minerals
         }
-        isRightBumperPushed = gamepad2.right_bumper;
+        if (!gamepad2.left_bumper && !isSuckingIn) vex1.setPower(0.0); // if you are not pressing the left bumper do not set power to the vex motor
 
+        if(isSuckingIn) vex1.setPower(-0.79); // if sucking in is true then set negative power so the servo spins opposite way
+
+        if (gamepad2.right_bumper && !isRightBumperPushed) // if the right bumper is pressed && boolean for isRightBumperPushed true( that means it is currently false)
+        {
+            isRightBumperPushed = true; // switch the value of right bumper pushed to true
+            isSuckingIn = !isSuckingIn; // and switch sucking in's boolean to sucking out or in depending on what it is
+        }
+        isRightBumperPushed = gamepad2.right_bumper; // update the current state of isRightBumperPushed otherwise it will always stay the sa,e
     }
 
     void marker()

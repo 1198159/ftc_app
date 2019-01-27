@@ -17,23 +17,22 @@ import java.util.Locale;
 abstract public class MasterOpMode extends LinearOpMode
 {
     // Declare drive motors
-    DcMotor motorFL = null; // port 0
-    DcMotor motorFR = null; // port 3
-    DcMotor motorBL = null; // port 1
-    DcMotor motorBR = null; // port 2
+    DcMotor motorFL = null; // hub 2 port 0
+    DcMotor motorFR = null; // hub 1 port 0
+    DcMotor motorBL = null; // hub 2 port 1
+    DcMotor motorBR = null; // hub 1 port 1
 
-    Servo marker = null; // hub 2 port 4
+    Servo marker = null;    // hub 2 port 4
 
-    DcMotor hanger = null; // hub 2 port 5
+    DcMotor hanger = null;  // hub 1 port 2
 
-    DcMotor core1 = null; // hub 1 port 3
-    DcMotor core2 = null; // hub 2 port 3
+    DcMotor core2 = null;   // hub 2 port 2
 
-    DcMotor arm1 = null; // hub 1 port 4
-    DcMotor arm2 = null; // hub 2 port 4
+    DcMotor arm1 = null;    // hub 1 port 3
+    DcMotor arm2 = null;   // hub 2 port 3
 
-    Servo rev1 = null; // hub 2 port 0
-    CRServo vex1 = null; // hub 2 port 0
+    Servo rev1 = null;     // hub 2 port 2
+    CRServo vex1 = null;   // hub 2 port 0
 
     // Declare sensors
     BNO055IMU imu; // inertial measurement unit (located within the REV Hub)
@@ -47,7 +46,7 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double SCALE_OMNI = 1.41;
     final double ROBOT_DIAMETER_MM = 20.5 * 25.4;   // diagonal 20.5 inch FL to BR and FR to BL
     static final double INIT_REV_POS = 0.75; // the initial position is inside the robot, should happen in init
-    static final double REV_INCREMENT = 0.075; // this is how much the REV servo wrist moves per flick of the joystick
+    static final double REV_INCREMENT = 0.006; // this is how much the REV servo wrist moves per flick of the joystick
 
     // Servo init and low positions
     static final double MARKER_LOW = -0.37;
