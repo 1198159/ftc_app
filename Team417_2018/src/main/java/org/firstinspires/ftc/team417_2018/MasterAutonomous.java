@@ -89,6 +89,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     public void autoInitializeRobot()
     {
         super.initializeHardware();
+        marker.setPosition(MARKER_LOW);
 
         // zero the motor controllers before running; we don't know if motors start out at zero
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -466,7 +467,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     public void reset() // we run this after Auto to reset the hanger and the arm motors
     {
-        hanger.setPower(-0.94);
+        hanger.setPower(-0.96);
         sleep(3300);
         hanger.setPower(0.0);
 
@@ -474,10 +475,10 @@ abstract public class MasterAutonomous extends MasterOpMode
         do
         {
             curLiftPos = arm1.getCurrentPosition();
-            arm1.setPower(0.2);
-            arm2.setPower(-0.2);
+            arm1.setPower(0.3);
+            arm2.setPower(-0.3);
         }
-        while (curLiftPos < 1050);
+        while (curLiftPos < 900);
     }
 
 }
