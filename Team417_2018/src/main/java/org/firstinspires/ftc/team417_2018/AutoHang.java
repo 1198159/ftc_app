@@ -24,8 +24,16 @@ public class AutoHang extends MasterAutonomous
             if (gamepad1.x) isPosCrater = true;
             if (gamepad1.b) isPosCrater = false;
 
-            if (gamepad1.y) threshold = 80;
-            if (gamepad1.a) threshold = 90;
+            if (-gamepad1.right_stick_y > 0)
+            {
+                threshold ++;
+                sleep(100);
+            }
+            if (-gamepad1.right_stick_y < 0)
+            {
+                threshold --;
+                sleep(100);
+            }
             OpenCV_detector.setThreshold(threshold);
             telemetry.addData("threshold", threshold);
 
@@ -46,7 +54,7 @@ public class AutoHang extends MasterAutonomous
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
 
-        move(80, 0, 0.2, 0.75, 3.0); // move robot hanger hanger off the lander hook
+        move(60, 0, 0.2, 0.75, 3.0); // move robot hanger hanger off the lander hook
         sleep(50);
 
         move(0, 70, 0.2, 0.75, 3.0); // move from sampling position to gold push position
@@ -61,7 +69,7 @@ public class AutoHang extends MasterAutonomous
                 move(0, 450, 0.3, 0.7, 3.0); // go forward to push the gold mineral
                 sleep(100); // pause 100 milliseconds
                 pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to face depot
-                sleep(100); // pause 100 milliseconds\
+                sleep(100); // pause 100 milliseconds
                 move(-70, 00, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
                 move(0, 400, 0.3, 0.7, 3.0); // go towards depot
@@ -77,29 +85,30 @@ public class AutoHang extends MasterAutonomous
             }
             else if (isRightGold)
             {
-                pivotWithReference(-30, refAngle, 0.2, 0.75); // pivot to face gold mineral
+                pivotWithReference(-28, refAngle, 0.2, 0.75); // pivot to face gold mineral
                 sleep(100);
-                move(0, 400, 0.3, 0.7, 2.0); // go forward to push the gold mineral
+                move(0, 420, 0.3, 0.7, 2.0); // go forward to push the gold mineral
                 sleep(100);
                 pivotWithReference(45, refAngle, 0.2, 0.75); // turn to face the crater
                 sleep(100);
-                move(100, 0, 0.3, 0.7, 3.0); // drive into depot
+                move(120, 0, 0.3, 0.7, 3.0); // move closer to depot wall
                 sleep(100);
                 move(0, 400, 0.3, 0.7, 3.0); // drive into depot
                 sleep(100);
-                pivotWithReference(10, refAngle, 0.2, 0.75); // turn to face the crater
+                pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to face wall opposite to crater
                 sleep(100);
                 marker.setPosition(MARKER_HIGH); // drop marker in depot
                 sleep(100);
+                move(0, -150, 0.3, 0.7, 3.0); // move out of depot
+                sleep(100);
                 pivotWithReference(130, refAngle, 0.2, 0.75); // turn to face crater
                 sleep(100);
-                move(0, 200, 0.3, 0.7, 3.0); // drive into depot
+                move(150, 0, 0.3, 0.7, 2.0); // avoid left mineral
                 sleep(100);
-                move(150, 0, 0.3, 0.7, 2.0); // line up against wall
-                sleep(100);
-                move(0, 1200, 0.3, 0.7, 3.0); // park in blue crater
+                move(0, 800, 0.3, 0.7, 3.0); // park in blue crater
                 sleep(100);
                 marker.setPosition(MARKER_LOW); // lower marker arm
+                reset();
             }
             else if (isCenterGold)
             {
@@ -124,7 +133,8 @@ public class AutoHang extends MasterAutonomous
             {
                 pivotWithReference(-25, refAngle, 0.2, 0.75); // pivot to face gold mineral
                 sleep(100);
-                move(0, 300, 0.3, 0.7, 2.0); // go forward to push the gold mineral
+                move(0, 200, 0.3, 0.7, 2.0); // go forward to push the gold mineral
+                // rest of this code is for dropping of marker after knocking gold mineral
                 /*sleep(100);
                 move(0, -200, 0.3, 0.7, 2.0); // push the gold mineral
                 sleep(100);
