@@ -32,6 +32,14 @@ public class TeleOpTestBed extends MasterAutonomous
             {
                 servoMarker.setPosition(Constants.SERVO_MARKER_DEPLOYED);
             }
+            if(driver1.isButtonJustPressed(Button.A))
+            {
+                motorArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                motorArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                motorArmRight.setPower(-0.1);
+                motorArmLeft.setPower(-0.1);
+
+            }
             // Run arm in position or power mode, depending on the boolean value.
             /*if (driver2.isButtonPressed(Button.X))
             {
@@ -77,29 +85,34 @@ public class TeleOpTestBed extends MasterAutonomous
                 servoMarker.setPosition(Constants.SERVO_MARKER_DEPLOYED);
                 pauseWhileUpdating(0.5);
                 servoMarker.setPosition(Constants.SERVO_MARKER_RETRACTED);
-            }*/
+            }
             if (driver1.isButtonJustPressed(Button.A))
             {
                 //motorArm.setTargetPosition(Constants.ARM_FULLY_DEPLOYED);
-                motorArm.setPower(1.0);
+                motorArmLeft.setPower(1.0);
+                motorArmRight.setPower(-1.0);
                 pauseWhileUpdating(0.25);
-                motorArm.setPower(0.0);
+                motorArmLeft.setPower(0.0);
+                motorArmRight.setPower(0.0);
             }
             else if (driver1.isButtonJustPressed(Button.Y))
             {
                 //motorArm.setTargetPosition(Constants.ARM_TOP);
-                motorArm.setPower(1.0);
+                motorArmLeft.setPower(1.0);
+                motorArmRight.setPower(-1.0);
             }
             else if (driver1.isButtonJustPressed(Button.B))
             {
                 //motorArm.setTargetPosition(Constants.ARM_START);
-                motorArm.setPower(1.0);
+                motorArmLeft.setPower(1.0);
+                motorArmRight.setPower(-1.0);
             }
             else
             {
                 // Operate arm.
-                motorArm.setPower(-0.3 * stickCurve.getOuput(driver2.getRightStickY()));
-            }
+                motorArmLeft.setPower(-0.3 * stickCurve.getOuput(driver2.getRightStickY()));
+                motorArmRight.setPower(0.3 * stickCurve.getOuput(driver2.getRightStickY()));
+            }*/
 
             double eTime = timer.seconds() - lTime;
             lTime = timer.seconds();
@@ -111,6 +124,7 @@ public class TeleOpTestBed extends MasterAutonomous
 
             telemetry.addData("eTime:", eTime);
             updateCallback(eTime);
+            telemetry.addData("motorArmRight: ", motorArmRight.getCurrentPosition());
             telemetry.update();
             idle();
         }

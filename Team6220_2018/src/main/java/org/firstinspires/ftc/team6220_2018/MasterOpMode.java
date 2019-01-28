@@ -40,6 +40,7 @@ abstract public class MasterOpMode extends LinearOpMode
     // Declare filters.  We currently have PID for turning and encoder navigation.------------------
         PIDFilter rotationFilter;
         PIDFilter translationFilter;
+        //PIDFilter armFilter;
     //----------------------------------------------------------------------------------------------
 
     // Declare hardware devices---------------------------------------
@@ -52,7 +53,8 @@ abstract public class MasterOpMode extends LinearOpMode
     DcMotor motorBR;
 
     DcMotor motorHanger;
-    DcMotor motorArm;
+    DcMotor motorArmLeft;
+    DcMotor motorArmRight;
      //-----------------------------
 
      // Servos----------------------
@@ -139,12 +141,19 @@ abstract public class MasterOpMode extends LinearOpMode
             motorCollector = hardwareMap.crservo.get("motorCollector");
             motorCollector.setPower(0);
 
-            motorArm = hardwareMap.dcMotor.get("motorArm");
-            //motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            motorArm.setPower(0);
+            motorArmLeft = hardwareMap.dcMotor.get("motorArmLeft");
+            //motorArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorArmLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorArmLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorArmLeft.setPower(0);
+
+            motorArmRight = hardwareMap.dcMotor.get("motorArmRight");
+            //motorArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorArmRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorArmRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorArmRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motorArmRight.setPower(0);
             // Rest of initialization is at beginning of TeleOp.
         }
         //--------------------------------------------------------------------------------------------------------------
@@ -167,6 +176,7 @@ abstract public class MasterOpMode extends LinearOpMode
         // Initialize PID filters
         rotationFilter = new PIDFilter(Constants.ROTATION_P, Constants.ROTATION_I, Constants.ROTATION_D);
         translationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);
+        //armFilter = new PIDFilter(Constants.ARM_P, Constants.ARM_I, Constants.ARM_D);
 
 
         //todo Initialize all separate hardware systems here
@@ -176,6 +186,19 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
+    void driveArm (double drivePower)
+    {
+        if(!isCollectorMechAttached)
+        {
+            telemetry.addLine("Collector/arm is not attached!");
+            telemetry.update();
+            return;
+        }
+
+        double power = drivePower;
+        motorArmLeft.setPower(drivePower);
+        motorArmRight.setPower(-drivePower);
+    }
 
     /*
      General method for driving robot.  Input is given as a vector in polar form with
