@@ -6,29 +6,17 @@ import com.qualcomm.robotcore.util.Range;
 
 abstract public class MasterTeleOp extends MasterOpMode
 {
-    double ly = 0;
-    double ry = 0;
-    double lx = 0;
     double x = 0;
     double y = 0;
     double pivotPower = 0;
 
     double curRevPos = INIT_REV_POS; // starts in down position
 
-    int core2Position;
-    double core2Power;
-    int core1Pos;
-    int core2Pos;
     final double ADAGIO_POWER = 0.3;
 
     boolean isReverseMode = false;
     boolean isLegatoMode = false;
 
-    boolean isServoLowered;
-    boolean isXPushed;
-
-    boolean isLeftBumperPushed = false;
-    boolean isSpittingOut = false;
     boolean isRightBumperPushed = false;
     boolean isSuckingIn = false;
 
@@ -36,22 +24,13 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isDpadLeftPushed = false;
     boolean isCollectorCenter = false;
 
-    boolean isDpadUpPushed = false;
-    boolean isCollectorUp = false;
-
-    boolean isDpadDownPushed = false;
     boolean isCollectorDown = false; // gamepad joystick up
 
     boolean isMarkerDown = true;
     boolean isYButtonPressed = true;
 
-    boolean isStraightDrive;
-
-
     int arm1pos = 0;
-
-
-    int tarGLPos;
+    int targetCorePos = 0;
 
     AvgFilter filterJoyStickInput = new AvgFilter();
 
@@ -127,13 +106,25 @@ abstract public class MasterTeleOp extends MasterOpMode
         motorBR.setPower(powerBR);
     }
 
+    void linearSlides()
+    {
+        // control the extending with G2 right (extend) and left (retract) trigger
+        if (gamepad2.right_trigger != 0 && targetCorePos < MAX_CORE_POS)
+        {
+            targetCorePos++;
+            core2.setTargetPosition(targetCorePos);
+            core2.setPower(0.7);
+        }
+        if (gamepad2.left_trigger != 0)
+        {
+            targetCorePos--;
+            core2.setTargetPosition(targetCorePos);
+            core2.setPower(0.8);
+        }
+    }
+
     void collector()
     {
-
-// control the extending with G2 right (extend) and left (retract) trigger
-        if (gamepad2.right_trigger != 0) core2.setPower(gamepad2.right_trigger);
-        else if (gamepad2.left_trigger != 0) core2.setPower(-gamepad2.left_trigger);
-        else core2.setPower(0.0);
 
 // control arm motors with G2 right stick
         if (gamepad2.right_stick_y != 0)
@@ -236,7 +227,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         telemetry.addData("legato: ", isLegatoMode);
         telemetry.addData("reverse: ", isReverseMode);
         telemetry.addData("rev1:", rev1.getPosition());
-        telemetry.addData("core2:", core2Pos);
+        telemetry.addData("core2:", targetCorePos);
         telemetry.addData("hanger:", hanger.getCurrentPosition());
         telemetry.update();
     }
