@@ -45,8 +45,10 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double COUNTS_PER_MM = COUNTS_PER_INCH / 25.4;
     static final double SCALE_OMNI = 1.41;
     final double ROBOT_DIAMETER_MM = 20.5 * 25.4;   // diagonal 20.5 inch FL to BR and FR to BL
-    static final double INIT_REV_POS = 0.75; // the initial position is inside the robot, should happen in init
+    static final double INIT_REV_POS = 0.7; // the initial position is inside the robot, should happen in init
     static final double REV_INCREMENT = 0.006; // this is how much the REV servo wrist moves per flick of the joystick
+
+    static final int MAX_CORE_POS = 790;
 
     // Servo init and low positions
     static final double MARKER_LOW = -0.37;
@@ -87,8 +89,8 @@ abstract public class MasterOpMode extends LinearOpMode
 
         hanger = hardwareMap.dcMotor.get("hanger");
 
-        //core2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        core2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        core2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        core2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -128,7 +130,6 @@ abstract public class MasterOpMode extends LinearOpMode
 
         vex1.setPower(0.0);
         rev1.setPosition(INIT_REV_POS);
-        marker.setPosition(MARKER_LOW);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
