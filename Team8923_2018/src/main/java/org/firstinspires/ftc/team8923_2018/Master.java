@@ -77,12 +77,7 @@ abstract class Master extends LinearOpMode
 
         motorFlip.setTargetPosition(motorFlip.getCurrentPosition());
 
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-
         servoJJ2.setPosition(0.65);
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
     }
 
 

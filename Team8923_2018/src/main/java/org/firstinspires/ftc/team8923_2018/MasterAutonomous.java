@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team8923_2018;
 
 import android.text.method.BaseKeyListener;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -148,6 +149,10 @@ abstract class MasterAutonomous extends Master
         telemetry.addData("Init State", "Init Started");
         telemetry.update();
         initHardware();
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
         telemetry.addData("Init State", "Init Finished");
         telemetry.update();
 

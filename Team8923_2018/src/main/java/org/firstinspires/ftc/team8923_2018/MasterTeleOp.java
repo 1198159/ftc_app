@@ -138,8 +138,8 @@ abstract class MasterTeleOp extends Master
         }
         else if(Math.abs(gamepad2.left_stick_y) > 0)
         {
-            motorSucc1.setPower(gamepad2.left_stick_y * 0.25);
-            motorSucc2.setPower(-gamepad2.left_stick_y * 0.25); // inverse of above b/c Vex Motor is rotated 180 degrees
+            motorSucc1.setPower(gamepad2.left_stick_y * 0.35);
+            motorSucc2.setPower(-gamepad2.left_stick_y * 0.35); // inverse of above b/c Vex Motor is rotated 180 degrees
         }
         else
         {
