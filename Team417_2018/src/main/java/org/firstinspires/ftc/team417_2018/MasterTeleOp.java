@@ -29,7 +29,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isMarkerDown = true;
     boolean isYButtonPressed = true;
 
-    int arm1pos = 0;
+    //int arm1pos = 0;
     int targetCorePos = 0;
 
     AvgFilter filterJoyStickInput = new AvgFilter();
@@ -53,7 +53,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             if (gamepad1.dpad_right) x = 0.2;
             if (gamepad1.dpad_down) y = -0.2;
             if (gamepad1.dpad_up) y = 0.2;
-            pivotPower = Range.clip(gamepad1.left_stick_x, -0.3, 0.3);
+            pivotPower = Range.clip(gamepad1.left_stick_x, -0.2, 0.2);
 
             if (isReverseMode) // if both legato and reverse mode
             {
@@ -111,13 +111,13 @@ abstract public class MasterTeleOp extends MasterOpMode
         // control the extending with G2 right (extend) and left (retract) trigger
         if (gamepad2.right_trigger != 0 && targetCorePos < MAX_CORE_POS)
         {
-            targetCorePos++;
+            targetCorePos+=3;
             core2.setTargetPosition(targetCorePos);
             core2.setPower(0.7);
         }
-        if (gamepad2.left_trigger != 0)
+        if (gamepad2.left_trigger != 0 && targetCorePos > MIN_CORE_POS)
         {
-            targetCorePos--;
+            targetCorePos-=3;
             core2.setTargetPosition(targetCorePos);
             core2.setPower(0.8);
         }
@@ -137,7 +137,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             arm1.setPower(0.0);
             arm2.setPower(0.0);
         }
-        arm1pos = arm1.getCurrentPosition(); // update arm1 motor position
+       // arm1pos = arm1.getCurrentPosition(); // update arm1 motor position
 
 // control hanger with G2 left and right bumpers
         if (gamepad2.dpad_up)
@@ -177,17 +177,12 @@ abstract public class MasterTeleOp extends MasterOpMode
             isCollectorDown = false;
             isCollectorCenter = false;
         }
-
-        telemetry.addData("legato: ", isLegatoMode);
-        telemetry.update();
-        idle();
-
         // control vex Servo
         //boolean isRightBumperPushed = false;
         //boolean isSuckingIn = false;
 
         // we include is right bumper pushed because this code is an event loop and it is constantly running that means that when
-        //  a person pushes the button once it could run through the loop almost 50 times and update the state inaccurately in a true-false-true-
+        // a person pushes the button once it could run through the loop almost 50 times and update the state inaccurately in a true-false-true-
         // false way that could leave left_bumper on an incorrect state. By adding isRightBumperPushed we make the state change the first time around
         // so that it won't register more than once and the condition for changing state will remain false after one run through
 
