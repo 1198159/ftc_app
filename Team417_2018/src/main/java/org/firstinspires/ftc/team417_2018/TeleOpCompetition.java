@@ -31,7 +31,6 @@ public class TeleOpCompetition extends MasterTeleOp
             linearSlides();
             collector();
             updateTelemetry();
-            idle();
         }
     }
 }
