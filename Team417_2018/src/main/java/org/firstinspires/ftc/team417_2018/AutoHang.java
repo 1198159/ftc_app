@@ -54,7 +54,7 @@ public class AutoHang extends MasterAutonomous
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
 
-        move(60, 0, 0.2, 0.75, 3.0); // move robot hanger hanger off the lander hook
+        move(60, 0, 0.2, 0.75, 3.0); // move robot hanger off the lander hook
         sleep(50);
 
         move(0, 70, 0.2, 0.75, 3.0); // move from sampling position to gold push position
