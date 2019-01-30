@@ -49,6 +49,7 @@ abstract public class MasterOpMode extends LinearOpMode
     static final double REV_INCREMENT = 0.006; // this is how much the REV servo wrist moves per flick of the joystick
 
     static final int MAX_CORE_POS = 790;
+    static final int MIN_CORE_POS = -15;
 
     // Servo init and low positions
     static final double MARKER_LOW = -0.37;
@@ -97,6 +98,9 @@ abstract public class MasterOpMode extends LinearOpMode
 
         arm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        
+        hanger.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hanger.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
