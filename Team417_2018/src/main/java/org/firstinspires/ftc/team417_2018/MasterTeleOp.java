@@ -111,11 +111,11 @@ abstract public class MasterTeleOp extends MasterOpMode
         // control the extending with G2 right (extend) and left (retract) trigger
         if (gamepad2.right_trigger != 0 && targetCorePos < MAX_CORE_POS)
         {
-            targetCorePos+=3;
+            targetCorePos+=2;
             core2.setTargetPosition(targetCorePos);
             core2.setPower(0.7);
         }
-        if (gamepad2.left_trigger != 0 && targetCorePos > MIN_CORE_POS)
+        if (gamepad2.left_trigger != 0)
         {
             targetCorePos-=3;
             core2.setTargetPosition(targetCorePos);
