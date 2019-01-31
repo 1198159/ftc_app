@@ -266,7 +266,7 @@ abstract class MasterAutonomous extends Master
 
     public void moveLift (int ticks)
     {
-        while ((ticks - motorLift.getCurrentPosition()) > TOL)
+        while (Math.abs(ticks - motorLift.getCurrentPosition()) > TOL)
         {
             motorLift.setTargetPosition(motorLift.getCurrentPosition() + ticks);
             motorLift.setPower((motorLift.getTargetPosition() - motorLift.getCurrentPosition()) * (1 / 1000.0));
@@ -720,7 +720,7 @@ abstract class MasterAutonomous extends Master
     }
     public GoldLocation landAndDetectMineral() throws InterruptedException
     {
-        moveLift(4375);
+        moveLift(6700);
 
         //!!! should we be locating the gold AFTER we finish the move that we do below??
         GoldLocation position = openCVLocateGold();
