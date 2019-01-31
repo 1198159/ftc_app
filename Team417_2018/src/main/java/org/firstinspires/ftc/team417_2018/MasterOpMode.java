@@ -98,7 +98,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
         arm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        
+
         hanger.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hanger.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
