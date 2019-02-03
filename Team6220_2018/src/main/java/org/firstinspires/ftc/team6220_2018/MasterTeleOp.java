@@ -102,7 +102,7 @@ abstract public class MasterTeleOp extends MasterOpMode
                 //motorArmLeft.setPower(0.3);
                 motorArmRight.setTargetPosition(-Constants.ARM_GROUND);
                 //motorArmRight.setPower(0.3);
-                driveArm(0.3);
+                driveArm(Constants.MAX_ARM_POWER);
             }
             else if (driver2.isButtonPressed(Button.Y))
             {
@@ -118,7 +118,7 @@ abstract public class MasterTeleOp extends MasterOpMode
                 //motorArmLeft.setPower(0.2);
                 motorArmRight.setTargetPosition(-Constants.ARM_START);
                 //motorArmRight.setPower(0.2);
-                driveArm(0.2);
+                driveArm(Constants.MAX_ARM_POWER);
             }
         }
         /*else if(!armRunModePosition)
@@ -153,7 +153,7 @@ abstract public class MasterTeleOp extends MasterOpMode
 
         telemetry.addData("Arm Position Left: ", motorArmLeft.getCurrentPosition());
         telemetry.addData("Arm Position Right: ", motorArmRight.getCurrentPosition());
-        telemetry.addData("Arm Run Mode Run To Position: ", armRunModeUsingEncoder);
+        telemetry.addData("Arm Run Mode Using Encoder: ", armRunModeUsingEncoder);
         telemetry.update();
     }
 

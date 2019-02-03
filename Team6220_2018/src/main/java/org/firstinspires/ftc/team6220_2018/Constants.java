@@ -77,8 +77,8 @@ public class Constants
     public static final double SERVO_MARKER_DEPLOYED = 1.0;
     public static final double SERVO_MARKER_RETRACTED = 0.17;
 
-    public static final double MOTOR_COLLECTOR_IN = 0.85;
-    public static final double MOTOR_COLLECTOR_OUT = -0.85;
+    public static final double MOTOR_COLLECTOR_IN = -0.85;
+    public static final double MOTOR_COLLECTOR_OUT = 0.85;
     //-------------------------------------------------
 
 
@@ -96,7 +96,7 @@ public class Constants
     // Arm Positions
     public static final int ARM_START = 0;
     public static final int ARM_TOP = -1150;
-    public static final int ARM_GROUND = -2247;
+    public static final int ARM_GROUND = -2000;
     // Arm powers
     public static final double MAX_ARM_POWER = 0.4;
 
