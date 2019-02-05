@@ -249,8 +249,19 @@ abstract class MasterAutonomous extends Master
     }
     public void deployArmFAST()
     {
-        motorFlip.setTargetPosition(motorFlip.getCurrentPosition() - 650);
-        motorFlip.setPower(Math.min((motorFlip.getTargetPosition() - motorFlip.getCurrentPosition()) * (1.0 / 15), 0.5));
+        motorFlip.setTargetPosition(motorFlip.getCurrentPosition() - 500);
+        while (Math.abs(motorFlip.getCurrentPosition() - motorFlip.getTargetPosition()) > TOL)
+        {
+            motorFlip.setPower(0.5);
+        }
+        motorFlip.setPower(0.0);
+
+        motorFlip.setTargetPosition(motorFlip.getCurrentPosition() + 680);
+        while (Math.abs(motorFlip.getCurrentPosition() - motorFlip.getTargetPosition()) > TOL)
+        {
+            motorFlip.setPower(0.3);
+        }
+        motorFlip.setPower(0.0);
     }
 
     public void dropJJ()
