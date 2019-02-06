@@ -54,7 +54,7 @@ public class AutoHang extends MasterAutonomous
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
 
-        move(60, 0, 0.2, 0.75, 3.0); // move robot hanger off the lander hook
+        move(45, 0, 0.2, 0.75, 3.0); // move robot hanger off the lander hook
         sleep(50);
 
         move(0, 70, 0.2, 0.75, 3.0); // move from sampling position to gold push position
@@ -70,7 +70,7 @@ public class AutoHang extends MasterAutonomous
                 sleep(100); // pause 100 milliseconds
                 pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to face depot
                 sleep(100); // pause 100 milliseconds
-                move(-70, 00, 0.3, 0.7, 2.0); // push against the wall
+                move(-70, 0, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
                 move(0, 400, 0.3, 0.7, 3.0); // go towards depot
                 sleep(100);
@@ -114,11 +114,11 @@ public class AutoHang extends MasterAutonomous
             {
                 move(0, 700, 0.3, 0.7, 3.0); // push the gold mineral
                 sleep(100);
-                pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to face crater
+                pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to face depot
                 sleep(100);
                 marker.setPosition(MARKER_HIGH); // drop the marker in the depot
                 sleep(100);
-                move(0, -100, 0.3, 0.7, 2.0); // push against the wall
+                move(0, -100, 0.3, 0.7, 2.0); // back up
                 sleep(100);
                 move(-250, 0, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
@@ -134,35 +134,47 @@ public class AutoHang extends MasterAutonomous
                 pivotWithReference(-25, refAngle, 0.2, 0.75); // pivot to face gold mineral
                 sleep(100);
                 move(0, 200, 0.3, 0.7, 2.0); // go forward to push the gold mineral
-                // rest of this code is for dropping of marker after knocking gold mineral
-                /*sleep(100);
-                move(0, -200, 0.3, 0.7, 2.0); // push the gold mineral
                 sleep(100);
-                pivotWithReference(55, refAngle, 0.2, 0.75); // pivot to face gold mineral
-                sleep(100);
-                move(0, 500, 0.3, 0.7, 2.0); // push the gold mineral
-                sleep(100);
-                pivotWithReference(25, refAngle, 0.2, 0.75); // pivot to face gold mineral
-                sleep(100);
-                move(200,500,0.3,0.72,2.0);
-                */
+                pivotWithReference(0, refAngle, 0.2, 0.75); // face crater
+                sleep(200);
+                moveTimed(0.55, 500); // go into crater / park
             }
             else if (isLeftGold)
             {
                 pivotWithReference(30, refAngle, 0.2, 0.75); // pivot to face the gold mineral
                 sleep(100);
                 move(0, 500, 0.3, 0.7, 3.0); // push the gold mineral
+                sleep(100);
+                pivotWithReference(0, refAngle, 0.2, 0.75); // face crater
+                sleep(200);
+                moveTimed(0.55, 500); // go into crater and park
             }
             else if (isCenterGold)
             {
                 sleep(100);
-                move(0, 500, 0.3, 0.7, 3.0); // push the gold mineral
-            }
+                move(0, 320, 0.3, 0.7, 3.0); // push the gold mineral
 
-            sleep(100);
-            pivotWithReference(0, refAngle, 0.2, 0.75); // face crater
-            sleep(200);
-            moveTimed(0.55, 500); // go into crater / park
+                // rest of this code is for dropping of marker after knocking gold mineral
+                sleep(100);
+                move(0, -130, 0.3, 0.7, 2.0); // back up from the gold mineral
+                sleep(100);
+                pivotWithReference(90, refAngle, 0.2, 0.75); // pivot to face wall
+                sleep(100);
+                move(0, 610, 0.3, 0.7, 2.0); // go forwards toward the wall
+                sleep(100);
+                pivotWithReference(135, refAngle, 0.2, 0.75); // pivot to face the depot
+                sleep(100);
+                move(85, 0, 0.3, 0.7, 2.0); // translate towards the wall
+                sleep(50);
+                move(0, 550, 0.3, 0.7, 2.0); // go forwards into the depot
+                sleep(50);
+                pivotWithReference(110, refAngle, 0.2, 0.75); // pivot so TMD faces crater more
+                sleep(100);
+                marker.setPosition(MARKER_HIGH); // release the TM
+                pivotWithReference(135, refAngle, 0.2, 0.75); // pivot so back of robot faces our crater
+                move(0,-1000,0.3,0.72,3.5); // go backwards to park in the crater
+                marker.setPosition(MARKER_LOW); // lower the TMD
+            }
         }
 
         vuforia.stop();
