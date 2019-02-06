@@ -23,7 +23,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     private int curHangerPos = 0;
 
     boolean isLogging = true;
-    boolean isPosCrater;
+    boolean isPosCrater = true;
 
     boolean isLeftGold = false;
     boolean isCenterGold = false;
@@ -434,6 +434,7 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     public void land()
     {
+
         hanger.setPower(0.95);
         sleep(600);
         hanger.setPower(0.0);
@@ -451,8 +452,9 @@ abstract public class MasterAutonomous extends MasterOpMode
         sleep(100);
 
         hanger.setPower(0.95);
-        sleep(2500);
+        sleep(3000);
         hanger.setPower(0.0);
+
         /*
         int hangerZeroPos = hanger.getCurrentPosition();
         do
