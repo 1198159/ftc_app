@@ -12,8 +12,6 @@ public class TeleOpCompetition extends MasterTeleOp
     {
 
         super.initializeHardware();
-        core2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // set encoder value to 0
-        core2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
