@@ -10,23 +10,43 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class LinearSlideTest extends MasterTeleOp
 {
     int targetPos = 0;
-    Servo rev1 = null; // hub 2 port 2
 
     public void runOpMode() throws InterruptedException
     {
-        //super.initializeHardware();
+        super.initializeHardware();
 
-        rev1 = hardwareMap.servo.get("rev1");
-        rev1.setPosition(0.5);
         telemetry.addData("Init","done");
         telemetry.update();
 
         waitForStart();
         while (opModeIsActive())
         {
-            rev1.setPosition(0.5);
-            telemetry.addData("tarPos", targetPos);
+            if (gamepad2.right_trigger != 0)
+            {
+                core2.setPower(0.7);
+            }
+            else if (gamepad2.left_trigger != 0)
+            {
+                isExtending = false;
+                core2.setPower(-0.8);
+            }
+            else if (gamepad2.left_trigger==0 && gamepad2.right_trigger==0 && !isExtending)
+            {
+                core2.setPower(0.0);
+            }
+
+            // Press button y to toggle up and down
+            if (gamepad2.y && !isExtending)
+            {
+                isYButtonPressed = true;
+                isExtending = !isExtending;
+            }
+            isYButtonPressed = gamepad2.y;
+            if (isExtending) core2.setPower(0.025); // extends with toggle
+
+            telemetry.addData("core2", core2.getCurrentPosition());
             telemetry.update();
+
         }
     }
 }
