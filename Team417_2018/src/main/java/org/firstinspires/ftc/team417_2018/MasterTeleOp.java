@@ -27,6 +27,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isCollectorDown = false; // gamepad joystick up
 
     boolean isMarkerDown = true;
+    boolean isExtending = false;
     boolean isYButtonPressed = true;
 
     //int arm1pos = 0;
@@ -109,24 +110,40 @@ abstract public class MasterTeleOp extends MasterOpMode
     void linearSlides()
     {
         // control the extending with G2 right (extend) and left (retract) trigger
-        if (gamepad2.right_trigger != 0 && targetCorePos < MAX_CORE_POS)
+        //if (gamepad2.right_trigger != 0 && targetCorePos < MAX_CORE_POS) core2.setPower(0.7); // extend
+        //if (gamepad2.left_trigger != 0 && targetCorePos > MIN_CORE_POS) core2.setPower(-0.8); // retract
+
+        // control the extending with G2 right (extend) and left (retract) trigger
+        if (gamepad2.right_trigger != 0)
         {
-            targetCorePos+=2;
-            core2.setTargetPosition(targetCorePos);
             core2.setPower(0.7);
         }
-        if (gamepad2.left_trigger != 0)
+        else if (gamepad2.left_trigger != 0)
         {
-            targetCorePos-=3;
-            core2.setTargetPosition(targetCorePos);
-            core2.setPower(0.8);
+            isExtending = false;
+            core2.setPower(-0.8);
         }
+        else if (gamepad2.left_trigger==0 && gamepad2.right_trigger==0 && !isExtending)
+        {
+            core2.setPower(0.0);
+        }
+
+        if (arm1.getCurrentPosition() > -790) isExtending = false;
+
+        // Press button y to toggle up and down
+        if (gamepad2.y && !isExtending)
+        {
+            isYButtonPressed = true;
+            isExtending = !isExtending;
+        }
+        isYButtonPressed = gamepad2.y;
+        if (isExtending && arm1.getCurrentPosition() < -790) core2.setPower(0.1); // extends with toggle
+
     }
 
     void collector()
     {
-
-// control arm motors with G2 right stick
+        // control arm motors with G2 right stick
         if (gamepad2.right_stick_y != 0)
         {
             arm1.setPower(Range.clip(gamepad2.right_stick_y, -0.3, 0.3));
@@ -200,7 +217,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             isRightBumperPushed = true; // switch the value of right bumper pushed to true
             isSuckingIn = !isSuckingIn; // and switch sucking in's boolean to sucking out or in depending on what it is
         }
-        isRightBumperPushed = gamepad2.right_bumper; // update the current state of isRightBumperPushed otherwise it will always stay the sa,e
+        isRightBumperPushed = gamepad2.right_bumper; // update the current state of isRightBumperPushed otherwise it will always stay the same
     }
 
     void marker()
@@ -221,9 +238,10 @@ abstract public class MasterTeleOp extends MasterOpMode
     {
         telemetry.addData("legato: ", isLegatoMode);
         telemetry.addData("reverse: ", isReverseMode);
-        telemetry.addData("rev1:", rev1.getPosition());
-        telemetry.addData("core2:", targetCorePos);
-        telemetry.addData("hanger:", hanger.getCurrentPosition());
+        //telemetry.addData("rev1:", rev1.getPosition());
+        telemetry.addData("motorMode", core2.getMode());
+        telemetry.addData("core2:", core2.getCurrentPosition());
+        telemetry.addData("arm1:", arm1.getCurrentPosition());
         telemetry.update();
     }
 }
