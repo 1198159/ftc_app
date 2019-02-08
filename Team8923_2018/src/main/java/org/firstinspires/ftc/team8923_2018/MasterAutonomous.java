@@ -256,7 +256,7 @@ abstract class MasterAutonomous extends Master
         }
         motorFlip.setPower(0.0);
 
-        motorFlip.setTargetPosition(motorFlip.getCurrentPosition() + 680);
+        motorFlip.setTargetPosition(motorFlip.getCurrentPosition() + 690);
         while (Math.abs(motorFlip.getCurrentPosition() - motorFlip.getTargetPosition()) > TOL)
         {
             motorFlip.setPower(0.3);
@@ -326,7 +326,8 @@ abstract class MasterAutonomous extends Master
                 assist = Assist.NOT_ASSISTING;
             }
 
-            /*if(gamepad1.dpad_up)
+            /*
+            if(gamepad1.dpad_up)
             {
                 numDelays++;
                 delays.add(1);
@@ -370,7 +371,8 @@ abstract class MasterAutonomous extends Master
                     telemetry.addData("delay time", delays.get(numDelays));
                     telemetry.update();
                 }
-            }*/
+            }
+            */
 
             if(gamepad1.start)
                 doneSettingUp = true;
@@ -393,10 +395,6 @@ abstract class MasterAutonomous extends Master
             // setup data
             telemetry.addData("Alliance", alliance.name());
             telemetry.addData("Side", startLocation.name());
-            telemetry.addData("Assist?", assist.name());
-            if(numDelays> 0)
-                for (int i = 1; i < delays.size(); i++)
-                    telemetry.addData("delay " + String.valueOf(i), delays.get(i));
             telemetry.update();
 
             idle();

@@ -57,9 +57,10 @@ public class AutoCompetition extends MasterAutonomous
                 }
                 else
                 {
-                    moveRobot(0.0,0.7,1.6);
+                    moveRobot(0.0,0.6,1.5);
                     driveToPosition(0, -1300 - craterShift, 1.0);
                 }
+                driveToPosition(-30, 0,1.0);
             }
             //opposing crater
             else
@@ -76,18 +77,18 @@ public class AutoCompetition extends MasterAutonomous
                 }
                 else
                 {
-                    moveRobot(180.0, 0.7, 1.6);
-                    driveToPosition(0, -1500 - craterShift, 1.0);
+                    moveRobot(180.0, 0.6, 1.5);
+                    driveToPosition(0, -1250 - craterShift, 1.0);
                 }
+                driveToPosition(30, 0,1.0);
             }
-            driveToPosition(-30, 0,1.0);
             motorArmLeft.setTargetPosition(Constants.ARM_GROUND);
-            motorArmRight.setTargetPosition(Constants.ARM_GROUND);
+            motorArmRight.setTargetPosition(-Constants.ARM_GROUND);
             //motorArmLeft.setPower(0.4);
             //motorArmRight.setPower(0.4);
             driveArm(0.4);
-            pauseWhileUpdating(1.0);
-            driveToPosition(0, 55, 1.0);
+            pauseWhileUpdating(1.5);
+            //driveToPosition(0, 55, 1.0);
             /*while(opModeIsActive())
             {
                 motorCollector.setPower(Constants.MOTOR_COLLECTOR_IN);
@@ -115,7 +116,9 @@ public class AutoCompetition extends MasterAutonomous
                 //turnTo(0, 1.0);
                 dropOffMarker();
                 driveToPosition(0, 20, 1.0);
+                dropOffMarker();
                 turnTo(45,1.0);
+
                 if(!knockPartnerMineral)
                 {
                     // Drive backward, align with wall, and drive rest of way into crater.
@@ -151,11 +154,13 @@ public class AutoCompetition extends MasterAutonomous
                     turnTo(90, 1.0);
                     driveToPosition(0, 150,1.0);
                 }
+                driveToPosition(-30, 0,1.0);
             }
             else
             {
                 dropOffMarker();
                 turnTo(-45, 1.0);
+                dropOffMarker();
 
                 // Drive backward, align with wall, and drive rest of way into crater.
                 driveToPosition(0, -400, 1.0);
@@ -174,15 +179,15 @@ public class AutoCompetition extends MasterAutonomous
                     moveRobot(180.0,0.6,0.9);
                     driveToPosition(0, -1400, 1.0);
                 }
+                driveToPosition(30, 0,1.0);
             }
-            driveToPosition(-30, 0,1.0);
             motorArmLeft.setTargetPosition(Constants.ARM_GROUND);
-            motorArmRight.setTargetPosition(Constants.ARM_GROUND);
+            motorArmRight.setTargetPosition(-Constants.ARM_GROUND);
             //motorArmLeft.setPower(0.4);
             //motorArmRight.setPower(0.4);
             driveArm(0.4);
-            pauseWhileUpdating(1.0);
-            driveToPosition(0, 55, 1.0);
+            pauseWhileUpdating(1.5);
+            //driveToPosition(0, 55, 1.0);
             /*while(opModeIsActive())
             {
                 motorCollector.setPower(Constants.MOTOR_COLLECTOR_IN);
@@ -214,6 +219,12 @@ public class AutoCompetition extends MasterAutonomous
         motorHanger.setTargetPosition(0);
         motorHanger.setPower(1.0);
         driveToPosition(-80,0,1.0);
+
+        motorArmLeft.setTargetPosition(Constants.ARM_TOP);
+        //motorArmLeft.setPower(Constants.MAX_ARM_POWER);
+        motorArmRight.setTargetPosition(-Constants.ARM_TOP);
+        //motorArmRight.setPower(Constants.MAX_ARM_POWER);
+        driveArm(Constants.MAX_ARM_POWER);
     }
 
     // Allows us to score alliance partner's mineral.
@@ -254,7 +265,7 @@ public class AutoCompetition extends MasterAutonomous
                 {
                     turnTo(60, 1.0);
                     // Drive forward to hit mineral and return to original position.
-                    driveToPosition(0, -750, 1.0);
+                    driveToPosition(0, -800, 1.0);
                 }
                 else
                 {
@@ -311,7 +322,7 @@ public class AutoCompetition extends MasterAutonomous
     private void driveToDepotDropMarker() throws InterruptedException
     {
         // Drive forward; we change this value based on where the gold mineral was.
-        driveToPosition(0, 1249 + mineralShift, 1.0);
+        driveToPosition(0, 1280 + mineralShift, 1.0);
         turnTo(135,1.0);
         // Align robot with wall.
         moveRobot(0.0,1.0,0.3);
