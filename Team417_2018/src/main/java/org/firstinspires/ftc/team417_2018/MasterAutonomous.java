@@ -431,7 +431,18 @@ abstract public class MasterAutonomous extends MasterOpMode
         CENTER,
         RIGHT
     }
-
+    public void lowerArm()
+    {
+        do
+        {
+            curLiftPos = arm1.getCurrentPosition();
+            arm1.setPower(-0.2);
+            arm2.setPower(0.2);
+        }
+        while (curLiftPos < 200);
+        arm1.setPower(0.0);
+        arm2.setPower(0.0);
+    }
     public void land()
     {
 
@@ -452,7 +463,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         sleep(100);
 
         hanger.setPower(0.95);
-        sleep(3000);
+        sleep(2500);
         hanger.setPower(0.0);
 
         /*
