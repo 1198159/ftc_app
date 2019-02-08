@@ -79,6 +79,9 @@ public class Constants
 
     public static final double MOTOR_COLLECTOR_IN = -0.85;
     public static final double MOTOR_COLLECTOR_OUT = 0.85;
+
+    public static final double MOTOR_COLLECTOR_SLOW_IN = -0.2;
+    public static final double MOTOR_COLLECTOR_SLOW_OUT = 0.2;
     //-------------------------------------------------
 
 
@@ -95,10 +98,12 @@ public class Constants
 
     // Arm Positions
     public static final int ARM_START = 0;
-    public static final int ARM_TOP = -1150;
-    public static final int ARM_GROUND = -2000;
+    public static final int ARM_TOP = -871;
+    public static final int ARM_GROUND = -1400;
+    public static final int ARM_SWITCH__HEIGHT = 1000;
+    //public static final int ARM_AUTO_START = -400;
     // Arm powers
-    public static final double MAX_ARM_POWER = 0.4;
+    public static final double MAX_ARM_POWER = 0.3;
 
     // Ensure that input isn't used when no commands are given
     public static final double MINIMUM_JOYSTICK_POWER = 0.05;

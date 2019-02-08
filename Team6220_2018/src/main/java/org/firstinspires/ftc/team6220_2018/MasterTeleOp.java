@@ -2,6 +2,8 @@ package org.firstinspires.ftc.team6220_2018;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Const;
+
 /*
     Contains methods for accepting and interpreting pilot and co-pilot input.
 */
@@ -18,10 +20,15 @@ abstract public class MasterTeleOp extends MasterOpMode
     //boolean armRunModePosition = true;
     boolean armRunModeUsingEncoder = false;
 
+    boolean armSlowMode = false;
+
     // Factor that adjusts magnitudes of vertical and horizontal movement.
     double tFactor = Constants.T_FACTOR;
     // Factor that adjusts magnitude of rotational movement.
     double rFactor = Constants.R_FACTOR;
+
+    double armFactorIn = Constants.MOTOR_COLLECTOR_IN;
+    double armFactorOut = Constants.MOTOR_COLLECTOR_OUT;
 
     // Takes driver 1 input to run hanger system.
     void driveHanger()
@@ -53,20 +60,47 @@ abstract public class MasterTeleOp extends MasterOpMode
     // Uses driver 2 input to drive arm and collector motors.
     void driveCollectorMechanism()
     {
+        if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER) && !armSlowMode)
+        {
+            armFactorIn = Constants.MOTOR_COLLECTOR_SLOW_IN;
+            armFactorOut = Constants.MOTOR_COLLECTOR_SLOW_OUT;
+            armSlowMode = true;
+        }
+        else if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER) && armSlowMode)
+        {
+            armFactorIn = Constants.MOTOR_COLLECTOR_IN;
+            armFactorOut = Constants.MOTOR_COLLECTOR_OUT;
+            armSlowMode = false;
+        }
+
         // Collect and eject minerals.  Buttons have to be held to power collector.
         if (driver2.isButtonPressed(Button.DPAD_DOWN))
-            motorCollector.setPower(Constants.MOTOR_COLLECTOR_IN);
+        {
+            motorCollector.setPower(armFactorIn);
+        }
         else if (driver2.isButtonPressed(Button.DPAD_UP))
-            motorCollector.setPower(Constants.MOTOR_COLLECTOR_OUT);
+        {
+            motorCollector.setPower(armFactorOut);
+        }
         else
+        {
             motorCollector.setPower(0);
+        }
+
 
         if (Math.abs(driver2.getRightStickY()) >= Constants.MINIMUM_JOYSTICK_POWER)
         {
             armRunModeUsingEncoder = true;
             motorArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            driveArm(-Constants.MAX_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
+            if (motorArmLeft.getCurrentPosition() <= Constants.ARM_SWITCH__HEIGHT)
+            {
+                driveArm(-0.3 * stickCurve.getOuput(driver2.getRightStickY()));
+            }
+            else
+            {
+                driveArm(-0.1 * stickCurve.getOuput(driver2.getRightStickY()));
+            }
             //motorArmLeft.setPower(-Constants.MAX_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
             //motorArmRight.setPower(-Constants.MAX_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
         }
@@ -96,30 +130,31 @@ abstract public class MasterTeleOp extends MasterOpMode
         {*/
         else if (Math.abs(driver2.getRightStickY()) < Constants.MINIMUM_JOYSTICK_POWER && !armRunModeUsingEncoder)
         {
-            if (driver2.isButtonPressed(Button.X))
+            /*if (driver2.isButtonPressed(Button.X))
             {
                 motorArmLeft.setTargetPosition(Constants.ARM_GROUND);
                 //motorArmLeft.setPower(0.3);
                 motorArmRight.setTargetPosition(-Constants.ARM_GROUND);
                 //motorArmRight.setPower(0.3);
                 driveArm(Constants.MAX_ARM_POWER);
-            }
-            else if (driver2.isButtonPressed(Button.Y))
+            }*/
+            /*if (driver2.isButtonPressed(Button.Y))
             {
                 motorArmLeft.setTargetPosition(Constants.ARM_TOP);
                 //motorArmLeft.setPower(Constants.MAX_ARM_POWER);
                 motorArmRight.setTargetPosition(-Constants.ARM_TOP);
                 //motorArmRight.setPower(Constants.MAX_ARM_POWER);
                 driveArm(Constants.MAX_ARM_POWER);
-            }
-            else if (driver2.isButtonPressed(Button.B))
+
+            }*/
+            /*else if (driver2.isButtonPressed(Button.B))
             {
                 motorArmLeft.setTargetPosition(Constants.ARM_START);
                 //motorArmLeft.setPower(0.2);
                 motorArmRight.setTargetPosition(-Constants.ARM_START);
                 //motorArmRight.setPower(0.2);
                 driveArm(Constants.MAX_ARM_POWER);
-            }
+            }*/
         }
         /*else if(!armRunModePosition)
         {
@@ -154,6 +189,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         telemetry.addData("Arm Position Left: ", motorArmLeft.getCurrentPosition());
         telemetry.addData("Arm Position Right: ", motorArmRight.getCurrentPosition());
         telemetry.addData("Arm Run Mode Using Encoder: ", armRunModeUsingEncoder);
+        telemetry.addData("Arm Slow Mode: ", armSlowMode);
         telemetry.update();
     }
 
