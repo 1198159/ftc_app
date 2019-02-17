@@ -97,13 +97,14 @@ public class Constants
     //-------------------------------------------------
 
     // Arm Positions
-    public static final int ARM_START = 0;
-    public static final int ARM_TOP = -871;
-    public static final int ARM_GROUND = -1400;
-    public static final int ARM_SWITCH__HEIGHT = 1000;
-    //public static final int ARM_AUTO_START = -400;
+    public static final int ARM_TOP_BLOCKS = 1350;
+    public static final int ARM_TOP_BALLS = 1240;
+    public static final int ARM_AUTO_RAISE = 870;
+    public static final int ARM_GROUND = 0;
+    public static final int ARM_SWITCH_HEIGHT = 1000;
     // Arm powers
-    public static final double MAX_ARM_POWER = 0.3;
+    public static final double HIGH_ARM_POWER = 0.3;
+    public static final double LOW_ARM_POWER = 0.1;
 
     // Ensure that input isn't used when no commands are given
     public static final double MINIMUM_JOYSTICK_POWER = 0.05;

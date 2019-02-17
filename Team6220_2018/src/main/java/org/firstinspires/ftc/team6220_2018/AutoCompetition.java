@@ -220,11 +220,10 @@ public class AutoCompetition extends MasterAutonomous
         motorHanger.setPower(1.0);
         driveToPosition(-80,0,1.0);
 
-        motorArmLeft.setTargetPosition(Constants.ARM_TOP);
-        //motorArmLeft.setPower(Constants.MAX_ARM_POWER);
-        motorArmRight.setTargetPosition(-Constants.ARM_TOP);
-        //motorArmRight.setPower(Constants.MAX_ARM_POWER);
-        driveArm(Constants.MAX_ARM_POWER);
+        // Raise arm out of camera's line of sight.
+        motorArmLeft.setTargetPosition(Constants.ARM_AUTO_RAISE);
+        motorArmRight.setTargetPosition(-Constants.ARM_AUTO_RAISE);
+        driveArm(Constants.HIGH_ARM_POWER);
     }
 
     // Allows us to score alliance partner's mineral.

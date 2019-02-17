@@ -2,8 +2,6 @@ package org.firstinspires.ftc.team6220_2018;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.Const;
-
 /*
     Contains methods for accepting and interpreting pilot and co-pilot input.
 */
@@ -16,19 +14,18 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean driveReversed = true;
     // Allows us to switch front of robot.
     boolean hangServoDeployed = false;
-    // Determines whether arm is in RUN_TO_POSITION or RUN_USING_ENCODER.
-    //boolean armRunModePosition = true;
+    // Determines whether arm is in RUN_TO_POSITION (=false) or RUN_USING_ENCODER (=true).
     boolean armRunModeUsingEncoder = false;
 
     boolean armSlowMode = false;
+
+    double collectorPowerIn = Constants.MOTOR_COLLECTOR_IN;
+    double collectorPowerOut = Constants.MOTOR_COLLECTOR_OUT;
 
     // Factor that adjusts magnitudes of vertical and horizontal movement.
     double tFactor = Constants.T_FACTOR;
     // Factor that adjusts magnitude of rotational movement.
     double rFactor = Constants.R_FACTOR;
-
-    double armFactorIn = Constants.MOTOR_COLLECTOR_IN;
-    double armFactorOut = Constants.MOTOR_COLLECTOR_OUT;
 
     // Takes driver 1 input to run hanger system.
     void driveHanger()
@@ -62,25 +59,25 @@ abstract public class MasterTeleOp extends MasterOpMode
     {
         if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER) && !armSlowMode)
         {
-            armFactorIn = Constants.MOTOR_COLLECTOR_SLOW_IN;
-            armFactorOut = Constants.MOTOR_COLLECTOR_SLOW_OUT;
+            collectorPowerIn = Constants.MOTOR_COLLECTOR_SLOW_IN;
+            collectorPowerOut = Constants.MOTOR_COLLECTOR_SLOW_OUT;
             armSlowMode = true;
         }
         else if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER) && armSlowMode)
         {
-            armFactorIn = Constants.MOTOR_COLLECTOR_IN;
-            armFactorOut = Constants.MOTOR_COLLECTOR_OUT;
+            collectorPowerIn = Constants.MOTOR_COLLECTOR_IN;
+            collectorPowerOut = Constants.MOTOR_COLLECTOR_OUT;
             armSlowMode = false;
         }
 
         // Collect and eject minerals.  Buttons have to be held to power collector.
         if (driver2.isButtonPressed(Button.DPAD_DOWN))
         {
-            motorCollector.setPower(armFactorIn);
+            motorCollector.setPower(collectorPowerIn);
         }
         else if (driver2.isButtonPressed(Button.DPAD_UP))
         {
-            motorCollector.setPower(armFactorOut);
+            motorCollector.setPower(collectorPowerOut);
         }
         else
         {
@@ -88,102 +85,59 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
 
 
+        // Run arm to stick power.
         if (Math.abs(driver2.getRightStickY()) >= Constants.MINIMUM_JOYSTICK_POWER)
         {
             armRunModeUsingEncoder = true;
             motorArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            if (motorArmLeft.getCurrentPosition() <= Constants.ARM_SWITCH__HEIGHT)
+            if (motorArmLeft.getCurrentPosition() <= Constants.ARM_SWITCH_HEIGHT)
             {
-                driveArm(-0.3 * stickCurve.getOuput(driver2.getRightStickY()));
+                driveArm(-Constants.HIGH_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
             }
             else
             {
-                driveArm(-0.1 * stickCurve.getOuput(driver2.getRightStickY()));
+                driveArm(-Constants.LOW_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
             }
-            //motorArmLeft.setPower(-Constants.MAX_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
-            //motorArmRight.setPower(-Constants.MAX_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
         }
+        // Change to RUN_TO_POSITION when stick is not pressed.
         else if (Math.abs(driver2.getRightStickY()) < Constants.MINIMUM_JOYSTICK_POWER && armRunModeUsingEncoder)
         {
             armRunModeUsingEncoder = false;
             driveArm(0);
-            //motorArmLeft.setPower(0);
             motorArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //motorArmRight.setPower(0);
             motorArmRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
-        /*// Toggle arm run mode boolean using start button.
-        if(driver2.isButtonJustPressed(Button.RIGHT_STICK_PRESS) && armRunModePosition)
-        {
-            motorArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            armRunModePosition = false;
-        }
-        else if(driver2.isButtonJustPressed(Button.RIGHT_STICK_PRESS) && !armRunModePosition)
-        {
-            motorArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            armRunModePosition = true;
-        }
-
-        // Run arm in position or power mode, depending on the boolean value.
-        if(armRunModePosition)
-        {*/
+        // Use RUN_TO_POSITION.
         else if (Math.abs(driver2.getRightStickY()) < Constants.MINIMUM_JOYSTICK_POWER && !armRunModeUsingEncoder)
         {
             if (driver2.isButtonPressed(Button.Y))
             {
-                motorArmLeft.setTargetPosition(Constants.ARM_TOP);
-                //motorArmLeft.setPower(0.3);
-                motorArmRight.setTargetPosition(-Constants.ARM_TOP);
-                //motorArmRight.setPower(0.3);
-                driveArm(Constants.MAX_ARM_POWER);
+                motorArmLeft.setTargetPosition(Constants.ARM_TOP_BLOCKS);
+                motorArmRight.setTargetPosition(-Constants.ARM_TOP_BLOCKS);
+                if (motorArmLeft.getCurrentPosition() <= Constants.ARM_SWITCH_HEIGHT)
+                {
+                    driveArm(Constants.HIGH_ARM_POWER);
+                }
+                else
+                {
+                    driveArm(Constants.LOW_ARM_POWER);
+                }
             }
-            /*if (driver2.isButtonPressed(Button.Y))
+            if(driver2.isButtonPressed(Button.X))
             {
-                motorArmLeft.setTargetPosition(Constants.ARM_TOP);
-                //motorArmLeft.setPower(Constants.MAX_ARM_POWER);
-                motorArmRight.setTargetPosition(-Constants.ARM_TOP);
-                //motorArmRight.setPower(Constants.MAX_ARM_POWER);
-                driveArm(Constants.MAX_ARM_POWER);
-
-            }*/
-            /*else if (driver2.isButtonPressed(Button.B))
-            {
-                motorArmLeft.setTargetPosition(Constants.ARM_START);
-                //motorArmLeft.setPower(0.2);
-                motorArmRight.setTargetPosition(-Constants.ARM_START);
-                //motorArmRight.setPower(0.2);
-                driveArm(Constants.MAX_ARM_POWER);
-            }*/
+                motorArmLeft.setTargetPosition(Constants.ARM_TOP_BALLS);
+                motorArmRight.setTargetPosition(-Constants.ARM_TOP_BALLS);
+                if (motorArmLeft.getCurrentPosition() <= Constants.ARM_SWITCH_HEIGHT)
+                {
+                    driveArm(Constants.HIGH_ARM_POWER);
+                }
+                else
+                {
+                    driveArm(Constants.LOW_ARM_POWER);
+                }
+            }
         }
-        /*else if(!armRunModePosition)
-        {
-            motorArmLeft.setPower(-Constants.MAX_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
-        }*/
-        /*// Run arm in position or power mode, depending on the boolean value.
-        if (driver2.isButtonPressed(Button.X))
-        {
-            motorArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorArmLeft.setTargetPosition(Constants.ARM_GROUND);
-            motorArmLeft.setPower(0.3);
-        }
-        else if (driver2.isButtonPressed(Button.Y))
-        {
-            motorArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorArmLeft.setTargetPosition(Constants.ARM_TOP);
-            motorArmLeft.setPower(Constants.MAX_ARM_POWER);
-        }
-        else if (driver2.isButtonPressed(Button.B))
-        {
-            motorArmLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorArmLeft.setTargetPosition(Constants.ARM_START);
-            motorArmLeft.setPower(0.2);
-        }
-        else if(stickCurve.getOuput(driver2.getRightStickY()) > Constants.MINIMUM_JOYSTICK_POWER)
-        {
-            motorArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorArmLeft.setPower(-Constants.MAX_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
-        }*/
 
 
         telemetry.addData("Arm Position Left: ", motorArmLeft.getCurrentPosition());

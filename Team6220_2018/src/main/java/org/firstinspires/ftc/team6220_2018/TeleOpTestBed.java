@@ -51,7 +51,7 @@ public class TeleOpTestBed extends MasterAutonomous
             {
                 motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 motorArm.setTargetPosition(Constants.ARM_TOP);
-                motorArm.setPower(Constants.MAX_ARM_POWER);
+                motorArm.setPower(Constants.HIGH_ARM_POWER);
             }
             else if (driver2.isButtonPressed(Button.B))
             {
@@ -62,7 +62,7 @@ public class TeleOpTestBed extends MasterAutonomous
             else if(stickCurve.getOuput(driver2.getRightStickY()) > Constants.MINIMUM_JOYSTICK_POWER)
             {
                 motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                motorArm.setPower(-Constants.MAX_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
+                motorArm.setPower(-Constants.HIGH_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
             }*/
             /*if(driver1.isButtonJustPressed(Button.A))
             {
