@@ -130,14 +130,14 @@ abstract public class MasterTeleOp extends MasterOpMode
         {*/
         else if (Math.abs(driver2.getRightStickY()) < Constants.MINIMUM_JOYSTICK_POWER && !armRunModeUsingEncoder)
         {
-            /*if (driver2.isButtonPressed(Button.X))
+            if (driver2.isButtonPressed(Button.Y))
             {
-                motorArmLeft.setTargetPosition(Constants.ARM_GROUND);
+                motorArmLeft.setTargetPosition(Constants.ARM_TOP);
                 //motorArmLeft.setPower(0.3);
-                motorArmRight.setTargetPosition(-Constants.ARM_GROUND);
+                motorArmRight.setTargetPosition(-Constants.ARM_TOP);
                 //motorArmRight.setPower(0.3);
                 driveArm(Constants.MAX_ARM_POWER);
-            }*/
+            }
             /*if (driver2.isButtonPressed(Button.Y))
             {
                 motorArmLeft.setTargetPosition(Constants.ARM_TOP);
