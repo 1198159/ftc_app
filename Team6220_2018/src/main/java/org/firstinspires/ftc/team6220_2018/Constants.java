@@ -104,7 +104,7 @@ public class Constants
     public static final int ARM_SWITCH_HEIGHT = 1000;
     // Arm powers
     public static final double HIGH_ARM_POWER = 0.3;
-    public static final double LOW_ARM_POWER = 0.1;
+    public static final double LOW_ARM_POWER = 0.15;
 
     // Ensure that input isn't used when no commands are given
     public static final double MINIMUM_JOYSTICK_POWER = 0.05;
