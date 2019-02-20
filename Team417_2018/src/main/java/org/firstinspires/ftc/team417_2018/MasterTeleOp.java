@@ -11,6 +11,8 @@ abstract public class MasterTeleOp extends MasterOpMode
     double pivotPower = 0;
 
     double curRevPos = INIT_REV_POS; // starts in down position
+    double autoRevPos = 0.0;
+    double autoDouble = 0.0;
 
     final double ADAGIO_POWER = 0.3;
 
@@ -22,7 +24,7 @@ abstract public class MasterTeleOp extends MasterOpMode
 
 
     boolean isDpadLeftPushed = false;
-    boolean isCollectorCenter = false;
+    boolean isCollectingPos = false;
 
     boolean isCollectorDown = false; // gamepad joystick up
 
@@ -30,7 +32,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     boolean isExtending = false;
     boolean isYButtonPressed = true;
 
-    //int arm1pos = 0;
+    final double Krev = -1/1210.0;
     int targetCorePos = 0;
 
     AvgFilter filterJoyStickInput = new AvgFilter();
@@ -154,7 +156,11 @@ abstract public class MasterTeleOp extends MasterOpMode
             arm1.setPower(0.0);
             arm2.setPower(0.0);
         }
-       // arm1pos = arm1.getCurrentPosition(); // update arm1 motor position
+
+// Set Automatic Rev servo position
+        autoDouble = (double) (arm1.getCurrentPosition());
+        autoRevPos =  autoDouble / (-1319.0); // high pos = -1058, low = 0
+        rev1.setPosition(autoRevPos);
 
 // control hanger with G2 left and right bumpers
         if (gamepad2.dpad_up)
@@ -170,39 +176,11 @@ abstract public class MasterTeleOp extends MasterOpMode
             hanger.setPower(0.0);
         }
 
-// control rev servo with G2 left stick
-        if (-gamepad2.left_stick_y > 0.1 && curRevPos > 0.0) // if the joystick is UP
-        {
-            curRevPos = curRevPos - REV_INCREMENT; // move the collector up
-        }
-        else if (-gamepad2.left_stick_y < -0.1 && curRevPos < 0.9) // if the joystick is DOWN
-        {
-            curRevPos = curRevPos + REV_INCREMENT; // move the collector down
-        }
-        rev1.setPosition(curRevPos); // set the wrist REV servo position
+        if (gamepad2.left_bumper) vex1.setPower(0.79); // spit
+        else if (gamepad2.right_bumper) vex1.setPower(-0.79); // suck
+        else vex1.setPower(0.0);
 
-
-        if (gamepad2.dpad_left && !isDpadLeftPushed)
-        {
-            isDpadLeftPushed = true;
-            isCollectorCenter = !isCollectorCenter;
-        }
-        isDpadLeftPushed = gamepad2.dpad_left;
-        if (isCollectorCenter)
-        {
-            rev1.setPosition(0.5);
-            isCollectorDown = false;
-            isCollectorCenter = false;
-        }
-        // control vex Servo
-        //boolean isRightBumperPushed = false;
-        //boolean isSuckingIn = false;
-
-        // we include is right bumper pushed because this code is an event loop and it is constantly running that means that when
-        // a person pushes the button once it could run through the loop almost 50 times and update the state inaccurately in a true-false-true-
-        // false way that could leave left_bumper on an incorrect state. By adding isRightBumperPushed we make the state change the first time around
-        // so that it won't register more than once and the condition for changing state will remain false after one run through
-
+        /*
         if (gamepad2.left_bumper)
         {
             isSuckingIn = false; // cancel sucking in
@@ -218,6 +196,31 @@ abstract public class MasterTeleOp extends MasterOpMode
             isSuckingIn = !isSuckingIn; // and switch sucking in's boolean to sucking out or in depending on what it is
         }
         isRightBumperPushed = gamepad2.right_bumper; // update the current state of isRightBumperPushed otherwise it will always stay the same
+        */
+    }
+
+    void revServo()
+    {
+        // control rev servo with G2 left stick
+        if (-gamepad2.left_stick_y > 0.1 && curRevPos > 0.0) // if the joystick is UP
+        {
+            isCollectingPos = false;
+            curRevPos = curRevPos - REV_INCREMENT; // move the collector up
+        }
+        else if (-gamepad2.left_stick_y < -0.1 && curRevPos < 0.9) // if the joystick is DOWN
+        {
+            isCollectingPos = false;
+            curRevPos = curRevPos + REV_INCREMENT; // move the collector down
+        }
+        rev1.setPosition(curRevPos); // set the wrist REV servo position
+
+    }
+
+    void autoRev()
+    {
+        double autoRevPosDoub = (double) arm1.getCurrentPosition();
+        autoRevPos = (  autoRevPosDoub - 60.0) / Krev;
+        rev1.setPosition(autoRevPos);
     }
 
     void marker()
@@ -236,10 +239,11 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     void updateTelemetry()
     {
-        telemetry.addData("legato: ", isLegatoMode);
+        //telemetry.addData("legato: ", isLegatoMode);
         telemetry.addData("reverse: ", isReverseMode);
-        //telemetry.addData("rev1:", rev1.getPosition());
-        telemetry.addData("motorMode", core2.getMode());
+        telemetry.addData("rev1:", rev1.getPosition());
+        telemetry.addData("autoRevPos:", autoRevPos);
+        //telemetry.addData("motorMode", core2.getMode());
         telemetry.addData("core2:", core2.getCurrentPosition());
         telemetry.addData("arm1:", arm1.getCurrentPosition());
         telemetry.update();
