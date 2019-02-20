@@ -2,6 +2,8 @@ package org.firstinspires.ftc.team6220_2018;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Const;
+
 /*
     Contains methods for accepting and interpreting pilot and co-pilot input.
 */
@@ -17,7 +19,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     // Determines whether arm is in RUN_TO_POSITION (=false) or RUN_USING_ENCODER (=true).
     boolean armRunModeUsingEncoder = false;
 
-    boolean armSlowMode = false;
+    boolean collectorSlowMode = false;
 
     double collectorPowerIn = Constants.MOTOR_COLLECTOR_IN;
     double collectorPowerOut = Constants.MOTOR_COLLECTOR_OUT;
@@ -57,17 +59,17 @@ abstract public class MasterTeleOp extends MasterOpMode
     // Uses driver 2 input to drive arm and collector motors.
     void driveCollectorMechanism()
     {
-        if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER) && !armSlowMode)
+        if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER) && !collectorSlowMode)
         {
             collectorPowerIn = Constants.MOTOR_COLLECTOR_SLOW_IN;
             collectorPowerOut = Constants.MOTOR_COLLECTOR_SLOW_OUT;
-            armSlowMode = true;
+            collectorSlowMode = true;
         }
-        else if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER) && armSlowMode)
+        else if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER) && collectorSlowMode)
         {
             collectorPowerIn = Constants.MOTOR_COLLECTOR_IN;
             collectorPowerOut = Constants.MOTOR_COLLECTOR_OUT;
-            armSlowMode = false;
+            collectorSlowMode = false;
         }
 
         // Collect and eject minerals.  Buttons have to be held to power collector.
@@ -91,13 +93,16 @@ abstract public class MasterTeleOp extends MasterOpMode
             armRunModeUsingEncoder = true;
             motorArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            // Allows us to slow down arm as it approaches its peak.
+            double armPos = (motorArmLeft.getCurrentPosition() - motorArmRight.getCurrentPosition()) / 2;
+
             if (motorArmLeft.getCurrentPosition() <= Constants.ARM_SWITCH_HEIGHT)
             {
-                driveArm(-Constants.HIGH_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
+                driveArm(-Constants.HIGH_ARM_POWER *  stickCurve.getOuput(driver2.getRightStickY()));
             }
             else
             {
-                driveArm(-Constants.LOW_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
+                driveArm((-Math.pow(armPos-800,0.6) / 220 + Constants.HIGH_ARM_POWER) * stickCurve.getOuput(driver2.getRightStickY()));
             }
         }
         // Change to RUN_TO_POSITION when stick is not pressed.
@@ -143,7 +148,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         telemetry.addData("Arm Position Left: ", motorArmLeft.getCurrentPosition());
         telemetry.addData("Arm Position Right: ", motorArmRight.getCurrentPosition());
         telemetry.addData("Arm Run Mode Using Encoder: ", armRunModeUsingEncoder);
-        telemetry.addData("Arm Slow Mode: ", armSlowMode);
+        telemetry.addData("Collector Slow Mode: ", collectorSlowMode);
         telemetry.update();
     }
 

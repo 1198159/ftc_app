@@ -82,13 +82,15 @@ public class AutoCompetition extends MasterAutonomous
                 }
                 driveToPosition(30, 0,1.0);
             }
-            motorArmLeft.setTargetPosition(Constants.ARM_GROUND);
-            motorArmRight.setTargetPosition(-Constants.ARM_GROUND);
-            //motorArmLeft.setPower(0.4);
-            //motorArmRight.setPower(0.4);
-            driveArm(0.4);
+
+            motorArmLeft.setTargetPosition(Constants.ARM_GROUND_AUTO);
+            motorArmRight.setTargetPosition(-Constants.ARM_GROUND_AUTO);
+            driveArm(Constants.HIGH_ARM_POWER);
             pauseWhileUpdating(1.5);
-            //driveToPosition(0, 55, 1.0);
+            motorArmLeft.setTargetPosition(Constants.ARM_FLIP_AUTO);
+            motorArmRight.setTargetPosition(-Constants.ARM_FLIP_AUTO);
+            driveArm(Constants.HIGH_ARM_POWER);
+            pauseWhileUpdating(0.5);
             /*while(opModeIsActive())
             {
                 motorCollector.setPower(Constants.MOTOR_COLLECTOR_IN);
@@ -181,13 +183,15 @@ public class AutoCompetition extends MasterAutonomous
                 }
                 driveToPosition(30, 0,1.0);
             }
-            motorArmLeft.setTargetPosition(Constants.ARM_GROUND);
-            motorArmRight.setTargetPosition(-Constants.ARM_GROUND);
-            //motorArmLeft.setPower(0.4);
-            //motorArmRight.setPower(0.4);
+            
+            motorArmLeft.setTargetPosition(Constants.ARM_GROUND_AUTO);
+            motorArmRight.setTargetPosition(-Constants.ARM_GROUND_AUTO);
             driveArm(0.4);
             pauseWhileUpdating(1.5);
-            //driveToPosition(0, 55, 1.0);
+            motorArmLeft.setTargetPosition(Constants.ARM_FLIP_AUTO);
+            motorArmRight.setTargetPosition(-Constants.ARM_FLIP_AUTO);
+            driveArm(Constants.HIGH_ARM_POWER);
+            pauseWhileUpdating(0.5);
             /*while(opModeIsActive())
             {
                 motorCollector.setPower(Constants.MOTOR_COLLECTOR_IN);
@@ -221,8 +225,8 @@ public class AutoCompetition extends MasterAutonomous
         driveToPosition(-80,0,1.0);
 
         // Raise arm out of camera's line of sight.
-        motorArmLeft.setTargetPosition(Constants.ARM_AUTO_RAISE);
-        motorArmRight.setTargetPosition(-Constants.ARM_AUTO_RAISE);
+        motorArmLeft.setTargetPosition(Constants.ARM_TOP_AUTO);
+        motorArmRight.setTargetPosition(-Constants.ARM_TOP_AUTO);
         driveArm(Constants.HIGH_ARM_POWER);
     }
 

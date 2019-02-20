@@ -77,11 +77,11 @@ public class Constants
     public static final double SERVO_MARKER_DEPLOYED = 1.0;
     public static final double SERVO_MARKER_RETRACTED = 0.17;
 
-    public static final double MOTOR_COLLECTOR_IN = -0.85;
-    public static final double MOTOR_COLLECTOR_OUT = 0.85;
+    public static final double MOTOR_COLLECTOR_IN = 0.85;
+    public static final double MOTOR_COLLECTOR_OUT = -0.85;
 
-    public static final double MOTOR_COLLECTOR_SLOW_IN = -0.2;
-    public static final double MOTOR_COLLECTOR_SLOW_OUT = 0.2;
+    public static final double MOTOR_COLLECTOR_SLOW_IN = 0.2;
+    public static final double MOTOR_COLLECTOR_SLOW_OUT = -0.2;
     //-------------------------------------------------
 
 
@@ -99,9 +99,12 @@ public class Constants
     // Arm Positions
     public static final int ARM_TOP_BLOCKS = 1350;
     public static final int ARM_TOP_BALLS = 1240;
-    public static final int ARM_AUTO_RAISE = 870;
     public static final int ARM_GROUND = 0;
-    public static final int ARM_SWITCH_HEIGHT = 1000;
+     // Accounts for different starting position of arm in auto.
+    public static final int ARM_TOP_AUTO = -1150;
+    public static final int ARM_GROUND_AUTO = -2250;
+    public static final int ARM_FLIP_AUTO = -2000;
+    public static final int ARM_SWITCH_HEIGHT = 800;
     // Arm powers
     public static final double HIGH_ARM_POWER = 0.3;
     public static final double LOW_ARM_POWER = 0.15;
