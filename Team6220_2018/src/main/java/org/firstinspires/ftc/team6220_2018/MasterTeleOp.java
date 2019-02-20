@@ -94,15 +94,16 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorArmLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             // Allows us to slow down arm as it approaches its peak.
-            double armPos = (motorArmLeft.getCurrentPosition() - motorArmRight.getCurrentPosition()) / 2;
+            //double armPos = motorArmLeft.getCurrentPosition();
 
             if (motorArmLeft.getCurrentPosition() <= Constants.ARM_SWITCH_HEIGHT)
             {
-                driveArm(-Constants.HIGH_ARM_POWER *  stickCurve.getOuput(driver2.getRightStickY()));
+                driveArm(-Constants.HIGH_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
             }
             else
             {
-                driveArm((-Math.pow(armPos-800,0.6) / 220 + Constants.HIGH_ARM_POWER) * stickCurve.getOuput(driver2.getRightStickY()));
+                driveArm(-Constants.LOW_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
+                //(-Math.pow(armPos - 800,0.6) / 220 + Constants.HIGH_ARM_POWER)
             }
         }
         // Change to RUN_TO_POSITION when stick is not pressed.
