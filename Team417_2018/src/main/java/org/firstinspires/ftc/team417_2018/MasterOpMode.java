@@ -133,7 +133,6 @@ abstract public class MasterOpMode extends LinearOpMode
         motorBR.setPower(0);
 
         vex1.setPower(0.0);
-        rev1.setPosition(INIT_REV_POS);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;

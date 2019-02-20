@@ -89,6 +89,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     public void autoInitializeRobot()
     {
         super.initializeHardware();
+        rev1.setPosition(INIT_REV_POS);
         marker.setPosition(MARKER_LOW);
 
         // zero the motor controllers before running; we don't know if motors start out at zero
@@ -431,18 +432,20 @@ abstract public class MasterAutonomous extends MasterOpMode
         CENTER,
         RIGHT
     }
+
     public void lowerArm()
     {
         do
         {
             curLiftPos = arm1.getCurrentPosition();
-            arm1.setPower(-0.2);
-            arm2.setPower(0.2);
+            arm1.setPower(0.3);
+            arm2.setPower(-0.3);
         }
-        while (curLiftPos < 200);
+        while (curLiftPos < 750);
         arm1.setPower(0.0);
         arm2.setPower(0.0);
     }
+
     public void land()
     {
 
