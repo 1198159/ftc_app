@@ -76,11 +76,11 @@ public class AutoHang extends MasterAutonomous
                 sleep(100);
                 marker.setPosition(MARKER_HIGH); // drop the team marker
                 sleep(100);
-                move(0, -250, 0.3, 0.7, 2.0); // push against the wall
+                move(0, -250, 0.3, 0.7, 2.0); // back up
                 sleep(100);
                 move(-170, 0, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
-                move(0, -1200, 0.3, 0.7, 3.0);// park in blue crater
+                move(0, -600, 0.3, 0.7, 3.0); // park in blue crater
                 marker.setPosition(MARKER_LOW); // lower marker arm
             }
             else if (isRightGold)
@@ -101,14 +101,10 @@ public class AutoHang extends MasterAutonomous
                 sleep(100);
                 move(0, -150, 0.3, 0.7, 3.0); // move out of depot
                 sleep(100);
-                pivotWithReference(130, refAngle, 0.2, 0.75); // turn to face crater
+                move(-150, 0, 0.3, 0.7, 2.0); // avoid left mineral
                 sleep(100);
-                move(150, 0, 0.3, 0.7, 2.0); // avoid left mineral
-                sleep(100);
-                move(0, 800, 0.3, 0.7, 3.0); // park in blue crater
-                sleep(100);
+                move(0, -780, 0.3, 0.7, 3.0); // park in opposite crater
                 marker.setPosition(MARKER_LOW); // lower marker arm
-                reset();
             }
             else if (isCenterGold)
             {
@@ -122,7 +118,7 @@ public class AutoHang extends MasterAutonomous
                 sleep(100);
                 move(-250, 0, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
-                move(0, -800, 0.3, 0.7, 3.0); // park in blue crater
+                move(0, -880, 0.3, 0.7, 3.0); // park in blue crater
                 sleep(100);
                 marker.setPosition(MARKER_LOW); // lower marker arm
             }
@@ -222,6 +218,9 @@ public class AutoHang extends MasterAutonomous
                 move(0,200,0.3,0.72,3.5); // park in the crater
             }
         }
+
+        rev1.setPosition(0.0);
+        lowerArm();
 
         vuforia.stop();
         }
