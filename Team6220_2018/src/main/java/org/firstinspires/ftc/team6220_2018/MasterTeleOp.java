@@ -11,7 +11,8 @@ abstract public class MasterTeleOp extends MasterOpMode
 {
     // For using turning and other autonomous functionalities in TeleOp.
     MasterAutonomous masterAutonomous;
-    boolean slowMode = false;
+    // Start robot in slow mode (per Slater)
+    boolean slowMode = true;
     // Allows us to switch front of robot.
     boolean driveReversed = true;
     // Allows us to switch front of robot.
@@ -19,15 +20,18 @@ abstract public class MasterTeleOp extends MasterOpMode
     // Determines whether arm is in RUN_TO_POSITION (=false) or RUN_USING_ENCODER (=true).
     boolean armRunModeUsingEncoder = false;
 
+    // Stores position of arm
+    double armPos = 0;
+
     boolean collectorSlowMode = false;
 
     double collectorPowerIn = Constants.MOTOR_COLLECTOR_IN;
     double collectorPowerOut = Constants.MOTOR_COLLECTOR_OUT;
 
     // Factor that adjusts magnitudes of vertical and horizontal movement.
-    double tFactor = Constants.T_FACTOR;
+    double tFactor = Constants.SLOW_MODE_T_FACTOR;
     // Factor that adjusts magnitude of rotational movement.
-    double rFactor = Constants.R_FACTOR;
+    double rFactor = Constants.SLOW_MODE_R_FACTOR;
 
     // Takes driver 1 input to run hanger system.
     void driveHanger()
@@ -95,15 +99,21 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorArmRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             // Allows us to slow down arm as it approaches its peak.
             //double armPos = motorArmLeft.getCurrentPosition();
+            armPos = motorArmLeft.getCurrentPosition();
 
-            if (motorArmLeft.getCurrentPosition() <= Constants.ARM_SWITCH_HEIGHT)
+            // Run arm at low power if it is above the switch height and high power if it is below the height.
+            if (armPos <= Constants.ARM_SWITCH_HEIGHT)
             {
                 driveArm(-Constants.HIGH_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
             }
-            else
+            else if ((armPos > Constants.ARM_SWITCH_HEIGHT) && (armPos <= Constants.ARM_SCORE_SWITCH_HEIGHT))
             {
                 driveArm(-Constants.LOW_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
                 //(-Math.pow(armPos - 800,0.6) / 220 + Constants.HIGH_ARM_POWER)
+            }
+            else
+            {
+                driveArm(-Constants.MIN_ARM_POWER * stickCurve.getOuput(driver2.getRightStickY()));
             }
         }
         // Change to RUN_TO_POSITION when stick is not pressed.
@@ -121,7 +131,9 @@ abstract public class MasterTeleOp extends MasterOpMode
             {
                 motorArmLeft.setTargetPosition(Constants.ARM_TOP_BLOCKS);
                 motorArmRight.setTargetPosition(-Constants.ARM_TOP_BLOCKS);
-                if (motorArmLeft.getCurrentPosition() <= Constants.ARM_SWITCH_HEIGHT)
+                armPos = motorArmLeft.getCurrentPosition();
+
+                if (armPos <= Constants.ARM_SWITCH_HEIGHT)
                 {
                     driveArm(Constants.HIGH_ARM_POWER);
                 }

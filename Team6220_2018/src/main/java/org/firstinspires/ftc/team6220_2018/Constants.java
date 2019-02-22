@@ -100,14 +100,16 @@ public class Constants
     public static final int ARM_TOP_BLOCKS = 1350;
     public static final int ARM_TOP_BALLS = 1240;
     public static final int ARM_GROUND = 0;
+    public static final int ARM_SWITCH_HEIGHT = 800;
+    public static final int ARM_SCORE_SWITCH_HEIGHT = 1100;
      // Accounts for different starting position of arm in auto.
     public static final int ARM_TOP_AUTO = -1150;
     public static final int ARM_GROUND_AUTO = -2250;
     public static final int ARM_FLIP_AUTO = -1900;
-    public static final int ARM_SWITCH_HEIGHT = 800;
     // Arm powers
-    public static final double HIGH_ARM_POWER = 0.3;
-    public static final double LOW_ARM_POWER = 0.15;
+    public static final double HIGH_ARM_POWER = 0.4;
+    public static final double LOW_ARM_POWER = 0.2;
+    public static final double MIN_ARM_POWER = 0.1;
 
     // Ensure that input isn't used when no commands are given
     public static final double MINIMUM_JOYSTICK_POWER = 0.05;
