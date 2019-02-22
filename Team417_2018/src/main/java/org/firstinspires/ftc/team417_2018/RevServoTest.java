@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Rev Servo Test", group="Swerve")
+//@TeleOp(name="Rev Servo Test", group="Swerve")
 //@Disabled
 public class RevServoTest extends LinearOpMode
 {

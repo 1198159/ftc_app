@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 
-@TeleOp(name="TankModeTest")
+//@TeleOp(name="TankModeTest")
 //@Disabled
 public class TankModeTest extends LinearOpMode {
 

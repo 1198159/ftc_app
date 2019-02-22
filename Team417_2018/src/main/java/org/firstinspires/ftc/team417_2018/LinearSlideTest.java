@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "Linear Slide Test")
-//@Disabled
+@Disabled
 public class LinearSlideTest extends MasterTeleOp
 {
     int targetPos = 0;

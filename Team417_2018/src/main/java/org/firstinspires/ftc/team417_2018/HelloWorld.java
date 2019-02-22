@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 
 
-@TeleOp(name="TestServos", group="Swerve")  // @Autonomous(...) is the other common choice
+//@TeleOp(name="TestServos", group="Swerve")  // @Autonomous(...) is the other common choice
 //@Disabled
 public class HelloWorld extends LinearOpMode
 {

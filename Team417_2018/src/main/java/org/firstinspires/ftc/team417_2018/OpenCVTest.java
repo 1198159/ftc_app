@@ -7,7 +7,7 @@ import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
 
 import java.util.Locale;
 
-@TeleOp(name="OpenCV Test")
+//@TeleOp(name="OpenCV Test")
 public class OpenCVTest extends LinearOpMode
 {
     private OpenCVDetect goldVision;
