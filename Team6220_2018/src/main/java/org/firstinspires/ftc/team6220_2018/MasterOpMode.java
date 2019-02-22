@@ -3,8 +3,8 @@ package org.firstinspires.ftc.team6220_2018;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -32,6 +32,10 @@ abstract public class MasterOpMode extends LinearOpMode
 
     DriverInput driver1;
     DriverInput driver2;
+    // Optical encoder in front of slotted wheel that allows our Vex motor to tell its position
+    // in the absence of a built-in encoder.
+    ConcurrentDigitalDevice collectorChannel;
+    DigitalChannel collectorEncoder;
 
     // Classes that encapsulate distinct hardware systems
         //ArmMechanism armMechanism;
@@ -46,7 +50,7 @@ abstract public class MasterOpMode extends LinearOpMode
     // Declare hardware devices---------------------------------------
     BNO055IMU imu;
 
-     // Motors----------------------
+    // Motors----------------------
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor motorBL;
@@ -69,7 +73,7 @@ abstract public class MasterOpMode extends LinearOpMode
     // Booleans that allow us to choose what parts of the robot we are and aren't using in each OpMode
     public boolean isDriveTrainAttached = true;
     public boolean isHangerAttached = true;
-    public boolean isCollectorMechAttached = true;
+    public boolean isArmMechAttached = true;
 
     // Create a list of tasks to accomplish in order
     List<ConcurrentOperation> callback = new ArrayList<>();
@@ -84,12 +88,15 @@ abstract public class MasterOpMode extends LinearOpMode
         // Instantiated gamepad classes that must be updated each callback
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
+        collectorChannel = new ConcurrentDigitalDevice(collectorEncoder);
 
         // Add necessary items to callback---------------
         callback.add(driver1);
         callback.add(driver2);
-            //callback.add(glyphMechanism);
+        callback.add(collectorChannel);
         //-----------------------------------------------
+
+
 
 
          // Check to see what parts of the robot are attached.  Some programs (e.g., autonomous and -------------------------
@@ -136,8 +143,11 @@ abstract public class MasterOpMode extends LinearOpMode
 
             servoHanger = hardwareMap.servo.get("servoHanger");
         }
-        if(isCollectorMechAttached)
+        if(isArmMechAttached)
         {
+            collectorEncoder = hardwareMap.digitalChannel.get("collectorChannel");
+            collectorEncoder.setMode(DigitalChannel.Mode.OUTPUT);
+
             motorCollector = hardwareMap.crservo.get("motorCollector");
             motorCollector.setPower(0);
 
@@ -179,6 +189,7 @@ abstract public class MasterOpMode extends LinearOpMode
         //armFilter = new PIDFilter(Constants.ARM_P, Constants.ARM_I, Constants.ARM_D);
 
 
+        // Note:  not in use
         //todo Initialize all separate hardware systems here
         for (ConcurrentOperation item : callback)
         {
@@ -188,7 +199,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     void driveArm (double drivePower)
     {
-        if(!isCollectorMechAttached)
+        if(!isArmMechAttached)
         {
             telemetry.addLine("Collector/arm is not attached!");
             telemetry.update();

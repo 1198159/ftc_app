@@ -2,8 +2,6 @@ package org.firstinspires.ftc.team6220_2018;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.Const;
-
 /*
     Contains methods for accepting and interpreting pilot and co-pilot input.
 */
@@ -87,6 +85,12 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
         else
         {
+            // Wait until optical encoder reaches 1 of 4 positions.
+            while (!collectorChannel.getState())
+            {
+                idle();
+            }
+
             motorCollector.setPower(0);
         }
 
