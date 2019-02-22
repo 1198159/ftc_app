@@ -441,7 +441,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             arm1.setPower(0.3);
             arm2.setPower(-0.3);
         }
-        while (curLiftPos < 750);
+        while (curLiftPos < -200);
         arm1.setPower(0.0);
         arm2.setPower(0.0);
     }
@@ -450,7 +450,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     {
 
         hanger.setPower(0.95);
-        sleep(600);
+        sleep(700);
         hanger.setPower(0.0);
 
         do
@@ -466,7 +466,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         sleep(100);
 
         hanger.setPower(0.95);
-        sleep(2500);
+        sleep(2600);
         hanger.setPower(0.0);
 
         /*
@@ -495,6 +495,9 @@ abstract public class MasterAutonomous extends MasterOpMode
             arm2.setPower(-0.3);
         }
         while (curLiftPos < 900);
+
+        arm1.setPower(0.0);
+        arm2.setPower(0.0);
     }
 
 }
