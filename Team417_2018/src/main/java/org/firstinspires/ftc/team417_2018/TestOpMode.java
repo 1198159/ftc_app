@@ -20,6 +20,9 @@ public class TestOpMode extends MasterAutonomous
         telemetry.update();
         waitForStart();
 
-        reset();
+        land();
+        sleep(50);
+        lowerArm();
+        //reset();
     }
 }
