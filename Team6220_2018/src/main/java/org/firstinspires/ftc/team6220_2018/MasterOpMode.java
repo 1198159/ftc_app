@@ -84,8 +84,10 @@ abstract public class MasterOpMode extends LinearOpMode
         // Initialize robot mechanism classes----------------------------
             //armMechanism = new ArmMechanism(this);
         //---------------------------------------------------------------
+        collectorEncoder = hardwareMap.digitalChannel.get("collectorEncoder");
+        collectorEncoder.setMode(DigitalChannel.Mode.INPUT);
 
-        // Instantiated gamepad classes that must be updated each callback
+        // Objects that must be updated each callback
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
         collectorChannel = new ConcurrentDigitalDevice(collectorEncoder);
@@ -95,8 +97,6 @@ abstract public class MasterOpMode extends LinearOpMode
         callback.add(driver2);
         callback.add(collectorChannel);
         //-----------------------------------------------
-
-
 
 
          // Check to see what parts of the robot are attached.  Some programs (e.g., autonomous and -------------------------
@@ -145,9 +145,6 @@ abstract public class MasterOpMode extends LinearOpMode
         }
         if(isArmMechAttached)
         {
-            collectorEncoder = hardwareMap.digitalChannel.get("collectorChannel");
-            collectorEncoder.setMode(DigitalChannel.Mode.OUTPUT);
-
             motorCollector = hardwareMap.crservo.get("motorCollector");
             motorCollector.setPower(0);
 
@@ -190,7 +187,6 @@ abstract public class MasterOpMode extends LinearOpMode
 
 
         // Note:  not in use
-        //todo Initialize all separate hardware systems here
         for (ConcurrentOperation item : callback)
         {
             item.initialize(hardwareMap);

@@ -293,6 +293,18 @@ abstract public class MasterAutonomous extends MasterOpMode
         stopDriveMotors();
     }
 
+    // Allows robot to move on arc of circle for smoother navigation.
+    void driveToPositionOnArc(double powerOuter, double r, double runTime)
+    {
+        double powerInner = (powerOuter * r) / (r + Constants.WHEEL_SEPARATION_MM);
+
+        motorFL.setPower(powerInner);
+        motorBL.setPower(powerInner);
+        motorFR.setPower(-powerOuter);
+        motorBR.setPower(-powerOuter);
+        pauseWhileUpdating(runTime);
+    }
+
 
     // Uses OpenCV to identify the location of the gold mineral.
     public void identifyGold ()

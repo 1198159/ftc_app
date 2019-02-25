@@ -23,7 +23,7 @@ public class Constants
     public static final double GEAR_RATIO = 24.0 / 32.0;            // Driven to driving gear
     // Actually 25.4 ticks / inch
     public static final double MM_PER_ANDYMARK_TICK = (Math.PI * WHEEL_DIAMETER_MM) / (ANDYMARK_TICKS_PER_ROTATION * GEAR_RATIO);
-
+    public static final float WHEEL_SEPARATION_MM = 15.5f * MM_PER_INCH;    // 4 inch diameter wheel
 
     // Drive mode constants
     public static final double SLOW_MODE_T_FACTOR = 0.3;
@@ -80,8 +80,8 @@ public class Constants
     public static final double MOTOR_COLLECTOR_IN = 0.85;
     public static final double MOTOR_COLLECTOR_OUT = -0.85;
 
-    public static final double MOTOR_COLLECTOR_SLOW_IN = 0.2;
-    public static final double MOTOR_COLLECTOR_SLOW_OUT = -0.2;
+    public static final double MOTOR_COLLECTOR_SLOW_IN = 0.15;
+    public static final double MOTOR_COLLECTOR_SLOW_OUT = -0.15;
     //-------------------------------------------------
 
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team6220_2018;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
     Contains methods for accepting and interpreting pilot and co-pilot input.
@@ -21,7 +22,13 @@ abstract public class MasterTeleOp extends MasterOpMode
     // Stores position of arm
     double armPos = 0;
 
+    // Collector operation booleans
     boolean collectorSlowMode = false;
+    boolean isCollectorStopping = false;
+    boolean isCollecting = false;
+    boolean isCollectingIn = false;
+    // Allows us to break out of collector encoder loop if necessary.
+    ElapsedTime collectorLoopTimer = new ElapsedTime();
 
     double collectorPowerIn = Constants.MOTOR_COLLECTOR_IN;
     double collectorPowerOut = Constants.MOTOR_COLLECTOR_OUT;
@@ -78,15 +85,29 @@ abstract public class MasterTeleOp extends MasterOpMode
         if (driver2.isButtonPressed(Button.DPAD_DOWN))
         {
             motorCollector.setPower(collectorPowerIn);
+            isCollectingIn = true;
         }
         else if (driver2.isButtonPressed(Button.DPAD_UP))
         {
             motorCollector.setPower(collectorPowerOut);
+            isCollectingIn = false;
         }
         else
         {
-            // Wait until optical encoder reaches 1 of 4 positions.
-            while (!collectorChannel.getState())
+            // Run motor in slow mode while it is approaching encoder locations.
+            if ((motorCollector.getPower() > 0.01) && isCollectingIn)
+            {
+                motorCollector.setPower(Constants.MOTOR_COLLECTOR_SLOW_IN);
+            }
+            else if ((motorCollector.getPower() > 0.01) && !isCollectingIn)
+            {
+                motorCollector.setPower(Constants.MOTOR_COLLECTOR_SLOW_OUT);
+            }
+
+            collectorLoopTimer.reset();
+            // Wait until optical encoder reaches 1 of 4 positions.  Only do this loop if the motor
+            // is powered and loop time is shorter than 2 seconds since we do not want to get stuck in it.
+            while (!collectorChannel.getState() && (Math.abs(motorCollector.getPower()) > 0.01) && (collectorLoopTimer.seconds() < 2) && opModeIsActive())
             {
                 idle();
             }
