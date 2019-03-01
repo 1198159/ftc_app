@@ -151,7 +151,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     // won't display Gold position (left, center, right) if gold mineral doesn't meet the vertical cutting at 400 pixels or more
     public String locateGold()
     {
-        String goldLocation = "";
+        String goldLocation = "UNKNOWN";
         // right gold was located at (700,380)
         if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 600) &&  (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2) >= 375 )
         {
@@ -441,7 +441,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             arm1.setPower(0.3);
             arm2.setPower(-0.3);
         }
-        while (curLiftPos < -200);
+        while (curLiftPos < -150);
         arm1.setPower(0.0);
         arm2.setPower(0.0);
     }
@@ -450,7 +450,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     {
 
         hanger.setPower(0.95);
-        sleep(700);
+        sleep(800);
         hanger.setPower(0.0);
 
         do
@@ -466,7 +466,7 @@ abstract public class MasterAutonomous extends MasterOpMode
         sleep(100);
 
         hanger.setPower(0.95);
-        sleep(2600);
+        sleep(2700);
         hanger.setPower(0.0);
 
         /*
