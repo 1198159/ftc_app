@@ -148,8 +148,8 @@ abstract public class MasterTeleOp extends MasterOpMode
         // control arm motors with G2 right stick
         if (gamepad2.right_stick_y != 0)
         {
-            arm1.setPower(Range.clip(gamepad2.right_stick_y, -0.3, 0.3));
-            arm2.setPower(Range.clip(-gamepad2.right_stick_y, -0.3, 0.3));
+            arm1.setPower(Range.clip(gamepad2.right_stick_y, -0.32, 0.32));
+            arm2.setPower(Range.clip(-gamepad2.right_stick_y, -0.32, 0.32));
         }
         else
         {
