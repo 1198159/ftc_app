@@ -19,6 +19,10 @@ abstract public class MasterTeleOp extends MasterOpMode
     // Determines whether arm is in RUN_TO_POSITION (=false) or RUN_USING_ENCODER (=true).
     boolean armRunModeUsingEncoder = false;
 
+    boolean collectorEncoderState = false;
+
+    double time = getRuntime();
+
     // Stores position of arm
     double armPos = 0;
 
@@ -62,7 +66,7 @@ abstract public class MasterTeleOp extends MasterOpMode
 
         //telemetry.addData("Trigger val Right: ", driver1.getRightTriggerValue());
         //telemetry.addData("Trigger val Left: ", driver1.getLeftTriggerValue());
-        telemetry.addData("Hanger Enc: ", motorHanger.getCurrentPosition());
+        //telemetry.addData("Hanger Enc: ", motorHanger.getCurrentPosition());
     }
 
     // Uses driver 2 input to drive arm and collector motors.
@@ -107,11 +111,14 @@ abstract public class MasterTeleOp extends MasterOpMode
             collectorLoopTimer.reset();
             // Wait until optical encoder reaches 1 of 4 positions.  Only do this loop if the motor
             // is powered and loop time is shorter than 2 seconds since we do not want to get stuck in it.
-            while (!collectorChannel.getState() && (Math.abs(motorCollector.getPower()) > 0.01) && (collectorLoopTimer.seconds() < 2) && opModeIsActive())
+            while (collectorEncoderState = !collectorChannel.getState() && (Math.abs(motorCollector.getPower()) > 0.01) && (collectorLoopTimer.seconds() < 2) && opModeIsActive())
             {
+                /*time = getRuntime();
+                telemetry.addData("Collector Channel: ", collectorEncoderState);
+                telemetry.addData("Time", time);
+                telemetry.update();*/
                 idle();
             }
-
             motorCollector.setPower(0);
         }
 
@@ -183,10 +190,10 @@ abstract public class MasterTeleOp extends MasterOpMode
         }
 
 
-        telemetry.addData("Arm Position Left: ", motorArmLeft.getCurrentPosition());
-        telemetry.addData("Arm Position Right: ", motorArmRight.getCurrentPosition());
-        telemetry.addData("Arm Run Mode Using Encoder: ", armRunModeUsingEncoder);
-        telemetry.addData("Collector Slow Mode: ", collectorSlowMode);
+        //telemetry.addData("Arm Position Left: ", motorArmLeft.getCurrentPosition());
+        //telemetry.addData("Arm Position Right: ", motorArmRight.getCurrentPosition());
+        //telemetry.addData("Arm Run Mode Using Encoder: ", armRunModeUsingEncoder);
+        //telemetry.addData("Collector Slow Mode: ", collectorSlowMode);
         telemetry.update();
     }
 
