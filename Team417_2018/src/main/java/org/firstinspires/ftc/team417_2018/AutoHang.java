@@ -152,7 +152,7 @@ public class AutoHang extends MasterAutonomous
                 move(0,-700,0.3,0.72,3.5); // go backwards to park in the crater
                 marker.setPosition(MARKER_LOW); // lower the TMD
                 pivotWithReference(-40, refAngle, 0.2, 0.75); // pivot to face the crater
-                move(0,150,0.3,0.72,3.5); // park in the crater
+                move(0,75,0.3,0.72,3.5); // park in the crater
                 /*
                 pivotWithReference(0, refAngle, 0.2, 0.75); // face crater
                 sleep(200);
