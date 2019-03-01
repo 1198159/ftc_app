@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.team6220_2018;
 
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -38,7 +37,7 @@ public class TeleOpCompetition extends MasterTeleOp
             // Drive methods
             driveMecanumWithJoysticks();
             driveHanger();
-            driveCollectorMechanism();
+            driveArm();
 
             /*
              Updates that need to happen each loop

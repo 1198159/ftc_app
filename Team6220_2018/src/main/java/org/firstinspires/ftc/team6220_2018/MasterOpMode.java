@@ -29,6 +29,7 @@ abstract public class MasterOpMode extends LinearOpMode
 
     ElapsedTime timer = new ElapsedTime();
     double lTime = 0;
+    ElapsedTime collectorLoopTimer = new ElapsedTime();
 
     DriverInput driver1;
     DriverInput driver2;
@@ -36,9 +37,10 @@ abstract public class MasterOpMode extends LinearOpMode
     // in the absence of a built-in encoder.
     ConcurrentDigitalDevice collectorChannel;
     DigitalChannel collectorEncoder;
+    CollectorMechanism collectorMech;
 
     // Classes that encapsulate distinct hardware systems
-        //ArmMechanism armMechanism;
+        //CollectorMechanism armMechanism;
 
     // todo Implement new framework PID when it becomes available
     // Declare filters.  We currently have PID for turning and encoder navigation.------------------
@@ -81,24 +83,6 @@ abstract public class MasterOpMode extends LinearOpMode
 
     public void initializeRobot()
     {
-        // Initialize robot mechanism classes----------------------------
-            //armMechanism = new ArmMechanism(this);
-        //---------------------------------------------------------------
-        collectorEncoder = hardwareMap.digitalChannel.get("collectorEncoder");
-        collectorEncoder.setMode(DigitalChannel.Mode.INPUT);
-
-        // Objects that must be updated each callback
-        driver1 = new DriverInput(gamepad1);
-        driver2 = new DriverInput(gamepad2);
-        collectorChannel = new ConcurrentDigitalDevice(collectorEncoder);
-
-        // Add necessary items to callback---------------
-        callback.add(driver1);
-        callback.add(driver2);
-        callback.add(collectorChannel);
-        //-----------------------------------------------
-
-
          // Check to see what parts of the robot are attached.  Some programs (e.g., autonomous and -------------------------
          // tests) may want to ignore parts of the robot that don't need to be used
         if (isDriveTrainAttached)
@@ -184,6 +168,26 @@ abstract public class MasterOpMode extends LinearOpMode
         rotationFilter = new PIDFilter(Constants.ROTATION_P, Constants.ROTATION_I, Constants.ROTATION_D);
         translationFilter = new PIDFilter(Constants.TRANSLATION_P, Constants.TRANSLATION_I, Constants.TRANSLATION_D);
         //armFilter = new PIDFilter(Constants.ARM_P, Constants.ARM_I, Constants.ARM_D);
+
+
+        // Initialize robot mechanism classes----------------------------
+        //armMechanism = new CollectorMechanism(this);
+        //---------------------------------------------------------------
+        collectorEncoder = hardwareMap.digitalChannel.get("collectorEncoder");
+        collectorEncoder.setMode(DigitalChannel.Mode.INPUT);
+
+        // Objects that must be updated each callback
+        driver1 = new DriverInput(gamepad1);
+        driver2 = new DriverInput(gamepad2);
+        collectorChannel = new ConcurrentDigitalDevice(collectorEncoder);
+        collectorMech = new CollectorMechanism(driver2, motorCollector, collectorChannel, collectorLoopTimer);
+
+        // Add necessary items to callback---------------
+        callback.add(driver1);
+        callback.add(driver2);
+        callback.add(collectorChannel);
+        callback.add(collectorMech);
+        //-----------------------------------------------
 
 
         // Note:  not in use
@@ -276,9 +280,11 @@ abstract public class MasterOpMode extends LinearOpMode
         telemetry.update();
         */
     }
-    /*void driveMecanumWithCurving(double driveAngle, double drivePower, double w, double powerFLMult, double powerFRMult, double powerBLMult, double powerBRMult)
+
+    // Allows robot to move sideways while maintaining collector as center of robot.
+    void driveMecanumWithCurving(double driveAngle, double drivePower, double w, double powerFLMult, double powerFRMult, double powerBLMult, double powerBRMult)
     {
-        if(!isDriveTrainAttached)
+        if (!isDriveTrainAttached)
         {
             telemetry.addLine("Drive is not attached!");
             telemetry.update();
@@ -296,16 +302,16 @@ abstract public class MasterOpMode extends LinearOpMode
         double powerBR = x + y + w;
 
         // Scale powers-------------------------
-        *//*
+        /*
          Motor powers might be set above 1 (e.g., x + y = 1 and w = -0.8), so we must scale all of
          the powers to ensure they are proportional and within the range {-1.0, 1.0}
-        *//*
+        */
         double powScalar = SequenceUtilities.getLargestMagnitude(new double[]{powerFL, powerFR, powerBL, powerBR});
-        *//*
+        /*
          However, powScalar should only be applied if it is greater than 1. Otherwise, we could
          unintentionally increase powers or even divide by 0
-        *//*
-        if(powScalar < 1)
+        */
+        if (powScalar < 1)
             powScalar = 1;
 
         powerFL /= powScalar;
@@ -322,13 +328,13 @@ abstract public class MasterOpMode extends LinearOpMode
 
         // todo How to make this not interfere with other telemetry?
         // Telemetry for debugging motor power inputs
-        *//*
+        /*
         telemetry.addData("translation power: ", x);
         telemetry.addData("vertical power: ", y);
         telemetry.addData("rotational power: ", w);
         telemetry.update();
-        *//*
-    }*/
+        */
+    }
 
 
     // Note:  not in use

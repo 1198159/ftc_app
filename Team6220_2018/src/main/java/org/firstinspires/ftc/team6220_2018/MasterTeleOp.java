@@ -66,12 +66,14 @@ abstract public class MasterTeleOp extends MasterOpMode
 
         //telemetry.addData("Trigger val Right: ", driver1.getRightTriggerValue());
         //telemetry.addData("Trigger val Left: ", driver1.getLeftTriggerValue());
-        //telemetry.addData("Hanger Enc: ", motorHanger.getCurrentPosition());
+        telemetry.addData("Hanger Enc: ", motorHanger.getCurrentPosition());
+        telemetry.update();
     }
 
     // Uses driver 2 input to drive arm and collector motors.
-    void driveCollectorMechanism()
+    void driveArm()
     {
+        /*
         if (driver2.isButtonJustPressed(Button.RIGHT_BUMPER) && !collectorSlowMode)
         {
             collectorPowerIn = Constants.MOTOR_COLLECTOR_SLOW_IN;
@@ -113,14 +115,15 @@ abstract public class MasterTeleOp extends MasterOpMode
             // is powered and loop time is shorter than 2 seconds since we do not want to get stuck in it.
             while (collectorEncoderState = !collectorChannel.getState() && (Math.abs(motorCollector.getPower()) > 0.01) && (collectorLoopTimer.seconds() < 2) && opModeIsActive())
             {
-                /*time = getRuntime();
+                time = getRuntime();
                 telemetry.addData("Collector Channel: ", collectorEncoderState);
                 telemetry.addData("Time", time);
-                telemetry.update();*/
+                telemetry.update();
                 idle();
             }
             motorCollector.setPower(0);
         }
+        */
 
 
         // Run arm to stick power.
@@ -174,6 +177,7 @@ abstract public class MasterTeleOp extends MasterOpMode
                     driveArm(Constants.LOW_ARM_POWER);
                 }
             }
+
             if(driver2.isButtonPressed(Button.X))
             {
                 motorArmLeft.setTargetPosition(Constants.ARM_TOP_BALLS);
