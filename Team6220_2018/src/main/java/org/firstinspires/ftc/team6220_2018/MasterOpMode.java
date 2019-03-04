@@ -180,7 +180,7 @@ abstract public class MasterOpMode extends LinearOpMode
         driver1 = new DriverInput(gamepad1);
         driver2 = new DriverInput(gamepad2);
         collectorChannel = new ConcurrentDigitalDevice(collectorEncoder);
-        collectorMech = new CollectorMechanism(driver2, motorCollector, collectorChannel, collectorLoopTimer);
+        collectorMech = new CollectorMechanism(this, driver2, motorCollector, collectorChannel, collectorLoopTimer);
 
         // Add necessary items to callback---------------
         callback.add(driver1);

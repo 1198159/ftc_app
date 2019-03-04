@@ -89,7 +89,8 @@ public class Constants
      // Hanger
     public static final int HANG_UNLATCH_POSITION = 180;
     public static final int HANG_GROUND_UNLATCH = -2950;
-     // Drivetrain
+    public static final int HANG_TELEOP_HEIGHT = -2500;
+    // Drivetrain
     public static final int MINERAL_SHIFT = 550;
     public static final int CRATER_SHIFT = 150;
     public static final int MINERAL_FORWARD = 720;

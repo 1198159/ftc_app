@@ -26,6 +26,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     // Stores position of arm
     double armPos = 0;
 
+    /*
     // Collector operation booleans
     boolean collectorSlowMode = false;
     boolean isCollectorStopping = false;
@@ -36,6 +37,7 @@ abstract public class MasterTeleOp extends MasterOpMode
 
     double collectorPowerIn = Constants.MOTOR_COLLECTOR_IN;
     double collectorPowerOut = Constants.MOTOR_COLLECTOR_OUT;
+    */
 
     // Factor that adjusts magnitudes of vertical and horizontal movement.
     double tFactor = Constants.SLOW_MODE_T_FACTOR;
@@ -49,7 +51,7 @@ abstract public class MasterTeleOp extends MasterOpMode
             motorHanger.setPower(stickCurve.getOuput(-driver1.getRightTriggerValue()));
         else if (driver1.getLeftTriggerValue() >= Constants.MINIMUM_TRIGGER_VALUE)
             motorHanger.setPower(stickCurve.getOuput(driver1.getLeftTriggerValue()));
-        else
+        else if (motorHanger.getMode() != DcMotor.RunMode.RUN_TO_POSITION)
             motorHanger.setPower(0.0);
 
         // Toggle hanger servo
@@ -64,10 +66,29 @@ abstract public class MasterTeleOp extends MasterOpMode
             hangServoDeployed = false;
         }
 
+        // Run hanger to automatic height of driver 1 presses a.
+        if (driver1.isButtonJustPressed(Button.A))
+        {
+            motorHanger.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorHanger.setPower(1.0);
+            motorHanger.setTargetPosition(Constants.HANG_TELEOP_HEIGHT);
+        }
+        // Exit if hanger is at position.
+        else if ((motorHanger.getMode() == DcMotor.RunMode.RUN_TO_POSITION) && (motorHanger.getCurrentPosition() - Constants.HANG_TELEOP_HEIGHT < 50))
+        {
+            motorHanger.setPower(0);
+            motorHanger.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        // Also exit if driver 1 presses y.
+        else if (driver1.isButtonJustPressed(Button.Y))
+        {
+            motorHanger.setPower(0);
+            motorHanger.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
         //telemetry.addData("Trigger val Right: ", driver1.getRightTriggerValue());
         //telemetry.addData("Trigger val Left: ", driver1.getLeftTriggerValue());
-        telemetry.addData("Hanger Enc: ", motorHanger.getCurrentPosition());
-        telemetry.update();
+        //telemetry.addData("Hanger Enc: ", motorHanger.getCurrentPosition());
+        //telemetry.update();
     }
 
     // Uses driver 2 input to drive arm and collector motors.
@@ -229,11 +250,13 @@ abstract public class MasterTeleOp extends MasterOpMode
         //----------------------------------------------------------------------------------------
 
 
+        /*
         // Change drive direction based on driver input
         if (driver1.isButtonJustPressed(Button.LEFT_BUMPER) && !driveReversed)
             driveReversed = true;
         else if (driver1.isButtonJustPressed(Button.LEFT_BUMPER) && driveReversed)
             driveReversed = false;
+        */
 
         // Drive in direction based on whether driveDirectionShift is true
         if (!driveReversed)

@@ -46,6 +46,8 @@ public class TeleOpCompetition extends MasterTeleOp
             */
             //telemetry.addData("eTime:", eTime);
             updateCallback(eTime);
+            //collectorEncoderState = collectorChannel.channelState;
+            //telemetry.addData("Collector Channel: ", collectorEncoderState);
             telemetry.update();
             idle();
         }

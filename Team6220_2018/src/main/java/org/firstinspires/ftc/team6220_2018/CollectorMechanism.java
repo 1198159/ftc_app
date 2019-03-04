@@ -8,25 +8,31 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class CollectorMechanism implements ConcurrentOperation
 {
+    MasterOpMode master;
     DriverInput driverInput;
     CRServo collector;
     ConcurrentDigitalDevice channel;
     ElapsedTime timer;
 
     // Collector operation booleans
-    boolean collectorEncoderState = false;
     boolean collectorSlowMode = false;
     boolean isCollectorStopping = false;
     boolean isCollecting = false;
     boolean isCollectingIn = false;
+    boolean isFastEjecting = false;
     // Allows us to break out of collector encoder loop if necessary.
     ElapsedTime collectorLoopTimer = new ElapsedTime();
+
+    // Allows us to count how many positions the encoder has passed.
+    int encoderCount = 0;
 
     double collectorPowerIn = Constants.MOTOR_COLLECTOR_IN;
     double collectorPowerOut = Constants.MOTOR_COLLECTOR_OUT;
 
-    public CollectorMechanism(DriverInput driver2, CRServo motorCollector, ConcurrentDigitalDevice collectorChannel, ElapsedTime collectorLoopTimer)
+    // Construct class with necessary outside objects.
+    public CollectorMechanism(MasterOpMode masterOpMode, DriverInput driver2, CRServo motorCollector, ConcurrentDigitalDevice collectorChannel, ElapsedTime collectorLoopTimer)
     {
+        master = masterOpMode;
         collector = motorCollector;
         channel = collectorChannel;
         timer = collectorLoopTimer;
@@ -41,20 +47,32 @@ public class CollectorMechanism implements ConcurrentOperation
     // Call at end of loop.
     public void update(double etime)
     {
+
         if (driverInput.isButtonJustPressed(Button.RIGHT_BUMPER) && !collectorSlowMode)
         {
             collectorPowerIn = Constants.MOTOR_COLLECTOR_SLOW_IN;
-            collectorPowerOut = Constants.MOTOR_COLLECTOR_SLOW_OUT;
             collectorSlowMode = true;
         }
         else if (driverInput.isButtonJustPressed(Button.RIGHT_BUMPER) && collectorSlowMode)
         {
             collectorPowerIn = Constants.MOTOR_COLLECTOR_IN;
-            collectorPowerOut = Constants.MOTOR_COLLECTOR_OUT;
             collectorSlowMode = false;
         }
 
-        // Collect and eject minerals.  Buttons have to be held to power collector.
+        // Allows rapid removal of minerals.
+        if (driverInput.isButtonPressed(Button.LEFT_BUMPER) && !isFastEjecting)
+        {
+            collector.setPower(Constants.MOTOR_COLLECTOR_OUT);
+            isFastEjecting = true;
+        }
+        else if (driverInput.isButtonPressed(Button.LEFT_BUMPER) && isFastEjecting)
+        {
+            collector.setPower(0);
+            isFastEjecting = false;
+        }
+
+        // Collect and eject minerals; collecting can be in normal or slow mode while ejecting is
+        // always slow.  Buttons have to be held to power collector.
         if (driverInput.isButtonPressed(Button.DPAD_DOWN))
         {
             collector.setPower(collectorPowerIn);
@@ -62,7 +80,7 @@ public class CollectorMechanism implements ConcurrentOperation
         }
         else if (driverInput.isButtonPressed(Button.DPAD_UP))
         {
-            collector.setPower(collectorPowerOut);
+            collector.setPower(Constants.MOTOR_COLLECTOR_SLOW_OUT);
             isCollectingIn = false;
         }
         else
@@ -77,20 +95,16 @@ public class CollectorMechanism implements ConcurrentOperation
                 collector.setPower(Constants.MOTOR_COLLECTOR_SLOW_OUT);
             }
 
-            collectorLoopTimer.reset();
-            // Wait until optical encoder reaches 1 of 4 positions.  Only do this loop if the motor
-            // is powered and loop time is shorter than 2 seconds since we do not want to get stuck in it.
-            if (collectorEncoderState = !channel.getState() && (Math.abs(collector.getPower()) > 0.01) && (timer.seconds() < 2))
-            {
-                /*time = getRuntime();
-                telemetry.addData("Collector Channel: ", collectorEncoderState);
-                telemetry.addData("Time", time);
-                telemetry.update();*/
-            }
-            else
-            {
+            timer.reset();
+
+            // Wait until optical encoder moves 2 positions (this gives it extra time to slow down
+            // if it was going full speed).  Only continue to power motor if timer reads shorter
+            // than 2 seconds since we do not want the collector to accidentally stay powered forever.
+            if (channel.channelState || (timer.seconds() > 2))
                 collector.setPower(0);
-            }
+
+            master.telemetry.addData("Collector Channel: ", channel.channelState);
+            master.telemetry.update();
         }
     }
 }

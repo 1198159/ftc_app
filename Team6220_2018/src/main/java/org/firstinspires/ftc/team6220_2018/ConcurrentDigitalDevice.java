@@ -7,8 +7,8 @@ public class ConcurrentDigitalDevice implements ConcurrentOperation
 {
     private DigitalChannel channel;
     // Allows us to store past and present states of digital channel.
-    private boolean channelState;
-    private boolean lastChannelState;
+    boolean channelState;
+    boolean lastChannelState;
 
     public ConcurrentDigitalDevice (DigitalChannel digitalChannel)
     {
