@@ -52,6 +52,7 @@ abstract class MasterAutonomous extends Master
 
     ArrayList<Integer> delays = new ArrayList<>();
     int numDelays = 0;
+    int delayTime = 0;
 
     // these values equal to one over the value (in mm for drive power and degrees for turn power)
     // that you want the PID loop to start limiting the speed at
@@ -154,6 +155,9 @@ abstract class MasterAutonomous extends Master
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
         telemetry.addData("Init State", "Init Finished");
+        telemetry.addData("Alliance", alliance.name());
+        telemetry.addData("Side", startLocation.name());
+        telemetry.addData("Delay Time", delayTime);
         telemetry.update();
 
         // Set last known encoder values
@@ -165,7 +169,7 @@ abstract class MasterAutonomous extends Master
         // Set IMU heading offset
         headingOffset = imu.getAngularOrientation().firstAngle - robotAngle;
 
-        servoJJ.setPosition(-1.2);
+        servoJJ.setPosition(0.4);
         servoJJ2.setPosition(0.65);
 
         //initialize our openCV image processing pipeline
@@ -268,11 +272,11 @@ abstract class MasterAutonomous extends Master
     {
         //1 is completely up
         //-1 is completely down
-        servoJJ.setPosition(0.5);
+        servoJJ.setPosition(0.50);
         sleep(800);
-        servoJJ.setPosition(0.8);
+        servoJJ.setPosition(0.9);
         sleep(100);
-        servoJJ.setPosition(-1.0);
+        servoJJ.setPosition(0.95);
     }
 
     public void moveLift (int ticks)
@@ -386,15 +390,14 @@ abstract class MasterAutonomous extends Master
             // input information
             telemetry.addLine("Alliance Blue/Red: X/B");
             telemetry.addLine("Starting Position Crater/Depot: D-Pad Left/Right");
-            telemetry.addLine("Assist Assisting/Not_Assisting: D-Pad Right, A/Y");
-            //telemetry.addLine("Add a delay: D-Pad Up");
-            telemetry.addLine("");
+            telemetry.addLine("Add a delay: D-Pad Up");
             telemetry.addLine("After routine is complete and robot is on field, press Start");
             telemetry.addLine();
 
             // setup data
             telemetry.addData("Alliance", alliance.name());
             telemetry.addData("Side", startLocation.name());
+            telemetry.addData("Delay Time", delayTime);
             telemetry.update();
 
             idle();
