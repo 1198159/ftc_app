@@ -330,7 +330,6 @@ abstract class MasterAutonomous extends Master
                 assist = Assist.NOT_ASSISTING;
             }
 
-            /*
             if(gamepad1.dpad_up)
             {
                 numDelays++;
@@ -349,7 +348,7 @@ abstract class MasterAutonomous extends Master
                         delays.set(numDelays, delays.get(numDelays) + 1);
                     else if(gamepad1.dpad_down && delays.get(numDelays) >= 0)
                         delays.set(numDelays, delays.get(numDelays) - 1);
-                    if(delays.get(numDelays) == 0)
+                    if(delays.get(numDelays) >= 0)
                     {
                         delays.remove(numDelays);
                         numDelays--;
@@ -376,7 +375,6 @@ abstract class MasterAutonomous extends Master
                     telemetry.update();
                 }
             }
-            */
 
             if(gamepad1.start)
                 doneSettingUp = true;

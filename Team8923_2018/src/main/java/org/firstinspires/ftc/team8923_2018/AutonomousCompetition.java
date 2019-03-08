@@ -25,6 +25,11 @@ public class AutonomousCompetition extends MasterAutonomous
         openCVInit();
         telemetry.clear();
 
+        for(int i : delays)
+        {
+            sleep(i * 1000);
+        }
+
         while (opModeIsActive())
         {
             GoldLocation position = landAndDetectMineral();
