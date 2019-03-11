@@ -217,7 +217,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     // Uses encoders to make the robot drive to a specified relative position.  Also makes use of the
     // imu to keep the robot at a constant heading during navigation.
     // **Note:  initDeltaX/Y are in mm.
-    void driveToPosition(double initDeltaX, double initDeltaY, double maxPower) throws InterruptedException
+    void driveToPosition(double initDeltaX, double initDeltaY, double maxPower)
     {
         // Variables set every loop-------------------
         double deltaX = initDeltaX;

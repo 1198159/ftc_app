@@ -197,7 +197,7 @@ abstract public class MasterOpMode extends LinearOpMode
         }
     }
 
-    void driveArm (double drivePower)
+    void powerArm(double drivePower)
     {
         if(!isArmMechAttached)
         {

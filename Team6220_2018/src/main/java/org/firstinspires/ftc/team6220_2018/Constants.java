@@ -95,21 +95,23 @@ public class Constants
     public static final int CRATER_SHIFT = 150;
     public static final int MINERAL_FORWARD = 720;
     public static final int MINERAL_BACKWARD = 350;
+    public static final int LANDER_BACK_UP = 160;
     //-------------------------------------------------
 
     // Arm Positions
     public static final int ARM_TOP_BLOCKS = 1350;
     public static final int ARM_TOP_BALLS = 1240;
     public static final int ARM_GROUND = 0;
-    public static final int ARM_SWITCH_HEIGHT = 800;
+    public static final int ARM_LOW_SWITCH_HEIGHT = 300;
+    public static final int ARM_HIGH_SWITCH_HEIGHT = 800;
     public static final int ARM_SCORE_SWITCH_HEIGHT = 1100;
      // Accounts for different starting position of arm in auto.
     public static final int ARM_TOP_AUTO = -1150;
     public static final int ARM_GROUND_AUTO = -2250;
     public static final int ARM_FLIP_AUTO = -1900;
     // Arm powers
-    public static final double HIGH_ARM_POWER = 0.4;
-    public static final double LOW_ARM_POWER = 0.2;
+    public static final double HIGH_ARM_POWER = 0.5;
+    public static final double LOW_ARM_POWER = 0.25;
     public static final double MIN_ARM_POWER = 0.1;
 
     // Ensure that input isn't used when no commands are given

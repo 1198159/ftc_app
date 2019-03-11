@@ -85,11 +85,11 @@ public class AutoCompetition extends MasterAutonomous
 
             motorArmLeft.setTargetPosition(Constants.ARM_GROUND_AUTO);
             motorArmRight.setTargetPosition(-Constants.ARM_GROUND_AUTO);
-            driveArm(Constants.HIGH_ARM_POWER);
+            powerArm(Constants.HIGH_ARM_POWER);
             pauseWhileUpdating(1.2);
             motorArmLeft.setTargetPosition(Constants.ARM_FLIP_AUTO);
             motorArmRight.setTargetPosition(-Constants.ARM_FLIP_AUTO);
-            driveArm(0.4);
+            powerArm(0.4);
             pauseWhileUpdating(0.5);
             /*while(opModeIsActive())
             {
@@ -186,11 +186,11 @@ public class AutoCompetition extends MasterAutonomous
 
             motorArmLeft.setTargetPosition(Constants.ARM_GROUND_AUTO);
             motorArmRight.setTargetPosition(-Constants.ARM_GROUND_AUTO);
-            driveArm(0.4);
+            powerArm(0.4);
             pauseWhileUpdating(1.2);
             motorArmLeft.setTargetPosition(Constants.ARM_FLIP_AUTO);
             motorArmRight.setTargetPosition(-Constants.ARM_FLIP_AUTO);
-            driveArm(0.4);
+            powerArm(0.4);
             pauseWhileUpdating(0.5);
             /*while(opModeIsActive())
             {
@@ -227,7 +227,7 @@ public class AutoCompetition extends MasterAutonomous
         // Raise arm out of camera's line of sight.
         motorArmLeft.setTargetPosition(Constants.ARM_TOP_AUTO);
         motorArmRight.setTargetPosition(-Constants.ARM_TOP_AUTO);
-        driveArm(Constants.HIGH_ARM_POWER);
+        powerArm(Constants.HIGH_ARM_POWER);
     }
 
     // Allows us to score alliance partner's mineral.
