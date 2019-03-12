@@ -11,6 +11,7 @@ public class TeleOpCompetition extends MasterTeleOp
     public void runOpMode()
     {
         initHardware();
+        servoJJ.setPosition(0.0);
         motorFlip.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
