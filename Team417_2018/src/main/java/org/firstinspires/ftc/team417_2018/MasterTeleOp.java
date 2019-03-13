@@ -148,8 +148,8 @@ abstract public class MasterTeleOp extends MasterOpMode
         // control arm motors with G2 right stick
         if (gamepad2.right_stick_y != 0)
         {
-            arm1.setPower(Range.clip(gamepad2.right_stick_y, -0.32, 0.32));
-            arm2.setPower(Range.clip(-gamepad2.right_stick_y, -0.32, 0.32));
+            arm1.setPower(Range.clip(gamepad2.right_stick_y, -0.4, 0.4));
+            arm2.setPower(Range.clip(-gamepad2.right_stick_y, -0.4, 0.4));
         }
         else
         {
@@ -241,7 +241,7 @@ abstract public class MasterTeleOp extends MasterOpMode
     {
         //telemetry.addData("legato: ", isLegatoMode);
         telemetry.addData("reverse: ", isReverseMode);
-        telemetry.addData("rev1:", rev1.getPosition());
+        telemetry.addData("hanger:", hanger.getCurrentPosition());
         telemetry.addData("autoRevPos:", autoRevPos);
         //telemetry.addData("motorMode", core2.getMode());
         telemetry.addData("core2:", core2.getCurrentPosition());
