@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@Autonomous(name = "Reset")
+@Autonomous(name = "Test OpMode")
 //@Disabled
 public class TestOpMode extends MasterAutonomous
 {
@@ -20,9 +20,8 @@ public class TestOpMode extends MasterAutonomous
         telemetry.update();
         waitForStart();
 
-        land();
-        sleep(50);
-        lowerArm();
+        //landNew(2000, 2900);
+        autoExtendSlides();
         //reset();
     }
 }
