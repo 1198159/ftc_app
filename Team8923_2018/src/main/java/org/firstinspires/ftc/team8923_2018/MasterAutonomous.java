@@ -348,7 +348,7 @@ abstract class MasterAutonomous extends Master
                         delays.set(numDelays, delays.get(numDelays) + 1);
                     else if(gamepad1.dpad_down && delays.get(numDelays) >= 0)
                         delays.set(numDelays, delays.get(numDelays) - 1);
-                    if(delays.get(numDelays) >= 0)
+                    if(delays.get(numDelays) <= 0)
                     {
                         delays.remove(numDelays);
                         numDelays--;
@@ -395,7 +395,10 @@ abstract class MasterAutonomous extends Master
             // setup data
             telemetry.addData("Alliance", alliance.name());
             telemetry.addData("Side", startLocation.name());
-            telemetry.addData("Delay Time", delayTime);
+            for (int i = 1; i <= delays.size() - 1 && delays.size() != 1; i++)
+            {
+                telemetry.addData("delay " + i, delays.get(i));
+            }
             telemetry.update();
 
             idle();
@@ -610,7 +613,7 @@ abstract class MasterAutonomous extends Master
             updateRobotLocation();
 
             // In case robot drifts to the side
-            //TODO: ISSUE IN THIS CALCULATION (BEHAVIOUR: DRIVE ANGLE DRIFTS CONISITENTLY NEGATIVE WHILE RUNNING)
+            //TODO: ISSUE IN THIS CALCULATION (BEHAVIOUR: DRIVE ANGLE DRIFTS CONSISTENTLY NEGATIVE WHILE RUNNING)
             double driveAngle = Math.toDegrees(Math.atan2(targetY - robotY, targetX - robotX)) - robotAngle;
 
             // Decrease power as robot approaches target. Ensure it doesn't exceed power limits
@@ -690,7 +693,7 @@ abstract class MasterAutonomous extends Master
         telemetry.addData("deltaY", deltaY);
 
         // Convert to mm
-        //TODO: maybe wrong proportions? something about 70/30 effectiveness mayeb translation to MM is wrong
+        //TODO: maybe wrong proportions? something about 70/30 effectiveness maybe translation to MM is wrong
         deltaX *= MM_PER_TICK;
         deltaY *= MM_PER_TICK;
 

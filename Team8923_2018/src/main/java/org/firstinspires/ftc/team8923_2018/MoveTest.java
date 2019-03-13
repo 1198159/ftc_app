@@ -19,11 +19,13 @@ public class MoveTest extends MasterAutonomous
         initAuto();
 
         headingOffset = 0;
-        //dankUnderglow(-0.5);
         waitForStart();
-        deployArmFAST();
         while (opModeIsActive())
         {
+            driveToPoint(500, 500,0);
+            sleep(500);
+            driveToPoint(0, 0,0);
+            sleep(10000);
         }
     }
 }
