@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team6220_2018;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  *  This program is an all-in-one autonomous.  It uses gamepad input prior to initialization to
@@ -220,9 +221,30 @@ public class AutoCompetition extends MasterAutonomous
         motorHanger.setTargetPosition(Constants.HANG_GROUND_UNLATCH);
         motorHanger.setPower(1.0);
         driveToPosition(80,0,1.0);
+
+        /*
+        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorFL.setTargetPosition(-200);
+        motorFR.setTargetPosition(-200);
+        motorFL.setPower(0.4);
+        motorFR.setPower(0.4);
+        pauseWhileUpdating(0.4);
+        */
+
         motorHanger.setTargetPosition(0);
         motorHanger.setPower(1.0);
         driveToPosition(-80,0,1.0);
+
+        /*
+        motorFL.setTargetPosition(200);
+        motorFL.setTargetPosition(200);
+        motorFL.setPower(0.4);
+        motorFR.setPower(0.4);
+        pauseWhileUpdating(0.4);
+        */
 
         // Raise arm out of camera's line of sight.
         motorArmLeft.setTargetPosition(Constants.ARM_TOP_AUTO);
