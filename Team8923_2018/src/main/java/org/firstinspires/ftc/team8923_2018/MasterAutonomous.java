@@ -348,7 +348,7 @@ abstract class MasterAutonomous extends Master
                         delays.set(numDelays, delays.get(numDelays) + 1);
                     else if(gamepad1.dpad_down && delays.get(numDelays) >= 0)
                         delays.set(numDelays, delays.get(numDelays) - 1);
-                    if(delays.get(numDelays) >= 0)
+                    if(delays.get(numDelays) <= 0)
                     {
                         delays.remove(numDelays);
                         numDelays--;
@@ -395,7 +395,10 @@ abstract class MasterAutonomous extends Master
             // setup data
             telemetry.addData("Alliance", alliance.name());
             telemetry.addData("Side", startLocation.name());
-            telemetry.addData("Delay Time", delayTime);
+            for (int i = 1; i <= delays.size() - 1 && delays.size() != 1; i++)
+            {
+                telemetry.addData("delay " + i, delays.get(i));
+            }
             telemetry.update();
 
             idle();

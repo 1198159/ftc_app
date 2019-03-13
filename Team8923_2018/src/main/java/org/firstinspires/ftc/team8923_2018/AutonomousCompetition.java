@@ -27,9 +27,12 @@ public class AutonomousCompetition extends MasterAutonomous
 
         while (opModeIsActive())
         {
+            for (int i: delays)
+            {
+                sleep(i * 1000);
+            }
             GoldLocation position = landAndDetectMineral();
             dankUnderglow(-1.0);
-            //sleep(numDelays * 1000);
             moveAuto(0, 10, 0.2, 0.2, 3.0);//straighten out robot
             moveAuto(80, 0, 0.35, 0.2, 3.0);//move off of hook
             double referenceAngle =  imu.getAngularOrientation().firstAngle; // Get a reference ange from the IMU for future movements using IMU
