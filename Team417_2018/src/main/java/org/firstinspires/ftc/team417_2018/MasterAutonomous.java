@@ -20,7 +20,10 @@ abstract public class MasterAutonomous extends MasterOpMode
     private int OPENCV_IMAGE_MIDDLE = 360;
 
     private int curLiftPos = 0;
+    private int curExtendPos = 0;
+
     private int curHangerPos = 0;
+
 
     boolean isLogging = true;
     boolean isPosCrater = true;
@@ -448,9 +451,28 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     public void land()
     {
+        do
+        {
+            curLiftPos = arm1.getCurrentPosition();
+            arm1.setPower(-0.2);
+            arm2.setPower(0.2);
+        }
+        while (curLiftPos > -1030);
+        arm1.setPower(0.0);
+        arm2.setPower(0.0);
 
-        hanger.setPower(0.95);
-        sleep(800);
+        sleep(50);
+    }
+
+    public void landNew(int initPos, int finalPos)
+    {
+        int hangerTargetPos= hanger.getCurrentPosition() + initPos;
+        do
+        {
+            curHangerPos = hanger.getCurrentPosition();
+            hanger.setPower(0.99);
+        }
+        while (curHangerPos < hangerTargetPos);
         hanger.setPower(0.0);
 
         do
@@ -463,22 +485,50 @@ abstract public class MasterAutonomous extends MasterOpMode
         arm1.setPower(0.0);
         arm2.setPower(0.0);
 
-        sleep(100);
+        sleep(50);
 
-        hanger.setPower(0.95);
-        sleep(2700);
-        hanger.setPower(0.0);
-
-        /*
-        int hangerZeroPos = hanger.getCurrentPosition();
+        hangerTargetPos = hanger.getCurrentPosition() + finalPos + initPos;
         do
         {
-            curHangerPos = hanger.getCurrentPosition() - hangerZeroPos;
+            curHangerPos = hanger.getCurrentPosition();
             hanger.setPower(0.99);
         }
-        while (curHangerPos < 650);
+        while (curHangerPos < hangerTargetPos);
         hanger.setPower(0.0);
-        */
+    }
+
+    public void hangerUsingEncoder(int initPos)
+    {
+        int hangerTargetPos = hanger.getCurrentPosition() + initPos;
+        do
+        {
+            curHangerPos = hanger.getCurrentPosition();
+            hanger.setPower(0.99);
+        }
+        while (curHangerPos < hangerTargetPos);
+        hanger.setPower(0.0);
+    }
+
+    void autoExtendSlides()
+    {
+        do
+        {
+            if (curExtendPos < 700) core2.setPower(0.85);
+            else core2.setPower(0.0);
+
+            if (curLiftPos < -150)
+            {
+                arm1.setPower(0.3);
+                arm2.setPower(-0.3);
+            }
+            else
+            {
+                arm1.setPower(0.0);
+                arm2.setPower(0.0);
+            }
+        }
+        while (curLiftPos < -150 || curExtendPos < 700); // lowers to much // extends to much
+
     }
 
     public void reset() // we run this after Auto to reset the hanger and the arm motors

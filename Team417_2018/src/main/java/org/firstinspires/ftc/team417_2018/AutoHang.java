@@ -50,7 +50,7 @@ public class AutoHang extends MasterAutonomous
         autoRuntime.reset();
         telemetry.addData("Auto: ", "Started");
 
-        land();
+        landNew(2000, 2900);
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
 
@@ -220,7 +220,7 @@ public class AutoHang extends MasterAutonomous
         }
 
         rev1.setPosition(0.0);
-        lowerArm();
+        autoExtendSlides();
 
         vuforia.stop();
         }
