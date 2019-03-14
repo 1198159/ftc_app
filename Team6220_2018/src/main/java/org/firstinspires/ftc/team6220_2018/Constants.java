@@ -106,7 +106,7 @@ public class Constants
     public static final int ARM_HIGH_SWITCH_HEIGHT = 800;
     public static final int ARM_SCORE_SWITCH_HEIGHT = 1100;
      // Accounts for different starting position of arm in auto.
-    public static final int ARM_TOP_AUTO = -1150;
+    public static final int ARM_TOP_AUTO = -1000;
     public static final int ARM_GROUND_AUTO = -2250;
     public static final int ARM_FLIP_AUTO = -1900;
     // Arm powers

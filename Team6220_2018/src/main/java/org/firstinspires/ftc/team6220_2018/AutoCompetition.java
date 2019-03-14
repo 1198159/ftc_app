@@ -58,7 +58,19 @@ public class AutoCompetition extends MasterAutonomous
                 }
                 else
                 {
-                    moveRobot(0.0,0.6,1.5);
+                    if((goldLocation == sampleFieldLocations.right))
+                    {
+                        moveRobot(0.0,0.6,0.7);
+                    }
+                    else if ((goldLocation == sampleFieldLocations.left))
+                    {
+                        moveRobot(0.0, 0.6, 1.8);
+                    }
+                    else if ((goldLocation == sampleFieldLocations.center))
+                    {
+                        moveRobot(0.0, 0.6, 1.2);
+                    }
+                    //moveRobot(0.0,0.6,1.5);
                     driveToPosition(0, -1300 - craterShift, 1.0);
                 }
                 driveToPosition(-30, 0,1.0);
@@ -78,7 +90,19 @@ public class AutoCompetition extends MasterAutonomous
                 }
                 else
                 {
-                    moveRobot(180.0, 0.6, 1.5);
+                    if((goldLocation == sampleFieldLocations.right))
+                    {
+                        moveRobot(180.0,0.6,1.8);
+                    }
+                    else if ((goldLocation == sampleFieldLocations.left))
+                    {
+                        moveRobot(180.0, 0.6, 0.7);
+                    }
+                    else if ((goldLocation == sampleFieldLocations.center))
+                    {
+                        moveRobot(180.0, 0.6, 1.2);
+                    }
+                    //moveRobot(180.0, 0.6, 1.5);
                     driveToPosition(0, -1250 - craterShift, 1.0);
                 }
                 driveToPosition(30, 0,1.0);
@@ -86,11 +110,11 @@ public class AutoCompetition extends MasterAutonomous
 
             motorArmLeft.setTargetPosition(Constants.ARM_GROUND_AUTO);
             motorArmRight.setTargetPosition(-Constants.ARM_GROUND_AUTO);
-            powerArm(Constants.HIGH_ARM_POWER);
+            powerArm(0.2);
             pauseWhileUpdating(1.2);
             motorArmLeft.setTargetPosition(Constants.ARM_FLIP_AUTO);
             motorArmRight.setTargetPosition(-Constants.ARM_FLIP_AUTO);
-            powerArm(0.4);
+            powerArm(0.2);
             pauseWhileUpdating(0.5);
             /*while(opModeIsActive())
             {
@@ -126,7 +150,19 @@ public class AutoCompetition extends MasterAutonomous
                 {
                     // Drive backward, align with wall, and drive rest of way into crater.
                     driveToPosition(0, -400, 1.0);
-                    moveRobot(0.0,0.6,1.0);
+                    if((goldLocation == sampleFieldLocations.right))
+                    {
+                        moveRobot(0.0,0.6,0.7);
+                    }
+                    else if ((goldLocation == sampleFieldLocations.left))
+                    {
+                        moveRobot(0.0, 0.6, 1.5);
+                    }
+                    else if ((goldLocation == sampleFieldLocations.center))
+                    {
+                        moveRobot(0.0, 0.6, 1.0);
+                    }
+                    //moveRobot(0.0,0.6,1.0);
                     driveToPosition(0, -1500, 1.0);
                 }
                 else
@@ -169,7 +205,7 @@ public class AutoCompetition extends MasterAutonomous
                 driveToPosition(0, -400, 1.0);
                 if((goldLocation == sampleFieldLocations.right))
                 {
-                    moveRobot(180.0,0.6,1.0);
+                    moveRobot(180.0,0.6,1.1);
                     driveToPosition(0, -1500, 1.0);
                 }
                 if((goldLocation == sampleFieldLocations.left))
@@ -179,19 +215,19 @@ public class AutoCompetition extends MasterAutonomous
                 }
                 if((goldLocation == sampleFieldLocations.center))
                 {
-                    moveRobot(180.0,0.6,0.9);
+                    moveRobot(180.0,0.6,1.0);
                     driveToPosition(0, -1400, 1.0);
                 }
-                driveToPosition(30, 0,1.0);
+                driveToPosition(30, 0,0.8);
             }
 
             motorArmLeft.setTargetPosition(Constants.ARM_GROUND_AUTO);
             motorArmRight.setTargetPosition(-Constants.ARM_GROUND_AUTO);
-            powerArm(0.4);
+            powerArm(0.2);
             pauseWhileUpdating(1.2);
             motorArmLeft.setTargetPosition(Constants.ARM_FLIP_AUTO);
             motorArmRight.setTargetPosition(-Constants.ARM_FLIP_AUTO);
-            powerArm(0.4);
+            powerArm(0.2);
             pauseWhileUpdating(0.5);
             /*while(opModeIsActive())
             {
