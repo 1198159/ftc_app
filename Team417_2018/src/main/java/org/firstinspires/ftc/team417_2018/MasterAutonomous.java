@@ -17,11 +17,15 @@ abstract public class MasterAutonomous extends MasterOpMode
     private ElapsedTime runtime = new ElapsedTime();
     public ElapsedTime autoRuntime = new ElapsedTime();
 
+    String goldLocation = "UNKNOWN";
+
     private int OPENCV_IMAGE_MIDDLE = 360;
 
+    //arm
     private int curLiftPos = 0;
+    //slides
     private int curExtendPos = 0;
-
+    // hanger
     private int curHangerPos = 0;
 
 
@@ -152,9 +156,8 @@ abstract public class MasterAutonomous extends MasterOpMode
     }
 
     // won't display Gold position (left, center, right) if gold mineral doesn't meet the vertical cutting at 400 pixels or more
-    public String locateGold()
+    public void locateGold()
     {
-        String goldLocation = "UNKNOWN";
         // right gold was located at (700,380)
         if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 600) &&  (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2) >= 375 )
         {
@@ -162,7 +165,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             isCenterGold = false;
             isRightGold = true;
             telemetry.addLine("Right");
-            goldLocation = "Right";
         }
         // left gold was located at (110,380)
         else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 200)  &&  (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2) >= 375 )
@@ -171,7 +173,6 @@ abstract public class MasterAutonomous extends MasterOpMode
             isCenterGold = false;
             isRightGold = false;
             telemetry.addLine("Left");
-            goldLocation = "Left";
         }
         // center gold was located at (420,380)
         else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 350) && ((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 500)  &&  (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2) >= 375 )
@@ -180,9 +181,11 @@ abstract public class MasterAutonomous extends MasterOpMode
             isCenterGold = true;
             isRightGold = false;
             telemetry.addLine("Center");
-            goldLocation = "Center";
         }
-        return goldLocation;
+        else
+        {
+            telemetry.addLine("UNKNOWN");
+        }
     }
 
     // drive forwards/backwards/horizontal left and right function
@@ -464,9 +467,9 @@ abstract public class MasterAutonomous extends MasterOpMode
         sleep(50);
     }
 
-    public void landNew(int initPos, int finalPos)
+    public void landEncoder(int initPos, int finalPos)
     {
-        int hangerTargetPos= hanger.getCurrentPosition() + initPos;
+        int hangerTargetPos = hanger.getCurrentPosition() + initPos;
         do
         {
             curHangerPos = hanger.getCurrentPosition();
@@ -478,8 +481,8 @@ abstract public class MasterAutonomous extends MasterOpMode
         do
         {
             curLiftPos = arm1.getCurrentPosition();
-            arm1.setPower(-0.2);
-            arm2.setPower(0.2);
+            arm1.setPower(-0.4);
+            arm2.setPower(0.4);
         }
         while (curLiftPos > -1030);
         arm1.setPower(0.0);
@@ -511,15 +514,24 @@ abstract public class MasterAutonomous extends MasterOpMode
 
     void autoExtendSlides()
     {
+        rev1.setPosition(0.0);
         do
         {
-            if (curExtendPos < 700) core2.setPower(0.85);
-            else core2.setPower(0.0);
+            curLiftPos = arm1.getCurrentPosition();
+            curExtendPos = core2.getCurrentPosition();
 
+            if (curExtendPos < 650 && opModeIsActive())
+            {
+                core2.setPower(0.99);
+            }
+            else
+            {
+                core2.setPower(0.0);
+            }
             if (curLiftPos < -150)
             {
-                arm1.setPower(0.3);
-                arm2.setPower(-0.3);
+                arm1.setPower(0.35);
+                arm2.setPower(-0.35);
             }
             else
             {
@@ -527,8 +539,7 @@ abstract public class MasterAutonomous extends MasterOpMode
                 arm2.setPower(0.0);
             }
         }
-        while (curLiftPos < -150 || curExtendPos < 700); // lowers to much // extends to much
-
+        while ((curLiftPos < -250 || curExtendPos < 600) && opModeIsActive());
     }
 
     public void reset() // we run this after Auto to reset the hanger and the arm motors
