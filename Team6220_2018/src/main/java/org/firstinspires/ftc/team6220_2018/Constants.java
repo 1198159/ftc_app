@@ -81,14 +81,14 @@ public class Constants
     public static final double MOTOR_COLLECTOR_OUT = -0.85;
 
     public static final double MOTOR_COLLECTOR_SLOW_IN = 0.15;
-    public static final double MOTOR_COLLECTOR_SLOW_OUT = -0.15;
+    public static final double MOTOR_COLLECTOR_SLOW_OUT = -0.25;
     //-------------------------------------------------
 
 
     // Encoder positions-------------------------------
      // Hanger
     public static final int HANG_UNLATCH_POSITION = 180;
-    public static final int HANG_GROUND_UNLATCH = -2950;
+    public static final int HANG_GROUND_UNLATCH = -2700;
     public static final int HANG_TELEOP_HEIGHT = -2500;
     // Drivetrain
     public static final int MINERAL_SHIFT = 550;
