@@ -26,12 +26,12 @@ public class AutoHang extends MasterAutonomous
 
             if (-gamepad1.right_stick_y > 0)
             {
-                threshold ++;
+                threshold++;
                 sleep(100);
             }
             if (-gamepad1.right_stick_y < 0)
             {
-                threshold --;
+                threshold--;
                 sleep(100);
             }
             OpenCV_detector.setThreshold(threshold);
@@ -50,14 +50,11 @@ public class AutoHang extends MasterAutonomous
         autoRuntime.reset();
         telemetry.addData("Auto: ", "Started");
 
-        landNew(2000, 2900);
+        landEncoder(2000, 2200);
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
 
         move(45, 0, 0.2, 0.75, 3.0); // move robot hanger off the lander hook
-        sleep(50);
-
-        move(0, 70, 0.2, 0.75, 3.0); // move from sampling position to gold push position
         sleep(50);
 
         if (!isPosCrater) // if it's the depot option
@@ -194,17 +191,17 @@ public class AutoHang extends MasterAutonomous
             else if (isCenterGold)
             {
                 sleep(100);
-                move(0, 350, 0.3, 0.7, 3.0); // push the gold mineral
+                move(0, 360, 0.3, 0.7, 3.0); // push the gold mineral
 
                 // rest of this code is for dropping of marker after knocking gold mineral
                 sleep(100);
                 move(0, -130, 0.3, 0.7, 2.0); // back up from the gold mineral
                 sleep(100);
-                pivotWithReference(90, refAngle, 0.2, 0.75); // pivot to face wall
+                pivotWithReference(90, refAngle, 0.35, 0.75); // pivot to face wall
                 sleep(100);
                 move(0, 610, 0.3, 0.7, 2.0); // go forwards toward the wall
                 sleep(100);
-                pivotWithReference(135, refAngle, 0.2, 0.75); // pivot to face the depot
+                pivotWithReference(135, refAngle, 0.35, 0.75); // pivot to face the depot
                 sleep(100);
                 move(85, 0, 0.3, 0.7, 2.0); // translate towards the wall
                 sleep(50);
@@ -213,13 +210,13 @@ public class AutoHang extends MasterAutonomous
                 marker.setPosition(MARKER_HIGH); // release the TM
                 move(0,-650,0.3,0.72,3.5); // go backwards to park in the crater
                 marker.setPosition(MARKER_LOW); // lower the TMD
-                pivotWithReference(-40, refAngle, 0.2, 0.75); // pivot to face the crater
+                sleep(100);
+                pivotWithReference(-40, refAngle, 0.35, 0.75); // pivot to face the crater
                 sleep(100);
                 move(0,200,0.3,0.72,3.5); // park in the crater
             }
         }
 
-        rev1.setPosition(0.0);
         autoExtendSlides();
 
         vuforia.stop();
