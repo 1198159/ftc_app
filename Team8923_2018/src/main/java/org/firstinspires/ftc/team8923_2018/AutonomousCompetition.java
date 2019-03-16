@@ -46,18 +46,18 @@ public class AutonomousCompetition extends MasterAutonomous
                     {
                         case LEFT:
                         {
-                            moveAuto(0, -300, 1.0, 0.3, 3.0);
-                            moveAuto(500, 0, 0.3, 0.3, 3.0);
+                            moveAuto(0, -370, 1.0, 0.3, 3.0);
+                            moveAuto(400, 0, 0.3, 0.3, 3.0);
                             moveAuto(0, -610, 1.0, 0.3, 3.0);
                             //End of knock off mineral phase
                             //Other phases to be decided later
                             imuPivot(referenceAngle, -45, 1.0, 0.015, 3.0);
                             moveAuto(0, -420, 1.0, 0.3, 3.0);
-                            moveAuto(0, 200, 1.0, 0.3, 3.0);
+                            moveAuto(0, 100, 1.0, 0.3, 3.0);
                             dropJJ();
-                            moveAuto(0, 800, 1.0, 0.3, 3.0);
-                            moveAuto(200, 0, 0.3, 0.3, 3.0);
-                            moveAuto(0, 450, 0.5, 0.5, 3.0);
+                            moveAuto(0, 900, 1.0, 0.3, 3.0);
+                            moveAuto(270, 0, 0.3, 0.3, 3.0);
+                            moveAuto(0, 480, 0.5, 0.5, 3.0);
                             break;
 
                         }
@@ -79,22 +79,28 @@ public class AutonomousCompetition extends MasterAutonomous
                         }
                         case RIGHT:
                         {
-                            moveAuto(0, -450, 1.0, 0.3, 3.0);
-                            moveAuto(-610, 0, 0.3, 0.3, 3.0);
+                            moveAuto(0, -350, 1.0, 0.3, 3.0);
+                            moveAuto(-500, 0, 0.3, 0.3, 3.0);
                             moveAuto(0, -770, 1.0, 0.5, 3.0);
                             //End of knock off mineral phase
                             //Other phases to be decided later
-                            dropJJ();
                             imuPivot(referenceAngle, 45, 0.7, 0.015, 3.0);
-                            moveAuto(0, -450, 0.5, 1.0, 3.0);
-                            moveAuto(0, 250, 1.0, 0.3, 3.0);
+                            moveAuto(-100, 0, 0.3, 0.3, 3.0);
+                            //moveAuto(0, -100, 0.3, 0.3, 3.0);
+                            //dropJJ();
+                            //moveAuto(100, 0, 0.3, 0.3, 3.0);
+                            moveAuto(0, -380, 0.5, 0.7, 3.0);
+                            dropJJ();
+                            moveAuto(0, 300, 1.0, 0.3, 3.0);
+                            moveAuto(100, 0, 1.0, 0.3, 3.0);
+
                             imuPivot(referenceAngle, -90, 0.7, 0.015, 3.0);
-                            moveAuto(0, 370, 0.5, 0.7, 3.0);
+                            moveAuto(0, 630, 0.5, 0.7, 3.0);
                             imuPivot(referenceAngle, -45, 0.7, 0.015, 3.0);
                             moveAuto(50, 0, 0.3, 0.3, 3.0);
                             moveAuto(0, 800, 1.0, 0.3, 3.0);
                             moveAuto(100, 0, 0.3, 0.3, 3.0);
-                            moveAuto(0, 650, 0.5, 0.5, 3.0);
+                            moveAuto(0, 570, 0.5, 0.5, 3.0);
                             break;
                         }
                     }
