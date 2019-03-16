@@ -273,7 +273,7 @@ abstract class MasterAutonomous extends Master
         //1 is completely up
         //-1 is completely down
         servoJJ.setPosition(0.50);
-        sleep(800);
+        sleep(600);
         servoJJ.setPosition(0.9);
         sleep(100);
         servoJJ.setPosition(0.95);

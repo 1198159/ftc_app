@@ -156,10 +156,8 @@ public class AutonomousCompetition extends MasterAutonomous
                 }
                 break;
             }
-            deployArmFAST();
-            sleep(700);
             servoJJ2.setPosition(0.3);
-            sleep(500);
+            deployArmFAST();
             fastFlex();
             fastFlex();
             idle();
