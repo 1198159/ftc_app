@@ -310,7 +310,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     public void identifyGold ()
     {
         //turnTo(-16.5,1.0);
-        pauseWhileUpdating(1.0);
+        pauseWhileUpdating(1.2);
         // Gold is towards left of phone screen in horizontal  (rotated counter clockwise 90 degrees
         // looking at it from the front).  Also, if the gold mineral is off the left end of the
         // screen, we still identify it by checking if the gold mineral's y coordinate is < 0.5.

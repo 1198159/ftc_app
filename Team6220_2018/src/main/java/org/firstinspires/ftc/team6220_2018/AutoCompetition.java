@@ -41,7 +41,10 @@ public class AutoCompetition extends MasterAutonomous
             // Turn 90 deg ccw
             turnTo(90,1.0);
 
+            // Drive to crater, then drop off marker twice in case it gets stuck.
             driveToDepotDropMarker();
+            pauseWhileUpdating(0.4);
+            dropOffMarker();
 
             // Park in either our alliance or opponents' crater, depending on setup input.
             if(isAllianceCraterFinal)
@@ -60,15 +63,15 @@ public class AutoCompetition extends MasterAutonomous
                 {
                     if((goldLocation == sampleFieldLocations.right))
                     {
-                        moveRobot(0.0,0.6,0.7);
+                        moveRobot(0.0,0.8,1.0);
                     }
                     else if ((goldLocation == sampleFieldLocations.left))
                     {
-                        moveRobot(0.0, 0.6, 1.8);
+                        moveRobot(0.0, 0.8, 2.0);
                     }
                     else if ((goldLocation == sampleFieldLocations.center))
                     {
-                        moveRobot(0.0, 0.6, 1.2);
+                        moveRobot(0.0, 0.8, 1.5);
                     }
                     //moveRobot(0.0,0.6,1.5);
                     driveToPosition(0, -1300 - craterShift, 1.0);
@@ -250,18 +253,18 @@ public class AutoCompetition extends MasterAutonomous
         pauseWhileUpdating(0.3);
         servoHanger.setPosition(Constants.SERVO_HANG_RETRACTED);
         motorHanger.setPower(0);
-        pauseWhileUpdating(0.75);
+        pauseWhileUpdating(0.5);
 
         // Unlatch from hook while on ground, drive sideways, retract hanger, and return to original
         // position.
         motorHanger.setTargetPosition(Constants.HANG_GROUND_UNLATCH);
         motorHanger.setPower(1.0);
-        pauseWhileUpdating(0.75);
-        driveToPosition(80,0,1.0);
+        pauseWhileUpdating(0.5);
+        driveToPosition(65,0,1.0);
 
         motorHanger.setTargetPosition(0);
         motorHanger.setPower(1.0);
-        driveToPosition(-80,0,1.0);
+        driveToPosition(-65,0,1.0);
 
         // Raise arm out of camera's line of sight.
         motorArmLeft.setTargetPosition(Constants.ARM_TOP_AUTO);
@@ -355,7 +358,7 @@ public class AutoCompetition extends MasterAutonomous
     private void dropOffMarker() throws InterruptedException
     {
         servoMarker.setPosition(Constants.SERVO_MARKER_DEPLOYED);
-        pauseWhileUpdating(0.3);
+        pauseWhileUpdating(0.4);
         servoMarker.setPosition(Constants.SERVO_MARKER_RETRACTED);
     }
 
@@ -364,15 +367,15 @@ public class AutoCompetition extends MasterAutonomous
     private void driveToDepotDropMarker() throws InterruptedException
     {
         // Drive forward; we change this value based on where the gold mineral was.
-        driveToPosition(0, 1280 + mineralShift, 1.0);
+        driveToPosition(0, 1250 + mineralShift, 1.0);
         turnTo(135,1.0);
         // Align robot with wall.
-        moveRobot(0.0,1.0,0.3);
+        moveRobot(0.0,0.6,0.5);
         // Drive forward.
         driveToPosition(0,1150,1.0);
 
         // Move robot away from wall.
-        driveToPosition(-130,0,1.0);
+        driveToPosition(-180,0,1.0);
         // Turn robot toward corner and drop marker.
         turnTo(90,1.0);
         dropOffMarker();

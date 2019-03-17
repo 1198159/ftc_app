@@ -80,21 +80,21 @@ public class Constants
     public static final double MOTOR_COLLECTOR_IN = 0.85;
     public static final double MOTOR_COLLECTOR_OUT = -0.85;
 
-    public static final double MOTOR_COLLECTOR_SLOW_IN = 0.15;
-    public static final double MOTOR_COLLECTOR_SLOW_OUT = -0.25;
+    public static final double MOTOR_COLLECTOR_SLOW_IN = 0.17;
+    public static final double MOTOR_COLLECTOR_SLOW_OUT = -0.17;
     //-------------------------------------------------
 
 
     // Encoder positions-------------------------------
      // Hanger
     public static final int HANG_UNLATCH_POSITION = 180;
-    public static final int HANG_GROUND_UNLATCH = -2700;
+    public static final int HANG_GROUND_UNLATCH = -2500;
     public static final int HANG_TELEOP_HEIGHT = -2500;
     // Drivetrain
     public static final int MINERAL_SHIFT = 550;
     public static final int CRATER_SHIFT = 150;
     public static final int MINERAL_FORWARD = 720;
-    public static final int MINERAL_BACKWARD = 350;
+    public static final int MINERAL_BACKWARD = 300;
     public static final int LANDER_BACK_UP = 160;
     //-------------------------------------------------
 
