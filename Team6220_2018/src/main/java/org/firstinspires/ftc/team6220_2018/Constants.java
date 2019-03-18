@@ -88,7 +88,7 @@ public class Constants
     // Encoder positions-------------------------------
      // Hanger
     public static final int HANG_UNLATCH_POSITION = 180;
-    public static final int HANG_GROUND_UNLATCH = -2500;
+    public static final int HANG_GROUND_UNLATCH = -2495;
     public static final int HANG_TELEOP_HEIGHT = -2500;
     // Drivetrain
     public static final int MINERAL_SHIFT = 550;

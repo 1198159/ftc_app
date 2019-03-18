@@ -76,7 +76,7 @@ public class AutoCompetition extends MasterAutonomous
                     //moveRobot(0.0,0.6,1.5);
                     driveToPosition(0, -1300 - craterShift, 1.0);
                 }
-                driveToPosition(-30, 0,1.0);
+                //driveToPosition(-30, 0,1.0);
             }
             //opposing crater
             else
@@ -108,7 +108,7 @@ public class AutoCompetition extends MasterAutonomous
                     //moveRobot(180.0, 0.6, 1.5);
                     driveToPosition(0, -1250 - craterShift, 1.0);
                 }
-                driveToPosition(30, 0,1.0);
+                //driveToPosition(30, 0,1.0);
             }
 
             motorArmLeft.setTargetPosition(Constants.ARM_GROUND_AUTO);
@@ -196,7 +196,7 @@ public class AutoCompetition extends MasterAutonomous
                     turnTo(90, 1.0);
                     driveToPosition(0, 150,1.0);
                 }
-                driveToPosition(-30, 0,1.0);
+                //driveToPosition(-30, 0,1.0);
             }
             else
             {
@@ -221,7 +221,7 @@ public class AutoCompetition extends MasterAutonomous
                     moveRobot(180.0,0.6,1.0);
                     driveToPosition(0, -1100, 1.0);
                 }
-                driveToPosition(30, 0,0.8);
+                //driveToPosition(30, 0,0.8);
             }
 
             motorArmLeft.setTargetPosition(Constants.ARM_GROUND_AUTO);
@@ -260,11 +260,20 @@ public class AutoCompetition extends MasterAutonomous
         motorHanger.setTargetPosition(Constants.HANG_GROUND_UNLATCH);
         motorHanger.setPower(1.0);
         pauseWhileUpdating(0.5);
-        driveToPosition(65,0,1.0);
+
+        turnTo(15,1.0);
+        pauseWhileUpdating(0.5);
+        motorHanger.setTargetPosition(0);
+        motorHanger.setPower(1.0);
+        turnTo(0,1.0);
+
+        /*
+        driveToPosition(65,25,1.0);
 
         motorHanger.setTargetPosition(0);
         motorHanger.setPower(1.0);
         driveToPosition(-65,0,1.0);
+        */
 
         // Raise arm out of camera's line of sight.
         motorArmLeft.setTargetPosition(Constants.ARM_TOP_AUTO);
@@ -282,7 +291,7 @@ public class AutoCompetition extends MasterAutonomous
             {
                 if(isCraterStart)
                 {
-                    turnTo(125, 1.0);
+                    turnTo(130, 1.0);
                     // Drive forward to hit mineral and return to original position.
                     driveToPosition(0, -750, 1.0);
                 }
@@ -293,22 +302,23 @@ public class AutoCompetition extends MasterAutonomous
                     // Drive forward to hit mineral and return to original position.
                     driveToPosition(0, -500, 0.5);
                 }
+
                 if(!isAllianceCraterFinal && isCraterStart)
                 {
-                    turnTo(125, 1.0);
-                    driveToPosition(0, 300, 1.0);
+                    turnTo(130, 1.0);
+                    driveToPosition(0, 350, 1.0);
                 }
                 else if (isAllianceCraterFinal && isCraterStart)
                 {
-                    turnTo(125, 1.0);
-                    driveToPosition(0, 200, 1.0);
+                    turnTo(130, 1.0);
+                    driveToPosition(0, 250, 1.0);
                 }
             }
             else if (goldLocation == sampleFieldLocations.left)
             {
                 if(isCraterStart)
                 {
-                    turnTo(60, 1.0);
+                    turnTo(50, 1.0);
                     // Drive forward to hit mineral and return to original position.
                     driveToPosition(0, -800, 1.0);
                 }
@@ -319,15 +329,16 @@ public class AutoCompetition extends MasterAutonomous
                     // Drive forward to hit mineral and return to original position.
                     driveToPosition(0, -450, 1.0);
                 }
+
                 if(!isAllianceCraterFinal && isCraterStart)
                 {
-                    turnTo(60, 1.0);
-                    driveToPosition(0, 300, 1.0);
+                    turnTo(50, 1.0);
+                    driveToPosition(0, 350, 1.0);
                 }
                 else if (isAllianceCraterFinal && isCraterStart)
                 {
-                    turnTo(60, 1.0);
-                    driveToPosition(0, 200, 1.0);
+                    turnTo(50, 1.0);
+                    driveToPosition(0, 250, 1.0);
                 }
             }
             else if (goldLocation == sampleFieldLocations.center)
@@ -342,13 +353,14 @@ public class AutoCompetition extends MasterAutonomous
                     // Drive forward to hit mineral and return to original position.
                     driveToPosition(0, -400, 1.0);
                 }
+
                 if(!isAllianceCraterFinal && isCraterStart)
                 {
-                    driveToPosition(0, 300, 1.0);
+                    driveToPosition(0, 350, 1.0);
                 }
                 else if (isAllianceCraterFinal && isCraterStart)
                 {
-                    driveToPosition(0, 200, 1.0);
+                    driveToPosition(0, 250, 1.0);
                 }
             }
         }
@@ -370,12 +382,12 @@ public class AutoCompetition extends MasterAutonomous
         driveToPosition(0, 1250 + mineralShift, 1.0);
         turnTo(135,1.0);
         // Align robot with wall.
-        moveRobot(0.0,0.6,0.5);
+        moveRobot(0.0,0.6,0.8);
         // Drive forward.
         driveToPosition(0,1150,1.0);
 
         // Move robot away from wall.
-        driveToPosition(-180,0,1.0);
+        driveToPosition(-230,0,1.0);
         // Turn robot toward corner and drop marker.
         turnTo(90,1.0);
         dropOffMarker();
