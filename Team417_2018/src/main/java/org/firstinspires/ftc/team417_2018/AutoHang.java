@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team417_2018;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
 import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
@@ -47,42 +48,50 @@ public class AutoHang extends MasterAutonomous
             telemetry.update();
         }
         waitForStart();
+
         autoRuntime.reset();
+        vuforia.stop();
         telemetry.addData("Auto: ", "Started");
 
-        landEncoder(2000, 2200);
+        landEncoder(2000, 2220);
         // set the reference angle
         double refAngle = imu.getAngularOrientation().firstAngle; // possibly move to initialization
 
-        move(45, 0, 0.2, 0.75, 3.0); // move robot hanger off the lander hook
+        move(47, 0, 0.2, 0.75, 3.0); // move robot hanger off the lander hook
         sleep(50);
 
         if (!isPosCrater) // if it's the depot option
         {
             if (isLeftGold)
             {
+                move(0, 10, 0.3, 0.7, 1.0); // move away from the lander
+                sleep(40);
                 pivotWithReference(35, refAngle, 0.2, 0.75); // pivot to face the gold mineral
                 sleep(100); // pause 100 milliseconds
                 move(0, 450, 0.3, 0.7, 3.0); // go forward to push the gold mineral
                 sleep(100); // pause 100 milliseconds
                 pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to face depot
                 sleep(100); // pause 100 milliseconds
-                move(-70, 0, 0.3, 0.7, 2.0); // push against the wall
+                move(-90, 0, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
                 move(0, 400, 0.3, 0.7, 3.0); // go towards depot
                 sleep(100);
                 marker.setPosition(MARKER_HIGH); // drop the team marker
                 sleep(100);
-                move(0, -250, 0.3, 0.7, 2.0); // back up
+                move(0,-80,0.3,0.75,2.0);
                 sleep(100);
-                move(-170, 0, 0.3, 0.7, 2.0); // push against the wall
+                pivotWithReference(135, refAngle,0.3,0.75);
                 sleep(100);
-                move(0, -600, 0.3, 0.7, 3.0); // park in blue crater
+                move(250, 0, 0.3, 0.7, 2.0); // align against wall
+                sleep(100);
+                move(0, 610, 0.3, 0.7, 3.0); // park in blue crater
                 marker.setPosition(MARKER_LOW); // lower marker arm
             }
             else if (isRightGold)
             {
-                pivotWithReference(-28, refAngle, 0.2, 0.75); // pivot to face gold mineral
+                move(0, 10, 0.3, 0.7, 1.0); // move away from the lander
+                sleep(40);
+                pivotWithReference(-26, refAngle, 0.2, 0.75); // pivot to face gold mineral
                 sleep(100);
                 move(0, 420, 0.3, 0.7, 2.0); // go forward to push the gold mineral
                 sleep(100);
@@ -96,26 +105,25 @@ public class AutoHang extends MasterAutonomous
                 sleep(100);
                 marker.setPosition(MARKER_HIGH); // drop marker in depot
                 sleep(100);
-                move(0, -150, 0.3, 0.7, 3.0); // move out of depot
+                move(0, -100, 0.3, 0.7, 3.0); // move out of depot
                 sleep(100);
-                move(-150, 0, 0.3, 0.7, 2.0); // avoid left mineral
+                pivotWithReference(135,refAngle,0.2,0.75);
+                move(170, 0, 0.3, 0.7, 2.0); // avoid left mineral
                 sleep(100);
-                move(0, -780, 0.3, 0.7, 3.0); // park in opposite crater
+                move(0, 620, 0.3, 0.7, 3.0); // park in opposite crater
                 marker.setPosition(MARKER_LOW); // lower marker arm
             }
             else if (isCenterGold)
             {
                 move(0, 700, 0.3, 0.7, 3.0); // push the gold mineral
                 sleep(100);
-                pivotWithReference(-45, refAngle, 0.2, 0.75); // turn to face depot
-                sleep(100);
                 marker.setPosition(MARKER_HIGH); // drop the marker in the depot
                 sleep(100);
                 move(0, -100, 0.3, 0.7, 2.0); // back up
+                pivotWithReference(135, refAngle,0.3,0.75);
+                move(300, 0, 0.3, 0.7, 2.0); // push against the wall
                 sleep(100);
-                move(-250, 0, 0.3, 0.7, 2.0); // push against the wall
-                sleep(100);
-                move(0, -880, 0.3, 0.7, 3.0); // park in blue crater
+                move(0, 650, 0.3, 0.7, 3.0); // park in blue crater
                 sleep(100);
                 marker.setPosition(MARKER_LOW); // lower marker arm
             }
@@ -124,25 +132,29 @@ public class AutoHang extends MasterAutonomous
         {
             if (isRightGold)
             {
-                pivotWithReference(-25, refAngle, 0.2, 0.75); // pivot to face gold mineral
+                move(0, 10, 0.3, 0.7, 1.0); // move away from the lander
+                sleep(40);
+                pivotWithReference(-27, refAngle, 0.2, 0.75); // pivot to face gold mineral
                 sleep(100);
-                move(0, 400, 0.3, 0.7, 2.0); // go forward to push the gold mineral
+                move(0, 355, 0.3, 0.7, 2.0); // go forward to push the gold mineral
                 sleep(100);
                 // rest of this code is for dropping of marker after knocking gold mineral
                 sleep(100);
-                move(0, -130, 0.3, 0.7, 2.0); // back up from the gold mineral
+                move(0, -105, 0.3, 0.7, 2.0); // back up from the gold mineral
                 sleep(100);
                 pivotWithReference(90, refAngle, 0.2, 0.75); // pivot to face wall
                 sleep(100);
-                move(-30, 0, 0.3, 0.7, 2.0); // go forwards toward the wall
+                //move(-30, 0, 0.3, 0.7, 2.0); // go sideways toward the wall
                 sleep(100);
                 move(0, 700, 0.3, 0.7, 2.0); // go forwards toward the wall
                 sleep(100);
                 pivotWithReference(135, refAngle, 0.2, 0.75); // pivot to face the depot
                 sleep(100);
-                move(100, 0, 0.3, 0.7, 2.0); // translate towards the wall
+                //move(100, 0, 0.3, 0.7, 2.0); // translate towards the wall
                 sleep(50);
                 move(0, 550, 0.3, 0.7, 2.0); // go forwards into the depot
+                sleep(50);
+                move(150, 0, 0.3, 0.7, 2.0); // translate towards the wall
                 sleep(50);
                 marker.setPosition(MARKER_HIGH); // release the TM
                 sleep(100);
@@ -158,6 +170,8 @@ public class AutoHang extends MasterAutonomous
             }
             else if (isLeftGold)
             {
+                move(0, 10, 0.3, 0.7, 1.0); // move away from the lander
+                sleep(40);
                 pivotWithReference(33, refAngle, 0.2, 0.75); // pivot to face the gold mineral
                 sleep(100);
                 move(0, 400, 0.3, 0.7, 3.0); // push the gold mineral
@@ -218,8 +232,6 @@ public class AutoHang extends MasterAutonomous
         }
 
         autoExtendSlides();
-
-        vuforia.stop();
         }
     }
 
