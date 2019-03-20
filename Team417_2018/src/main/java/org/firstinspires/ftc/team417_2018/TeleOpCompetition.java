@@ -12,7 +12,6 @@ public class TeleOpCompetition extends MasterTeleOp
     {
 
         super.initializeHardware();
-        rev1.setPosition(0.0);
 
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -23,6 +22,7 @@ public class TeleOpCompetition extends MasterTeleOp
         telemetry.update();
 
         waitForStart();
+        rev1.setPosition(0.0);
 
         while (opModeIsActive())
         {
