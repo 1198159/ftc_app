@@ -33,7 +33,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     boolean isPosCrater = true;
 
     boolean isLeftGold = false;
-    boolean isCenterGold = false;
+    boolean isCenterGold = true;
     boolean isRightGold = false;
 
     int threshold = 90;
@@ -481,8 +481,8 @@ abstract public class MasterAutonomous extends MasterOpMode
         do
         {
             curLiftPos = arm1.getCurrentPosition();
-            arm1.setPower(-0.4);
-            arm2.setPower(0.4);
+            arm1.setPower(-0.55);
+            arm2.setPower(0.55);
         }
         while (curLiftPos > -1030);
         arm1.setPower(0.0);
@@ -528,7 +528,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             {
                 core2.setPower(0.0);
             }
-            if (curLiftPos < -150)
+            if (curLiftPos < -200) // the more negative this number, the higher the arm position
             {
                 arm1.setPower(0.35);
                 arm2.setPower(-0.35);
