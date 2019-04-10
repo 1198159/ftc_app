@@ -118,12 +118,12 @@ abstract public class MasterTeleOp extends MasterOpMode
         // control the extending with G2 right (extend) and left (retract) trigger
         if (gamepad2.right_trigger != 0)
         {
-            core2.setPower(0.7);
+            core2.setPower(0.99);
         }
         else if (gamepad2.left_trigger != 0)
         {
             isExtending = false;
-            core2.setPower(-0.8);
+            core2.setPower(-0.99);
         }
         else if (gamepad2.left_trigger==0 && gamepad2.right_trigger==0 && !isExtending)
         {
@@ -148,8 +148,8 @@ abstract public class MasterTeleOp extends MasterOpMode
         // control arm motors with G2 right stick
         if (gamepad2.right_stick_y != 0)
         {
-            arm1.setPower(Range.clip(gamepad2.right_stick_y, -0.4, 0.4));
-            arm2.setPower(Range.clip(-gamepad2.right_stick_y, -0.4, 0.4));
+            arm1.setPower(Range.clip(gamepad2.right_stick_y, -0.5, 0.5));
+            arm2.setPower(Range.clip(-gamepad2.right_stick_y, -0.5, 0.5));
         }
         else
         {
@@ -159,7 +159,8 @@ abstract public class MasterTeleOp extends MasterOpMode
 
 // Set Automatic Rev servo position
         autoDouble = (double) (arm1.getCurrentPosition());
-        autoRevPos =  autoDouble / (-1319.0); // high pos = -1058, low = 0
+        autoDouble /=-1465.5;
+        autoRevPos =  autoDouble + 0.1; // high pos = -1058, low = 0
         rev1.setPosition(autoRevPos);
 
 // control hanger with G2 left and right bumpers
@@ -246,6 +247,7 @@ abstract public class MasterTeleOp extends MasterOpMode
         //telemetry.addData("motorMode", core2.getMode());
         telemetry.addData("core2:", core2.getCurrentPosition());
         telemetry.addData("arm1:", arm1.getCurrentPosition());
+        telemetry.addData("rev1", rev1.getPosition());
         telemetry.update();
     }
 }
