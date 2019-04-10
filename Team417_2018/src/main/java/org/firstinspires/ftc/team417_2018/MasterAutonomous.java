@@ -18,6 +18,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     public ElapsedTime autoRuntime = new ElapsedTime();
 
     String goldLocation = "UNKNOWN";
+    String lastSeenGold = "UNKNOWN";
 
     private int OPENCV_IMAGE_MIDDLE = 360;
 
@@ -37,6 +38,7 @@ abstract public class MasterAutonomous extends MasterOpMode
     boolean isRightGold = false;
 
     int threshold = 90;
+    int delay = 0;
 
     // speed is proportional to error
     double Kmove = 1.0f/1200.0f;
@@ -164,7 +166,8 @@ abstract public class MasterAutonomous extends MasterOpMode
             isLeftGold = false;
             isCenterGold = false;
             isRightGold = true;
-            telemetry.addLine("Right");
+            lastSeenGold = "RIGHT";
+            goldLocation = "RIGHT";
         }
         // left gold was located at (110,380)
         else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 200)  &&  (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2) >= 375 )
@@ -172,7 +175,8 @@ abstract public class MasterAutonomous extends MasterOpMode
             isLeftGold = true;
             isCenterGold = false;
             isRightGold = false;
-            telemetry.addLine("Left");
+            lastSeenGold = "LEFT";
+            goldLocation = "LEFT";
         }
         // center gold was located at (420,380)
         else if (((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) >= 350) && ((OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2) <= 500)  &&  (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2) >= 375 )
@@ -180,12 +184,18 @@ abstract public class MasterAutonomous extends MasterOpMode
             isLeftGold = false;
             isCenterGold = true;
             isRightGold = false;
-            telemetry.addLine("Center");
+            lastSeenGold = "CENTER";
+            goldLocation = "CENTER";
         }
         else
         {
-            telemetry.addLine("UNKNOWN");
+            lastSeenGold = "UNKNOWN";
         }
+
+        //if (lastSeenGold == "UNKNOWN") lastSeenGold = goldLocation;
+
+        telemetry.addData("Webcam sees", lastSeenGold);
+        telemetry.addData("Going for", goldLocation);
     }
 
     // drive forwards/backwards/horizontal left and right function
@@ -528,7 +538,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             {
                 core2.setPower(0.0);
             }
-            if (curLiftPos < -200) // the more negative this number, the higher the arm position
+            if (curLiftPos < -190) // the more negative this number, the higher the arm position
             {
                 arm1.setPower(0.35);
                 arm2.setPower(-0.35);
