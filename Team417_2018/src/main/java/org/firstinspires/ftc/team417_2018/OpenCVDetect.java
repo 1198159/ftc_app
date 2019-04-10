@@ -80,6 +80,7 @@ public class OpenCVDetect extends OpenCVPipeline
         {
             // find yellow
             Imgproc.threshold(channels.get(1), maskYellow, threshold, 255, Imgproc.THRESH_BINARY_INV);
+            //Imgproc.adaptiveThreshold(channels.get(1), maskYellow, 255.0, threshold, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, 5, 2);
         }
 
         // Debug: display bitmap
