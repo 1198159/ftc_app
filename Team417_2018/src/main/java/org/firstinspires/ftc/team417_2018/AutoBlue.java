@@ -7,8 +7,8 @@ import org.corningrobotics.enderbots.endercv.ActivityViewDisplay;
 
 import java.util.Locale;
 
-@Autonomous(name="Ground Autonomous", group = "Swerve")
-// @Disabled
+//@Autonomous(name="Ground Autonomous", group = "Swerve")
+//@Disabled
 public class AutoBlue extends MasterAutonomous
 {
     private OpenCVDetect goldVision;

@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import java.util.Locale;
 
-@Autonomous(name = "Test OpMode")
+@Autonomous(name = "Reset Hanger")
 //@Disabled
 public class TestOpMode extends MasterAutonomous
 {

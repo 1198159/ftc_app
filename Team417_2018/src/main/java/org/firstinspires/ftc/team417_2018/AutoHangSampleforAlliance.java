@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 import java.util.Locale;
 
-@Autonomous(name="Sample for Alliance", group = "Swerve")
+//@Autonomous(name="Sample for Alliance", group = "Swerve")
 // @Disabled
 public class AutoHangSampleforAlliance extends MasterAutonomous
 {

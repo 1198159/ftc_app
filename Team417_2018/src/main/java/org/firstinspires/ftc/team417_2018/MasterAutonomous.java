@@ -464,7 +464,8 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         sleep(50);
     }
-    public void drop() {
+    public void drop()
+    {
         rev1.setPosition(0.0);
         lowerArm();
         vex1.setPower(0.79);
@@ -514,16 +515,15 @@ abstract public class MasterAutonomous extends MasterOpMode
         arm1.setPower(0.0);
         arm2.setPower(0.0);
     }
+
     public void end()
     {
         extend();
-        sleep(100);
         lowerSmallAmt();
-        sleep(100);
         vex1.setPower(-0.79);
-        sleep(4000);
-        vex1.setPower(0.0);
+        if (autoRuntime.milliseconds() < 29999) vex1.setPower(0.0);
     }
+
     public void lowerArm()
     {
         do
@@ -532,7 +532,7 @@ abstract public class MasterAutonomous extends MasterOpMode
             arm1.setPower(0.35);
             arm2.setPower(-0.35);
         }
-        while (curLiftPos < -300);
+        while (curLiftPos < -210);
         arm1.setPower(0.0);
         arm2.setPower(0.0);
     }
