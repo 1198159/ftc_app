@@ -16,25 +16,14 @@ public class TestOpMode extends MasterAutonomous
     public void runOpMode() throws InterruptedException
     {
 
-        //autoInitializeRobot();
-        InitializeDetection();
+        autoInitializeRobot();
 
-        OpenCV_detector.setThreshold(threshold);
-        telemetry.addData("threshold", threshold);
-
-        if (isPosCrater) telemetry.addData("Alliance: ", "CRATER");
-        else telemetry.addData("Alliance: ", "DEPOT");
-
-        telemetry.addData("Gold",
-                String.format(Locale.getDefault(), "(%d, %d)", (OpenCV_detector.getGoldRect().x + OpenCV_detector.getGoldRect().width / 2), (OpenCV_detector.getGoldRect().y + OpenCV_detector.getGoldRect().height / 2)));
-
-        telemetry.addData("Init:", "done");
-        telemetry.update();
         waitForStart();
 
         //landNew(2000, 2900);
-        //autoExtendSlides();
-        locateGold();
+        reset();
+        telemetry.addData("arm1", arm1.getCurrentPosition());
+        telemetry.update();
         //reset();
     }
 }

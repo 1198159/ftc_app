@@ -153,9 +153,11 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         // fullscreen display:
         //   app crashes if screen orientation switches from portrait to landscape
+
         //   screen goes to sleep, and webcam turns off a few minutes after init, and after play
         //OpenCV_detector.init(hardwareMap.appContext, ActivityViewDisplay.getInstance(), 0, true);
     }
+
 
     // won't display Gold position (left, center, right) if gold mineral doesn't meet the vertical cutting at 400 pixels or more
     public void locateGold()
@@ -448,20 +450,6 @@ abstract public class MasterAutonomous extends MasterOpMode
         CENTER,
         RIGHT
     }
-
-    public void lowerArm()
-    {
-        do
-        {
-            curLiftPos = arm1.getCurrentPosition();
-            arm1.setPower(0.3);
-            arm2.setPower(-0.3);
-        }
-        while (curLiftPos < -150);
-        arm1.setPower(0.0);
-        arm2.setPower(0.0);
-    }
-
     public void land()
     {
         do
@@ -476,7 +464,13 @@ abstract public class MasterAutonomous extends MasterOpMode
 
         sleep(50);
     }
-
+    public void drop() {
+        rev1.setPosition(0.0);
+        lowerArm();
+        vex1.setPower(0.79);
+        sleep(2000);
+        vex1.setPower(0.0);
+    }
     public void landEncoder(int initPos, int finalPos)
     {
         int hangerTargetPos = hanger.getCurrentPosition() + initPos;
@@ -509,66 +503,56 @@ abstract public class MasterAutonomous extends MasterOpMode
         while (curHangerPos < hangerTargetPos);
         hanger.setPower(0.0);
     }
-
-    public void hangerUsingEncoder(int initPos)
-    {
-        int hangerTargetPos = hanger.getCurrentPosition() + initPos;
-        do
-        {
-            curHangerPos = hanger.getCurrentPosition();
-            hanger.setPower(0.99);
-        }
-        while (curHangerPos < hangerTargetPos);
-        hanger.setPower(0.0);
-    }
-
-    void autoExtendSlides()
-    {
-        rev1.setPosition(0.0);
+    public void lowerSmallAmt() {
         do
         {
             curLiftPos = arm1.getCurrentPosition();
-            curExtendPos = core2.getCurrentPosition();
-
-            if (curExtendPos < 650 && opModeIsActive())
-            {
-                core2.setPower(0.99);
-            }
-            else
-            {
-                core2.setPower(0.0);
-            }
-            if (curLiftPos < -190) // the more negative this number, the higher the arm position
-            {
-                arm1.setPower(0.35);
-                arm2.setPower(-0.35);
-            }
-            else
-            {
-                arm1.setPower(0.0);
-                arm2.setPower(0.0);
-            }
+            arm1.setPower(0.35);
+            arm2.setPower(-0.35);
         }
-        while ((curLiftPos < -250 || curExtendPos < 600) && opModeIsActive());
+        while (curLiftPos < -150);
+        arm1.setPower(0.0);
+        arm2.setPower(0.0);
     }
-
+    public void end()
+    {
+        extend();
+        sleep(100);
+        lowerSmallAmt();
+        sleep(100);
+        vex1.setPower(-0.79);
+        sleep(4000);
+        vex1.setPower(0.0);
+    }
+    public void lowerArm()
+    {
+        do
+        {
+            curLiftPos = arm1.getCurrentPosition();
+            arm1.setPower(0.35);
+            arm2.setPower(-0.35);
+        }
+        while (curLiftPos < -300);
+        arm1.setPower(0.0);
+        arm2.setPower(0.0);
+    }
+    public void extend()
+    {
+        do
+        {
+            curExtendPos = core2.getCurrentPosition();
+            core2.setPower(0.99);
+        }
+        while (curExtendPos < 600 );
+        core2.setPower(0.0);
+    }
     public void reset() // we run this after Auto to reset the hanger and the arm motors
     {
         hanger.setPower(-0.96);
         sleep(3300);
         hanger.setPower(0.0);
 
-        // -1030 position
-        do
-        {
-            curLiftPos = arm1.getCurrentPosition();
-            arm1.setPower(0.3);
-            arm2.setPower(-0.3);
-        }
-        while (curLiftPos < 900);
 
-        arm1.setPower(0.0);
-        arm2.setPower(0.0);
     }
 
 }

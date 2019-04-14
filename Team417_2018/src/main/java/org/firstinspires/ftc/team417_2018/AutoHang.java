@@ -245,7 +245,7 @@ public class AutoHang extends MasterAutonomous
             }
         }
 
-        autoExtendSlides();
+        //autoExtendSlides();
         }
     }
 
