@@ -25,15 +25,15 @@ public class HTU21DTest extends LinearOpMode
 //        parameters.alertControl = MCP9808Params.AlertControl.ALERT_ENABLE;
 //        tempSensor.initialize(parameters);
 
-        tempSensor.setTemperatureLimit(24, AdafruitHTU21D.Register.T_LIMIT_LOWER);
-        tempSensor.setTemperatureLimit(26, AdafruitHTU21D.Register.T_LIMIT_UPPER);
-        tempSensor.setTemperatureLimit(25, AdafruitHTU21D.Register.T_LIMIT_CRITICAL);
+        //tempSensor.setTemperatureLimit(24, AdafruitHTU21D.Register.T_LIMIT_LOWER);
+        //tempSensor.setTemperatureLimit(26, AdafruitHTU21D.Register.T_LIMIT_UPPER);
+        //tempSensor.setTemperatureLimit(25, AdafruitHTU21D.Register.T_LIMIT_CRITICAL);
 
         waitForStart();
 
         while (opModeIsActive())
         {
-            telemetry.addData("Temperature", tempSensor.getTemperature());
+            /*telemetry.addData("Temperature", tempSensor.getTemperature());
             telemetry.addData("", "");
 
             telemetry.addData("Lower Limit", tempSensor.getTemperatureLimit(AdafruitHTU21D.Register.T_LIMIT_LOWER));
@@ -42,7 +42,7 @@ public class HTU21DTest extends LinearOpMode
             telemetry.addData("Upper Limit Triggered", tempSensor.upperLimitTriggered());
             telemetry.addData("Critical Limit", tempSensor.getTemperatureLimit(AdafruitHTU21D.Register.T_LIMIT_CRITICAL));
             telemetry.addData("Critical Limit Triggered", tempSensor.criticalLimitTriggered());
-            telemetry.addData("", "");
+            telemetry.addData("", "");*/
 
             telemetry.addData("Config", Integer.toHexString(tempSensor.readShort(AdafruitHTU21D.Register.CONFIGURATION)));
             telemetry.addData("Manufacturer ID", tempSensor.getManufacturerIDRaw());

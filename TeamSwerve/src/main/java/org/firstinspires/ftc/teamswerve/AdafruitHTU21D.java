@@ -25,6 +25,7 @@ public class AdafruitHTU21D extends I2cDeviceSynchDevice<I2cDeviceSynch>
     // User Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /*
     public double getTemperature()
     {
         short dataRaw = getTemperatureRaw();
@@ -39,7 +40,9 @@ public class AdafruitHTU21D extends I2cDeviceSynchDevice<I2cDeviceSynch>
         // Multiply by least significant bit (2^-4 = 1/16) to scale
         return dataRaw / 16.0;
     }
+    */
 
+    /*
     public double getTemperatureLimit(Register register)
     {
         // Register is shifted by 2
@@ -54,6 +57,7 @@ public class AdafruitHTU21D extends I2cDeviceSynchDevice<I2cDeviceSynch>
         // Multiply by least significant bit (2^-2 = 1/4) to scale
         return dataRaw / 4.0;
     }
+
 
     public void setTemperatureLimit(double limit, Register register)
     {
@@ -86,11 +90,13 @@ public class AdafruitHTU21D extends I2cDeviceSynchDevice<I2cDeviceSynch>
     {
         return (getTemperatureRaw() & 0x2000) == 0x2000;
     }
+    */
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Raw Register Reads
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /*
     public short getTemperatureRaw()
     {
         return readShort(Register.TEMPERATURE);
@@ -104,6 +110,7 @@ public class AdafruitHTU21D extends I2cDeviceSynchDevice<I2cDeviceSynch>
 
         return readShort(register);
     }
+    */
 
     public short getManufacturerIDRaw()
     {
@@ -132,14 +139,15 @@ public class AdafruitHTU21D extends I2cDeviceSynchDevice<I2cDeviceSynch>
     {
         FIRST(0),
         CONFIGURATION(0x01),
-        T_LIMIT_UPPER(0x02),
-        T_LIMIT_LOWER(0x03),
-        T_LIMIT_CRITICAL(0x04),
-        TEMPERATURE(0x05),
         MANUFACTURER_ID(0x06),
-        DEVICE_ID_REVISION(0x07),
-        RESOLUTION(0x08),
-        LAST(RESOLUTION.bVal);
+        TRIGGER_TEMPERATURE_MEASUREMENT_HOLD_MASTER(0xE3),
+        TRIGGER_HUMIDITY_MEASUREMENT_HOLD_MASTER(0xE5),
+        TRIGGER_TEMPERATURE_MEASUREMENT_NO_HOLD_MASTER(0xF3),
+        TRIGGER_HUMIDITY_MEASUREMENT_NO_HOLD_MASTER(0xF5),
+        WRITE_USER_REGISTER(0xE6),
+        READ_USER_REGISTER(0xE7),
+        SOFT_RESET(0xFE),
+        LAST(SOFT_RESET.bVal);
 
         public int bVal;
 
