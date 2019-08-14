@@ -191,7 +191,8 @@ public class AdafruitHTU21D extends I2cDeviceSynchDevice<I2cDeviceSynch>
     // Construction and Initialization
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public final static I2cAddr ADDRESS_I2C_DEFAULT = I2cAddr.create7bit(0x18);
+    // TODO Not working?
+    public final static I2cAddr ADDRESS_I2C_DEFAULT = I2cAddr.create7bit(0x40);
 
     public AdafruitHTU21D(I2cDeviceSynch deviceClient)
     {
