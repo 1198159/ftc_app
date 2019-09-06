@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team6220_2018;
+package org.firstinspires.ftc.team6220_2019;
 
 /*
     This class contains functions that are used to process 1D data sets.

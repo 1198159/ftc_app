@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.team6220_2019;
 
-public class MasterTeleOp
+abstract public class MasterTeleOp extends MasterOpMode
 {
+    public void driveMecanumWithJoysticks()
+    {
+                        
+    }
 }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team6220_2018;
+package org.firstinspires.ftc.team6220_2019;
 
 /*
      Used to store important constants for easy access in other classes.
@@ -6,11 +6,6 @@ package org.firstinspires.ftc.team6220_2018;
 
 public class Constants
 {
-    //public static final int GOLD_DIVIDING_LINE = 520;
-    public static final int GOLD_DIVIDING_LINE_LEFT = 550;
-    public static final int GOLD_DIVIDING_LINE_RIGHT = 250;
-    public static final int DISCRIMINATION_HEIGHT = 200;
-
     // Standard conversions
      // This is for an Andymark 40; 20's and 60's are different
     public static final int  ANDYMARK_TICKS_PER_ROTATION = 1120;
@@ -55,9 +50,6 @@ public class Constants
     public static final double TRANSLATION_P = DRIVE_POWER_FACTOR;
     public static final double TRANSLATION_I = 0.00000002;    // todo Adjust
     public static final double TRANSLATION_D = 0.004;
-    public static final double ARM_P = 0.02; //todo Adjust all Arm Constants
-    public static final double ARM_I = 0.00000002;
-    public static final double ARM_D = 0.004;
     //---------------------------------------------------
 
 
@@ -71,48 +63,14 @@ public class Constants
 
 
     // Servo positions--------------------------------
-    public static final double SERVO_HANG_DEPLOYED = 0.6;
-    public static final double SERVO_HANG_RETRACTED = 0.25;
 
-    public static final double SERVO_MARKER_DEPLOYED = 1.0;
-    public static final double SERVO_MARKER_RETRACTED = 0.17;
-
-    public static final double MOTOR_COLLECTOR_IN = 0.85;
-    public static final double MOTOR_COLLECTOR_OUT = -0.85;
-
-    public static final double MOTOR_COLLECTOR_SLOW_IN = 0.17;
-    public static final double MOTOR_COLLECTOR_SLOW_OUT = -0.17;
     //-------------------------------------------------
 
 
     // Encoder positions-------------------------------
-     // Hanger
-    public static final int HANG_UNLATCH_POSITION = 180;
-    public static final int HANG_GROUND_UNLATCH = -2495;
-    public static final int HANG_TELEOP_HEIGHT = -2500;
-    // Drivetrain
-    public static final int MINERAL_SHIFT = 550;
-    public static final int CRATER_SHIFT = 150;
-    public static final int MINERAL_FORWARD = 720;
-    public static final int MINERAL_BACKWARD = 300;
-    public static final int LANDER_BACK_UP = 160;
+
     //-------------------------------------------------
 
-    // Arm Positions
-    public static final int ARM_TOP_BLOCKS = 1350;
-    public static final int ARM_TOP_BALLS = 1240;
-    public static final int ARM_GROUND = 0;
-    public static final int ARM_LOW_SWITCH_HEIGHT = 300;
-    public static final int ARM_HIGH_SWITCH_HEIGHT = 800;
-    public static final int ARM_SCORE_SWITCH_HEIGHT = 1100;
-     // Accounts for different starting position of arm in auto.
-    public static final int ARM_TOP_AUTO = -1000;
-    public static final int ARM_GROUND_AUTO = -2250;
-    public static final int ARM_FLIP_AUTO = -1900;
-    // Arm powers
-    public static final double HIGH_ARM_POWER = 0.5;
-    public static final double LOW_ARM_POWER = 0.25;
-    public static final double MIN_ARM_POWER = 0.1;
 
     // Ensure that input isn't used when no commands are given
     public static final double MINIMUM_JOYSTICK_POWER = 0.05;

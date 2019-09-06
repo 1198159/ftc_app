@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team6220_2019;
 
-public class MasterAutonomous
+abstract public class MasterAutonomous extends MasterOpMode
 {
+
 }
