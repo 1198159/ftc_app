@@ -10,6 +10,14 @@ abstract public class MasterOpMode extends LinearOpMode
     DriverInput driver1;
     DriverInput driver2;
 
+    /*
+     Polynomial for adjusting input from joysticks to allow for ease of driving.  A polynomial that
+     is concave up in the 1st quadrant is preferable to a 1st degree polynomial, since a driver
+     generally needs more control in the low speed range than the high range.
+    */
+    //                                             y = 0 + 0.25x + 0 + 0.75x^3
+    Polynomial stickCurve = new Polynomial(new double[]{ 0, 0.5, 0, 0.5});
+
     public void initialize()
     {
         // Drive motors
